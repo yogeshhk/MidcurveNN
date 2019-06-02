@@ -34,6 +34,7 @@ Midcurve by Neural Networks
 *	Study Pix2Pix, use its keras implementation (need to prep dataset in specific format)
 *	Study other literature, take notes
 *	Prepare ODSC presentation using Literature Survey and implementation results
+*   Take up Phase II problem of Seq2Seq, do Udemy course https://www.udemy.com/applied-deep-learning-build-a-chatbot-theory-application/learn/lecture/12353012#overview for learning sequence modeling (although its for chatbot, it covers RNNs and LSTMs) 
 ## Links
 *	Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
 *	ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
