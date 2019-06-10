@@ -1,6 +1,14 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
+Copyright (C) 2019 Yogesh H Kulkarni
+
+## License:
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or any later version.
+
 ## Description
 *	Goal: Given a 2D closed shape (closed polygon) find its midcurve (polyline, closed or open)
 *	Input: set of points or set of connected lines, non-intersecting, simple, convex, closed polygon 
@@ -35,12 +43,13 @@ Midcurve by Neural Networks
 *	Study other literature, take notes
 *	Prepare ODSC presentation using Literature Survey and implementation results
 *   Take up Phase II problem of Seq2Seq, do Udemy course https://www.udemy.com/applied-deep-learning-build-a-chatbot-theory-application/learn/lecture/12353012#overview for learning sequence modeling (although its for chatbot, it covers RNNs and LSTMs) 
-## Links
+
+## Publications/Talks
 *	Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
 *	ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
 
 
-## Implementation:
+## Implementation Notes:
 *	Keras
 	* DON’T Conda install -c conda-forge keras DIRECTLY
 	* Keras installation cribbed that tensorflow is not present
@@ -49,53 +58,13 @@ Midcurve by Neural Networks
 	* Go to Anaconda prompt and follow https://medium.com/@margaretmz/anaconda-jupyter-notebook-tensorflow-and-keras-b91f381405f8
 	* If you get QT error for matplotlib, use “import matplotlib;matplotlib.use('TKAgg')”
 	* Using https://blog.keras.io/building-autoencoders-in-keras.html to have a base code
-		
-		
-# A wider research domain: CAD with Deep Learning
-
-## Notes
-
-Vectorization is a must for preparing input for Machine/Deep Learning
-
-Comparison of NLP and CAD wrt vectorization:
-
-|    NLP                                 |    CAD                              | 
-|----------------------------------------|-------------------------------------|
-|    Words                               |    Entities                         | 
-|    Sentences composed of words         |    Features composed of entities    | 
-|    Paragraphs composed of sentences    |    Bodies composed of features      | 
-|    Document composed of sentences      |    Assemblies composed of bodies    | 
+	
 
 ## References
-*	Geometric Deep Learning http://geometricdeeplearning.com/ 
-*	3D Machine Learning https://github.com/timzhang642/3D-Machine-Learning/blob/master/README.md
-*	Pointer Networks https://pdfs.semanticscholar.org/eb5c/1ce6818333560d0d3247c0c74985ef295d9d.pdf
-*	Feature Recognition
-		* 	https://ai.stackexchange.com/questions/5011/using-machine-learning-to-identify-cad-model-features
-		* 	https://orca.cf.ac.uk/86873/1/2016niuzphd.pdf
-*	Shape2vec:
-		* 	A neural network is trained to generate shape descriptors that lie close to a vector representation of the shape class, given a vector space of words. This method is easily extendable to range scans, hand-drawn sketches and images. This makes cross-modal retrieval possible, without a need to design different methods depending on the query type. We show that sketch-based shape retrieval using semantic-based descriptors outperforms the state-of-the-art by large margins, and mesh-based retrieval generates results of higher relevance to the query, than current deep shape descriptors.  https://github.com/ftasse/Shape2Vec https://www.cl.cam.ac.uk/research/rainbow/projects/shape2vec/ 
-		*	Shape2vec: Understanding 3D Shapes With AI | Two Minute Papers #138 https://www.youtube.com/watch?v=bB54Wz4kq0E
-*	Courses
-		*	https://www.cse.iitb.ac.in/~cs749/spr2017/
-		*	Machine Learning on Geometrical Data https://cse291-i.github.io/index.html
-		*	Machine Learning for 3D Data http://graphics.stanford.edu/courses/cs468-17-spring/ 
-		*	Geometric Modeling and Analysis CS597D https://www.cs.princeton.edu/courses/archive/fall03/cs597D/ 
-*	People
-		*	https://www.cse.iitb.ac.in/~sidch/ 
-		*	Hao Li http://www.hao-li.com/Hao_Li/Hao_Li_-_about_me.html Human Digitization
-		*	Hao Su Stanford http://3ddl.cs.princeton.edu/2016/slides/su.pdf haosu@ucsd.edu
-* Applications of Machine Learning in CAD/PLM
-http://ndesign.co/2017/03/09/applications-of-machine-learning-in-cadplm/
-Common applications
-	*	Categorize parts across libraries by their shapes and parameters.
-	*	Parametrize STL and IGES, using geometry parsers and library of standard parameters for the parts and assemblies.
-	*	Interaction with CAD systems using text or voice conversation in natural language: review the model (pan, rotate, zoom, comments, etc.), call common commands and perform input.
-	*	Improving the behavior of wizards and generators according to standards and technical specification of overall project.
-	*	Fasteners generator
-	*	Frame generator
-	*	Mold-base generator for casting and molding
-	*	Hole generator
-	*	Thread generator
-	*	Design check of performed design operations according to standards and technical specifications.
+* TBD
+* TBD
 
+
+## Disclaimer:
+Author (yogeshkulkarni@yahoo.com) gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all.
+	

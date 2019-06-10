@@ -1,3 +1,10 @@
+"""
+    Prepare Data: populating input images from raw profile data
+    Takes raw data from "data/raw/*" files for both, profile shape (shape.dat) as well as midcurve shape (shape.mid)
+    Generates raster image files from svg (simple vector graphics)
+    Multiple variations are populated using image transformations.
+    These images become input for further modeling (stored in "data/input/*")
+"""
 import os
 from keras.preprocessing.image import img_to_array, load_img
 from random import shuffle
@@ -7,7 +14,10 @@ import numpy as np
 import sys
 np.set_printoptions(threshold=sys.maxsize)
 
-def get_training_data(datafolder = "output"):
+raw_data_folder = "data/raw"
+input_data_folder = "data/input"
+
+def get_training_data(datafolder = input_data_folder):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
     
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in profile_pngs ]
@@ -37,7 +47,7 @@ def get_profile_dict(shapename,profiles_dict_list):
     profile_dict['ShapeName'] = shapename
     return profile_dict
 
-def read_dat_files(datafolder="data"):
+def read_dat_files(datafolder=raw_data_folder):
     profiles_dict_list = []
     for file in os.listdir(datafolder):
         if os.path.isdir(os.path.join(datafolder, file)):
@@ -55,7 +65,7 @@ def read_dat_files(datafolder="data"):
     return profiles_dict_list
 
 import drawSvg as draw
-def create_image_file(fieldname,profile_dict,datafolder="output",isOpenClose=True):
+def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,isOpenClose=True):
     d = draw.Drawing(100, 100, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:
@@ -67,7 +77,7 @@ def create_image_file(fieldname,profile_dict,datafolder="output",isOpenClose=Tru
 #     d.saveSvg(datafolder+"/"+shape+'.svg')
     d.savePng(datafolder+"/"+shape+'_'+fieldname+'.png')
 
-def get_original_png_files(datafolder="output"):
+def get_original_png_files(datafolder=input_data_folder):
     pngfilenames = []
     for file in os.listdir(datafolder):
         fullpath = os.path.join(datafolder, file)
@@ -112,7 +122,7 @@ def translate_images(pngfilenames, dx=1,dy=1):
         newfilename = fullpath.replace(".png", "_translated_"+str(dx)+"_"+str(dy)+".png")
         translate.save(newfilename)
         
-def read_input_image_pairs(datafolder="output"):
+def read_input_image_pairs(datafolder=input_data_folder):
     profile_pngs = []
     midcurve_pngs = []
     for file in os.listdir(datafolder):
@@ -128,7 +138,7 @@ def read_input_image_pairs(datafolder="output"):
     midcurve_pngs = sorted(midcurve_pngs)
     return profile_pngs,midcurve_pngs
     
-def generate_images(datafolder = "output"):
+def generate_images(datafolder = input_data_folder):
     for file in os.listdir(datafolder):
         if file.endswith(".png") and (file.find("_rotated_") != -1 or file.find("_translated_") !=-1):
             print("files already present, not generating...")
