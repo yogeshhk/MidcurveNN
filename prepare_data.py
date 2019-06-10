@@ -16,7 +16,52 @@ np.set_printoptions(threshold=sys.maxsize)
 
 raw_data_folder = "data/raw"
 input_data_folder = "data/input"
+pix2pix_data_folder = "data/pix2pix/datasets/pix2pix"
 
+def combine_images(imga, imgb):
+	images = map(Image.open, [imga,imgb])
+	widths, heights = zip(*(i.size for i in images))
+	total_width = sum(widths)
+	max_height = max(heights)
+
+	new_im = Image.new('RGB', (total_width, max_height))
+
+	x_offset = 0
+	for im in images:
+	  new_im.paste(im, (x_offset,0))
+	  x_offset += im.size[0]	
+    return new_im
+	
+def get_pix2pix_training_data(inputdatafolder = input_data_folder, pix2pixdatafolder=pix2pix_data_folder):
+    profile_pngs,midcurve_pngs = read_input_image_pairs(inputdatafolder)
+
+    profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in profile_pngs ]
+    midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in midcurve_pngs ]
+	
+    combo_pngs = [combine_images(p,m) for p,m in zip(profile_pngs_objs,midcurve_pngs_objs)]
+	
+#     combo_pngs_objs = np.array([x.reshape((1,) + x.shape) for x in combo_pngs_objs])
+    combo_pngs_gray_objs = [x[:,:,3] for x in combo_pngs_objs]
+#     combo_pngs_gray_objs = [np.where(x>128, 0, 1) for x in combo_pngs_gray_objs]
+        
+    # shufle them
+    shuffle(combo_pngs_gray_objs)
+    train_size = int(len(combo_pngs_gray_objs)*0.6)
+    val_size = int(len(combo_pngs_gray_objs)*0.2)
+	
+    train_combo_files = combo_pngs_gray_objs[:train_size]
+    val_combo_files = combo_pngs_gray_objs[train_size:train_size+val_size]
+    test_combo_files = combo_pngs_gray_objs[train_size+val_size:]
+
+	if not os.path.exists(pix2pix_data_folder):
+		os.makedirs(pix2pix_data_folder)
+		os.makedirs(pix2pix_data_folder+"train")
+		os.makedirs(pix2pix_data_folder+"val")
+		os.makedirs(pix2pix_data_folder+"test")
+    
+	# SAVE into 3 dirs
+    return train_combo_files, val_combo_files,test_combo_files 
+	
 def get_training_data(datafolder = input_data_folder):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
     
