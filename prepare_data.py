@@ -89,7 +89,7 @@ def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafol
     for i, arr in enumerate(val_combo_files):
         img = PIL.Image.fromarray(arr.astype('uint8'))
         img = PIL.ImageOps.invert(img)
-        pix2pixdatafolder+"/val/" + str(i) + ".jpg"
+        filename = pix2pixdatafolder+"/val/" + str(i) + ".jpg"
         img.save(filename)
 
     for i, arr in enumerate(test_combo_files):
@@ -148,8 +148,8 @@ def read_dat_files(datafolder=raw_data_folder):
     return profiles_dict_list
 
 import drawSvg as draw
-def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,isOpenClose=True):
-    d = draw.Drawing(256, 256, origin='center')
+def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,imgsize=100, isOpenClose=True):
+    d = draw.Drawing(imgsize, imgsize, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:
         profilepoints.append(tpl[0])
@@ -235,8 +235,8 @@ def generate_images(datafolder = input_data_folder):
     profiles_dict_list = read_dat_files()
         
     for profile_dict in profiles_dict_list:
-        create_image_file('Profile',profile_dict,datafolder,True)
-        create_image_file('Midcurve',profile_dict,datafolder,False)
+        create_image_file('Profile',profile_dict,datafolder,100,True)
+        create_image_file('Midcurve',profile_dict,datafolder,100,False)
         
     pngfilenames = get_original_png_files(datafolder)
     mirrored_filenames_left_right = mirror_images(pngfilenames, PIL.Image.FLIP_LEFT_RIGHT)
@@ -254,7 +254,7 @@ def generate_images(datafolder = input_data_folder):
             
         
 if __name__ == "__main__":
-#     generate_images()
+    # generate_images()
     # profile_pngs,midcurve_pngs = read_input_image_pairs()
     generate_pix2pix_dataset()
 
