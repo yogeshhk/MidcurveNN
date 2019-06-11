@@ -1,5 +1,4 @@
 **/*.doc*
-**/*.zip
 **/*.pdf
 **/*.xls*
 __pycache__/

@@ -5,63 +5,101 @@
     Multiple variations are populated using image transformations.
     These images become input for further modeling (stored in "data/input/*")
 """
-import os
-from keras.preprocessing.image import img_to_array, load_img
+from keras.preprocessing.image import img_to_array, load_img, array_to_img
 from random import shuffle
 import PIL
+import PIL.ImageOps
 import json
 import numpy as np
+import os
+import shutil
 import sys
 np.set_printoptions(threshold=sys.maxsize)
+
 
 raw_data_folder = "data/raw"
 input_data_folder = "data/input"
 pix2pix_data_folder = "data/pix2pix/datasets/pix2pix"
 
 def combine_images(imga, imgb):
-	images = map(Image.open, [imga,imgb])
-	widths, heights = zip(*(i.size for i in images))
-	total_width = sum(widths)
-	max_height = max(heights)
+    """
+    Combines two color image ndarrays side-by-side.
+    Ref: https://stackoverflow.com/questions/30227466/combine-several-images-horizontally-with-python
+    """
+    ha,wa = imga.shape[:2]
+    hb,wb = imgb.shape[:2]
+    max_height = np.max([ha, hb])
+    total_width = wa+wb
+    new_img = np.zeros(shape=(max_height, total_width))
+    new_img[:ha,:wa]=imga
+    new_img[:hb,wa:wa+wb]=imgb
+    return new_img    
+#     images = map(Image.open, [imga,imgb])
+#     widths, heights = zip(*(i.size for i in images))
+#     total_width = sum(widths)
+#     max_height = max(heights)
+# 
+#     new_im = Image.new('RGB', (total_width, max_height))
+# 
+#     x_offset = 0
+#     for im in images:
+#         new_im.paste(im, (x_offset,0))
+#         x_offset += im.size[0]    
+#     return new_im
+    
+def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafolder=pix2pix_data_folder):
 
-	new_im = Image.new('RGB', (total_width, max_height))
-
-	x_offset = 0
-	for im in images:
-	  new_im.paste(im, (x_offset,0))
-	  x_offset += im.size[0]	
-    return new_im
-	
-def get_pix2pix_training_data(inputdatafolder = input_data_folder, pix2pixdatafolder=pix2pix_data_folder):
     profile_pngs,midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in profile_pngs ]
     midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in midcurve_pngs ]
-	
-    combo_pngs = [combine_images(p,m) for p,m in zip(profile_pngs_objs,midcurve_pngs_objs)]
-	
+    
 #     combo_pngs_objs = np.array([x.reshape((1,) + x.shape) for x in combo_pngs_objs])
-    combo_pngs_gray_objs = [x[:,:,3] for x in combo_pngs_objs]
+    profile_pngs_gray_objs = [x[:,:,3] for x in profile_pngs_objs]
+    midcurve_pngs_gray_objs = [x[:,:,3] for x in midcurve_pngs_objs]
+    
 #     combo_pngs_gray_objs = [np.where(x>128, 0, 1) for x in combo_pngs_gray_objs]
         
-    # shufle them
-    shuffle(combo_pngs_gray_objs)
-    train_size = int(len(combo_pngs_gray_objs)*0.6)
-    val_size = int(len(combo_pngs_gray_objs)*0.2)
-	
-    train_combo_files = combo_pngs_gray_objs[:train_size]
-    val_combo_files = combo_pngs_gray_objs[train_size:train_size+val_size]
-    test_combo_files = combo_pngs_gray_objs[train_size+val_size:]
+    combo_pngs = [combine_images(p,m) for p,m in zip(profile_pngs_gray_objs,midcurve_pngs_gray_objs)]
 
-	if not os.path.exists(pix2pix_data_folder):
-		os.makedirs(pix2pix_data_folder)
-		os.makedirs(pix2pix_data_folder+"train")
-		os.makedirs(pix2pix_data_folder+"val")
-		os.makedirs(pix2pix_data_folder+"test")
+    # shufle them
+    shuffle(combo_pngs)
+    train_size = int(len(combo_pngs)*0.6)
+    val_size = int(len(combo_pngs)*0.2)
     
-	# SAVE into 3 dirs
+    train_combo_files = combo_pngs[:train_size]
+    val_combo_files = combo_pngs[train_size:train_size+val_size]
+    test_combo_files = combo_pngs[train_size+val_size:]
+
+    if os.path.exists(pix2pixdatafolder):
+        shutil.rmtree(pix2pixdatafolder,ignore_errors=True)
+        
+    os.makedirs(pix2pixdatafolder)
+    os.makedirs(pix2pixdatafolder+"/train")
+    os.makedirs(pix2pixdatafolder+"/val")
+    os.makedirs(pix2pixdatafolder+"/test")
+
+    # SAVE into 3 dirs
+    for i, arr in enumerate(train_combo_files):
+        img = PIL.Image.fromarray(arr.astype('uint8'))
+        img = PIL.ImageOps.invert(img)
+        filename = pix2pixdatafolder+"/train/" + str(i) + ".jpg"
+        img.save(filename)
+        
+    for i, arr in enumerate(val_combo_files):
+        img = PIL.Image.fromarray(arr.astype('uint8'))
+        img = PIL.ImageOps.invert(img)
+        pix2pixdatafolder+"/val/" + str(i) + ".jpg"
+        img.save(filename)
+
+    for i, arr in enumerate(test_combo_files):
+        img = PIL.Image.fromarray(arr.astype('uint8'))
+        img = PIL.ImageOps.invert(img)
+        filename = pix2pixdatafolder+"/test/" + str(i) + ".jpg"
+        img.save(filename)
+            
     return train_combo_files, val_combo_files,test_combo_files 
-	
+    
 def get_training_data(datafolder = input_data_folder):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
     
@@ -212,8 +250,8 @@ def generate_images(datafolder = input_data_folder):
             
         
 if __name__ == "__main__":
-    generate_images()
-    profile_pngs,midcurve_pngs = read_input_image_pairs()
-
+    # generate_images()
+    # profile_pngs,midcurve_pngs = read_input_image_pairs()
+    generate_pix2pix_dataset()
 
     
