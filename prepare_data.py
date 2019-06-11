@@ -51,8 +51,8 @@ def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafol
 
     profile_pngs,midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
-    profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in profile_pngs ]
-    midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in midcurve_pngs ]
+    profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(256, 256))) for f in profile_pngs ]
+    midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(256, 256))) for f in midcurve_pngs ]
     
 #     combo_pngs_objs = np.array([x.reshape((1,) + x.shape) for x in combo_pngs_objs])
     profile_pngs_gray_objs = [x[:,:,3] for x in profile_pngs_objs]
@@ -149,7 +149,7 @@ def read_dat_files(datafolder=raw_data_folder):
 
 import drawSvg as draw
 def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,isOpenClose=True):
-    d = draw.Drawing(100, 100, origin='center')
+    d = draw.Drawing(256, 256, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:
         profilepoints.append(tpl[0])
@@ -222,14 +222,18 @@ def read_input_image_pairs(datafolder=input_data_folder):
     return profile_pngs,midcurve_pngs
     
 def generate_images(datafolder = input_data_folder):
-    for file in os.listdir(datafolder):
-        if file.endswith(".png") and (file.find("_rotated_") != -1 or file.find("_translated_") !=-1):
-            print("files already present, not generating...")
-            return
+    
+    if not os.path.exists(datafolder):
+        os.makedirs(datafolder)    
+    else:    
+        for file in os.listdir(datafolder):
+            if file.endswith(".png") and (file.find("_rotated_") != -1 or file.find("_translated_") !=-1):
+                print("files already present, not generating...")
+                return
                 
     print("transformed files not present, generating...")
     profiles_dict_list = read_dat_files()
-    
+        
     for profile_dict in profiles_dict_list:
         create_image_file('Profile',profile_dict,datafolder,True)
         create_image_file('Midcurve',profile_dict,datafolder,False)
@@ -250,7 +254,7 @@ def generate_images(datafolder = input_data_folder):
             
         
 if __name__ == "__main__":
-    # generate_images()
+#     generate_images()
     # profile_pngs,midcurve_pngs = read_input_image_pairs()
     generate_pix2pix_dataset()
 
