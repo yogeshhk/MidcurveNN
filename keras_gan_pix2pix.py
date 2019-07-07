@@ -1,21 +1,12 @@
 # Original : https://github.com/eriklindernoren/Keras-GAN/tree/master/pix2pix
 from __future__ import print_function, division
-import scipy
 
-from keras.datasets import mnist
-from keras_contrib.layers.normalization.instancenormalization import InstanceNormalization
-from keras.layers import Input, Dense, Reshape, Flatten, Dropout, Concatenate
-from keras.layers import BatchNormalization, Activation, ZeroPadding2D
-from keras.layers.advanced_activations import LeakyReLU
-from keras.layers.convolutional import UpSampling2D, Conv2D
-from keras.models import Sequential, Model
-from keras.optimizers import Adam
 import datetime
 import matplotlib.pyplot as plt
-import sys
 from keras_gan_data_loader import DataLoader
 import numpy as np
 import os
+import tensorflow as tf
 
 # from keras import backend as K
 # import tensorflow as tf
@@ -32,18 +23,16 @@ import os
 # K.set_session(session)
 
 class Pix2Pix():
-    def __init__(self, dataset_path, datasetname =  'facades', rowpixels = 256, colpixles = 256, colorchannels = 3):
+    def __init__(self):
         # Input shape
-        self.img_rows = rowpixels
-        self.img_cols = colpixles
-        self.channels = colorchannels
+        self.img_rows = 256
+        self.img_cols = 256
+        self.channels = 1
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
 
         # Configure data loader
-        self.dataset_name = datasetname
-        self.dataset_path = dataset_path
-		
-        self.data_loader = DataLoader(self.dataset_path,dataset_name=self.dataset_name,
+        self.dataset_name = 'pix2pix'
+        self.data_loader = DataLoader(dataset_name=self.dataset_name,
                                       img_res=(self.img_rows, self.img_cols))
 
 
@@ -52,10 +41,10 @@ class Pix2Pix():
         self.disc_patch = (patch, patch, 1)
 
         # Number of filters in the first layer of G and D
-        self.gf = int(rowpixels/4) # 64
-        self.df = int(rowpixels/4) # 64
+        self.gf = int(self.img_rows/4) # 64
+        self.df = int(self.img_rows/4) # 64
 
-        optimizer = Adam(0.0002, 0.5)
+        optimizer = tf.keras.optimizers.Adam(0.0002, 0.5)
 
         # Build and compile the discriminator
         self.discriminator = self.build_discriminator()
@@ -72,19 +61,19 @@ class Pix2Pix():
         self.generator = self.build_generator()
 
         # Input images and their conditioning images
-        img_A = Input(shape=self.img_shape)
-        img_B = Input(shape=self.img_shape)
+        img_A = tf.keras.layers.Input(shape=self.img_shape)
+        img_B = tf.keras.layers.Input(shape=self.img_shape)
 
-        # By conditioning on B generate a fake version of A
-        fake_A = self.generator(img_B)
-
+        #By conditioning on A generate a fake version of B
+        fake_B = self.generator(img_A)
+        
         # For the combined model we will only train the generator
         self.discriminator.trainable = False
 
         # Discriminators determines validity of translated images / condition pairs
-        valid = self.discriminator([fake_A, img_B])
+        valid = self.discriminator([img_A, fake_B])
 
-        self.combined = Model(inputs=[img_A, img_B], outputs=[valid, fake_A])
+        self.combined = tf.keras.models.Model(inputs=[img_A, img_B], outputs=[valid, fake_B])
         self.combined.compile(loss=['mse', 'mae'],
                               loss_weights=[1, 100],
                               optimizer=optimizer)
@@ -94,24 +83,24 @@ class Pix2Pix():
 
         def conv2d(layer_input, filters, f_size=4, bn=True):
             """Layers used during downsampling"""
-            d = Conv2D(filters, kernel_size=f_size, strides=2, padding='same')(layer_input)
-            d = LeakyReLU(alpha=0.2)(d)
+            d = tf.keras.layers.Conv2D(filters, kernel_size=f_size, strides=2, padding='same')(layer_input)
+            d = tf.keras.layers.LeakyReLU(alpha=0.2)(d)
             if bn:
-                d = BatchNormalization(momentum=0.8)(d)
+                d = tf.keras.layers.BatchNormalization(momentum=0.8)(d)
             return d
 
         def deconv2d(layer_input, skip_input, filters, f_size=4, dropout_rate=0):
             """Layers used during upsampling"""
-            u = UpSampling2D(size=2)(layer_input)
-            u = Conv2D(filters, kernel_size=f_size, strides=1, padding='same', activation='relu')(u)
+            u = tf.keras.layers.UpSampling2D(size=2)(layer_input)
+            u = tf.keras.layers.Conv2D(filters, kernel_size=f_size, strides=1, padding='same', activation='relu')(u)
             if dropout_rate:
-                u = Dropout(dropout_rate)(u)
-            u = BatchNormalization(momentum=0.8)(u)
-            u = Concatenate()([u, skip_input])
+                u = tf.keras.layers.Dropout(dropout_rate)(u)
+            u = tf.keras.layers.BatchNormalization(momentum=0.8)(u)
+            u = tf.keras.layers.Concatenate()([u, skip_input])
             return u
 
         # Image input
-        d0 = Input(shape=self.img_shape)
+        d0 = tf.keras.layers.Input(shape=self.img_shape)
 
         # Downsampling
         d1 = conv2d(d0, self.gf, bn=False)
@@ -130,38 +119,37 @@ class Pix2Pix():
         u5 = deconv2d(u4, d2, self.gf*2)
         u6 = deconv2d(u5, d1, self.gf)
 
-        u7 = UpSampling2D(size=2)(u6)
-        output_img = Conv2D(self.channels, kernel_size=4, strides=1, padding='same', activation='tanh')(u7)
+        u7 = tf.keras.layers.UpSampling2D(size=2)(u6)
+        output_img = tf.keras.layers.Conv2D(self.channels, kernel_size=4, strides=1, padding='same', activation='tanh')(u7)
 
-        return Model(d0, output_img)
+        return tf.keras.models.Model(d0, output_img)
 
     def build_discriminator(self):
 
         def d_layer(layer_input, filters, f_size=4, bn=True):
             """Discriminator layer"""
-            d = Conv2D(filters, kernel_size=f_size, strides=2, padding='same')(layer_input)
-            d = LeakyReLU(alpha=0.2)(d)
+            d = tf.keras.layers.Conv2D(filters, kernel_size=f_size, strides=2, padding='same')(layer_input)
+            d = tf.keras.layers.LeakyReLU(alpha=0.2)(d)
             if bn:
-                d = BatchNormalization(momentum=0.8)(d)
+                d = tf.keras.layers.BatchNormalization(momentum=0.8)(d)
             return d
 
-        img_A = Input(shape=self.img_shape)
-        img_B = Input(shape=self.img_shape)
+        img_A = tf.keras.layers.Input(shape=self.img_shape)
+        img_B = tf.keras.layers.Input(shape=self.img_shape)
 
         # Concatenate image and conditioning image by channels to produce input
-        combined_imgs = Concatenate(axis=-1)([img_A, img_B])
+        combined_imgs = tf.keras.layers.Concatenate(axis=-1)([img_A, img_B])
 
         d1 = d_layer(combined_imgs, self.df, bn=False)
         d2 = d_layer(d1, self.df*2)
         d3 = d_layer(d2, self.df*4)
         d4 = d_layer(d3, self.df*8)
 
-        validity = Conv2D(1, kernel_size=4, strides=1, padding='same')(d4)
+        validity = tf.keras.layers.Conv2D(1, kernel_size=4, strides=1, padding='same')(d4)
 
-        return Model([img_A, img_B], validity)
+        return tf.keras.models.Model([img_A, img_B], validity)
 
     def train(self, epochs, batch_size=1, sample_interval=50):
-
         start_time = datetime.datetime.now()
 
         # Adversarial loss ground truths
@@ -170,17 +158,16 @@ class Pix2Pix():
 
         for epoch in range(epochs):
             for batch_i, (imgs_A, imgs_B) in enumerate(self.data_loader.load_batch(batch_size)):
-
                 # ---------------------
                 #  Train Discriminator
                 # ---------------------
 
-                # Condition on B and generate a translated version
-                fake_A = self.generator.predict(imgs_B)
+                #Condition on A and generate a translated version
+                fake_B = self.generator.predict(imgs_A)
 
                 # Train the discriminators (original images = real / generated = Fake)
                 d_loss_real = self.discriminator.train_on_batch([imgs_A, imgs_B], valid)
-                d_loss_fake = self.discriminator.train_on_batch([fake_A, imgs_B], fake)
+                d_loss_fake = self.discriminator.train_on_batch([imgs_A, fake_B], fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
                 # -----------------
@@ -188,7 +175,7 @@ class Pix2Pix():
                 # -----------------
 
                 # Train the generators
-                g_loss = self.combined.train_on_batch([imgs_A, imgs_B], [valid, imgs_A])
+                g_loss = self.combined.train_on_batch([imgs_A, imgs_B], [valid, imgs_B])
 
                 elapsed_time = datetime.datetime.now() - start_time
                 # Plot the progress
@@ -203,13 +190,13 @@ class Pix2Pix():
                     self.sample_images(epoch, batch_i)
 
     def sample_images(self, epoch, batch_i):
-        os.makedirs(self.dataset_path + 'images/%s' % self.dataset_name, exist_ok=True)
+        os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
         r, c = 3, 3
 
         imgs_A, imgs_B = self.data_loader.load_data(batch_size=3, is_testing=True)
-        fake_A = self.generator.predict(imgs_B)
+        fake_B = self.generator.predict(imgs_A)
 
-        gen_imgs = np.concatenate([imgs_B, fake_A, imgs_A])
+        gen_imgs = np.concatenate([imgs_A, fake_B, imgs_B])
 
         # Rescale images 0 - 1
         gen_imgs = 0.5 * gen_imgs + 0.5
@@ -219,13 +206,12 @@ class Pix2Pix():
         cnt = 0
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt])
+                axs[i,j].imshow(gen_imgs[cnt][:,:,0], cmap='gray')
                 axs[i, j].set_title(titles[i])
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig(self.dataset_path  + "images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
+        fig.savefig("images/%s/%d_%d.png" % (self.dataset_name, epoch, batch_i))
         plt.close()
-
 
 if __name__ == '__main__':
     gan = Pix2Pix()
