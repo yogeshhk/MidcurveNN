@@ -100,11 +100,11 @@ def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafol
             
     return train_combo_files, val_combo_files,test_combo_files 
     
-def get_training_data(datafolder = input_data_folder):
+def get_training_data(datafolder = input_data_folder, size=(100, 100)):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
     
-    profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in profile_pngs ]
-    midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(100, 100))) for f in midcurve_pngs]
+    profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size)) for f in profile_pngs ]
+    midcurve_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size)) for f in midcurve_pngs]
 
 #     profile_pngs_objs = np.array([x.reshape((1,) + x.shape) for x in profile_pngs_objs])
 #     midcurve_pngs_objs = np.array([x.reshape((1,) + x.shape) for x in midcurve_pngs_objs])

@@ -1,32 +1,45 @@
 # Original : https://github.com/eriklindernoren/Keras-GAN/tree/master/pix2pix
-import scipy
 from glob import glob
 import numpy as np
-import matplotlib.pyplot as plt
-datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
+import imageio
+
+#datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
+
 class DataLoader():
-    def __init__(self, dataset_path, dataset_name, img_res=(128, 128)):
+    def __init__(self, dataset_name, img_res=(256, 256)):
         self.dataset_name = dataset_name
-        self.dataset_path = dataset_path
         self.img_res = img_res
+        
+    def binarize(self, image):
+        h, w = image.shape
+        for i in range(h):
+          for j in range(w):
+              if image[i][j] <= 192:
+                image[i][j] = 0
+        return image
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob(self.dataset_path + 'datasets/%s/%s/*' % (self.dataset_name, data_type))
-
+        path = glob('data/%s/datasets/%s/%s/*' % (self.dataset_name, self.dataset_name, data_type))
+        #path = glob(PATH + '%s/*' % (data_type))
         batch_images = np.random.choice(path, size=batch_size)
 
         imgs_A = []
         imgs_B = []
         for img_path in batch_images:
             img = self.imread(img_path)
-
+            img = self.binarize(img)
+            img = np.expand_dims(img, axis=-1)
             h, w, _ = img.shape
             _w = int(w/2)
             img_A, img_B = img[:, :_w, :], img[:, _w:, :]
 
-            img_A = scipy.misc.imresize(img_A, self.img_res)
-            img_B = scipy.misc.imresize(img_B, self.img_res)
+            #  img_A = scipy.misc.imresize(img_A, self.img_res)
+            #  img_A = np.array(Img.fromarray(img_A).resize(self.img_res))
+            #img_A = np.array(skimage.transform.resize(img_A,self.img_res))
+            #  img_B = scipy.misc.imresize(img_B, self.img_res)
+            #  img_B = np.array(Img.fromarray(img_B).resize(self.img_res))
+            #img_B = np.array(skimage.transform.resize(img_B,self.img_res))
 
             # If training => do random flip
             if not is_testing and np.random.random() < 0.5:
@@ -43,8 +56,8 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob(self.dataset_path + 'datasets/%s/%s/*' % (self.dataset_name, data_type))
-
+        path = glob('data/%s/datasets/%s/%s/*' % (self.dataset_name, self.dataset_name, data_type))
+        #path = glob(PATH + '%s/*' % (data_type))
         self.n_batches = int(len(path) / batch_size)
 
         for i in range(self.n_batches-1):
@@ -52,13 +65,19 @@ class DataLoader():
             imgs_A, imgs_B = [], []
             for img in batch:
                 img = self.imread(img)
+                img = self.binarize(img)
+                img = np.expand_dims(img, axis=-1)
                 h, w, _ = img.shape
                 half_w = int(w/2)
                 img_A = img[:, :half_w, :]
                 img_B = img[:, half_w:, :]
 
-                img_A = scipy.misc.imresize(img_A, self.img_res)
-                img_B = scipy.misc.imresize(img_B, self.img_res)
+                #  img_A = scipy.misc.imresize(img_A, self.img_res)
+                #  img_A = np.array(Img.fromarray(img_A).resize(self.img_res))
+                #img_A = np.array(skimage.transform.resize(img_A,self.img_res))
+                #  img_B = scipy.misc.imresize(img_B, self.img_res)
+                #  img_B = np.array(Img.fromarray(img_B).resize(self.img_res))
+                #img_B = np.array(skimage.transform.resize(img_B,self.img_res))
 
                 if not is_testing and np.random.random() > 0.5:
                         img_A = np.fliplr(img_A)
@@ -74,4 +93,4 @@ class DataLoader():
 
 
     def imread(self, path):
-        return scipy.misc.imread(path, mode='RGB').astype(np.float)
+        return imageio.imread(path).astype(np.float)
