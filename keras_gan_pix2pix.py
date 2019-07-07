@@ -202,7 +202,7 @@ class Pix2Pix():
         gen_imgs = 0.5 * gen_imgs + 0.5
 
         titles = ['Condition', 'Generated', 'Original']
-        fig, axs = plt.subplots(r, c)
+        fig, axs = plt.subplots(r, c, figsize=(15,15))
         cnt = 0
         for i in range(r):
             for j in range(c):
