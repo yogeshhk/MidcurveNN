@@ -1,0 +1,15 @@
+name: midcurvenn
+channels:
+  - defaults
+dependencies:
+  - certifi=2019.6.16=py36_0
+  - pip=19.1.1=py36_0
+  - python=3.6.8=h9f7ef89_7
+  - setuptools=41.0.1=py36_0
+  - sqlite=3.28.0=he774522_0
+  - vc=14.1=h0510ff6_4
+  - vs2015_runtime=14.15.26706=h3a45250_4
+  - wheel=0.33.4=py36_0
+  - wincertstore=0.2=py36h7fe50ca_0
+prefix: C:\Users\yogesh.kulkarni\AppData\Local\Continuum\anaconda3\envs\midcurvenn
+
