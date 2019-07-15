@@ -6,11 +6,11 @@ import numpy as np
 import sys
 np.set_printoptions(threshold=sys.maxsize)
 
-class simple_encoderdecoder:
+class simple_encoderdecoder_w_denoiser:
 	def __init__(self):
 		pass
 		
-	def build_simple_encoderdecoder_model(self,
+	def build_simple_encoderdecoder_w_denoiser_model(self,
 										profile_pngs_gray_objs, 
 										midcurve_pngs_gray_objs, 
 										encoding_dim = 100, 
@@ -66,6 +66,6 @@ class simple_encoderdecoder:
 
 if __name__ == "__main__":
     profile_pngs_objs, midcurve_pngs_objs = get_training_data()
-	endec = simple_encoderdecoder()
-    original_imgs,decoded_imgs = endec.build_simple_encoderdecoder_model(profile_pngs_objs, midcurve_pngs_objs)
+	endec = simple_encoderdecoder_w_denoiser()
+    original_imgs,decoded_imgs = endec.simple_encoderdecoder_w_denoiser(profile_pngs_objs, midcurve_pngs_objs)
     plot_results(original_imgs,decoded_imgs)
