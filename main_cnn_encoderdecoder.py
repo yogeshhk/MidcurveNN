@@ -1,6 +1,6 @@
 from prepare_data import get_training_data
 from prepare_plots import plot_results
-from build_cnn_autoencoder_model import build_cnn_autoencoder_model
+from build_cnn_encoderdecoder_model import build_cnn_encoderdecoder_model
 
 import numpy as np
 
@@ -32,5 +32,5 @@ if __name__ == "__main__":
     
     profile_pngs = np.asarray(profile_pngs)
     
-    original_imgs,decoded_imgs = build_cnn_autoencoder_model(profile_pngs, midcurve_pngs_objs)
+    original_imgs,decoded_imgs = build_cnn_encoderdecoder_model(profile_pngs, midcurve_pngs_objs)
     plot_results(original_imgs,decoded_imgs)
