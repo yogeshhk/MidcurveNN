@@ -3,7 +3,7 @@ import matplotlib
 matplotlib.use('TKAgg')
 
 def plot_results(original_imgs,computed_imgs):
-    n = 10  # how many digits we will display
+    n = len(original_imgs)#10  # how many digits we will display
     plt.figure(figsize=(20, 4))
     for i in range(n):
         # display original
