@@ -12,7 +12,7 @@ class dense_encoderdecoder:
     def __init__(self):
         self.encoding_dim = 100
         self.input_dim = 10000
-        self.epochs = 5
+        self.epochs = 50
         self.autoencoder_model_pkl = "models/dense_autoencoder_model.pkl"
         self.encoder_model_pkl = "models/dense_encoder_model.pkl"
         self.decoder_model_pkl = "models/dense_decoder_model.pkl"
@@ -30,13 +30,13 @@ class dense_encoderdecoder:
             input_img = Input(shape=(self.input_dim,))
             
             # "encoded" is the encoded representation of the input
-            encoded = Dense(self.encoding_dim, activation='relu')(input_img)
-            encoded = Dense(100, activation='relu')(encoded)
-            encoded = Dense(50, activation='relu')(encoded)
+            encoded = Dense(self.input_dim, activation='relu')(input_img)
+            encoded = Dense(self.input_dim, activation='relu')(encoded)
+            encoded = Dense(self.encoding_dim, activation='relu')(encoded)
             
             # "decoded" is the lossy reconstruction of the input
-            decoded = Dense(50, activation='relu')(encoded)
-            decoded = Dense(100, activation='relu')(decoded)
+            decoded = Dense(self.encoding_dim, activation='relu')(encoded)
+            decoded = Dense(self.input_dim, activation='relu')(decoded)
             decoded = Dense(self.input_dim, activation='sigmoid')(decoded) 
             
             # Model 1: Full AutoEncoder, includes both encoder single dense layer and decoder single dense layer. 
@@ -50,8 +50,8 @@ class dense_encoderdecoder:
             # Model 3: a separate encoder model: -------------------
             # create a placeholder for an encoded (32-dimensional) input
             encoded_input = Input(shape=(self.encoding_dim,))
-            # retrieve the last layer of the autoencoder model
-            decoder_layer = self.autoencoder.layers[-1]
+            # retrieve the last to last layer of the autoencoder model
+            decoder_layer = self.autoencoder.layers[-2]
             # create the decoder model
             self.decoder = Model(encoded_input, decoder_layer(encoded_input))            
                     
