@@ -3,8 +3,10 @@ from prepare_plots import plot_results
 from build_simple_encoderdecoder_model import simple_encoderdecoder
 
 if __name__ == "__main__":
-    profile_pngs_objs, midcurve_pngs_objs = get_training_data()
+    profile_gray_objs, midcurve_gray_objs = get_training_data()
     endec = simple_encoderdecoder()
-    endec.train(profile_pngs_objs, midcurve_pngs_objs)
-    original_imgs,decoded_imgs = endec.predict()
-    plot_results(original_imgs,decoded_imgs)
+    endec.train(profile_gray_objs, midcurve_gray_objs)
+    
+    test_gray_images = profile_gray_objs[:5]
+    original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_gray_images)
+    plot_results(original_profile_imgs,predicted_midcurve_imgs)
