@@ -9,7 +9,7 @@ np.set_printoptions(threshold=sys.maxsize)
 from keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
 from keras import backend as K
 
-def build_cnn_autoencoder_model(profile_pngs_gray_objs, midcurve_pngs_gray_objs,encoding_dim = 100, input_dim = 128):
+def build_cnn_encoderdecoder_model(profile_pngs_gray_objs, midcurve_pngs_gray_objs,encoding_dim = 100, input_dim = 128):
     
     input_img = Input(shape=(input_dim, input_dim, 3))  # adapt this if using `channels_first` image data format
     
@@ -76,7 +76,7 @@ def build_cnn_autoencoder_model(profile_pngs_gray_objs, midcurve_pngs_gray_objs,
         
     return x_test,decoded_imgs
 
-# def train_autoencoder_model(autoencoder,profile_pngs_objs, midcurve_pngs_objs):
+# def train_encoderdecoder_model(autoencoder,profile_pngs_objs, midcurve_pngs_objs):
 #     train_size = int(len(profile_pngs_objs)*0.7)
 #     x_train = profile_pngs_objs[:train_size]
 #     y_train = midcurve_pngs_objs[:train_size]

@@ -6,7 +6,7 @@ import numpy as np
 import sys
 np.set_printoptions(threshold=sys.maxsize)
 
-def build_simple_autoencoder_model(profile_pngs_gray_objs, midcurve_pngs_gray_objs, encoding_dim = 100, input_dim = 10000):
+def build_simple_encoderdecoder_model(profile_pngs_gray_objs, midcurve_pngs_gray_objs, encoding_dim = 100, input_dim = 10000):
     # this is our input placeholder
     input_img = Input(shape=(input_dim,))
     
