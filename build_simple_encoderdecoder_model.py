@@ -6,7 +6,8 @@ from prepare_plots import plot_results
 import os
 import numpy as np
 import sys
-from tensorflow.contrib.gan.python.eval.python.classifier_metrics_impl import preprocess_image
+import random
+
 np.set_printoptions(threshold=sys.maxsize)
 
 class simple_encoderdecoder:
@@ -65,17 +66,23 @@ class simple_encoderdecoder:
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs)
             midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs)
             
-            train_size = int(len(profile_pngs_objs)*0.7)
-            self.x_train = profile_pngs_objs[:train_size]
-            self.y_train = midcurve_pngs_objs[:train_size]
-            self.x_test = profile_pngs_objs[train_size:]
-            self.y_test = midcurve_pngs_objs[train_size:]
-            self.autoencoder.fit(self.x_train, self.y_train,
+#             train_size = int(len(profile_pngs_objs)*0.7)
+#             self.x_train = profile_pngs_objs[:train_size]
+#             self.y_train = midcurve_pngs_objs[:train_size]
+#             self.x_test = profile_pngs_objs[train_size:]
+#             self.y_test = midcurve_pngs_objs[train_size:]
+#             self.autoencoder.fit(self.x_train, self.y_train,
+#                         epochs=self.epochs,
+#                         batch_size=5,
+#                         shuffle=True,
+#                         validation_data=(self.x_test, self.y_test))
+                
+            self.x = profile_pngs_objs
+            self.y = midcurve_pngs_objs
+            self.autoencoder.fit(self.x, self.y,
                         epochs=self.epochs,
                         batch_size=5,
-                        shuffle=True,
-                        validation_data=(self.x_test, self.y_test))
-                
+                        shuffle=True)                
             # Save models
             self.autoencoder.save(self.autoencoder_model_pkl)
             self.encoder.save(self.encoder_model_pkl)
@@ -97,6 +104,6 @@ if __name__ == "__main__":
     endec = simple_encoderdecoder()
     endec.train(profile_gray_objs, midcurve_gray_objs)
     
-    test_gray_images = profile_gray_objs[:5]
+    test_gray_images = random.sample(profile_gray_objs,5)
     original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_gray_images)
     plot_results(original_profile_imgs,predicted_midcurve_imgs)
