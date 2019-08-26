@@ -65,7 +65,13 @@ of the License, or any later version.
 	* Github Keras-GAN code https://github.com/eriklindernoren/Keras-GAN/tree/master/pix2pix
 	* Same Keras-GAN code in notebook format https://www.kaggle.com/vikramtiwari/pix-2-pix-model-using-tensorflow-and-keras/notebook
 	* Google Colab based code (different from Keras-GAN) https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/r2/tutorials/generative/pix2pix.ipynb
-	* 
+
+## ToDOs
+*  Get Denoiser working in .py and .ipynb 
+*  Get cnn working in .py and .ipynb 
+*  Get pix2pix working in .py and .ipynb
+*  Generate more data from more profiles
+
 ## References
 * Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/
 
