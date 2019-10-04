@@ -1,9 +1,9 @@
 import sys
 sys.path.append('..')
-from common.utils import get_training_data
-from common.utils import plot_results
+from utils.utils import get_training_data
+from utils.utils import plot_results
 
-from build_dense_encoderdecoder_model import dense_encoderdecoder
+from core.denseencoderdecoder.build_dense_encoderdecoder_model import dense_encoderdecoder
 import random
 import numpy as np
 

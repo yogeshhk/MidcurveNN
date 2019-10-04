@@ -10,8 +10,8 @@ import sys
 import random
 
 sys.path.append('..')
-from common.utils import get_training_data
-from common.utils import plot_results
+from utils.utils import get_training_data
+from utils.utils import plot_results
 
 np.set_printoptions(threshold=sys.maxsize)
 

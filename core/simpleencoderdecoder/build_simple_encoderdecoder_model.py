@@ -20,7 +20,7 @@ class simple_encoderdecoder:
     def __init__(self):
         self.encoding_dim = 100
         self.input_dim = 10000
-        self.epochs = 100
+        self.epochs = 10
         self.autoencoder_model_pkl = "models/autoencoder_model.pkl"
         self.encoder_model_pkl = "models/encoder_model.pkl"
         self.decoder_model_pkl = "models/decoder_model.pkl"

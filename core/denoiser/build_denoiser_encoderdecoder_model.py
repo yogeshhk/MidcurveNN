@@ -3,9 +3,9 @@ from keras.models import Model, load_model
 from keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
 from keras import backend as K
 from keras import regularizers
-from build_simple_encoderdecoder_model import simple_encoderdecoder
-from prepare_data import get_training_data
-from prepare_plots import plot_results
+from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
+from utils.prepare_data import get_training_data
+from utils.prepare_plots import plot_results
 import os
 import numpy as np
 import random
@@ -16,7 +16,7 @@ class denoiser_encoderdecoder:
 	def __init__(self):
 		self.encoding_dim = 100
 		self.input_dim = 100
-		self.epochs = 50
+		self.epochs = 5
 		self.denoiser_autoencoder_model_pkl = "models/denoiser_autoencoder_model.pkl"
 
 				
