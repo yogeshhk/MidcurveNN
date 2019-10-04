@@ -1,13 +1,13 @@
 from keras.preprocessing.image import img_to_array, load_img, array_to_img
 from random import shuffle
-import PIL
-import PIL.ImageOps
-import json
+# import PIL
+# import PIL.ImageOps
+# import json
 import numpy as np
 import os
-import shutil
+# import shutil
 import sys
-import cv2
+# import cv2
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -15,11 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 matplotlib.use('TKAgg')
-BASE_DIR = 'D:/dev/MidcurveNN/'
-
-raw_data_folder = BASE_DIR + "data/old/raw"
-input_data_folder = BASE_DIR + "data/old/input/"
-pix2pix_data_folder = BASE_DIR + "data/old/pix2pix"
+from config import *
 
 def plot_results(original_imgs,computed_imgs,size=(100,100)):
     n = len(original_imgs)#10  # how many digits we will display
@@ -40,7 +36,7 @@ def plot_results(original_imgs,computed_imgs,size=(100,100)):
         ax.get_yaxis().set_visible(False)
     plt.show()
 
-def read_input_image_pairs(datafolder=input_data_folder):
+def read_input_image_pairs(datafolder=INPUT_DATA_FOLDER):
     profile_pngs = []
     midcurve_pngs = []
     for file in os.listdir(datafolder):
@@ -56,7 +52,7 @@ def read_input_image_pairs(datafolder=input_data_folder):
     midcurve_pngs = sorted(midcurve_pngs)
     return profile_pngs,midcurve_pngs
 
-def get_training_data(datafolder = input_data_folder, size=(100, 100)):
+def get_training_data(datafolder = INPUT_DATA_FOLDER, size=(100, 100)):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
  
  

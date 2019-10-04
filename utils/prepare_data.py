@@ -14,13 +14,9 @@ import numpy as np
 import os
 import shutil
 import sys
+from config import *
 np.set_printoptions(threshold=sys.maxsize)
 
-BASE_DIR = 'D:/dev/MidcurveNN/'
-
-raw_data_folder = BASE_DIR + "data/old/raw"
-input_data_folder = BASE_DIR + "data/old/input"
-pix2pix_data_folder = BASE_DIR + "data/old/pix2pix"
 
 def combine_images(imga, imgb):
     """
@@ -48,7 +44,7 @@ def combine_images(imga, imgb):
 #         x_offset += im.size[0]    
 #     return new_im
     
-def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafolder=pix2pix_data_folder):
+def generate_pix2pix_dataset(inputdatafolder = INPUT_DATA_FOLDER, pix2pixdatafolder=PIX2PIX_DATA_FOLDER):
 
     profile_pngs,midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
@@ -101,7 +97,7 @@ def generate_pix2pix_dataset(inputdatafolder = input_data_folder, pix2pixdatafol
             
     return train_combo_files, val_combo_files,test_combo_files 
     
-def get_training_data(datafolder = input_data_folder, size=(100, 100)):
+def get_training_data(datafolder = INPUT_DATA_FOLDER, size=(100, 100)):
     profile_pngs,midcurve_pngs = read_input_image_pairs(datafolder)
     
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size)) for f in profile_pngs ]
@@ -131,7 +127,7 @@ def get_profile_dict(shapename,profiles_dict_list):
     profile_dict['ShapeName'] = shapename
     return profile_dict
 
-def read_dat_files(datafolder=raw_data_folder):
+def read_dat_files(datafolder=RAW_DATA_FOLDER):
     profiles_dict_list = []
     for file in os.listdir(datafolder):
         if os.path.isdir(os.path.join(datafolder, file)):
@@ -149,7 +145,7 @@ def read_dat_files(datafolder=raw_data_folder):
     return profiles_dict_list
 
 import drawSvg as draw
-def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,imgsize=100, isOpenClose=True):
+def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, imgsize=100, isOpenClose=True):
     d = draw.Drawing(imgsize, imgsize, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:
@@ -161,7 +157,7 @@ def create_image_file(fieldname,profile_dict,datafolder=input_data_folder,imgsiz
 #     d.saveSvg(datafolder+"/"+shape+'.svg')
     d.savePng(datafolder+"/"+shape+'_'+fieldname+'.png')
 
-def get_original_png_files(datafolder=input_data_folder):
+def get_original_png_files(datafolder=INPUT_DATA_FOLDER):
     pngfilenames = []
     for file in os.listdir(datafolder):
         fullpath = os.path.join(datafolder, file)
@@ -206,7 +202,7 @@ def translate_images(pngfilenames, dx=1,dy=1):
         newfilename = fullpath.replace(".png", "_translated_"+str(dx)+"_"+str(dy)+".png")
         translate.save(newfilename)
         
-def read_input_image_pairs(datafolder=input_data_folder):
+def read_input_image_pairs(datafolder=INPUT_DATA_FOLDER):
     profile_pngs = []
     midcurve_pngs = []
     for file in os.listdir(datafolder):
@@ -222,7 +218,7 @@ def read_input_image_pairs(datafolder=input_data_folder):
     midcurve_pngs = sorted(midcurve_pngs)
     return profile_pngs,midcurve_pngs
     
-def generate_images(datafolder = input_data_folder):
+def generate_images(datafolder = INPUT_DATA_FOLDER):
     
     if not os.path.exists(datafolder):
         os.makedirs(datafolder)    
