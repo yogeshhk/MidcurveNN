@@ -1,6 +1,6 @@
-from prepare_data import get_training_data
-from prepare_plots import plot_results
-from build_simple_encoderdecoder_model import simple_encoderdecoder
+from utils.prepare_data import get_training_data
+from utils.prepare_plots import plot_results
+from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 import random
 
 if __name__ == "__main__":
