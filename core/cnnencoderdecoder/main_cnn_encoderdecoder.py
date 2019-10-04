@@ -1,9 +1,9 @@
 import sys
 sys.path.append('..')
-from common.utils import get_training_data
-from common.utils import plot_results
+from utils.utils import get_training_data
+from utils.utils import plot_results
 
-from build_cnn_encoderdecoder_model import cnn_encoderdecoder
+from core.cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
 
 import numpy as np
 import random

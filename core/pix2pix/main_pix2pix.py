@@ -1,7 +1,8 @@
-from keras_gan_pix2pix import Pix2Pix
+from core.pix2pix.keras_gan_pix2pix import Pix2Pix
+from config import *
 
 if __name__ == "__main__":
-    datasetpath = "data/pix2pix/"
+    datasetpath = PIX2PIX_DATA_FOLDER
     datasetname = "pix2pix"
     rowpixels = 256
     colpixles = 256
