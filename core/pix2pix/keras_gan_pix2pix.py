@@ -7,6 +7,7 @@ from keras_gan_data_loader import DataLoader
 import numpy as np
 import os
 import tensorflow as tf
+from config import *
 
 # from keras import backend as K
 # import tensorflow as tf
@@ -215,4 +216,4 @@ class Pix2Pix():
 
 if __name__ == '__main__':
     gan = Pix2Pix()
-    gan.train(epochs=5, batch_size=1, sample_interval=200)
+    gan.train(epochs=1, batch_size=1, sample_interval=200)

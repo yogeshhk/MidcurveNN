@@ -60,7 +60,6 @@ class simple_encoderdecoder:
             self.decoder = Model(encoded_input, decoder_layer(encoded_input))
             
             # Compilation of Autoencoder (only)
-
             self.autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
             
 #             # Training
@@ -108,7 +107,6 @@ class simple_encoderdecoder:
            
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data()
-
     test_gray_images = random.sample(profile_gray_objs,5)
 
     profile_gray_objs = np.asarray(profile_gray_objs)/255.

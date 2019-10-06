@@ -13,7 +13,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from train import init
 
-
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
 def generate_test_results(generator_stage1, generator_stage2, data_path, interpolation):
@@ -95,6 +94,5 @@ if __name__ == "__main__":
     generators[0].load_weights('weights/stage1/5_gen_epochs.h5')
     generators[1].load_weights('weights/stage2/2_gen_epochs.h5')
     
-
     generate_test_results(generators[0],generators[1],BASE_DIR + 'data/test/',None)
     

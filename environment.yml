@@ -55,3 +55,4 @@ dependencies:
     - werkzeug==0.15.6
     - wrapt==1.11.2
 prefix: C:\Users\yogesh.kulkarni\AppData\Local\Continuum\anaconda3\envs\midcurvenn
+
