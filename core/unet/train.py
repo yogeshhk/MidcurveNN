@@ -124,7 +124,8 @@ if __name__ == "__main__":
 	width = 256
 	batch_size = 16
 
-	epochs = 10
+
+	epochs = 1
 
 	data_gen = datagen(batch_size , height , width)
 	

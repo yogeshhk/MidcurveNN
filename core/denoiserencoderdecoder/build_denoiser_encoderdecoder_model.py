@@ -16,7 +16,8 @@ class denoiser_encoderdecoder:
 	def __init__(self):
 		self.encoding_dim = 100
 		self.input_dim = 100
-		self.epochs = 50
+
+		self.epochs = 5
 		self.denoiser_autoencoder_model_pkl = "models/denoiser_autoencoder_model.pkl"
 
 				
