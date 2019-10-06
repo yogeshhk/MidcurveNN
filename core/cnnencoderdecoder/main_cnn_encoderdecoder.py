@@ -1,5 +1,9 @@
 import sys
+<<<<<<< HEAD
 sys.path.append('..')
+=======
+#sys.path.append('...')
+>>>>>>> ca58f4f5c08634fd0f1d2265872bdac166ce85c6
 from utils.utils import get_training_data
 from utils.utils import plot_results
 
