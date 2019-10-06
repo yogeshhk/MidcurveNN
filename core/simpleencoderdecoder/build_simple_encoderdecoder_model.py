@@ -20,7 +20,7 @@ class simple_encoderdecoder:
     def __init__(self):
         self.encoding_dim = 100
         self.input_dim = 10000
-        self.epochs = 200
+        self.epochs = 10
         self.autoencoder_model_pkl = "models/autoencoder_model.pkl"
         self.encoder_model_pkl = "models/encoder_model.pkl"
         self.decoder_model_pkl = "models/decoder_model.pkl"
@@ -60,7 +60,8 @@ class simple_encoderdecoder:
             self.decoder = Model(encoded_input, decoder_layer(encoded_input))
             
             # Compilation of Autoencoder (only)
-            self.autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+
+            self.autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
             
 #             # Training
 #             profile_pngs_flat_objs = [x.reshape(self.input_dim) for x in profile_pngs_gray_objs]
@@ -107,12 +108,15 @@ class simple_encoderdecoder:
            
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data()
-    endec = simple_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-    
+
     test_gray_images = random.sample(profile_gray_objs,5)
+
     profile_gray_objs = np.asarray(profile_gray_objs)/255.
     midcurve_gray_objs = np.asarray(midcurve_gray_objs)/255.
     test_gray_images = np.asarray(test_gray_images)/255.
+
+    endec = simple_encoderdecoder()
+    endec.train(profile_gray_objs, midcurve_gray_objs)
+    
     original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_gray_images)
     plot_results(original_profile_imgs,predicted_midcurve_imgs)

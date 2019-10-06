@@ -19,7 +19,8 @@ class dense_encoderdecoder:
     def __init__(self):
         self.encoding_dim = 100
         self.input_dim = 10000
-        self.epochs = 50
+
+        self.epochs = 1
         self.autoencoder_model_pkl = "models/dense_autoencoder_model.pkl"
         self.encoder_model_pkl = "models/dense_encoder_model.pkl"
         self.decoder_model_pkl = "models/dense_decoder_model.pkl"
@@ -112,14 +113,14 @@ class dense_encoderdecoder:
 
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data()
-
-    endec = dense_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-    
     test_gray_images = random.sample(profile_gray_objs,5)
 
     profile_gray_objs = np.asarray(profile_gray_objs)/255.
     midcurve_gray_objs = np.asarray(midcurve_gray_objs)/255.
     test_gray_images = np.asarray(test_gray_images)/255.
+
+    endec = dense_encoderdecoder()
+    endec.train(profile_gray_objs, midcurve_gray_objs)
+    
     original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_gray_images)
     plot_results(original_profile_imgs,predicted_midcurve_imgs)

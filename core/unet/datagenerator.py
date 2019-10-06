@@ -10,10 +10,12 @@ import cv2
 import numpy as np
 from random import shuffle
 
-BASE_DIR = 'D:/dev/MidcurveNN/'
+from config import *
+
+#BASE_DIR = 'D:/dev/MidcurveNN/'
 
 def datagen(batch, h, w):
-    train_path = BASE_DIR + 'data/new/train/'
+    train_path = BASE_DIR + 'data/train/'
     files = os.listdir(train_path)
     shuffle(files)
     
@@ -23,9 +25,10 @@ def datagen(batch, h, w):
         midcurve_list = []
         
         limit = i + batch
-        if i + batch > 2100:
-            limit = 2100
-            i = 2100-batch
+
+        if i + batch > TRAIN_SIZE:
+            limit = TRAIN_SIZE
+            i = TRAIN_SIZE-batch
         
         for j in range(i,limit):
             path = os.path.join(train_path , files[j])
@@ -50,6 +53,7 @@ def datagen(batch, h, w):
         midcurve_list = np.expand_dims(midcurve_list, -1)
 
         i = i + batch
-        if limit == 2100:
+
+        if limit == TRAIN_SIZE:
             i = 0
         yield (poly_list, midcurve_list)
