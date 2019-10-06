@@ -2,7 +2,6 @@
 from glob import glob
 import numpy as np
 import imageio
-
 from config import *
 #datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
 
@@ -23,7 +22,6 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-
         path = glob(BASE_DIR + 'data/pix2pix/%s/*' % (data_type))
         #path = glob(PATH + '%s/*' % (data_type))
         batch_images = np.random.choice(path, size=batch_size)

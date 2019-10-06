@@ -9,7 +9,6 @@ import os
 import cv2
 import numpy as np
 from random import shuffle
-
 from config import *
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'
@@ -25,7 +24,6 @@ def datagen(batch, h, w):
         midcurve_list = []
         
         limit = i + batch
-
         if i + batch > TRAIN_SIZE:
             limit = TRAIN_SIZE
             i = TRAIN_SIZE-batch
@@ -53,7 +51,6 @@ def datagen(batch, h, w):
         midcurve_list = np.expand_dims(midcurve_list, -1)
 
         i = i + batch
-
         if limit == TRAIN_SIZE:
             i = 0
         yield (poly_list, midcurve_list)
