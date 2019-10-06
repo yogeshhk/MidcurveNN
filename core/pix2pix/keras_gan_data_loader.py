@@ -3,9 +3,10 @@ from glob import glob
 import numpy as np
 import imageio
 
+from config import *
 #datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
 
-BASE_DIR = 'D:/dev/MidcurveNN/'
+#BASE_DIR = 'D:/dev/MidcurveNN/'
 
 class DataLoader():
     def __init__(self, dataset_name, img_res=(256, 256)):
@@ -22,7 +23,8 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob(BASE_DIR + 'data/old/pix2pix/%s/*' % (data_type))
+
+        path = glob(BASE_DIR + 'data/pix2pix/%s/*' % (data_type))
         #path = glob(PATH + '%s/*' % (data_type))
         batch_images = np.random.choice(path, size=batch_size)
 
@@ -58,7 +60,7 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob(BASE_DIR + 'data/old/pix2pix/%s/*' % (data_type))
+        path = glob(BASE_DIR + 'data/pix2pix/%s/*' % (data_type))
         #path = glob('data/%s/datasets/%s/%s/*' % (self.dataset_name, self.dataset_name, data_type))
         #path = glob(PATH + '%s/*' % (data_type))
         self.n_batches = int(len(path) / batch_size)
