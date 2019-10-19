@@ -4,7 +4,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense
-from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.models import Model, load_model, save_model
 import numpy as np
 import sys
 import random
@@ -21,9 +21,9 @@ class simple_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 10000
         self.epochs = 10
-        self.autoencoder_model_pkl = "models/autoencoder_model.pkl"
-        self.encoder_model_pkl = "models/encoder_model.pkl"
-        self.decoder_model_pkl = "models/decoder_model.pkl"
+        self.autoencoder_model_pkl = os.path.join("models","autoencoder_model_pkl")#"models/autoencoder_model.pkl"
+        self.encoder_model_pkl = os.path.join("models","encoder_model.pkl")#"models/encoder_model.pkl"
+        self.decoder_model_pkl = os.path.join("models","decoder_model.pkl")#"models/decoder_model.pkl"
                 
     def process_images(self,grayobjs):
         flat_objs = [x.reshape(self.input_dim) for x in grayobjs]
@@ -90,9 +90,9 @@ class simple_encoderdecoder:
                         batch_size=5,
                         shuffle=True)                
             # Save models
-            self.autoencoder.save(self.autoencoder_model_pkl)
-            self.encoder.save(self.encoder_model_pkl)
-            self.decoder.save(self.decoder_model_pkl)  
+            save_model(self.autoencoder,self.autoencoder_model_pkl) # self.autoencoder.save(self.autoencoder_model_pkl)
+            save_model(self.encoder,self.encoder_model_pkl)# self.encoder.save(self.encoder_model_pkl)
+            save_model(self.decoder,self.decoder_model_pkl)# self.decoder.save(self.decoder_model_pkl)
         else:
             # Save models
             self.autoencoder = load_model(self.autoencoder_model_pkl)

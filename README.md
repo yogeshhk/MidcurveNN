@@ -88,6 +88,12 @@ of the License, or any later version.
 - no library called "libcairo-2" was found
   https://stackoverflow.com/questions/28211418/python-oserror-cannot-load-library-libcairo-so-2
   Install GTK 3 runtime https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer and add to path
+  
+- Failed to create a directory: models/autoencoder_model.pkl\variables; No such file or directory
+  use a forward slash with the checkpoint directory or os.paths.join("models","modelname")
+  
+- If using Keras pass *_constraint arguments to layers.
+  
 ## References
 - Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/
 
