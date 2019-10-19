@@ -17,7 +17,7 @@ class denoiser_encoderdecoder:
 		self.encoding_dim = 100
 		self.input_dim = 100
 		self.epochs = 5
-		self.denoiser_autoencoder_model_pkl = "models/denoiser_autoencoder_model.pkl"
+		self.denoiser_autoencoder_model_pkl = os.paths.join("models","denoiser_autoencoder_model.pkl") #"models/denoiser_autoencoder_model.pkl"
 
 				
 	def process_images(self,grayobjs):
