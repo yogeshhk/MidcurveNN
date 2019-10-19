@@ -55,7 +55,7 @@ of the License, or any later version.
 
 
 ## Implementation Notes:
-- Keras
+- Keras (TBD: Moving from independant Keras to Tensorflow.Keras, so wait for update here)
 	- DON’T Conda install -c conda-forge keras DIRECTLY
 	- Keras installation cribbed that tensorflow is not present
 	- Reinstalled tensorflow by pip – U
@@ -84,6 +84,10 @@ of the License, or any later version.
 - Get pix2pix working in .py and .ipynb
 - Generate more data from more profiles
 
+## Errors and Solutions
+- no library called "libcairo-2" was found
+  https://stackoverflow.com/questions/28211418/python-oserror-cannot-load-library-libcairo-so-2
+  Install GTK 3 runtime https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer and add to path
 ## References
 - Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/
 
