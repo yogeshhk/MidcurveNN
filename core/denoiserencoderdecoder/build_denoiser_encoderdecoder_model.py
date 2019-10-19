@@ -1,8 +1,8 @@
-from keras.layers import Input, Dense
-from keras.models import Model, load_model
-from keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
-from keras import backend as K
-from keras import regularizers
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
+from tensorflow.keras import backend as K
+from tensorflow.keras import regularizers
 from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results

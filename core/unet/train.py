@@ -10,12 +10,12 @@ from config import *
 from unet import unet_stage1, unet_stage2
 from utils import get_coord_layers, weighted_cross_entropy
 import numpy as np
-from keras.losses import mean_absolute_error, binary_crossentropy
-from keras.optimizers import Adam
+from tensorflow.keras.losses import mean_absolute_error, binary_crossentropy
+from tensorflow.keras.optimizers import Adam
 from datagenerator import datagen
 from tqdm import tqdm
 import os
-from keras.models import model_from_json
+from tensorflow.keras.models import model_from_json
 
 def init():
 	loss = {'bce': binary_crossentropy,

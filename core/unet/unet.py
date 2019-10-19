@@ -7,13 +7,13 @@ Created on Wed Sep 25 09:15:52 2019
 
 from config import *
 
-from keras.models import Model
-from keras.layers import Input
-from keras.layers.convolutional import Conv2D, Conv2DTranspose
-from keras.layers.merge import Concatenate
-from keras.layers.advanced_activations import LeakyReLU
-from keras.layers.core import Activation, Dropout
-from keras.layers.normalization import BatchNormalization
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers.convolutional import Conv2D, Conv2DTranspose
+from tensorflow.keras.layers.merge import Concatenate
+from tensorflow.keras.layers.advanced_activations import LeakyReLU
+from tensorflow.keras.layers.core import Activation, Dropout
+from tensorflow.keras.layers.normalization import BatchNormalization
 
 #UNET Hyperparameters
 ENCODER_KERNELS = (5, 4)

@@ -1,4 +1,4 @@
-BASE_DIR = 'C:/YogeshKulkarni/Research/MidcurveNN/src/'
+BASE_DIR = 'D:/Yogesh/ToDos/Research/MidcurveNN/src/'
 
 RAW_DATA_FOLDER = BASE_DIR + "data/raw"
 INPUT_DATA_FOLDER = BASE_DIR + "data/input"

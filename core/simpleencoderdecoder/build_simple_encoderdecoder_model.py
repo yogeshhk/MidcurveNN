@@ -2,9 +2,9 @@ import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-from keras import regularizers
-from keras.layers import Input, Dense
-from keras.models import Model, load_model
+from tensorflow.keras import regularizers
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.models import Model, load_model
 import numpy as np
 import sys
 import random
