@@ -1,4 +1,18 @@
 # Notes on Midcurve NN
+	
+## A wider research domain: CAD with Deep Learning
+
+Vectorization is a must for preparing input for Machine/Deep Learning
+
+Comparison of NLP and CAD wrt vectorization:
+
+|    NLP                                 |    CAD                              | 
+|----------------------------------------|-------------------------------------|
+|    Words                               |    Entities                         | 
+|    Sentences composed of words         |    Features composed of entities    | 
+|    Paragraphs composed of sentences    |    Bodies composed of features      | 
+|    Document composed of sentences      |    Assemblies composed of bodies    | 
+
 
 ## FAQs
 - Which of the following is the correct result?
@@ -36,19 +50,7 @@
   - No, unfortunately not. As there is no standard/one algorithm for it.
     Even things that are not working is important information and should be kept as demonstration. So all approaches can be tried on both hollow profiles and filled ones. Results can be gathered and even mentioned in papers to come. Looks ok?
 	This also should be tried and documented, along with note that for such and such reasons the approach is not appropriate...imho..let others agree/counter...
-	
-## A wider research domain: CAD with Deep Learning
 
-Vectorization is a must for preparing input for Machine/Deep Learning
-
-Comparison of NLP and CAD wrt vectorization:
-
-|    NLP                                 |    CAD                              | 
-|----------------------------------------|-------------------------------------|
-|    Words                               |    Entities                         | 
-|    Sentences composed of words         |    Features composed of entities    | 
-|    Paragraphs composed of sentences    |    Bodies composed of features      | 
-|    Document composed of sentences      |    Assemblies composed of bodies    | 
 
 ## References
 *	Geometric Deep Learning http://geometricdeeplearning.com/ 
@@ -84,3 +86,24 @@ Common applications
 	*	Thread generator
 	*	Design check of performed design operations according to standards and technical specifications.
 
+* DGLMA Workshop IEEE BigData https://www.cse.msu.edu/~derrtyle/dglma/
+* GRAPH2SEQ https://arxiv.org/pdf/1804.00823.pdf
+* Graph2Seq: A Generalized Seq2Seq Model for Graph Inputs | IBM Research Blog https://www.ibm.com/blogs/research/2018/11/graph2seq/
+* Learning Compact Graph Representations via an Encoder-Decoder Network https://appliednetsci.springeropen.com/track/pdf/10.1007/s41109-019-0157-9
+* What is Geometric Deep Learning? - Flawnson Tong - Medium https://medium.com/@flawnsontong1/what-is-geometric-deep-learning-b2adb662d91d
+* A Gentle Introduction to Graph Neural Networks (Basics, DeepWalk, and GraphSage) https://towardsdatascience.com/a-gentle-introduction-to-graph-neural-network-basics-deepwalk-and-graphsage-db5d540d50b3
+* cvpr17_oral_pointnet https://web.stanford.edu/~rqi/pointnet/docs/cvpr17_pointnet_slides.pdf
+* Understanding Machine Learning on Point Clouds through PointNet++ https://towardsdatascience.com/understanding-machine-learning-on-point-clouds-through-pointnet-f8f3f2d53cc3
+* Iterative Deep Graph Learning for Graph Neural Networks https://openreview.net/pdf?id=Bkl2UlrFwr
+* Deep Graph Library https://arxiv.org/pdf/1909.01315.pdf
+* IEEEtv | Conference Highlights | Deep Graph Learning: Techniques and Applications - Haifeng Chen - IEEE Sarnoff Symposium, 2019 http://ieeetv.ieee.org/mobile/video/deep-graph-learning-techniques-and-applications-haifeng-chen-ieee-sarnoff-symposium-2019
+* Welcome to Keras Deep Learning on Graphs (Keras-DGL) http://vermaMachineLearning.github.io/keras-deep-graph-learning 
+* Deep Feature Learning for Graphs 	http://ryanrossi.com/pubs/rossi-et-al-2017-arxiv-deepGL-deep-graph-learning.pdf
+* Master Seminar "Deep Learning for Graphs" / "Recent Developments in Data Science" (WS 2019/20) - Lehr- und Forschungseinheit für Datenbanksysteme - LMU Munich https://www.dbs.ifi.lmu.de/cms/studium_lehre/lehre_master/semrecent1920/index.html
+* IEEEtv | Conference Highlights | Combinatorial Sleeping Bandits with Fairness Constraints - Bo Ji - IEEE Sarnoff Symposium, 2019 https://ieeetv.ieee.org/conference-highlights/combinatorial-sleeping-bandits-with-fairness-constraints-bo-ji-ieee-sarnoff-symposium-2019?
+* A Comprehensive Survey on Graph Neural https://arxiv.org/pdf/1901.00596.pdf
+* Tutorial on Variational Graph Auto-Encoders - Towards Data Science https://towardsdatascience.com/tutorial-on-variational-graph-auto-encoders-da9333281129
+* Semi-automated Annotation model , Polygon RNN, Polygon RNN++ https://medium.com/@akichan_f/semi-automated-annotation-model-polygon-rnn-polygon-rnn-fa3801019a29
+* graph-based-deep-learning-literature/README.md at master · naganandy/graph-based-deep-learning-literature https://github.com/naganandy/graph-based-deep-learning-literature/blob/master/conference-publications/README.md
+* https://www.cse.msu.edu/~derrtyle/dglma/papers/ChoongJ.pdf
+* https://www.cse.msu.edu/~derrtyle/dglma/papers/KikuchiS.pdf
