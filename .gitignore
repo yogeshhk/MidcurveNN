@@ -5,3 +5,4 @@ __pycache__/
 models/
 *.pkl
 References/
+*Notes*.md
