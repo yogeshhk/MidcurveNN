@@ -1,0 +1,225 @@
+\documentclass{article}
+
+
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}		% Can be removed after putting your text content
+
+\usepackage{graphicx}   
+\usepackage[font=small,skip=0pt]{caption}
+
+\title{MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon}
+
+%\date{September 9, 1985}	% Here you can change the date presented in the paper title
+%\date{} 					% Or removing it
+
+\author{
+  Yogesh H. Kulkarni\thanks{http://www.yati.io} \\
+  Pune, India\\
+  \texttt{yogeshkulkarni@yahoo.com} \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Various applications need lower dimensional representation of shapes. Midcurve is one-dimensional(1D) representation of a two-dimensional(2D) planar shape. It is used in applications such as animation, shape matching, retrieval, finite element analysis, etc. Methods available to compute midcurves vary based on the type of the input shape (images, sketches, etc.) and processing (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc.).
+
+This paper talks about a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing midcurve from images of 2D thin polygons in supervised learning manner. This dimension reduction transformation from input 2D thin polygon image to output 1D midcurve image is learnt by the neural network, which can then be used to compute midcurve of an unseen 2D thin polygonal shape. 
+\end{abstract}
+
+\keywords{Midcurve \and Encoder-Decoder \and Neural Network}
+
+
+\section{Introduction}
+A skeleton is a lower dimensional entity which represents shape of its parent object. It being simpler than the parent object, operations like pattern recognition, approximation, similarity estimation, collision detection, animation, matching and deformation can be performed efficiently on it than on the parent object. 
+
+Skeletons, also known as Medial Objects, can be computed via various mathematical formulations/approaches such as Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Pairing, Thinning etc. Figure \ref{fig_medialmethods} shows some of these. More detailed analysis can be found in the survey paper \cite{medial2010}.
+
+    \begin{center}
+	\includegraphics[width=0.6\linewidth]{images/MedialMethodsOnlyShort}
+	\captionof{figure}{Medial Object computation methods}
+	\label{fig_medialmethods}
+    \end{center}
+    
+
+In the current paper we focus on computing midcurve for 2D planar sketch profiles.  Even in 2D profiles, shapes vary enormously. As the first level of simplification, we would deal with 2D polygons only (with an assumption that curved shapes can be converted to polygonal shape by faceting). Figure \ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
+
+     \begin{center}
+	\includegraphics[width=0.5\linewidth]{images/Letters}
+	\captionof{figure}{2D Thin Polygonal shapes}
+	\label{fig_letters}
+    \end{center}
+
+\section{Proposed Method}
+
+Computation of midcurve, in its original form, is transformation of a 2D thin closed, with/without-holes polygon to 1D open/closed/branched polyline. Paper \cite{dimred2017} details one of the effective midcurve computation techniques, based on rule-based computational geometry approach. Such techniques have a shortcoming of not being scalable or generic enough to be able to handle variety of shapes. Deep Learning neural network architectures are showing potential of developing such generic models. This dimension reduction transformation should ideally be modeled as Sequence to Sequence (Seq2Seq) neural architecture, like Machine Translation. In the current problem, the input and the output sizes could be different not just in a single sample, but across all samples. Many current Seq2Seq neural networks need fixed size inputs and outputs, which if not present in data, are artificially managed by adding padding of certain improbable value. Such padding is not appropriate for the current midcurve computation problem, as the padding-value can inappropriately get treated as part of the valid input. In this initial phase, to circumvent the problem of variable size, image-based inputs and outputs are used, which are of fixed size. Both input and output polygonal shapes are rasterized into images of 100x100, thus making them fixed size for all samples, irrespective of the original shapes.
+
+This paper proposes to use such network for midcurve computation in the form of image-to-image mode. Input images have thin polygonal shapes whereas output images have corresponding midcurve images. Figure \cite{fig_endecoder} shows the Encoder-decoder architecture, called MidcurveNN.
+
+     \begin{center}
+	\includegraphics[width=0.6\linewidth]{images/midcurve_encoder_decoder}
+	\captionof{figure}{Encoder-Decoder Architecture for Midcurve computation}
+	\label{fig_endecoder}
+    \end{center}
+    
+Input and output geometries are rasterized into 100x100 size images. Transformations like translation, rotation and mirroring are applied to create diversity in the samples. MidcurveNN being a Supervised Learning approach, both input thin-polygons and corresponding output midcurve polylines are transformed simultaneously. Figure \cite{fig_training} shows some samples. This is training data.    
+
+
+     \begin{center}
+	\includegraphics[width=0.6\linewidth]{images/training_data}
+	\captionof{figure}{Training Data: Inputs (thin polygons) and outputs (midcurves)}
+	\label{fig_training}
+    \end{center}
+    
+MidcurveNN encoder-decoder has been implemented in Python programming with Keras library \cite{autoenkeras}.  Encoder takes input image of size $100 \times 100 = 10000$, then comes Dense layer with size $100$ to form the encoded vector. Decoder takes encoded vector as input, then with a Dense layer expands back to $100 \times 100 = 10000$ size of the output image. Relu activation is used for Encoder whereas Sigmoid for the decoder. AdaDelta optimizer with binary cross entropy as loss function is used to compute the losses. Table \ref{tbl_loss} shows loss across number of epochs.    
+
+
+\begin{table}
+\captionof{table}{Improvement in performance with epochs}
+\centering
+
+\begin{tabular}[htbp]{@{} p{0.14\linewidth}  p{0.22\linewidth}  p{0.22\linewidth}  @{}} \toprule
+{\bf Epochs } & {\bf Training loss }  & {\bf Validation loss} \\
+\midrule
+50	& -17.6354	& -8.3223\\
+200	& -16.8878	& -7.7672 \\
+\bottomrule
+\end{tabular}
+\label{tbl_loss}
+\end{table}
+
+
+Some of the results are shown in Figure \ref{fig_results}. Inputs are at the top and output midcurve at the bottom.
+
+     \begin{center}
+	\includegraphics[width=0.9\linewidth]{images/midcurvenn_results}
+	\captionof{figure}{Predicted Data: Inputs (thin polygons) and outputs (midcurves)}
+	\label{fig_results}
+    \end{center}
+
+Shape on the top is the input thin polygon whereas the corresponding shape at the bottom is the predicted midcurve. It can be clearly seen that the network is able to localize the shape and learn the dimension reduction function reasonably well. It is still not perfect or usable, as some stray points are still being wrongly classified as the part of output midcurve. A better network model and/or post processing is needed to make output midcurve practically usable.
+
+\section{Conclusions and Future Work}
+
+Traditional methods of computing midcurves are predominantly rules-based and thus, have limitation of not developing a generic model which will accept any input shape. MidcurveNN, a novel Encoder-Decoder network attempts to build such a generic model. This paper demonstrates that simple single layer encoder and decoder network can learn the dimension reduction function reasonably well. Although more development is necessary in evolving a better neural architecture, the current results show positive potential. 
+
+Working on truly variable size inputs (thin polygon) and outputs (polyline) using dynamic graph of Encoder-Decoder network can be attempted in the future. More and highly diversified data can help improve the quality of the output. Developing a formal representation of polygonal shapes with variations such as open/closed, with-without loops, branched as a coherent sequence of points is also on the agenda.
+
+%
+%\section{Headings: first level}
+%\label{sec:headings}
+%
+%\lipsum[4] See Section \ref{sec:headings}.
+%
+%\subsection{Headings: second level}
+%\lipsum[5]
+%\begin{equation}
+%\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
+%\end{equation}
+%
+%\subsubsection{Headings: third level}
+%\lipsum[6]
+%
+%\paragraph{Paragraph}
+%\lipsum[7]
+%
+%\section{Examples of citations, figures, tables, references}
+%\label{sec:others}
+%\lipsum[8] \cite{kour2014real,kour2014fast} and see \cite{hadash2018estimate}.
+%
+%The documentation for \verb+natbib+ may be found at
+%\begin{center}
+%  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+%\end{center}
+%Of note is the command \verb+\citet+, which produces citations
+%appropriate for use in inline text.  For example,
+%\begin{verbatim}
+%   \citet{hasselmo} investigated\dots
+%\end{verbatim}
+%produces
+%\begin{quote}
+%  Hasselmo, et al.\ (1995) investigated\dots
+%\end{quote}
+%
+%\begin{center}
+%  \url{https://www.ctan.org/pkg/booktabs}
+%\end{center}
+%
+%
+%\subsection{Figures}
+%\lipsum[10] 
+%See Figure \ref{fig:fig1}. Here is how you add footnotes. \footnote{Sample of the first footnote.}
+%\lipsum[11] 
+%
+%\begin{figure}
+%  \centering
+%  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+%  \caption{Sample figure caption.}
+%  \label{fig:fig1}
+%\end{figure}
+%
+%\subsection{Tables}
+%\lipsum[12]
+%See awesome Table~\ref{tab:table}.
+%
+%\begin{table}
+% \caption{Sample table title}
+%  \centering
+%  \begin{tabular}{lll}
+%    \toprule
+%    \multicolumn{2}{c}{Part}                   \\
+%    \cmidrule(r){1-2}
+%    Name     & Description     & Size ($\mu$m) \\
+%    \midrule
+%    Dendrite & Input terminal  & $\sim$100     \\
+%    Axon     & Output terminal & $\sim$10      \\
+%    Soma     & Cell body       & up to $10^6$  \\
+%    \bottomrule
+%  \end{tabular}
+%  \label{tab:table}
+%\end{table}
+%
+%\subsection{Lists}
+%\begin{itemize}
+%\item Lorem ipsum dolor sit amet
+%\item consectetur adipiscing elit. 
+%\item Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.
+%\end{itemize}
+
+
+\bibliographystyle{unsrt}  
+%\bibliography{references}  %%% Remove comment to use the external .bib file (using bibtex).
+%%% and comment out the ``thebibliography'' section.
+
+
+%%% Comment out this section when you \bibliography{references} is enabled.
+\begin{thebibliography}{1}
+
+\bibitem{medial2010}
+Kulkarni, Y. H.; Deshpande, S.
+\newblock Medial Object Extraction - A State of the Art
+\newblock In {\em International Conference on Advances in Mechanical Engineering, SVNIT, Surat}, 2010.
+
+\bibitem{dimred2017}
+Kulkarni, Y. H.; Sahasrabudhe, A.D.; Kale, M.S
+\newblock Dimension-reduction technique for polygons
+\newblock In {\em International Journal of Computer Aided Engineering and Technology, Vol. 9, No. 1}, 2017.
+
+\bibitem{autoenkeras}
+Chollet, F.
+\newblock Building Autoencoders in Keras
+\newblock In {\em https://blog.keras.io/building-autoencoders-in-keras.html }, 2019.
+
+\end{thebibliography}
+
+
+\end{document}
