@@ -1,4 +1,4 @@
-from core.pix2pix.keras_gan_pix2pix import Pix2Pix
+from pix2pix.keras_gan_pix2pix import Pix2Pix
 from config import *
 
 if __name__ == "__main__":
