@@ -5,6 +5,7 @@ BASE_DIR = os.getcwd()
 RAW_DATA_FOLDER = BASE_DIR + "/data/raw"
 INPUT_DATA_FOLDER = BASE_DIR + "/data/input"
 PIX2PIX_DATA_FOLDER = BASE_DIR + "/data/pix2pix"
+MODELS_FOLDER = BASE_DIR + "/models/"
 
 #UNet Approach Configurations
 TWO_STAGE = True

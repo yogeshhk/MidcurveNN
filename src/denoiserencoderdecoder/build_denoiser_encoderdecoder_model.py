@@ -3,7 +3,7 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
 from tensorflow.keras import backend as K
 from tensorflow.keras import regularizers
-from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
+from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
 import os
@@ -17,7 +17,7 @@ class denoiser_encoderdecoder:
 		self.encoding_dim = 100
 		self.input_dim = 100
 		self.epochs = 5
-		self.denoiser_autoencoder_model_pkl = os.paths.join("models","denoiser_autoencoder_model.pkl") #"models/denoiser_autoencoder_model.pkl"
+		self.denoiser_autoencoder_model_pkl = os.path.join("models","denoiser_autoencoder_model.pkl") #"models/denoiser_autoencoder_model.pkl"
 
 				
 	def process_images(self,grayobjs):

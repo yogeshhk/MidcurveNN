@@ -14,7 +14,7 @@ from config import *
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
 def datagen(batch, h, w):
-    train_path = BASE_DIR + 'data/train/'
+    train_path = os.getcwd() + '/data/train/'
     files = os.listdir(train_path)
     shuffle(files)
     

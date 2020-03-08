@@ -9,11 +9,11 @@ from config import *
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input
-from tensorflow.keras.layers.convolutional import Conv2D, Conv2DTranspose
-from tensorflow.keras.layers.merge import Concatenate
-from tensorflow.keras.layers.advanced_activations import LeakyReLU
-from tensorflow.keras.layers.core import Activation, Dropout
-from tensorflow.keras.layers.normalization import BatchNormalization
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose
+from tensorflow.keras.layers import Concatenate
+from tensorflow.keras.layers import LeakyReLU
+from tensorflow.keras.layers import Activation, Dropout
+from tensorflow.keras.layers import BatchNormalization
 
 #UNET Hyperparameters
 ENCODER_KERNELS = (5, 4)

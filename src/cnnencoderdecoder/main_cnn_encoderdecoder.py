@@ -3,7 +3,7 @@ import sys
 from utils.utils import get_training_data
 from utils.utils import plot_results
 
-from core.cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
+from cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
 
 import numpy as np
 import random

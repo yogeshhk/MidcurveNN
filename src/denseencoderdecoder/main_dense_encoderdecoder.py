@@ -3,7 +3,7 @@ sys.path.append('..')
 from utils.utils import get_training_data
 from utils.utils import plot_results
 
-from core.denseencoderdecoder.build_dense_encoderdecoder_model import dense_encoderdecoder
+from denseencoderdecoder.build_dense_encoderdecoder_model import dense_encoderdecoder
 import random
 import numpy as np
 

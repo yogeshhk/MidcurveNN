@@ -21,9 +21,9 @@ class simple_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 10000
         self.epochs = 10
-        self.autoencoder_model_pkl = os.path.join("models","autoencoder_model_pkl")#"models/autoencoder_model.pkl"
-        self.encoder_model_pkl = os.path.join("models","encoder_model.pkl")#"models/encoder_model.pkl"
-        self.decoder_model_pkl = os.path.join("models","decoder_model.pkl")#"models/decoder_model.pkl"
+        self.autoencoder_model_pkl = os.path.join("models","autoencoder_model")#"models/autoencoder_model.pkl"
+        self.encoder_model_pkl = os.path.join("models","encoder_model")#"models/encoder_model.pkl"
+        self.decoder_model_pkl = os.path.join("models","decoder_model")#"models/decoder_model.pkl"
                 
     def process_images(self,grayobjs):
         flat_objs = [x.reshape(self.input_dim) for x in grayobjs]

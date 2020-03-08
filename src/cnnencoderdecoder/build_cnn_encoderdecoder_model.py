@@ -8,6 +8,7 @@ import numpy as np
 import os
 import random
 import sys
+from config import MODELS_FOLDER
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -21,7 +22,7 @@ class cnn_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 128 #100
         self.epochs = 50
-        self.cnn_autoencoder_model_pkl = "models/cnn_autoencoder_model.pkl"
+        self.cnn_autoencoder_model_pkl = os.path.join("models","cnn_autoencoder_model")
         self.input_shape = input_shape
 
     def process_images(self,grayobjs,shape=(128,128,1)):
@@ -105,10 +106,12 @@ class cnn_encoderdecoder:
                         batch_size=32,
                         shuffle=True)
                             
-            # Save models
+            # Save model
+            print("saving model at {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder.save(self.cnn_autoencoder_model_pkl)
         else:
-            # Save models
+            # Load model
+            print("saving model at {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder = load_model(self.cnn_autoencoder_model_pkl)
 
     

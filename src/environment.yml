@@ -72,6 +72,7 @@ dependencies:
     - keras-preprocessing==1.1.0
     - markdown==3.2.1
     - oauthlib==3.1.0
+    - opencv-python==4.2.0.32
     - opt-einsum==3.1.0
     - protobuf==3.11.3
     - pyasn1==0.4.8
@@ -85,6 +86,7 @@ dependencies:
     - tensorflow-estimator==2.1.0
     - termcolor==1.1.0
     - tinycss2==1.0.2
+    - tqdm==4.43.0
     - urllib3==1.25.8
     - webencodings==0.5.1
     - werkzeug==1.0.0
