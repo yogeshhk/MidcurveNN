@@ -93,6 +93,8 @@ of the License, or any later version.
   use a forward slash with the checkpoint directory or os.paths.join("models","modelname")
   
 - If using Keras pass *_constraint arguments to layers.
+
+- Cuda lib error, https://www.joe0.com/2019/10/19/how-resolve-tensorflow-2-0-error-could-not-load-dynamic-library-cudart64_100-dll-dlerror-cudart64_100-dll-not-found/
   
 ## References
 - Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/

@@ -1,7 +1,7 @@
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
-from core.denoiserencoderdecoder.build_denoiser_encoderdecoder_model import denoiser_encoderdecoder
-from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
+from denoiserencoderdecoder.build_denoiser_encoderdecoder_model import denoiser_encoderdecoder
+from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 from random import random
 
 if __name__ == "__main__":

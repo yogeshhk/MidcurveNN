@@ -20,9 +20,9 @@ class dense_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 10000
         self.epochs = 1
-        self.autoencoder_model_pkl = "models/dense_autoencoder_model.pkl"
-        self.encoder_model_pkl = "models/dense_encoder_model.pkl"
-        self.decoder_model_pkl = "models/dense_decoder_model.pkl"
+        self.autoencoder_model_pkl = os.path.join("models", "dense_autoencoder_model")
+        self.encoder_model_pkl = os.path.join("models","dense_encoder_model")
+        self.decoder_model_pkl = os.path.join("models","dense_decoder_model")
                 
     def process_images(self,grayobjs):
         flat_objs = [x.reshape(self.input_dim) for x in grayobjs]
