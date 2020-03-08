@@ -1,6 +1,6 @@
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
-from core.simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
+from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 import random
 import numpy as np
 
