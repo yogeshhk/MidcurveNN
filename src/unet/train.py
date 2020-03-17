@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
 	data_gen = datagen(batch_size , height , width)
 	
-	train_stage1(generators[0], epochs, batch_size, 'unet/weights/stage1/', 'unet/losses/stage1/', data_gen, False, 0)
+	train_stage1(generators[0], epochs, batch_size, 'unet/weights/stage1/', 'losses/stage1/', data_gen, False, 0)
 	if TWO_STAGE:
 		generators[0].load_weights('unet/weights/stage1/0_epochs_gen.h5')
 		train_stage2(generators[0], generators[1], epochs, batch_size, 'unet/weights/stage2/', 'unet/losses/stage2/', data_gen, False, 0)
