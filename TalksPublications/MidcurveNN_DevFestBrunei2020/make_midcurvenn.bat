@@ -1,2 +1,2 @@
 @echo off
-for /r %%i in (Main_*_Midcurve*.tex) do texify -cp %%i
+for /r %%i in (DevFest_Brunei_MidcurveNN_*.tex) do texify -cp %%i
