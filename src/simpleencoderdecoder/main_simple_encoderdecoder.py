@@ -12,8 +12,9 @@ if __name__ == "__main__":
     midcurve_gray_objs = np.asarray(midcurve_gray_objs) / 255.
     test_gray_images = np.asarray(test_gray_images) / 255.
 
+    retrain_model = True
     endec = simple_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
+    endec.train(profile_gray_objs, midcurve_gray_objs, retrain_model)
 
     original_profile_imgs, predicted_midcurve_imgs = endec.predict(test_gray_images)
     plot_results(original_profile_imgs, predicted_midcurve_imgs)

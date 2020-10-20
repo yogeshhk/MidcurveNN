@@ -53,8 +53,9 @@ if __name__ == "__main__":
     profile_pngs = np.asarray(profile_pngs)
     test_profile_pngs = np.asarray(test_profile_pngs)
 
+    retrain_model = True
     endec = cnn_encoderdecoder(input_shape = (128,128,3))
-    endec.train(profile_pngs, midcurve_pngs_objs)
+    endec.train(profile_pngs, midcurve_pngs_objs,retrain_model)
     
     #print(test_profile_pngs.shape)
 

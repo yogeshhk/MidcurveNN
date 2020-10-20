@@ -22,6 +22,7 @@ class cnn_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 128 #100
         self.epochs = 50
+        self.batch_size = 5
         self.cnn_autoencoder_model_pkl = os.path.join("models","cnn_autoencoder_model")
         self.input_shape = input_shape
 
@@ -33,9 +34,9 @@ class cnn_encoderdecoder:
     def train(self,
             profile_pngs_gray_objs, 
             midcurve_pngs_gray_objs,
-            epochs=50):
+            retrain_model=False):
         
-        if not os.path.exists(self.cnn_autoencoder_model_pkl):       
+        if not os.path.exists(self.cnn_autoencoder_model_pkl) or retrain_model:
             input_img = Input(shape=self.input_shape)  # adapt this if using `channels_first` image data format
             
             #x = ZeroPadding2D((5,5))(input_img)
@@ -102,8 +103,8 @@ class cnn_encoderdecoder:
             self.y = midcurve_pngs_objs
             
             self.cnn_autoencoder.fit(self.x, self.y,
-                        epochs=epochs,
-                        batch_size=32,
+                        epochs=self.epochs,
+                        batch_size=self.batch_size,
                         shuffle=True)
                             
             # Save model

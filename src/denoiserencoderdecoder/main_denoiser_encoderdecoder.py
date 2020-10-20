@@ -12,7 +12,8 @@ if __name__ == "__main__":
     plot_results(original_profile_images[:5], noisy_predicted_midcurve_images[:5])
 
     denoiser = denoiser_encoderdecoder()
-    denoiser.train(noisy_predicted_midcurve_images, midcurve_gray_objs)
+    retrain_model = True
+    denoiser.train(noisy_predicted_midcurve_images, midcurve_gray_objs,retrain_model)
     sample_noisy_midcurve_images = random.sample(noisy_predicted_midcurve_images, 5)
     original_noisy_midcurve_images, clean_predicted_midcurve_images = denoiser.predict(sample_noisy_midcurve_images)
     plot_results(original_noisy_midcurve_images, clean_predicted_midcurve_images)
