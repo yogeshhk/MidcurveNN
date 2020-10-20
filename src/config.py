@@ -1,6 +1,6 @@
 import os
 
-BASE_DIR = os.getcwd()
+BASE_DIR = os.getcwd() + "/.."
 
 RAW_DATA_FOLDER = BASE_DIR + "/data/raw"
 INPUT_DATA_FOLDER = BASE_DIR + "/data/input"
