@@ -16,7 +16,8 @@ if __name__ == "__main__":
     test_gray_images = np.asarray(test_gray_images)/255.
 
     endec = dense_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
+    retrain_model = True
+    endec.train(profile_gray_objs, midcurve_gray_objs, retrain_model)
     
     original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_gray_images)
     plot_results(original_profile_imgs,predicted_midcurve_imgs)

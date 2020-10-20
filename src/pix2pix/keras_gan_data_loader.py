@@ -22,7 +22,7 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob(BASE_DIR + 'data/pix2pix/%s/*' % (data_type))
+        path = glob(BASE_DIR + '/data/pix2pix/%s/*' % (data_type))
         #path = glob(PATH + '%s/*' % (data_type))
         batch_images = np.random.choice(path, size=batch_size)
 
@@ -58,7 +58,7 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob(BASE_DIR + 'data/pix2pix/%s/*' % (data_type))
+        path = glob(BASE_DIR + '/data/pix2pix/%s/*' % (data_type))
         #path = glob('data/%s/datasets/%s/%s/*' % (self.dataset_name, self.dataset_name, data_type))
         #path = glob(PATH + '%s/*' % (data_type))
         self.n_batches = int(len(path) / batch_size)
