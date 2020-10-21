@@ -1,0 +1,193 @@
+\usepackage{beamerthemeshadow}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage{tikz-qtree} 
+\usepackage{listings}
+%\usepackage{flashmovie}
+\usepackage{media9}
+\usepackage{etoolbox} % conditional inclusions
+
+\newtoggle{VideoFrames}
+\toggletrue{VideoFrames}
+
+\newtoggle{CopyrightPictures}
+\toggletrue{CopyrightPictures}
+
+%% Themes - Choose exactly one
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg} 
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+\usetheme{Warsaw}
+%\usetheme{median}
+%\usetheme{Metro}
+
+%% Complete Color Themes - Choose at most one 
+%% Themes have a standard color scheme; this will change that scheme.
+%\usecolortheme{albatross}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{seagull}
+
+%% Inner Color Themes - Changes colors used for thms / defs etc.
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+
+%% Outer Color Themes - Changes colors used in header+footers
+%\usecolortheme{dolphin}
+%\usecolortheme{seahorse}
+\usecolortheme{whale}
+
+%\usefonttheme{default}
+%\usefonttheme{professionalfonts}
+%\usefonttheme{serif}
+%\usefonttheme{structurebold}
+%\usefonttheme{structureitalicserif}
+\usefonttheme{structuresmallcapsserif}
+%\usepackage{fontspec}
+%\setmainfont{Segoe UI}
+
+
+\useinnertheme{rounded}
+\useoutertheme[subsection=false,footline=authortitle]{miniframes}  
+ 
+%\useoutertheme{infolines}
+%\useoutertheme{sidebar}
+%\useoutertheme{smoothbars} 
+%\useoutertheme{split} 
+%\useoutertheme{tree} 
+%\useoutertheme{smoothtree}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\slideentry}{\advance\beamer@xpos by1\relax}{}{}{}
+\def\beamer@subsectionentry#1#2#3#4#5{\advance\beamer@xpos by1\relax}%
+\makeatother
+
+\setbeamerfont{block title}{size={}}
+
+\definecolor{darkpurple}{rgb}{0.471,0.008,0.412}
+\definecolor{middlepurple}{rgb}{0.663,0.012,0.580}
+\definecolor{lightpurple}{rgb}{0.855,0.016,0.749}
+\definecolor{gold}{RGB}{254,232,0}
+\definecolor{nyupurple}{RGB}{90, 35, 140}
+\definecolor{lightnyupurple}{RGB}{159, 120, 184}
+
+\setbeamercolor{alerted text}{fg=nyupurple}
+\setbeamercolor{example text}{fg=darkgray}
+\setbeamercolor{headline}{fg=white,bg=lightnyupurple}
+\setbeamercolor*{palette secondary}{fg=white,bg=lightnyupurple} %subsection
+\setbeamercolor*{palette tertiary}{fg=white,bg=nyupurple} %section
+
+\setbeamercolor{title}{fg=black, bg=lightnyupurple}         %Title of presentation
+\setbeamercolor{block title}{fg=white, bg=nyupurple}
+\setbeamercolor{section title}{fg=white, bg=nyupurple}
+\setbeamercolor{subsection title}{fg=white, bg=lightnyupurple}
+%\setbeamercolor{frametitle}{fg=white, bg=lightnyupurple}  % Gives gradient in the frame title bar
+\setbeamertemplate{frametitle}[default][colsep=-4bp,rounded=false,shadow=false] % disable gradient
+
+\setbeamerfont{frametitle}{size=\Large}
+\setbeamerfont{frametitle}{series=\bfseries}
+
+\setbeamertemplate{blocks}[rounded][shadow=true] 
+\setbeamertemplate{items}[triangle]
+\setbeamercolor{item}{fg=gray, bg=white}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+\setbeamertemplate{bibliography item}{}
+
+
+\setbeamercovered{transparent}
+
+\setbeamertemplate{itemize item}{\scriptsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+\setbeamertemplate{itemize subitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+\setbeamertemplate{itemize subsubitem}{\tiny\raise1.5pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\setbeamertemplate{enumerate subitem}{\insertenumlabel.\insertsubenumlabel}
+\setbeamertemplate{enumerate subsubitem}{\insertenumlabel.\insertsubenumlabel.\insertsubsubenumlabel}
+\setbeamertemplate{enumerate mini template}{\insertenumlabel}
+%\setbeamertemplate{itemize/enumerate subbody begin}{\vspace{1cm}}
+%\setbeamertemplate{itemize/enumerate subbody end}{\vspace{1cm}}
+\setbeamerfont{subsection in toc}{size=\tiny}
+\setbeamerfont{section in toc}{size=\small}
+
+% TOC at start of a Section or a Subsection
+%\AtBeginSection[] { 
+%  \begin{frame}[plain] 
+%    \frametitle{Sections: Table of Contents} 
+%    \tableofcontents[currentsection,hideallsubsections,subsubsectionstyle=hide] 
+%  \end{frame} 
+%  \addtocounter{framenumber}{-1} 
+%} 
+%
+%\AtBeginSubsection[] { 
+%  \begin{frame}[plain] 
+%   \frametitle{Subsections: Table of Contents} 
+%    \tableofcontents[currentsubsection,subsubsectionstyle=hide]
+%    \addtocounter{framenumber}{-1} 
+%  \end{frame} 
+%} 
+
+%\def\subsubsectionname{\translate{Subsubsection}}
+%\def\insertsubsubsectionnumber{\arabic{subsubsection}}
+%\setbeamertemplate{subsubsection page}
+%{
+%  \begin{centering}
+%    {\usebeamerfont{subsubsection name}\usebeamercolor[fg]{subsubsection name}\subsubsectionname~\insertsubsubsectionnumber}
+%    \vskip1em\par
+%    \begin{beamercolorbox}[sep=4pt,center]{part title}
+%      \usebeamerfont{subsubsection title}\insertsubsubsection\par
+%    \end{beamercolorbox}
+%  \end{centering}
+%}
+%\def\subsubsectionpage{\usebeamertemplate*{subsubsection page}}
+
+\def\subsubsectionname{\translate{Subsubsection}}
+\def\insertsubsubsectionnumber{\arabic{subsubsection}}
+\setbeamertemplate{subsubsection page}
+{
+  \begin{centering}
+    \vskip3em\par
+    \begin{beamercolorbox}[sep=4pt,center]{part title}
+      \usebeamerfont{subsubsection title}\insertsubsubsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+\def\subsubsectionpage{\usebeamertemplate*{subsubsection page}}
+
+\AtBeginSection{\frame{\sectionpage}}
+%\AtBeginSubsection{\frame{\subsectionpage}}
+\AtBeginSubsubsection{\frame{\subsubsectionpage}}
+
+
+\institute[CoEP]{College of Engineering Pune, India}
+%\logo{\includegraphics[width=1cm,height=1cm,keepaspectratio]{images/yogesh_logo_personal.pdf}}
+\logo{}
+
+\author[Yogesh H Kulkarni]{Yogesh Kulkarni} 

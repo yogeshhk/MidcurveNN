@@ -1,0 +1,226 @@
+\chapter{Geometry}
+
+\section{Design Philosopy}
+The geometry category provides the ability to describe a geometrical structure 
+and propagate particles efficiently through it.  This is done in part with 
+the aid of two central concepts, the {\it logical} and {\it physical} volumes.
+A logical volume represents a detector element of a given shape which may
+contain other volumes, and which may have other attributes.  It has access to
+other information which is independent of its phyisical location in the 
+detector, such as material and sensitive detector behavior.  A physical volume
+represents the spatial positioning or placement of the logical volume with
+respect to an enclosing mother (logical) volume.  Thus a hierarchical tree
+structure of volumes can be built with each volume containing smaller volumes
+(which may not overlap).  Repetitive structures can be represented by 
+specialized physical volumes, such as replicas and parameterized placements,
+sometimes resulting in a large savings in memory. 
+
+In {\sc Geant4} the logical volume has been refined by defining the shape as 
+a separate entity, called a {\it solid}.  Solids with simple shapes, like 
+rectilinear boxes, trapezoids, spherical or cylindrical sections or shells,
+each have their properties coded separately, in accord with the concept of
+{\it Constructed Solid Geometry (CSG)}.  More complex solids are defined by 
+their bounding surfaces, which can be planes, second-order surfaces or 
+higher-order B-spline surfaces, and belong to the {\it Boundary 
+Representations (BREP)} sub-category.
+
+Another way to build solids is by boolean combination - union, intersection 
+and subtraction.  The elemental solids should be CSGs.  
+
+Although a detector is naturally and best described as by a hierarchy of
+volumes, efficiency is not critically dependent on this.  An optimization
+technique, called voxelization, allows efficient navigation even in ``flat''
+geometries, typical of those produced by CAD systems.
+  
+\section{Class Design} 
+
+\begin{itemize}
+
+\item {\bf G4GeometryManager} -
+   responsible for managing ``high level'' objects in the geometry subdomain, 
+   notably including opening and closing (``locking'') the geometry, and 
+   creating/deleting optimization information for G4Navigator. The class is 
+   a "singleton".
+ 
+\item {\bf G4LogicalVolumeStore} -
+   a container for optionally storing created logical volumes. It enables 
+   traversal of all logical volumes by the UI/user/etc.
+ 
+\item {\bf G4LogicalVolume} -
+   represents a leaf node or unpositioned subtree in the geometry hierarchy. 
+   It may have daughters ascribed to it, and is also responsible for 
+   retrieval of the physical and tracking attributes of the physical volume 
+   that it represents.  These attributes include solid, material, magnetic 
+   field, and optionally user limits, sensitive detectors, etc.  Logical
+   volumes are optionally entered into the G4LogicalVolumeStore.
+ 
+\item {\bf G4MagneticField} -
+   a class responsible for the magnetic field in each volume, including the 
+   calculation of particle trajectories along curved paths. In cases where 
+   the geometry step limits the particle's step, the distance calculated 
+   is guaranteed to be the distance to a volume boundary.
+ 
+\item {\bf G4Navigator} -
+   a class used by the tracking management, able to obtain/calculate 
+   tracking-time geometrical information such as distance to the next volume, 
+   or to find the physical volume containing a given point in the world 
+   reference system.  The navigator maintains a transformation history and 
+   other information used to optimize the tracking time performance. 
+
+\item {\bf G4NavigationHistory} -
+   responsible for maintenance of the history of the path taken through the 
+   geometrical hierarchy.  It is principally a utility class for use by 
+   G4Navigator.
+ 
+\item {\bf G4NormalNavigation} -
+   a utility class for navigation in volumes containing only G4PVPlacement 
+   daughter volumes.
+ 
+\item {\bf G4ParameterisedNavigation} -
+   a utility class for navigation in volumes containing a single 
+   G4PVParameterised volume for which voxels for the replicated volumes have 
+   been constructed.
+ 
+\item {\bf G4VoxelNavigation} -
+   a utility class for navigation in volumes containing only G4PVPlacement 
+   daughter volumes for which voxels have been constructed.
+ 
+\item {\bf G4ReplicaNavigation} -
+   a utility class for navigation in volumes containing a single 
+   G4PVParameterised volume for which voxels for the replicated volumes 
+   have been constructed. 
+
+\item {\bf G4PhysicalVolumeStore} -
+   a container for optionally storing created physical volumes. It enables 
+   traversal of all physical volumes by the UI/user/etc.  All solids should 
+   be registered with G4PhysicalVolumeStore, and removed on their destruction. 
+   It is intended principally for the UI browser.
+ 
+\item {\bf G4VPhysicalVolume} -
+   a volume positioned within and relative to a given mother volume, and also 
+   represented by a given logical volume.  They are optionally entered into 
+   the G4PhysicalVolumeStore. 
+
+\item {\bf G4PVPlacement} -
+   a physical volume corresponding to a single touchable detector element, 
+   positioned within and relative to a mother volume.
+ 
+\item {\bf G4PVIndexed} -
+   a volume able to perform simple changes to its shape (corresponds to 
+   GSPOSP), and representing a single touchable detector element.
+ 
+\item {\bf G4PVReplica} -
+   a physical volume representing many identically formed touchable detector 
+   elements, differing only in their positioning.  The elements' positions 
+   are determined by means of a simple formula, and the elements completely 
+   fill the containing mother volume.
+ 
+\item {\bf G4PVParameterised} -
+   a physical volume representing many touchable detector elements differing 
+   in their positioning and dimensions.  Both are calculated by means of a 
+   G4VParameterisation object.  Each element's position is calculated as per 
+   G4PVReplica, and each element's shape can be modified by means of a user 
+   supplied formula.
+ 
+\item {\bf G4VPVParameterisation} -
+   a parameterisation class able to compute the transformation and, 
+   indirectly, the dimensions of parameterised volumes, given a replication 
+   number. 
+
+\item {\bf G4SmartVoxelProxy} -
+   a class for proxying smart voxels.  The class represents either a header 
+   (in turn refering to more VoxelProxies) or a node.  If created as a node, 
+   calls to GetHeader cause an exception, and likewise GetNode when a header. 
+
+\item {\bf G4SmartVoxelHeader} -
+   represents a single axis of virtual division.  Contains the individual 
+   divisions which are potentially further divided along different axes.
+ 
+\item {\bf G4SmartVoxelNode} -
+   a single virtual division, containing the physical volumes inside its 
+   boundaries and those of its parents.
+ 
+\item {\bf G4VoxelLimits} -
+   represents limitation/restrictions of space, where restrictions are only 
+   made perpendicular to the cartesian axes. 
+
+\item {\bf G4RotationMatrixStore} -
+   a container for optionally storing created G4RotationMatrices.
+ 
+\item {\bf G4SolidStore} -
+   a container for optionally storing created solids.  It enables traversal 
+   of all/any solids by the UI/user/etc. The class is a "singleton".
+ 
+\item {\bf G4VSolid} -
+   position independent geometrical entities. They have only `shape', and 
+   encompass both CSG and boundary representations.  They are optionally 
+   entered into the G4SolidStore.  This class defines, but does not implement, 
+   functions to compute distances to/from the shape.  Functions are also 
+   defined to check whether a point is inside the shape, to return the 
+   surface normal of the shape at a given point, and to compute the extent 
+   of the shape. 
+
+\item {\bf G4VSweptSolid} -
+   a solid created by performing a 3D transformation on a finite planar face.
+ 
+\item {\bf G4HalfSpaceSolid} -
+   a solid created by the boolean AND of one or more half space surfaces.
+ 
+\item {\bf G4BREPSolid} -
+   a solid created by an abitrary set of finite surfaces. 
+
+\item {\bf G4VTouchable} -
+   a class that maintains a ``reference'' on a given touchable element of 
+   the detector - a kind of bookmark.  It enables a given detector element 
+   to be saved during tracking (in case of booleans/user code/etc.) and the 
+   corresponding G4PhysicalVolume retrieved later, with its ``state''
+   information (path through the tree) optionally restored so that 
+   navigation can be restarted.  G4Touchables provide fast access to the 
+   transformation from the global reference system to that of the saved 
+   detector element. 
+
+\item {\bf G4TouchableHistory} -
+   object representing a touchable detector element, and its history in the 
+   geomtrical hierarchy, including its net resultant local->global transform.
+ 
+\item {\bf G4GRSSolid} - object representing a touchable solid.  It maintains 
+   the association between a solid and its net resultant local-to-global 
+   transform.
+ 
+\item {\bf G4GRSVolume} - object representing a touchable detector element.  
+   It maintains associations between a physical volume and its net resultant 
+   local-to-global transform. 
+
+\item {\bf G4TransformStore} -
+   a container for optionally storing created G4AffineTransform objects. 
+   It is responsible for storing and providing access to transformations 
+   that are constant at tracking time.
+ 
+\item {\bf G4AffineTransform} - a class for geometric affine transformations. 
+   It supports efficient arbitrary rotation and transformation of vectors and 
+   the computation of compound and inverse transformations.  A 
+   ``rotation flag'' is maintained internally for greater computational 
+   efficiency for transforms that do not involve rotation.
+ 
+\item {\bf G4UserLimits} -
+   responsible for user limits on step size, ascribable to individual volumes. 
+
+\end{itemize}
+
+Fig. \ref{figure:geom-1} shows a general overview, in UML notation, of 
+the geometry design.  A detailed collection of class diagrams from the 
+geometry category is found in the Appendix.
+
+\begin{figure}
+\begin{center}
+% \addtolength{\textwidth}{3cm}
+\includegraphics[angle=0,scale=0.6]{OOAnalysisDesign/Geometry/overall.eps}
+\caption{Overview of the geometry}
+\label{figure:geom-1}
+\end{center}
+\end{figure}
+
+\section{Status of this chapter}
+
+27.06.05 subsection on design philosphy (from Geant4 general paper) 
+         added by D.H. Wright \\ 
