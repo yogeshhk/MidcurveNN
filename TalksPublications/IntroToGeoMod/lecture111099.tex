@@ -1,0 +1,99 @@
+\documentstyle[12pt,epsf]{article}
+\input{psfig}
+
+\newcommand{\lecturetitle}[4]{
+  \noindent
+  CS 294-2, Grouping and Recognition (Prof. Jitendra Malik) \hfill #3\\
+  Lecture \##1 (#2) \hfill {\bf DRAFT} Notes by #4\\[-.05in]
+  \mbox{}\hrulefill \mbox{}\\}
+
+\begin{document}
+
+% MODIFY THE FOLLOWING TO INCLUDE THE LECTURE #, TOPIC, DATE, and YOUR NAME
+\lecturetitle{23}{Shape Similarity}{Nov. 10, 1999}{Shahram Dastmalchi}
+
+% INCLUDE AN OUTLINE OF THE CLASS TOPICS
+Last time we discussed the notion of a shape as a set of points. Shape is what remains invariant (unchanged) under a group of transformations. There are three basic methods for shape identifications:
+\begin{itemize} 
+  \item Invariants
+  \item Determine transformation first (allignment methods)
+  \item Measure coordinates in a frame (geometric hashing)
+\end{itemize}
+Shape similarity is a more general problem then shape equality.
+
+% THE NOTES WILL GO HERE
+
+\section{Reference frames}
+RF is a set of points large anough to establish transformation. 2D Euclidean transformation: rotation angle and translation vector. Axis of an object can be determined even if part of an object is occluded. Instead of combinatorial set of points we can use the axis of an object to determine the transformation. Reference frame can be suggested by the image data itself (fig. \ref{axis}).
+
+Often objects have several axis of symmetry. In this case the "natural" axis is often perceived to be vertical. For this reason a square and a diamond (square rotated by 45 degrees) sometimes perceived differently, since they are different with respect to their (vertical) reference frames. This observation was first mentioned by Mach.
+
+\section{How to measure the axis?}
+\subsection{Center}
+$\bullet$ We can find a center of a figure (centroid of points). This is not alwais reliable, since occlusion by other objects can influence its position.
+
+\begin{figure}[t]
+\epsffile{fig1.eps}
+\epsfxsize=3.000in
+\caption{Image Axis}
+\label{axis}
+\end{figure}
+
+\subsection{Axis}
+$\bullet$ We can find axis of bilateral symmetry.\newline
+$\bullet$ Find line about which the moment of inertia is minimal, i.e. $\sum_{i} r_{i}^{2}$, where $r_{i}$ are the distances from the line.\newline
+$\bullet$ Gravity defined (vertical) axis is prefered due to biological consistancy.\newline
+$\bullet$ Parts. Each part is described by its axis. Associated with each axis is the scalar function $r(x)$, where $x$ is a pont on the axis and $r(x)$ is the distance from point $x$ to the boundary of the shape. Medial axis transform is shown in fig. \ref{MAT} (Blum '67).\newline
+Grassfire transform (aka Symmetry Axis Transform or SAT) is another algorithm to obtain the axis, - a "fire tarts at the boundary of the shape, spreading invards. Where the firefronts meet, they create axis points.
+Given axis $x$ and $r(x)$, the shape can be reconstructed.
+
+\begin{figure}[t]
+\epsfxsize=3.000in
+\epsffile{fig2.eps}
+\caption{Medial (Symmetry) Axis Transform}
+\label{MAT}
+\end{figure}
+
+\section{Motivation}
+Many objects are articulated (piece-wise rigid). We need appropriate representation methods.\newline
+Advantages:
+\begin{itemize} 
+  \item Only local changes in SAT for articulated objects
+  \item Only local changes in SAT under occlusions
+  \item Tolerance of small changes in pose
+\end{itemize}
+Disadvantages:
+\begin{itemize} 
+  \item Small changes in contour can lead to large changes in SAT (small "bump" in the shape may lead to creation of its own axis
+\end{itemize}
+
+
+
+% EXAMPLE OF A PostScript FIGURE
+%\begin{figure}
+%\centerline{\psfig{file=lec4.eps,height=3in}}
+%\caption{Illustration}
+%\label{surface}
+%\end{figure}
+
+\section{Shape representation}
+There are three basic classes of methods of shape representation:
+\begin{itemize} 
+  \item Templates (binary figures)
+  \item Feature vectors
+  \item Structural description
+\end{itemize}
+
+\subsection{Template}
+Easy method, but brightness is not very good descriptor, - boundaries can be defined from multiple cues. Also, transformations (scale, rotation) cause problems, unless the shape is normalized to its frame and rotated appropriatly.
+\subsection{Feature vector}
+Area. Second Moment. Aspect Ratio. Higher order moments. Number of convexities. Etc.
+
+All the comparison is done in the feature space. The problem with this method is the choice of meaningful features.
+\subsection{Structural description}
+Parts and relationship among them. SAT is an example of this method. It is used in CAD. The difficulty lies in the part description, - cylinders, generalized cylinders, other???
+
+
+
+\end{document}
+
