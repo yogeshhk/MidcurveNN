@@ -248,11 +248,110 @@ def generate_images(datafolder = INPUT_DATA_FOLDER):
         for dx in range(5,21,5):
             for dy in range(5,21,5):
                 translate_images(filelist,dx,-dy)
-            
-        
+
+def plot_profie(output_seqeunce,close=False):
+    xs = []
+    ys = []
+    linestyle = 'dashed'
+    color = "red"
+    output_seqeunce_row_array = np.array(output_seqeunce)
+    for row in output_seqeunce_row_array:
+        x,y = row
+        xs.append(x)
+        ys.append(y)
+        plt.scatter(x, y)
+    if close:
+        xs.append(xs[0])
+        ys.append(ys[0])
+        linestyle = "solid"
+        color = "black"
+    plt.plot(xs, ys, color=color, linestyle=linestyle)
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+def scale_sequence(sequence, factor=1):
+    input_point_sequence_extended = [(x,y,0) for x,y in sequence]
+    scaled_points_list = []
+    A = np.array(input_point_sequence_extended)
+    T_s = np.array([[factor, 0, 0], [0, factor, 0], [0, 0, 1]])
+    for row in A:
+        output_row = T_s @ row
+        x_s, y_s, _ = output_row
+        scaled_points_list.append((round(x_s,2),round(y_s,2)))
+    return scaled_points_list
+
+def translate_sequence(sequence, distance_x=10, distance_y=10):
+    input_point_sequence_extended = [(x,y,1) for x,y in sequence]
+    scaled_points_list = []
+    A = np.array(input_point_sequence_extended)
+    T_s = np.array([[1, 0, distance_x], [0, 1, distance_y], [0, 0, 1]])
+    for row in A:
+        output_row = T_s @ row
+        x_s, y_s, _ = output_row
+        scaled_points_list.append((round(x_s,2),round(y_s,2)))
+    return scaled_points_list
+
+
+def plot_profile_dict(profile_dict):
+    fig = plt.figure()
+    ax = plt.gca()
+
+    p1 = profile_dict['Profile']
+    plot_profie(p1, close=True)
+
+    m1 = profile_dict['Midcurve']
+    plot_profie(m1, close=False)
+
+    # for i, factor in enumerate(np.linspace(1.2, 2.2, 10)):
+        # plot_profie(profile_dict['Scaled_Profile_' + str(i+1)] , close=True)
+        # plot_profie(profile_dict['Scaled_Midcurve_' + str(i+1)], close=False)
+
+    for ix, distance_x in enumerate(np.linspace(-100, 110, 20)):
+        for iy, distance_y in enumerate(np.linspace(-100, 110, 20)):
+            plot_profie(profile_dict['Translated_Profile_' + str(ix + 1) + str(iy + 1)], close=True)
+            plot_profie(profile_dict['Translated_Midcurve_' + str(ix + 1) + str(iy + 1)], close=False)
+
+
+    ax.set_xticks(np.arange(-110, 110, 10))
+    ax.set_yticks(np.arange(-110, 110, 10))
+    plt.title(profile_dict['ShapeName'])
+    plt.grid()
+    plt.show()
+
+import json
+
+def generate_sequences(sequences_filepath=SEQUENCES_FILEPATH, recreate_data=False):
+    profiles_dict_list= []
+    if not os.path.exists(sequences_filepath) or recreate_data:
+        with open(SEQUENCES_FILEPATH, 'w') as fout:
+            print("transformed sequence csv file not present, generating...")
+            profiles_dict_list = read_dat_files()
+
+            for profile_dict in profiles_dict_list:
+                # Scale
+                for i, factor in enumerate(np.linspace(1.2, 2.2, 10)):
+                    profile_dict['Scaled_Profile_' + str(i+1)] = scale_sequence(profile_dict['Profile'], factor)
+                    profile_dict['Scaled_Midcurve_' + str(i+1)]  = scale_sequence(profile_dict['Midcurve'], factor)
+
+                # Translate
+                for ix, distance_x in enumerate(np.linspace(-100, 110, 20)):
+                    for iy, distance_y in enumerate(np.linspace(-100, 110, 20)):
+                        profile_dict['Translated_Profile_' + str(ix+1)+str(iy+1)] = translate_sequence(profile_dict['Profile'], distance_x, distance_y)
+                        profile_dict['Translated_Midcurve_' + str(ix+1)+str(iy+1)]  = translate_sequence(profile_dict['Midcurve'], distance_x, distance_y)
+
+                # plot_profile_dict(profile_dict)
+
+
+            json.dump(profiles_dict_list,fout)
+
+    return profiles_dict_list
+
 if __name__ == "__main__":
     # generate_images()
     # profile_pngs,midcurve_pngs = read_input_image_pairs()
-    generate_pix2pix_dataset()
-
+    # generate_pix2pix_dataset()
+    sequences = generate_sequences(recreate_data=True)
+    print(sequences)
     
