@@ -152,7 +152,7 @@ Midcurve can be computed via various mathematical formulations/approaches such a
 	\label{fig_medialmethods}
     \end{center}
     
-Following are some salient observations:
+Following are some salient observations of these classical approaches:
 \begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
 	\item Biggest strength of formal approaches like MAT is that it can be computed of any shape, thick or thin. Being formally defined, the converse or reversal process, meaning ``given a MAT compute the original shape'', is possible.
 	\item Major drawback of MAT, Thinning methods is that it creates unnecessary branches and its shape is smaller than the original corresponding faces.
@@ -165,7 +165,7 @@ Following are some salient observations:
 \item Midcurve by profile decomposition approach is not used widely. The decomposition can result in large number of redundant sub-shapes making it ineffective and unstable for further processing.
 \end{itemize}
 
-The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT, CAD, Thinning and Parametric, for computing midcurve as they need heavy post-processing to remove unwanted curves. The heuristic method of decomposition,  has been error prone and inefficient so far. Author's own past work (Fig. ~\ref{fig_midcurveyk}) demonstrates reasonable succes on simpler shapes, but being rule-based approach, had limitation on scalability.
+The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT, CAD, Thinning and Parametric, for computing midcurve as they need heavy post-processing to remove unwanted curves. The heuristic method of decomposition,  has been error prone and inefficient so far. Author's own past work (Fig. ~\ref{fig_midcurveyk}) demonstrates reasonable success on simpler shapes, but being rule-based approach, had limitation on scalability.
 
     \begin{center}
 	\includegraphics[width=0.9\linewidth]{images/midcurve16}
@@ -202,7 +202,9 @@ The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT,
 %\caption{Midcurve Computation after Polygon Decomposition}
 %\label{fig_rocha}
 %\end{figure}
-	
+
+Use of Neural Network based techniques have been employed in recent times to compute Skeletons-Midcurve, primarily via image processing way. Rodas \cite{Rodas2019JointOB} used Deep Convolutional Neural Networks to compute object boundary as well as its skeletons, jointly. Shen et. al (\cite{shen2016object,Shen_2017}) built Convolutional neural network based skeleton extractor which is able to capture both local and non-local image context in order to determine the scale of each skeleton pixel. Zhao \cite{zhao2018hifi} used a similar to (\cite{shen2016object,Shen_2017}) but introduces a hierarchical feature learning mechanism. Wang et. al. (\cite{wang2018deepflux}) introduced content flux in skeletons, which is
+the learning objective instead of treating it as a binary classification problem.
 	
 Review of the state-of-the-art suggests approaches for computing midcruve are needed to take into account the application context, accuracy, characteristics  and aspect ratio of the sub-polygons. For the present research work, the midcurve generation needs primitive shaped, thin sub-polygons. Non-primitive, skewed shapes would result in inappropriate midcurves.
 
