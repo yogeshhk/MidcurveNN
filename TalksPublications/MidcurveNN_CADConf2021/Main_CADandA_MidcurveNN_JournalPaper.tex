@@ -59,10 +59,10 @@
 % ########################################
 % Please type in your abstract below after the "\abstract{" part.
 % ########################################
-\abstract{Multiple applications demand lower dimensional representation of geometric shapes. Midsurface is such two-dimensional(2D) i.e surface representation of a three-dimensional(3D) thin-walled solid shape. It is used in applications such as animation, shape matching, retrieval, finite element analysis, etc. 2D counterpart of 3D Midsurface is called Midcurve. So, Midcurve is one-dimensional(1D) i.e curve representation of a two-dimensional(2D) sketch profile shape.  Methods available to compute midcurves vary based on the type of the input shape (images, sketches, etc.) and processing (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc.). 
+\abstract{Multiple applications demand lower dimensional representation of geometric shapes. Midsurface is such two-dimensional(2D) i.e surface representation of a three-dimensional(3D) thin-walled solid shape. It is used in applications such as animation, shape matching, retrieval, finite element analysis, etc. Similarly, Midcurve are one-dimensional(1D) i.e curve representations of a two-dimensional(2D) sketch profile shape.  Methods available to compute Midcurves vary based on the type of the input shape (images, sketches, etc.) and processing (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc.). 
  
  
- This paper talks about a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing midcurve from images of 2D thin polygons in supervised learning manner. This dimension reduction transformation from input 2D thin polygon image to output 1D midcurve image is learnt by the neural network, which can then be used to compute midcurve of an unseen 2D thin polygonal shape.
+This paper talks about a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing Midcurve from images of 2D thin polygons in supervised learning manner. This dimension reduction transformation from input 2D thin polygon image to output 1D Midcurve image is learnt by the neural network, which can then be used to compute Midcurve of an unseen 2D thin polygonal shape.
 }
 
 
@@ -86,37 +86,37 @@
 % ################################
 
 \section{INTRODUCTION}
-Computer-aided Design (CAD) models of thin-walled solids such as sheet metal or plastic parts are often reduced dimensionally to their corresponding midsurfaces for quicker and fairly accurate results of Computer-aided Engineering (CAE) analysis (Fig. ~\ref{fig_cadcaeworkflow}).  
+Computer-aided Design (CAD) models of thin-walled solids such as sheet metal or plastic parts are often reduced dimensionally to their corresponding midsurfaces for quicker and fairly accurate results of Computer-aided Engineering (CAE) analysis (Figure~\ref{fig_cadcaeworkflow}).  
 
 	\begin{figure} [!h]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{images/midcurve2}
+		\includegraphics[width=\linewidth,keepaspectratio]{images/Midcurve2}
 		\caption{Computer-aided PDP (Source: Tierney\cite{Tierney2013})}
 		\label{fig_cadcaeworkflow}
 	\end{figure}
 	
 
-A midsurface is a surface lying midway of (and representing) the input shape (Fig. ~\ref{fig_midsurface}).  
+
 
 	\begin{figure} [!h]
 		\centering
-		\includegraphics[width=0.8\linewidth,keepaspectratio]{images/midcurve5}
+		\includegraphics[width=0.8\linewidth,keepaspectratio]{images/Midcurve5}
 		\caption{Midsurface}
 		\label{fig_midsurface}
 	\end{figure}
-
-Computation of the Midsurface is still a time-consuming and mostly, a manual task due to lack of robust-automated approaches. Many of the existing automatic midsurface generation approaches result in some kind of failures such as gaps, missing patches, overlapping surfaces, etc. It takes hours or even days to correct such errors with manual intervention. Computing robust Midsirface, thus, is need of the hour.
+	
+A midsurface is a surface lying midway of (and representing) the input shape (Figure~\ref{fig_midsurface}).  Computation of the Midsurface is still a time-consuming and mostly, a manual task due to lack of robust-automated approaches. Many of the existing automatic midsurface generation approaches result in some kind of failures such as gaps, missing patches, overlapping surfaces, etc. It takes hours or even days to correct such errors with manual intervention. Computing robust Midsirface, thus, is need of the hour.
 
 
 	
 %	\begin{figure} [!h]
 %		\centering
-%		\includegraphics[width=0.9\linewidth,keepaspectratio]{images/midcurve13}
+%		\includegraphics[width=0.9\linewidth,keepaspectratio]{images/Midcurve13}
 %		\caption{Midcurve}
-%		\label{fig_midcurve1}
+%		\label{fig_Midcurve1}
 %	\end{figure}
 	
-As Midruface is lower dimentinal repreosentation of thin solid, Skeleton is a lower dimentinal represntaton of either 3D or 2D shape. It can generated for different types of shapes such as geometric, biological, etc. Various mathematical formulations/approaches used for its generation are Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Pairing, Thinning etc. (Fig. ~\ref{fig_medialmethods} ). 
+As Midruface is 3D repreosentation of a 3D thin solid, Skeleton (also known as Medial Object, Medial Axis, Chordal Axis, etc.) is one dimentinal represntaton of either 3D or 2D input shapes. Various mathematical formulations/approaches used for their generation are Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Pairing, Thinning etc. (Figure~\ref{fig_medialmethods}). 
 
     \begin{center}
 	\includegraphics[width=0.6\linewidth]{images/MedialMethodsOnlyShort}
@@ -124,62 +124,62 @@ As Midruface is lower dimentinal repreosentation of thin solid, Skeleton is a lo
 	\label{fig_medialmethods}
     \end{center}
 		
-Midcurve is a special case of skeleton (Fig. ~\ref{fig_midcurve1}) where the parent shape is a 2D profile and is typically in the form of MAT. Midcurve is different than MAT. Fig. \ref{fig_midmat} shows that Midcurve lacks the branches and morphologically represents the parent shape (\cite{Ramanathan04}). MAT and the parent shape are dual (ie inter convertible) where as Midcurve does not have that requirement.
+Midcurve is a special case of the Skeleton or MAT (Figure~\ref{fig_Midcurve1}) where the input shape is a 2D profile. Figure~\ref{fig_midmat} shows that Midcurve lacks the branches and morphologically represents the input shape \cite{Ramanathan04}. MAT and the input shape are dual (ie inter-convertible) whereas Midcurve does not have that requirement.
 
 {\bf Definition:} \textit{Midcurve is an aggregation of curve segments (where each segment corresponds to a pair of nonadjacent edges in the object that are closest to each other) that form a closed and connected set and that satisfy homotopy}
 
 
     \begin{center}
-	\includegraphics[width=0.6\linewidth]{images/Medial-Axis-and-Mid-curve_W640}
-	\captionof{figure}{Medial Axis Transform (MAT) and Mid-curve.(\cite{Ramanathan04})}
+	\includegraphics[width=0.5\linewidth]{images/Medial-Axis-and-Mid-curve_W640}
+	\captionof{figure}{Medial Axis Transform (MAT) and Mid-curve. \cite{Ramanathan04}}
 	\label{fig_midmat}
     \end{center}
 		
-In CAD, thin solid shapes are typically created by extruding profile. Thus, generating Midsurface is same as extruding Midcurve of the profile (Fig. ~\ref{fig_midcurve}).
+In CAD, thin solid shapes are typically created by extruding 2D sketch profiles. Thus, generating Midsurface is same as extruding Midcurve of the profile (Figure~\ref{fig_Midcurve}).
 
 	\begin{figure} [!h]
 		\centering
-	\subfloat[]{\label{fig_midcurve}\includegraphics[width=0.45\linewidth]{images/midcurve12}} \quad
-	\subfloat[]{\label{fig_midcurve1}\includegraphics[width=0.45\linewidth]{images/midcurve13}}
+	\subfloat[]{\label{fig_Midcurve}\includegraphics[width=0.47\linewidth]{images/Midcurve12}} \quad
+	\subfloat[]{\label{fig_Midcurve1}\includegraphics[width=0.47\linewidth]{images/Midcurve13}}
 		\caption{Midcurve}
 	\end{figure}
 	
 	
-Midcurve, being simpler than the parent object, operations like pattern recognition, approximation, similarity estimation, collision detection, animation, matching and deformation can be performed efficiently on it than on the parent object. 
+Midcurve, being simpler than the input shape, operations like pattern recognition, approximation, similarity estimation, collision detection, animation, matching and deformation can be performed efficiently on it rather than on the input shape. 
 
 
 
 \section{RELATED WORK}
 
-Research on computing Midsurface and Midcurve is going on for decades. Fig. ~\ref{fig_litsurvey}) shows important milestones along the journey.
+Research on computing Midsurface and Midcurve is going on for decades. Figure ~\ref{fig_litsurvey}) shows important milestones along the journey. More detailed analysis can be found in the survey paper \cite{medial2010}.
 
     \begin{center}
-	\includegraphics[width=\linewidth]{images/midcurve15}
+	\includegraphics[width=\linewidth]{images/Midcurve15}
 	\captionof{figure}{Milestones along journey of Midsurface computation research}
 	\label{fig_litsurvey}
     \end{center}
     
-More detailed analysis can be found in the survey paper \cite{medial2010}.
+
 Following are some salient observations of these classical approaches:
 \begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
 	\item Biggest strength of formal approaches like MAT is that it can be computed of any shape, thick or thin. Being formally defined, the converse or reversal process, meaning ``given a MAT compute the original shape'', is possible.
 	\item Major drawback of MAT, Thinning methods is that it creates unnecessary branches and its shape is smaller than the original corresponding faces.
 	\item  MAT based approaches also suffer from robustness problem. A slight change in base geometry forces re-computation of MAT and the results could very well be different than the original.
-	\item Although MAT approaches have been around for decades and are fairly mature, its usage in midcurve generation is still very complex and difficult to ensure appropriate topology.
+	\item Although MAT approaches have been around for decades and are fairly mature, its usage in Midcurve generation is still very complex and difficult to ensure appropriate topology.
 	\item The major limitation of CAT approach is that mesh has to be generated beforehand. Creating constrained, single layer meshes on complicated 2D profiles are, at times, difficult.
 	\item Thinning approaches are based on split events of the straight line skeleton gives counter-intuitive results if the polygon contains sharp reflex vertices.
 	\item In Pairs approach, the two input curves or surfaces may not be in one-to-one form. In such cases maintaining continuity can be challenging.
-	\item Quality of surface generated by Pairs approach depends on the sampling done to compute the midpoints.
+	\item Quality of Midcurve generated by Pairs approach depends on the sampled input shape points.
 \item Midcurve by profile decomposition approach is not used widely. The decomposition can result in large number of redundant sub-shapes making it ineffective and unstable for further processing.
 \end{itemize}
 
 
-The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT, CAD, Thinning and Parametric, for computing midcurve as they need heavy post-processing to remove unwanted curves. The heuristic method of decomposition,  has been error prone and inefficient so far. Author's own past work (Fig. ~\ref{fig_midcurveyk}) demonstrates reasonable success on simpler shapes, but being rule-based approach, had limitation on scalability.
+The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT, CAD, Thinning and Parametric, for computing Midcurve as they need heavy post-processing to remove unwanted curves. The heuristic method of decomposition,  has been error prone and inefficient so far. Author's own past work (Figure ~\ref{fig_Midcurveyk}) demonstrates reasonable success on simpler shapes, but being rule-based approach, had limitation on scalability.
 
     \begin{center}
-	\includegraphics[width=0.9\linewidth]{images/midcurve16}
-	\captionof{figure}{Midcurve Computation by Cellular Decomposition (\cite{dimred2017})}
-	\label{fig_midcurveyk}
+	\includegraphics[width=\linewidth]{images/Midcurve16}
+	\captionof{figure}{Midcurve Computation by Cellular Decomposition \cite{dimred2017}}
+	\label{fig_Midcurveyk}
     \end{center}
     
 %
@@ -212,10 +212,10 @@ The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT,
 %\label{fig_rocha}
 %\end{figure}
 
-Use of Neural Network based techniques have been employed in recent times to compute Skeletons-Midcurve, primarily via image processing way. Rodas \cite{Rodas2019JointOB} used Deep Convolutional Neural Networks to compute object boundary as well as its skeletons, jointly. Shen et. al (\cite{shen2016object,Shen_2017}) built Convolutional neural network based skeleton extractor which is able to capture both local and non-local image context in order to determine the scale of each skeleton pixel. Zhao \cite{zhao2018hifi} used a similar to (\cite{shen2016object,Shen_2017}) but introduces a hierarchical feature learning mechanism. Wang et. al. (\cite{wang2018deepflux}) introduced content flux in skeletons, which is
-the learning objective instead of treating it as a binary classification problem. Approach by Panichev et. al. (\cite{Panichev_2019_CVPR_Workshops}) comes close to method proposed here. It used U-net to extract skeletons, but not Midcurve though.
+Use of Neural Network based techniques have been employed in recent times to compute Skeletons-Midcurve, primarily via image processing way. Rodas \cite{Rodas2019JointOB} used Deep Convolutional Neural Networks to compute object boundary as well as its skeletons, jointly. Shen et. al \cite{shen2016object,Shen_2017} built Convolutional neural network based skeleton extractor which is able to capture both local and non-local image context in order to determine the scale of each skeleton pixel. Zhao \cite{zhao2018hifi} used a similar to \cite{shen2016object,Shen_2017} but introduces a hierarchical feature learning mechanism. Wang et. al.\cite{wang2018deepflux} introduced content flux in skeletons, which is
+the learning objective instead of treating it as a binary classification problem. Approach by Panichev et. al. \cite{Panichev_2019_CVPR_Workshops} comes close to the method proposed here. It used U-net to extract skeletons, but not Midcurve though.
 	
-Review of the state-of-the-art suggests approaches for computing midcruve are needed to take into account the application context, accuracy, characteristics  and aspect ratio of the sub-polygons. For the present research work, the midcurve generation needs primitive shaped, thin sub-polygons. Non-primitive, skewed shapes would result in inappropriate midcurves.
+Review of the state-of-the-art suggests approaches for computing Midcurve are needed to take into account the application context, accuracy, characteristics  and aspect ratio of the sub-polygons. For the present research work, the Midcurve generation needs primitive shaped, thin sub-polygons. Non-primitive, skewed shapes would result in inappropriate Midcurves.
 
 The current paper proposes a novel method of computing Midcurve using Neural Networks i.e Deep Learning approach.
  
@@ -223,10 +223,10 @@ The current paper proposes a novel method of computing Midcurve using Neural Net
 \section{PROPOSED METHOD}
 \label{sec:proposedmethod}
 
-In the current paper we focus on computing midcurve for 2D planar sketch profiles and not 3D skeletonal shapes.  Even in 2D profiles, shapes vary enormously. As the first level of simplification, we would deal with 2D polygons only (with an assumption that curved shapes can be converted to polygonal shape by faceting). Figure ~\ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
+The current paper focuses on computing Midcurve for 2D planar sketch profiles and not 3D skeletonal shapes.  Even in 2D profiles, shapes vary enormously. As the first level of simplification, 2D polygons only (with an assumption that curved shapes can be converted to polygonal shape by faceting) are dealt with. Figure~\ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
 
      \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/Letters}
+	\includegraphics[width=0.9\linewidth]{images/Letters}
 	\captionof{figure}{2D Thin Polygonal shapes}
 	\label{fig_letters}
     \end{center}
@@ -235,7 +235,7 @@ In the current paper we focus on computing midcurve for 2D planar sketch profile
 Computation of Midcurve, in its original form, is transformation of a 2D thin closed, with/without-holes polygon to 1D open/closed/branched polyline. Paper \cite{dimred2017} details one of the effective Midcurve computation techniques, based on rule-based computational geometry approach. Such techniques have a shortcoming of not being scalable or generic enough to be able to handle variety of shapes. Deep Learning neural network architectures show potential of developing such generic models. This dimension reduction transformation should ideally be modeled as Sequence to Sequence (Seq2Seq) neural architecture, like Machine Translation. 
 
      \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/midcurve_encoder_decoder}
+	\includegraphics[width=0.8\linewidth]{images/Midcurve_encoder_decoder}
 	\captionof{figure}{Encoder-Decoder Architecture}
 	\label{fig_endecoder}
     \end{center}
@@ -247,7 +247,7 @@ This paper proposes to use such network for Midcurve computation in the form of 
 
 
     
-Input and output geometries are rasterized into 100x100 size images. Transformations like translation, rotation and mirroring are applied to create diversity in the samples. MidcurveNN being a Supervised Learning approach, both input thin-polygons and corresponding output Midcurve polylines are transformed simultaneously. Figure ~\ref{fig_training} shows some samples. This is training data.    
+Input and output geometries are rasterized into 100x100 size images. Transformations like translation, rotation and mirroring are applied to create diversity in the samples. MidcurveNN being a Supervised Learning approach, both input thin-polygons and corresponding output Midcurve polylines are transformed simultaneously. Figure~\ref{fig_training} shows some samples. This is training data.    
 
 
      \begin{center}
@@ -258,7 +258,7 @@ Input and output geometries are rasterized into 100x100 size images. Transformat
     
 MidcurveNN encoder-decoder has been implemented in Python programming with Keras library \cite{autoenkeras}.  
 
-Abridged code listing is presented below (Code listing ~\ref{lst:encdec}).
+Abridged code listing is presented below (Code Listing ~\ref{lst:encdec}).
 
 \begin{center}
 \begin{tabular}{c}
@@ -280,7 +280,7 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 \end{tabular}
 \end{center}
 
-Encoder takes input image of size $100 \times 100 = 10000$, then comes Dense layer with size $100$ to form the encoded vector. Decoder takes encoded vector as input, then with a Dense layer expands back to $100 \times 100 = 10000$ size of the output image. Relu activation is used for Encoder whereas Sigmoid for the decoder. AdaDelta optimizer with binary cross entropy as loss function is used to compute the losses. Table \ref{tbl_loss} shows loss across number of epochs.    
+Encoder takes input image of size $100 \times 100 = 10000$, then comes Dense layer with size $100$ to form the encoded vector. Decoder takes encoded vector as input, then with a Dense layer expands back to $100 \times 100 = 10000$ size of the output image. Relu activation is used for Encoder whereas Sigmoid for the decoder. AdaDelta optimizer with binary cross entropy as loss function is used to compute the losses. Table~\ref{tbl_loss} shows loss across number of epochs.    
 
 
 \begin{table}[h]
@@ -298,7 +298,7 @@ Encoder takes input image of size $100 \times 100 = 10000$, then comes Dense lay
 \end{table}
 
 
-Some of the results are shown in Figure \ref{fig_results}. Inputs are at the top and output Midcurve at the bottom.
+Some of the results are shown in Figure~\ref{fig_results}. Inputs are at the top and output Midcurve at the bottom.
 
      \begin{center}
 	\includegraphics[width=\linewidth]{images/Midcurvenn_results}
