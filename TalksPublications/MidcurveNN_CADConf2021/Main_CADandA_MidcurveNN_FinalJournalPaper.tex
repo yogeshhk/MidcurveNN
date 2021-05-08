@@ -59,10 +59,10 @@
 % ########################################
 % Please type in your abstract below after the "\abstract{" part.
 % ########################################
-\abstract{Multiple applications demand lower dimensional representation of geometric shapes. Midsurface is such two-dimensional(2D) i.e surface representation of a three-dimensional(3D) thin-walled solid shape. It is used in applications such as animation, shape matching, retrieval, finite element analysis, etc. Similarly, Midcurve are one-dimensional(1D) i.e curve representations of a two-dimensional(2D) sketch profile shape.  Methods available to compute Midcurves vary based on the type of the input shape (images, sketches, etc.) and processing (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc.). 
+\abstract{Multiple applications demand lower-dimensional representation of geometric shapes. Midsurface is such a two-dimensional (2D) i.e., surface representation of a three-dimensional (3D) thin-walled solid shape. It is used in applications such as animation, shape matching, retrieval, finite element analysis, etc. Similarly, Midcurve is one-dimensional (1D) i.e., a curve representation of a two-dimensional (2D) sketch profile shape.  Methods available to compute Midcurves vary based on the type of the input shape (images, sketches, etc.) and processing (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc.). 
  
  
-This paper talks about a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing Midcurve from images of 2D thin polygons in supervised learning manner. This dimension reduction transformation from input 2D thin polygon image to output 1D Midcurve image is learnt by the neural network, which can then be used to compute Midcurve of an unseen 2D thin polygonal shape.
+This paper talks about a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing Midcurve from images of 2D thin polygons in a supervised learning manner. This dimension reduction transformation from input 2D thin polygon image to output 1D Midcurve image is learnt by the neural network, which can then be used to compute Midcurve of an unseen 2D thin polygonal shape.
 }
 
 
@@ -86,7 +86,7 @@ This paper talks about a novel method called MidcurveNN which uses Encoder-Decod
 % ################################
 
 \section{INTRODUCTION}
-Computer-aided Design (CAD) models of thin-walled solids such as sheet metal or plastic parts are often reduced dimensionally to their corresponding midsurfaces for quicker and fairly accurate results of Computer-aided Engineering (CAE) analysis (Figure~\ref{fig_cadcaeworkflow}).  
+Computer-aided Design (CAD) models of thin-walled solids such as sheet metal or plastic parts are often reduced dimensionally to their corresponding Midsurfaces for quicker and fairly accurate results of Computer-aided Engineering (CAE) analysis (Figure~\ref{fig_cadcaeworkflow}).  
 
 	\begin{figure} [!h]
 		\centering
@@ -105,7 +105,7 @@ Computer-aided Design (CAD) models of thin-walled solids such as sheet metal or 
 		\label{fig_midsurface}
 	\end{figure}
 	
-A midsurface is a surface lying midway of (and representing) the input shape (Figure~\ref{fig_midsurface}).  Computation of the Midsurface is still a time-consuming and mostly, a manual task due to lack of robust-automated approaches. Many of the existing automatic midsurface generation approaches result in some kind of failures such as gaps, missing patches, overlapping surfaces, etc. It takes hours or even days to correct such errors with manual intervention. Computing robust Midsirface, thus, is need of the hour.
+A Midsurface is a surface lying midway of (and representing) the input shape (Figure~\ref{fig_midsurface}). Computation of the Midsurface is still a time-consuming and mostly, a manual task due to lack of robust-automated approaches. Many of the existing automatic Midsurface generation approaches result in some kind of failures such as gaps, missing patches, overlapping surfaces, etc. It takes hours or even days to correct such errors with manual intervention. Computing robust Midsurface, thus, is need of the hour.
 
 
 	
@@ -116,7 +116,7 @@ A midsurface is a surface lying midway of (and representing) the input shape (Fi
 %		\label{fig_Midcurve1}
 %	\end{figure}
 	
-As Midruface is 3D repreosentation of a 3D thin solid, Skeleton (also known as Medial Object, Medial Axis, Chordal Axis, etc.) is one dimentinal represntaton of either 3D or 2D input shapes. Various mathematical formulations/approaches used for their generation are Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Pairing, Thinning etc. (Figure~\ref{fig_medialmethods}). 
+As Midsurface is 2D representation of a 3D thin solid, Skeleton (also known as Medial Object, Medial Axis, Chordal Axis, etc.) is one dimensional representation of either 3D or 2D input shapes. Various mathematical formulations/approaches used for their generation are Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Pairing, Thinning, etc. (Figure~\ref{fig_medialmethods}). 
 
     \begin{center}
 	\includegraphics[width=0.6\linewidth]{images/MedialMethodsOnlyShort}
@@ -124,14 +124,14 @@ As Midruface is 3D repreosentation of a 3D thin solid, Skeleton (also known as M
 	\label{fig_medialmethods}
     \end{center}
 		
-Midcurve is a special case of the Skeleton or MAT (Figure~\ref{fig_Midcurve1}) where the input shape is a 2D profile. Figure~\ref{fig_midmat} shows that Midcurve lacks the branches and morphologically represents the input shape \cite{Ramanathan04}. MAT and the input shape are dual (ie inter-convertible) whereas Midcurve does not have that requirement.
+Midcurve is a special case of the Skeleton or MAT (Figure~\ref{fig_Midcurve1}) where the input shape is a 2D profile. Figure~\ref{fig_midmat} shows that Midcurve lacks the branches and morphologically represents the input shape \cite{Ramanathan04}. MAT and the input shape are dual (i.e. inter-convertible) whereas Midcurve does not have that requirement.
 
 {\bf Definition:} \textit{Midcurve is an aggregation of curve segments (where each segment corresponds to a pair of nonadjacent edges in the object that are closest to each other) that form a closed and connected set and that satisfy homotopy}
 
 
     \begin{center}
 	\includegraphics[width=0.5\linewidth]{images/Medial-Axis-and-Mid-curve_W640}
-	\captionof{figure}{Medial Axis Transform (MAT) and Mid-curve. \cite{Ramanathan04}}
+	\captionof{figure}{Medial Axis Transform (MAT) and Midcurve. \cite{Ramanathan04}}
 	\label{fig_midmat}
     \end{center}
 		
@@ -212,7 +212,7 @@ The survey paper \cite{medial2010} suggests to avoid formal methods such as MAT,
 %\label{fig_rocha}
 %\end{figure}
 
-Use of Neural Network based techniques have been employed in recent times to compute Skeletons-Midcurve, primarily via image processing way. Rodas \cite{Rodas2019JointOB} used Deep Convolutional Neural Networks to compute object boundary as well as its skeletons, jointly. Shen et. al \cite{shen2016object,Shen_2017} built Convolutional neural network based skeleton extractor which is able to capture both local and non-local image context in order to determine the scale of each skeleton pixel. Zhao \cite{zhao2018hifi} used a similar to \cite{shen2016object,Shen_2017} but introduces a hierarchical feature learning mechanism. Wang et. al.\cite{wang2018deepflux} introduced content flux in skeletons, which is
+Use of Neural Network based techniques have been employed in recent times to compute Skeletons-Midcurve, primarily via image processing way. Rodas \cite{Rodas2019JointOB} used Deep Convolutional Neural Networks to compute object boundary as well as its skeletons, jointly. Shen et. al \cite{shen2016object,Shen_2017} built Convolutional neural network based skeleton extractor which is able to capture both local and non-local image context in order to determine the scale of each skeleton pixel. Zhao \cite{zhao2018hifi} used a similar method to \cite{shen2016object,Shen_2017} but introduced a hierarchical feature learning mechanism. Wang et. al.\cite{wang2018deepflux} introduced content flux in skeletons, which is
 the learning objective instead of treating it as a binary classification problem. Approach by Panichev et. al. \cite{Panichev_2019_CVPR_Workshops} comes close to the method proposed here. It used U-net to extract skeletons, but not Midcurve though.
 	
 Review of the state-of-the-art suggests approaches for computing Midcurve are needed to take into account the application context, accuracy, characteristics  and aspect ratio of the sub-polygons. For the present research work, the Midcurve generation needs primitive shaped, thin sub-polygons. Non-primitive, skewed shapes would result in inappropriate Midcurves.
