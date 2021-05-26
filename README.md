@@ -1,6 +1,7 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
+<!---
 Copyright (C) 2019 Yogesh H Kulkarni
 
 ## License:
@@ -8,6 +9,7 @@ This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
 of the License, or any later version.
+-->
 
 ## Description
 - Goal: Given a 2D closed shape (closed polygon) find its midcurve (polyline, closed or open)
