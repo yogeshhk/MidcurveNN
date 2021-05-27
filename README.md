@@ -1,7 +1,7 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
-![Midcurve](images\IMG-20191008-WA0001.jpg)
+![Midcurve](TalksPublications/images/IMG-20191008-WA0001.jpg)
 
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
