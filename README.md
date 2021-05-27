@@ -1,6 +1,8 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
+![Midcurve](images\IMG-20191008-WA0001.jpg)
+
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
 
@@ -70,21 +72,15 @@ of the License, or any later version.
 - no library called "libcairo-2" was found
   https://stackoverflow.com/questions/28211418/python-oserror-cannot-load-library-libcairo-so-2
   Install GTK 3 runtime https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer and add to path
-  
 - Failed to create a directory: models/autoencoder_model.pkl\variables; No such file or directory
   use a forward slash with the checkpoint directory or os.paths.join("models","modelname")
-  
 - If using Keras pass *_constraint arguments to layers.
-
 - Cuda lib error, https://www.joe0.com/2019/10/19/how-resolve-tensorflow-2-0-error-could-not-load-dynamic-library-cudart64_100-dll-dlerror-cudart64_100-dll-not-found/
 
 ## Pending
-	- Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
-	- Different sizes of input and output
-	- Closed->closed/open, Manifold->Manifold/Non-manifold
-	
-## References
-- Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/
+- Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
+- Different sizes of input and output
+- Closed->closed/open, Manifold->Manifold/Non-manifold
 
 ## Disclaimer:
 Author (yogeshkulkarni@yahoo.com) gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all.
