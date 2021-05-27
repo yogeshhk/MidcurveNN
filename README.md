@@ -24,30 +24,21 @@ of the License, or any later version.
 	- See https://www.tensorflow.org/tutorials/seq2seq, https://www.youtube.com/watch?v=G5RY_SUJih4, A Neural Representation of Sketch Drawings, https://magenta.tensorflow.org/sketch_rnn  https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/README.md 
 	- Add plotting capability, show polygons their midcurves etc, easy to debug and test unseen figures.
 
-## Plan
 
-###	Phase I (Image based, Encoder-Decoder fixed size based) : DONE
-	- Img2Img: i/o fixed size 100x100 bitmaps
-	- Populate many by scaling/rotating/translating both io shapes within the fixed size
-	- Use Encode Decode like Semantic Segmentation or Pix2Pix to learn dimension reduction
 	
-###	Phase II (Geometric Points based, Variable size sequences i/o, once  such dynamic size encoder-decoder is available): *LIMITATIONS
-	- Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
-	- Different sizes of input and output
-	- Closed->closed/open, Manifold->Manifold/Non-manifold
-	
-### LIMITATIONS
+## Limitations
 - Shapes can not be modeled as sequences. Although polygon shape L may appear as sequence of points, it is not. 
 - All shapes can not be drawn without lifting a pencil, which is possible for sequences. Say, Shapes like Y or concentric O, cannot be modeled as sequences. So, Midcurve transformation cannot be modeled as Sequence 2 Sequence network.
 - Shapes are not graphs as well. Graphs are topological and not geometrical. They represent only connectivity and not spatial positions. In 2D profiles even nodes have deterministic locations. So, even if Graph 2 Graph Encoder Decoder architecture is made available, it cannot model the Midcurve transformation.
 - Assuming by "network" we mean Graph with nodes having spatial significance, we would need Network 2 Network Encoder Decoder architecture in place, to model Midcurve transformation.
 - *Conclusion* With the study so far, the Phase I results, with Image to Image transformation architecture, the problem appears reasonably addressed, and Phase II is NOT NEEDED. HALTING THIS PROJECT FOR NOW AND WILL NOT PROCEED WITH PHASE II.
 
+
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
 - ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
-
+- Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
 
 ## Implementation Notes:
 - Keras (TBD: Moving from independant Keras to Tensorflow.Keras, so wait for update here)
@@ -73,12 +64,6 @@ of the License, or any later version.
 - Thus, theoretically, GANs are not suitable for MidcurveNN problem. Comments?
 
 
-## ToDOs
-- Get Denoiser working in .py and .ipynb 
-- Get cnn working in .py and .ipynb 
-- Get pix2pix working in .py and .ipynb
-- Generate more data from more profiles
-
 ## Errors and Solutions
 - no library called "libcairo-2" was found
   https://stackoverflow.com/questions/28211418/python-oserror-cannot-load-library-libcairo-so-2
@@ -90,7 +75,12 @@ of the License, or any later version.
 - If using Keras pass *_constraint arguments to layers.
 
 - Cuda lib error, https://www.joe0.com/2019/10/19/how-resolve-tensorflow-2-0-error-could-not-load-dynamic-library-cudart64_100-dll-dlerror-cudart64_100-dll-not-found/
-  
+
+## Pending
+	- Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
+	- Different sizes of input and output
+	- Closed->closed/open, Manifold->Manifold/Non-manifold
+	
 ## References
 - Image-to-Image Translation with Conditional Adversarial Nets https://phillipi.github.io/pix2pix/
 
