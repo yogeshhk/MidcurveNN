@@ -17,25 +17,35 @@ of the License, or any later version.
 - Goal: Given a 2D closed shape (closed polygon) find its midcurve (polyline, closed or open)
 - Input: set of points or set of connected lines, non-intersecting, simple, convex, closed polygon 
 - Output: another set of points or set of connected lines, open/branched polygons possible
-- Type: 
-	- It is a translation problem. In 2D, input is the sketch profile, whereas the output is the midcurve. Input points are ordered (mostly forming closed loop, manifold). Output points may not be ordered, and can have branches (non-manifold)
-	- It is a variable input and variable output problem. 
+
+## Thoughts
+
+### Representation Issue
+- Shapes can not be modeled as sequences. Although polygon shape L may appear as sequence of points, it is not. 
+- All shapes can not be drawn without lifting a pencil, which is possible for sequences. Say, Shapes like Y or concentric O, cannot be modeled as sequences. So, Midcurve transformation cannot be modeled as Sequence 2 Sequence network.
+- How to represent a geometric figure to feed to any Machine/Deep Learning problem, as they need numeric data in vector form?
+- How to convert geometric shapes (even after restricting the domain to 2D linear profile shapes) to vectors?
+- Closest data structure is graph, but thats predominantly topological and not geometrical. Meaning, graphs represent only connectivity and not spatial positions. Here, nodes would have coordinates and arcs would have curved-linear shape. So, even Graph Neural Networks, which convolute neighbors around a node and pool the output to generate vectors, are not suitable.
+- Need RnD to come up with a way to generate geometric-graph embedding that will convolute at nodes (having coordinates) around arcs (having geometry, say, a set of point coordinates), then pool them to form a meaningful representation.
+
+### Variable Lengths Issue
+	- It is a dimension-reduction problem. In 2D, input is the sketch profile (parametrically 2D), whereas the output is the midcurve (parametrically 1D). Input points are ordered (mostly forming closed loop, manifold). Output points may not be ordered, and can have branches (non-manifold)
+	- It is a variable input and variable output problem as number of points and lines are different in input and output.
 	- It is a network 2 network problem (not Sequence to Sequence) with variable size inputs and outputs
 	- For Encoder Decoder like network, libraries like Tensorflow need fixed length inputs. If input has variable lengths then padding is done with some unused value. But the padding will be a big issue here as the padding value cannot be like 0,0 as it itself would be a valid point. 
-	- Another problem of using seq2seq is that both input polygons and output branched midcurves are not linearly connected, they may have loops, or branches. Need to think more. (more details in LIMITATIONS below)
+	- The problem of using seq2seq is that both input polygons and output branched midcurves are not linearly connected, they may have loops, or branches. Need to think more. (more details in LIMITATIONS below)
 	- Instead of going to point list as i/o let’s look at well worked format of images. Images are of constant size, say 64x64 pixels. Let’s colour profile in the bitmap (b&w only) similarly midcurve in output bitmap. With this as i/o LSTM encoder decoder seq2seq can be applied. Variety in training data can be populated by shifting/rotating/scaling both i/o. Only 2D sketch profile for now. Only linear segments. Only single simple polygon with no holes.
 	- How to vectorise? Each point as 2 floats/ints. So total input vector is polygon of m points is 2m floats/ints. Closed polygon with repeat the first point as last. Output is vector of 2n points. In case of closed figure, repeat the last point. Prepare training data using data files used in MIDAS. To make 100s, 1000s of input profiles, one can scale both input and output with different factors, and then randomly shuffle the entries. Find max num points of a profile, make that as fixed length for both input and output. Fill with 0,0??? As origin 0,0 could be valid part of profile…any other filler? NULL? Run simple feed forward NN, later RNN, LSTM, Seq2seq
 	- See https://www.tensorflow.org/tutorials/seq2seq, https://www.youtube.com/watch?v=G5RY_SUJih4, A Neural Representation of Sketch Drawings, https://magenta.tensorflow.org/sketch_rnn  https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/README.md 
 	- Add plotting capability, show polygons their midcurves etc, easy to debug and test unseen figures.
 
-
-	
-## Limitations
-- Shapes can not be modeled as sequences. Although polygon shape L may appear as sequence of points, it is not. 
-- All shapes can not be drawn without lifting a pencil, which is possible for sequences. Say, Shapes like Y or concentric O, cannot be modeled as sequences. So, Midcurve transformation cannot be modeled as Sequence 2 Sequence network.
-- Shapes are not graphs as well. Graphs are topological and not geometrical. They represent only connectivity and not spatial positions. In 2D profiles even nodes have deterministic locations. So, even if Graph 2 Graph Encoder Decoder architecture is made available, it cannot model the Midcurve transformation.
-- Assuming by "network" we mean Graph with nodes having spatial significance, we would need Network 2 Network Encoder Decoder architecture in place, to model Midcurve transformation.
-- *Conclusion* With the study so far, the Phase I results, with Image to Image transformation architecture, the problem appears reasonably addressed, and Phase II is NOT NEEDED. HALTING THIS PROJECT FOR NOW AND WILL NOT PROCEED WITH PHASE II.
+### Dilution to Images
+- Images of geometric shapes address both, representation as well as variable-size issue. Big dilution is that, true geometric shapes are like Vector images, whereas images used here would be of Raster type. Approximation has crept in.
+- Even after modeling, the predicted output needs to be post-processed to bring to geometric form. Challenging again.
+- Thus, this project is divided into two phases:
+	- Phase I: Image to Image transformation learning
+	- Phase II: Geometry to Geometry transformation learning
+- Currently Phase I is under implementation. Phase II can start only after suitable geometric-graph embedding representation becomes available.
 
 
 ## Publications/Talks
@@ -43,7 +53,7 @@ of the License, or any later version.
 - ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
-
+<!-- 
 ## Implementation Notes:
 - Keras (TBD: Moving from independant Keras to Tensorflow.Keras, so wait for update here)
 	- DON’T Conda install -c conda-forge keras DIRECTLY
@@ -81,7 +91,7 @@ of the License, or any later version.
 - Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
 - Different sizes of input and output
 - Closed->closed/open, Manifold->Manifold/Non-manifold
-
+ -->
 ## Disclaimer:
 Author (yogeshkulkarni@yahoo.com) gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all.
 	
