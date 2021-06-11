@@ -44,7 +44,13 @@ of the License, or any later version.
 - Even after modeling, the predicted output needs to be post-processed to bring to geometric form. Challenging again.
 - Thus, this project is divided into two phases:
 	- Phase I: Image to Image transformation learning
+		- Img2Img: i/o fixed size 100x100 bitmaps
+		- Populate many by scaling/rotating/translating both io shapes within the fixed size
+		- Use Encode Decode like Semantic Segmentation or Pix2Pix to learn dimension reduction
 	- Phase II: Geometry to Geometry transformation learning
+		- Geometric Points based, Variable size sequences i/o, once such dynamic size encoder-decoder is available
+		- Closed->closed/open, Manifold->Manifold/Non-manifold
+		- Based on Geometric Graph Embeddings
 - Currently Phase I is under implementation. Phase II can start only after suitable geometric-graph embedding representation becomes available.
 
 
@@ -54,6 +60,16 @@ of the License, or any later version.
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
 <!-- 
+
+## Prep training data with transformations
+- Represent 2D profiles in a file, ideal is vector format like SVG. List of points/lines/curves.
+- Once one shape is available, both input as well as output midcurve should go through transformations like translation, rotation, scaling, mirror, etc.
+- This should be done programmatic-ally to generate huge number of input-output pairs.
+- Initial polygon profile data should be from PhD .data fies, having similar scheme for closed and open loops
+- Using these .dat files generate vagarious bitmap 100x100 images programmatic-ally, both for input profile as well as midcurve profile. DrawSVG library can be used to rasterize the vector images
+- Manually: Plot the points of profile and/or midcurve in Excel as scatter line plot. Remove all background grid legends, etc. Copy and paste as image in Powerpoint. Resize it.
+- DrawSVG method is preferred as it puts lots of blank space around the object, which is needed in case of transformations.
+
 ## Implementation Notes:
 - Keras (TBD: Moving from independant Keras to Tensorflow.Keras, so wait for update here)
 	- DON’T Conda install -c conda-forge keras DIRECTLY
