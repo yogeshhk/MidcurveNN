@@ -51,6 +51,8 @@ of the License, or any later version.
 		- Build both, input and output polyline graphs with (x,y) coordinates as node features and edges with node id pairs mentioned. For poly-lines, edges being lines, no need to store geometric intermediate points as features, else for curves, store say, sampled fixed 'n' points.
 		- Build Image-Segmentation like Encoder-Decoder network, given Graph Convolution Layers from DGL in place of usual Image-based 2D convolution layer, in the usual pytorch encoder-decoder model.
 		- Generate variety of input-output polyline pairs, by using geometric transformations (and not image transformations as done in Phase I).
+		- See if Variational Graph Auto-Encoders https://github.com/dmlc/dgl/tree/master/examples/pytorch/vgae can help.
+
 - Currently Phase I is under implementation. Phase II can start only after suitable geometric-graph embedding representation becomes available.
 
 
