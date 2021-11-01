@@ -4,4 +4,3 @@ __pycache__/
 .idea/
 models/
 *.pkl
-*Notes*.md
