@@ -61,6 +61,17 @@ of the License, or any later version.
 - ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
+
+## Citations
+- [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)
+
+```
+Regarding the state of the art, the closest work related to this paper is   from   Kulkarni[28].   Kulkarni   proposed MidcurveNN, an encoder-decoder neural network to extract mid-curves from polygonal 2D shapes. The principle is to train the network with both a pixel image of the polygonal shape and of the final desired mid-curves. Although in an early  stage  of  research,  the  network  is  able  to  produce reasonably  well  the mid-curves  of  simple  L-shaped polygons.  The  limitations  of  this  work  remain  in  the noisiness of the produced results. It has not been tested on a large diversity of shapes and is performed on the full shape globally potentially requiring a high-resolution pixel grid for large models.
+
+[28]Y.H. Kulkarni, MIDCURVENN: Encoder-decoder neural network for computing midcurve of a thin polygon, in: Open Data Sci. Conf.,2019
+```
+
+
 <!-- 
 
 ## Prep training data with transformations
