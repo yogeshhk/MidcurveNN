@@ -6,7 +6,7 @@ Midcurve by Neural Networks
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
 
-## License:
+## License
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
@@ -19,6 +19,9 @@ of the License, or any later version.
 - Output: another set of points or set of connected lines, open/branched polygons possible
 
 ## Thoughts
+
+### What is it?
+Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a smaller graph preserving its underlying structure, similar to text summarization, which attempts to keep the essence.
 
 ### Representation Issue
 - Shapes can not be modeled as sequences. Although polygon shape L may appear as sequence of points, it is not. 
@@ -129,6 +132,12 @@ in: Open Data Sci. Conf.,2019
 - Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
 - Different sizes of input and output
 - Closed->closed/open, Manifold->Manifold/Non-manifold
+
+## Why Me?
+- Directly matching MidcurveNN, my PhD topic, own work in image domain, already an own paper, IKIGAI and Specific Knowledge (actually no one else knows!!)
+- Favorite Graph algorithms from masters, Data Science (encoder-decoder), need in large graph databases (neo4j) or knowledge graphs
+- Pytorch Geometric, Geometric Deep Learning, enormous collaboration-research publications potential.
+- MidcurveNN brings geometric view of applying Skeletonization to profile or even solid geometry, into graph data science, real Geometric Deep Learning
  -->
 ## Disclaimer:
 Author (yogeshkulkarni@yahoo.com) gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all.
