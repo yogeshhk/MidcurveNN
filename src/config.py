@@ -1,12 +1,12 @@
-import os
+from os import path
 
-BASE_DIR = r"D:\Yogesh\Projects\MidcurveNN\src" # os.getcwd() + "/.."
+BASE_DIR = path.dirname(__file__)
 
-RAW_DATA_FOLDER = BASE_DIR + "/data/raw"
-INPUT_DATA_FOLDER = BASE_DIR + "/data/input"
-PIX2PIX_DATA_FOLDER = BASE_DIR + "/data/pix2pix"
-MODELS_FOLDER = BASE_DIR + "/models/"
-SEQUENCES_FILEPATH = BASE_DIR + "/data/sequences.json"
+RAW_DATA_FOLDER = path.join(BASE_DIR, "data", "raw")
+INPUT_DATA_FOLDER = path.join(BASE_DIR, "data", "input")
+PIX2PIX_DATA_FOLDER = path.join(BASE_DIR, "data", "pix2pix")
+MODELS_FOLDER = path.join(BASE_DIR, "models")
+SEQUENCES_FILEPATH = path.join(BASE_DIR, "data", "sequences.json")
 
 #UNet Approach Configurations
 TWO_STAGE = True
