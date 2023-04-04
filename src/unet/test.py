@@ -6,7 +6,7 @@ Created on Wed Sep 25 09:17:47 2019
 """
 
 from config import *
-from src.config import BASE_DIR
+# from src.config import BASE_DIR
 from utils import get_coord_layers
 import os
 import cv2

@@ -16,7 +16,7 @@ import shutil
 import sys
 from config import *
 
-from src.config import INPUT_DATA_FOLDER, RAW_DATA_FOLDER
+from config import INPUT_DATA_FOLDER, RAW_DATA_FOLDER
 
 np.set_printoptions(threshold=sys.maxsize)
 
