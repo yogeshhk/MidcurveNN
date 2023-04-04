@@ -1,6 +1,6 @@
 import os
 
-BASE_DIR = r"C:\YogeshKulkarni\Personal\Github_MidcurveNN\src" # os.getcwd() + "/.."
+BASE_DIR = r"D:\Yogesh\Projects\MidcurveNN\src" # os.getcwd() + "/.."
 
 RAW_DATA_FOLDER = BASE_DIR + "/data/raw"
 INPUT_DATA_FOLDER = BASE_DIR + "/data/input"

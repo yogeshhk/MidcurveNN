@@ -1,4 +1,4 @@
-name: tf2
+name: midcurvenn
 channels:
   - conda-forge
   - defaults
@@ -210,4 +210,4 @@ dependencies:
     - wrapt==1.12.1
     - xxhash==3.0.0
     - yarl==1.7.2
-prefix: C:\Users\yogesh.kulkarni\AppData\Local\Continuum\anaconda3\envs\tf2
+prefix: C:\Users\yoges\anaconda3\envs\midcurvenn
