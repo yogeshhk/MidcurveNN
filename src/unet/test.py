@@ -6,6 +6,7 @@ Created on Wed Sep 25 09:17:47 2019
 """
 
 from config import *
+from src.config import BASE_DIR
 from utils import get_coord_layers
 import os
 import cv2
@@ -20,7 +21,7 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
     w = IMG_SHAPE[0]
     files = os.listdir(data_path)
     for file in files:
-        path = data_path + file
+        path = os.path.join(data_path, file)
         img = cv2.imread(path , cv2.IMREAD_GRAYSCALE)
         poly_img = img[:, :w]
         midcurve_img = img[:, w:]
@@ -66,7 +67,7 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
             plt.subplot(326).axis('off')
             plt.imshow(midc_st2[:, :, 0], cmap='gray', interpolation=interpolation)
             
-            plt.savefig('results/' + file , dpi=100)
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
 
         else:    
             plt.subplot(221).set_title('Polygon')
@@ -85,14 +86,14 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
             plt.subplot(224).axis('off')
             plt.imshow(midc[:, :, 0], cmap='gray', interpolation=interpolation)
                     
-            plt.savefig('results/' + file , dpi=100)
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
         
         print(file)
 
 if __name__ == "__main__":
     generators = init()
-    generators[0].load_weights('weights/stage1/5_gen_epochs.h5')
-    generators[1].load_weights('weights/stage2/2_gen_epochs.h5')
+    generators[0].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage1', '5_gen_epochs.h5'))
+    generators[1].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage2', '2_gen_epochs.h5'))
     
-    generate_test_results(generators[0],generators[1],BASE_DIR + 'data/test/',None)
+    generate_test_results(generators[0], generators[1], os.path.join(BASE_DIR, 'data', 'test'), None)
     

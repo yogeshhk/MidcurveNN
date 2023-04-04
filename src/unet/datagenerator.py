@@ -10,16 +10,18 @@ import cv2
 import numpy as np
 from random import shuffle
 from config import *
+from src.config import BASE_DIR
+
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
 def datagen(batch, h, w):
-    train_path = os.getcwd() + '/../data/train/'
+    train_path = os.path.join(BASE_DIR, 'data', 'train')
     files = os.listdir(train_path)
     shuffle(files)
     
     i = 0
-    while(1):
+    while 1:
         poly_list = []
         midcurve_list = []
         
