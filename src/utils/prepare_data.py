@@ -16,6 +16,8 @@ import shutil
 import sys
 from config import *
 
+from src.config import INPUT_DATA_FOLDER, RAW_DATA_FOLDER
+
 np.set_printoptions(threshold=sys.maxsize)
 
 
@@ -74,27 +76,26 @@ def generate_pix2pix_dataset(inputdatafolder=INPUT_DATA_FOLDER, pix2pixdatafolde
         shutil.rmtree(pix2pixdatafolder, ignore_errors=True)
 
     os.makedirs(pix2pixdatafolder)
-    os.makedirs(pix2pixdatafolder + "/train")
-    os.makedirs(pix2pixdatafolder + "/val")
-    os.makedirs(pix2pixdatafolder + "/test")
+    for phase in "train", "val", "test":
+        os.mkdir(os.path.join(pix2pixdatafolder, phase))
 
     # SAVE into 3 dirs
     for i, arr in enumerate(train_combo_files):
         img = PIL.Image.fromarray(arr.astype('uint8'))
         img = PIL.ImageOps.invert(img)
-        filename = pix2pixdatafolder + "/train/" + str(i) + ".jpg"
+        filename = os.path.join(pix2pixdatafolder, "train", str(i) + ".jpg")
         img.save(filename)
 
     for i, arr in enumerate(val_combo_files):
         img = PIL.Image.fromarray(arr.astype('uint8'))
         img = PIL.ImageOps.invert(img)
-        filename = pix2pixdatafolder + "/val/" + str(i) + ".jpg"
+        filename = os.path.join(pix2pixdatafolder, "val" + str(i) + ".jpg")
         img.save(filename)
 
     for i, arr in enumerate(test_combo_files):
         img = PIL.Image.fromarray(arr.astype('uint8'))
         img = PIL.ImageOps.invert(img)
-        filename = pix2pixdatafolder + "/test/" + str(i) + ".jpg"
+        filename = os.path.join(pix2pixdatafolder, "test", str(i) + ".jpg")
         img.save(filename)
 
     return train_combo_files, val_combo_files, test_combo_files
@@ -164,7 +165,7 @@ def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, img
 
     shape = profile_dict['ShapeName']
     #     d.saveSvg(datafolder+"/"+shape+'.svg')
-    d.savePng(datafolder + "/" + shape + '_' + fieldname + '.png')
+    d.savePng(os.path.join(datafolder, shape + '_' + fieldname + '.png'))
 
 
 def get_original_png_files(datafolder=INPUT_DATA_FOLDER):

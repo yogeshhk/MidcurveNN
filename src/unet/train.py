@@ -42,7 +42,8 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
                  save_all=False):
     loss = []
     if load:
-        with open('unet/weights/stage1/generator_stage1.json', 'r') as json_file:
+        with open(os.path.join(os.path.dirname(__file__),
+                               'weights', 'stage1', 'generator_stage1.json'), 'r') as json_file:
             generator_stage1_json = json_file.read()
         gen_model = model_from_json(generator_stage1_json)
         if save_all:
@@ -81,11 +82,11 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
 def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_path, loss_path, data_gen, load=False,
                  load_at=0, save_all=False):
     if load:
-        with open('unet/weights/stage2/generator_stage2.json', 'r') as json_file:
+        with open(os.path.join(os.path.dirname(__file__),'weights','stage2','generator_stage2.json'), 'r') as json_file:
             generator_stage2_json = json_file.read()
         generator_stage2 = model_from_json(generator_stage2_json)
         if save_all:
-            generator_stage2.load_weights(weight_path + str(load_at) + '_epochs_gen.h5')
+            generator_stage2.load_weights(os.path.join(weight_path, str(load_at) + '_epochs_gen.h5'))
             print("\nLoaded at: ", load_at, " epochs")
         else:
             generator_stage2.load_weights(weight_path + 'weights.h5')
@@ -93,7 +94,7 @@ def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_
 
     for num_epochs in range(1 + load_at, epochs + load_at + 1):
         loss = []  # Save loss for each epoch separately
-        print('Epoch: ' + str(num_epochs))
+        print('Epoch:', num_epochs)
         for num_batch in tqdm(range(int(TRAIN_SIZE / batch_size))):
             poly, midc = next(data_gen)
             coords = get_coord_layers(poly.shape[0], IMG_SHAPE)
@@ -135,8 +136,13 @@ if __name__ == "__main__":
 
     data_gen = datagen(batch_size, height, width)
 
-    train_stage1(generators[0], epochs, batch_size, 'unet/weights/stage1/', 'losses/stage1/', data_gen, False, 0)
+    pardir = os.path.dirname(__file__)
+
+    train_stage1(generators[0], epochs, batch_size, os.path.join(pardir, 'weights', 'stage1'),
+                 os.path.join(pardir, 'losses', 'stage1'), data_gen, False, 0)
     if TWO_STAGE:
-        generators[0].load_weights('unet/weights/stage1/0_epochs_gen.h5')
-        train_stage2(generators[0], generators[1], epochs, batch_size, 'unet/weights/stage2/', 'unet/losses/stage2/',
+        generators[0].load_weights(os.path.join(pardir, 'weights', 'stage1', '0_epochs_gen.h5'))
+        train_stage2(generators[0], generators[1], epochs, batch_size,
+                     os.path.join(pardir, 'weights', 'stage2'),
+                     os.path.join(pardir, 'losses', 'stage2'),
                      data_gen, False, 0)

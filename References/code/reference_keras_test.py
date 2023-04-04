@@ -1,12 +1,13 @@
 from keras.preprocessing.image import load_img,img_to_array
 import numpy as np
 import sys
+from os import path
 np.set_printoptions(threshold=sys.maxsize)
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TKAgg')
 
-img_path = "output/L_Midcurve.png"
+img_path = path.join(path.dirname(__file__), "output", "L_Midcurve.png")
 img = load_img(img_path, color_mode='rgba', target_size=(100, 100))
 print(type(img)) # <class 'PIL.Image.Image'>
 img = img.rotate(45)
