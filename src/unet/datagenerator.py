@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 from random import shuffle
 from config import *
-from src.config import BASE_DIR
+# from src.config import BASE_DIR
 
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'

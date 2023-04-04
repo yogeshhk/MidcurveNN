@@ -5,7 +5,7 @@ import numpy as np
 import imageio
 from config import *
 
-from src.config import BASE_DIR
+# from src.config import BASE_DIR
 
 
 #datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
