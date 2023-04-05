@@ -18,6 +18,15 @@ of the License, or any later version.
 - Input: set of points or set of connected lines, non-intersecting, simple, convex, closed polygon 
 - Output: another set of points or set of connected lines, open/branched polygons possible
 
+## Instructions to Run
+
+```
+cd src
+conda env create -f environment.yml
+activate midcurvenn
+python simpleencoderdecoder\main_simple_encoderdecoder.py
+```
+
 ## Thoughts
 
 ### What is it?
