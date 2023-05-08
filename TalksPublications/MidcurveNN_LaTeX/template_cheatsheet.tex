@@ -10,23 +10,27 @@
 \usepackage[portrait]{geometry}
 \usepackage{hyperref}
 \usepackage{color}
-\usepackage{enumitem}
+% \usepackage{enumitem}
 \usepackage{textcomp} 				% copyleft symbol
 \usepackage{verbatim}
 \usepackage{adjustbox} 				% for resizebox to adjust table figure content
-\usepackage{enumitem}				% margin free lists
+% \usepackage{enumitem}				% margin free lists
 \usepackage{amsmath}
 \usepackage{mathrsfs}
 \usepackage{csvsimple}				% importing csv as table
 \usepackage{textcomp} 				% copyleft symbol
 \usepackage{graphicx}
 \usepackage{etoolbox} % conditional inclusions
+\usepackage{algorithmic}
+\usepackage{tikz-qtree} 
 
 \usepackage{media9}
  \usepackage{multimedia}
  \usepackage{makecell}
  \usepackage{listings}
 %  \usepackage{color}
+\usepackage{algorithm,algorithmic}
+
  
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -67,7 +71,7 @@
   aboveskip=10pt,	   			   % Space before listing 
   belowskip=-15pt,	   			   % Space after listing  
   xleftmargin=.02\linewidth,  
-  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+  %title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
 
 
@@ -155,7 +159,7 @@
 \setcounter{secnumdepth}{0}
 
 \newcommand{\code}[1]{\par\vskip0pt plus 1filll \footnotesize Code:~\itshape#1}
-
+\date{}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt plus 0.5ex}
