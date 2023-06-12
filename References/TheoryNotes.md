@@ -107,3 +107,4 @@ Common applications
 * graph-based-deep-learning-literature/README.md at master · naganandy/graph-based-deep-learning-literature https://github.com/naganandy/graph-based-deep-learning-literature/blob/master/conference-publications/README.md
 * https://www.cse.msu.edu/~derrtyle/dglma/papers/ChoongJ.pdf
 * https://www.cse.msu.edu/~derrtyle/dglma/papers/KikuchiS.pdf
+* SkeletonNet: Shape Pixel to Skeleton Pixel, https://arxiv.org/abs/1907.01683v1
