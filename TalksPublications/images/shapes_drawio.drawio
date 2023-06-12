@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" modified="2023-06-11T06:40:35.919Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="TlLs6k4-tHhunCa777RA" version="21.3.8" type="device">
+  <diagram name="Page-1" id="ma2k4vKUb-CLS6XVVYkQ">
+    <mxGraphModel dx="574" dy="302" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-2" value="" style="shape=corner;whiteSpace=wrap;html=1;dx=40;dy=40;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="200" y="240" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-3" value="" style="triangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="280" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-4" value="" style="triangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="320" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-5" value="" style="triangle;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="360" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-6" value="" style="triangle;whiteSpace=wrap;html=1;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="320" y="240" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-7" value="" style="triangle;whiteSpace=wrap;html=1;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="280" y="240" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-8" value="" style="triangle;whiteSpace=wrap;html=1;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="240" y="240" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="239" y="280" as="sourcePoint" />
+            <mxPoint x="239" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-11" value="" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=-0.04;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="J3XtGdTJOs6pWeIx6HsL-3" target="J3XtGdTJOs6pWeIx6HsL-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="219.8" y="280" as="sourcePoint" />
+            <mxPoint x="219.8" y="240" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="240" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-12" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0;entryDx=160;entryDy=20;entryPerimeter=0;strokeWidth=3;strokeColor=#FF0000;" edge="1" parent="1" target="J3XtGdTJOs6pWeIx6HsL-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="260" as="sourcePoint" />
+            <mxPoint x="340" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J3XtGdTJOs6pWeIx6HsL-13" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0;entryDx=20;entryDy=160;entryPerimeter=0;strokeWidth=3;strokeColor=#FF0000;" edge="1" parent="1" target="J3XtGdTJOs6pWeIx6HsL-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="260" as="sourcePoint" />
+            <mxPoint x="219.8" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
