@@ -1,5 +1,7 @@
 name: midcurvenn
 channels:
+  - pytorch
+  - nvidia
   - conda-forge
   - defaults
 dependencies:
@@ -8,12 +10,13 @@ dependencies:
   - backcall=0.2.0=py_0
   - backports=1.0=py_2
   - backports.functools_lru_cache=1.6.4=pyhd8ed1ab_0
+  - blas=1.0=mkl
   - bleach=3.1.5=py_0
   - brotlipy=0.7.0=py36h68aa20f_1001
-  - ca-certificates=2022.5.18.1=h5b45459_0
+  - ca-certificates=2023.05.30=haa95532_0
   - camelot-py=0.8.2=py_0
   - catalogue=2.0.6=py36ha15d459_0
-  - certifi=2021.5.30=py36ha15d459_0
+  - certifi=2020.6.20=pyhd3eb1b0_3
   - cffi=1.14.1=py36hef61171_0
   - chardet=3.0.4=py36h9f0ad1d_1006
   - charset-normalizer=2.0.12=pyhd8ed1ab_0
@@ -21,6 +24,18 @@ dependencies:
   - colorama=0.4.3=py_0
   - contextvars=2.4=py_0
   - cryptography=3.0=py36hef61171_0
+  - cuda-cccl=12.2.53=0
+  - cuda-cudart=11.8.89=0
+  - cuda-cudart-dev=11.8.89=0
+  - cuda-cupti=11.8.87=0
+  - cuda-libraries=11.8.0=0
+  - cuda-libraries-dev=11.8.0=0
+  - cuda-nvrtc=11.8.89=0
+  - cuda-nvrtc-dev=11.8.89=0
+  - cuda-nvtx=11.8.86=0
+  - cuda-profiler-api=12.2.53=0
+  - cuda-runtime=11.8.0=0
+  - cudatoolkit=11.3.1=h59b6b97_2
   - cycler=0.10.0=py_2
   - cymem=2.0.5=py36he2d232f_2
   - cython-blis=0.7.4=py36h6434af4_0
@@ -54,11 +69,26 @@ dependencies:
   - libblas=3.8.0=16_mkl
   - libcblas=3.8.0=16_mkl
   - libclang=9.0.1=default_hf44288c_0
+  - libcublas=11.11.3.6=0
+  - libcublas-dev=11.11.3.6=0
+  - libcufft=10.9.0.58=0
+  - libcufft-dev=10.9.0.58=0
+  - libcurand=10.3.3.53=0
+  - libcurand-dev=10.3.3.53=0
+  - libcusolver=11.4.1.48=0
+  - libcusolver-dev=11.4.1.48=0
+  - libcusparse=11.7.5.86=0
+  - libcusparse-dev=11.7.5.86=0
   - liblapack=3.8.0=16_mkl
   - liblapacke=3.8.0=16_mkl
+  - libnpp=11.8.0.86=0
+  - libnpp-dev=11.8.0.86=0
+  - libnvjpeg=11.9.0.86=0
+  - libnvjpeg-dev=11.9.0.86=0
   - libpng=1.6.37=ha81a0f5_2
   - libsodium=1.0.18=h62dcd97_0
   - libtiff=4.1.0=h885aae3_6
+  - libuv=1.44.2=h2bbff1b_0
   - libwebp-base=1.1.0=hfa6e2cd_3
   - lz4-c=1.9.2=h62dcd97_2
   - m2w64-gcc-libgfortran=5.3.0=6
@@ -81,7 +111,7 @@ dependencies:
   - olefile=0.46=py_0
   - opencv=3.3.1=py36h20b85fd_1
   - openpyxl=3.0.4=py_0
-  - openssl=1.1.1l=h8ffe710_0
+  - openssl=1.1.1u=h2bbff1b_0
   - packaging=20.4=py_0
   - pandas=1.1.5=py36he38d939_0
   - pandoc=2.10.1=0
@@ -108,6 +138,9 @@ dependencies:
   - python=3.6.9=h5500b2f_0
   - python-dateutil=2.8.1=py_0
   - python_abi=3.6=1_cp36m
+  - pytorch=1.10.2=py3.6_cuda11.3_cudnn8_0
+  - pytorch-cuda=11.8=h24eeafa_5
+  - pytorch-mutex=1.0=cuda
   - pytz=2022.1=pyhd8ed1ab_0
   - pywin32=301=py36h68aa20f_0
   - pywinpty=0.5.7=py36_0
@@ -131,16 +164,20 @@ dependencies:
   - testpath=0.4.4=py_0
   - thinc=8.0.1=py36h757b272_0
   - tk=8.6.10=he774522_0
+  - torchaudio=0.10.2=py36_cu113
+  - torchvision=0.11.3=py36_cu113
   - tornado=6.0.4=py36hfa6e2cd_0
   - tqdm=4.64.0=pyhd8ed1ab_0
   - traitlets=4.3.3=py36_0
   - typer=0.3.2=pyhd8ed1ab_0
+  - typing_extensions=4.1.1=pyh06a4308_0
   - urllib3=1.26.9=pyhd8ed1ab_0
   - vc=14.1=h0510ff6_4
   - vs2015_runtime=14.16.27012=hf0eaf9b_1
   - wasabi=0.9.1=pyhd8ed1ab_0
   - wcwidth=0.2.5=pyh9f0ad1d_2
   - webencodings=0.5.1=py_1
+  - wheel=0.37.1=pyhd3eb1b0_0
   - widgetsnbextension=3.5.1=py36_0
   - win_inet_pton=1.1.0=py36ha15d459_2
   - wincertstore=0.2=py36h7fe50ca_0
@@ -151,63 +188,67 @@ dependencies:
   - zlib=1.2.11=h62dcd97_1007
   - zstd=1.4.5=h1f3a1b7_2
   - pip:
-    - absl-py==0.15.0
-    - aiohttp==3.8.1
-    - aiosignal==1.2.0
-    - astunparse==1.6.3
-    - async-timeout==4.0.2
-    - asynctest==0.13.0
-    - cached-property==1.5.2
-    - cachetools==4.2.4
-    - cairocffi==1.2.0
-    - cairosvg==2.5.2
-    - clang==5.0
-    - cssselect2==0.4.1
-    - datasets==2.2.2
-    - dill==0.3.4
-    - drawsvg==1.8.3
-    - flatbuffers==1.12
-    - frozenlist==1.2.0
-    - fsspec==2022.1.0
-    - gast==0.4.0
-    - google-auth==1.35.0
-    - google-auth-oauthlib==0.4.6
-    - google-pasta==0.2.0
-    - grpcio==1.46.3
-    - h5py==3.1.0
-    - huggingface-hub==0.4.0
-    - idna-ssl==1.1.0
-    - imageio==2.15.0
-    - importlib-metadata==4.8.3
-    - importlib-resources==5.4.0
-    - keras==2.6.0
-    - keras-preprocessing==1.1.2
-    - markdown==3.3.7
-    - multidict==5.2.0
-    - multiprocess==0.70.12.2
-    - oauthlib==3.2.0
-    - opt-einsum==3.3.0
-    - pillow==8.4.0
-    - protobuf==3.19.4
-    - pyarrow==6.0.1
-    - pyasn1==0.4.8
-    - pyasn1-modules==0.2.8
-    - pyyaml==6.0
-    - requests-oauthlib==1.3.1
-    - responses==0.17.0
-    - rsa==4.8
-    - six==1.15.0
-    - tensorboard==2.6.0
-    - tensorboard-data-server==0.6.1
-    - tensorboard-plugin-wit==1.8.1
-    - tensorflow==2.6.2
-    - tensorflow-estimator==2.6.0
-    - termcolor==1.1.0
-    - tinycss2==1.1.1
-    - typing-extensions==3.7.4.3
-    - werkzeug==2.0.3
-    - wheel==0.37.1
-    - wrapt==1.12.1
-    - xxhash==3.0.0
-    - yarl==1.7.2
+      - absl-py==0.15.0
+      - aiohttp==3.8.1
+      - aiosignal==1.2.0
+      - astunparse==1.6.3
+      - async-timeout==4.0.2
+      - asynctest==0.13.0
+      - cached-property==1.5.2
+      - cachetools==4.2.4
+      - cairocffi==1.2.0
+      - cairosvg==2.5.2
+      - clang==5.0
+      - cssselect2==0.4.1
+      - datasets==2.2.2
+      - dill==0.3.4
+      - drawsvg==1.8.3
+      - flatbuffers==1.12
+      - frozenlist==1.2.0
+      - fsspec==2022.1.0
+      - gast==0.4.0
+      - google-auth==1.35.0
+      - google-auth-oauthlib==0.4.6
+      - google-pasta==0.2.0
+      - grpcio==1.46.3
+      - h5py==3.1.0
+      - huggingface-hub==0.4.0
+      - idna-ssl==1.1.0
+      - imageio==2.15.0
+      - importlib-metadata==4.8.3
+      - importlib-resources==5.4.0
+      - keras==2.6.0
+      - keras-preprocessing==1.1.2
+      - markdown==3.3.7
+      - multidict==5.2.0
+      - multiprocess==0.70.12.2
+      - oauthlib==3.2.0
+      - opt-einsum==3.3.0
+      - pillow==8.4.0
+      - protobuf==3.19.4
+      - pyarrow==6.0.1
+      - pyasn1==0.4.8
+      - pyasn1-modules==0.2.8
+      - pyyaml==6.0
+      - requests-oauthlib==1.3.1
+      - responses==0.17.0
+      - rsa==4.8
+      - scipy==1.5.4
+      - six==1.15.0
+      - tensorboard==2.6.0
+      - tensorboard-data-server==0.6.1
+      - tensorboard-plugin-wit==1.8.1
+      - tensorflow==2.6.2
+      - tensorflow-estimator==2.6.0
+      - termcolor==1.1.0
+      - tinycss2==1.1.1
+      - torch-cluster==1.5.9
+      - torch-scatter==2.0.9
+      - torch-sparse==0.6.12
+      - torch-spline-conv==1.2.1
+      - typing-extensions==3.7.4.3
+      - werkzeug==2.0.3
+      - wrapt==1.12.1
+      - xxhash==3.0.0
+      - yarl==1.7.2
 prefix: C:\Users\yoges\anaconda3\envs\midcurvenn
