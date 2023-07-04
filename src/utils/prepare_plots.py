@@ -21,5 +21,8 @@ def plot_results(original_imgs,computed_imgs):
         ax.get_yaxis().set_visible(False)
     plt.show()
 
+# def prepare_line_plots:
+
+
 if __name__ == "__main__":
     pass
