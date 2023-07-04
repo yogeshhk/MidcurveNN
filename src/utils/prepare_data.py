@@ -123,14 +123,18 @@ def get_training_data(datafolder=INPUT_DATA_FOLDER, size=(100, 100)):
 
     return profile_pngs_gray_objs, midcurve_pngs_gray_objs
 
+def get_index(shapename, profile_dict_list):
+    for i, dct in enumerate(profile_dict_list):
+        if dct['ShapeName'] == shapename:
+            return i
+    return -1
 
 def get_profile_dict(shapename, profiles_dict_list):
-    for i in profiles_dict_list:
-        if i['ShapeName'] == shapename:
-            return i
-    profile_dict = {}
-    profile_dict['ShapeName'] = shapename
-    return profile_dict
+    i = get_index(shapename, profiles_dict_list)
+    if i == -1: # not present
+        profile_dict = {'ShapeName': shapename}
+        return profile_dict
+    return profiles_dict_list[i]
 
 
 def read_dat_files(datafolder=RAW_DATA_FOLDER):
@@ -146,12 +150,12 @@ def read_dat_files(datafolder=RAW_DATA_FOLDER):
         if file.endswith(".mid"):
             with open(os.path.join(datafolder, file)) as f:
                 profile_dict['Midcurve'] = [tuple(map(float, i.split())) for i in f]
-
-        profiles_dict_list.append(profile_dict)
+        if get_index(profile_dict['ShapeName'], profiles_dict_list) == -1:
+            profiles_dict_list.append(profile_dict)
     return profiles_dict_list
 
 
-import drawSvg as draw
+import drawsvg as draw
 
 
 def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, imgsize=100, isOpenClose=True):
