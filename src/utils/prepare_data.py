@@ -142,10 +142,10 @@ def read_dat_files(datafolder=RAW_DATA_FOLDER):
         profile_dict = get_profile_dict(filename, profiles_dict_list)
         if file.endswith(".dat"):
             with open(os.path.join(datafolder, file)) as f:
-                profile_dict['Profile'] = [tuple(map(float, i.split('\t'))) for i in f]
+                profile_dict['Profile'] = [tuple(map(float, i.split())) for i in f]
         if file.endswith(".mid"):
             with open(os.path.join(datafolder, file)) as f:
-                profile_dict['Midcurve'] = [tuple(map(float, i.split('\t'))) for i in f]
+                profile_dict['Midcurve'] = [tuple(map(float, i.split())) for i in f]
 
         profiles_dict_list.append(profile_dict)
     return profiles_dict_list
