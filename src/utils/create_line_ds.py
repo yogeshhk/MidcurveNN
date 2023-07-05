@@ -1,5 +1,5 @@
 from config import *
-from prepare_data import read_dat_files, plot_profile_dict, scale_sequence, rotate_sequence, translate_sequence
+from prepare_data import read_dat_files, scale_sequence, rotate_sequence, translate_sequence
 import pprint
 import json
 
@@ -7,33 +7,33 @@ import json
 def convert_pointlist_to_linelist(is_profile, shapename, pointlist):
     lines = []
     if is_profile:
-        for i in range(len(pointlist)):
-            first_point = pointlist[i]
-            if i == len(pointlist) - 1:
+        for n in range(len(pointlist)):
+            first_point = pointlist[n]
+            if n == len(pointlist) - 1:
                 end_point = pointlist[0]
             else:
-                end_point = pointlist[i + 1]
-            line = (first_point, end_point)
+                end_point = pointlist[n + 1]
+            line = [list(first_point), list(end_point)]
             lines.append(line)
     else:
         if shapename == 'T':
-            for i in range(len(pointlist)):
-                if pointlist[i] != pointlist[1]:
-                    line = (pointlist[1], pointlist[i])
+            for n in range(len(pointlist)):
+                if pointlist[n] != pointlist[1]:
+                    line = [list(pointlist[1]), list(pointlist[n])]
                     lines.append(line)
         elif shapename == 'Plus':
-            for i in range(len(pointlist)):
-                if pointlist[i] != pointlist[1]:
-                    line = (pointlist[1], pointlist[i])
+            for n in range(len(pointlist)):
+                if pointlist[n] != pointlist[1]:
+                    line = [list(pointlist[1]), list(pointlist[n])]
                     lines.append(line)
         else:
-            for i in range(len(pointlist)):
-                first_point = pointlist[i]
-                if i == len(pointlist) - 1:
+            for n in range(len(pointlist)):
+                first_point = pointlist[n]
+                if n == len(pointlist) - 1:
                     continue
                 else:
-                    end_point = pointlist[i + 1]
-                line = (first_point, end_point)
+                    end_point = pointlist[n + 1]
+                line = [list(first_point), list(end_point)]
                 lines.append(line)
     return lines
 
@@ -44,9 +44,9 @@ def convert_dict_to_lines(pdlist):
         # original
         profile_point_list = dct['Profile']
         midcurve_point_list = dct['Midcurve']
-        proile_lines = convert_pointlist_to_linelist(True, shapename, profile_point_list)
+        profile_lines = convert_pointlist_to_linelist(True, shapename, profile_point_list)
         midcurve_lines = convert_pointlist_to_linelist(False, shapename, midcurve_point_list)
-        dct['Profile_lines'] = proile_lines
+        dct['Profile_lines'] = profile_lines
         dct['Midcurve_lines'] = midcurve_lines
 
 
@@ -77,6 +77,20 @@ def rotated_shape_list(pdlist, theta):
     write_to_json(rotated_pdlist)
 
 
+def translated_shape_list(pdlist, dis):
+    translated_pdlist = []
+    for dct in pdlist:
+        profile_point_list = dct['Profile']
+        midcurve_point_list = dct['Midcurve']
+        translated_dict = {'ShapeName': dct['ShapeName'] + "_translated_" + str(dis),
+                           'Profile': translate_sequence(profile_point_list, dis, dis),
+                           'Midcurve': translate_sequence(midcurve_point_list, dis, dis)
+                           }
+        translated_pdlist.append(translated_dict)
+    convert_dict_to_lines(translated_pdlist)
+    write_to_json(translated_pdlist)
+
+
 def write_to_json(pdlist):
     for dct in pdlist:
         filename = path.join(RAW_DATA_FOLDER, "Jsons", dct['ShapeName'] + ".json")
@@ -88,7 +102,9 @@ if __name__ == "__main__":
     shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     convert_dict_to_lines(shapes_dict_list)
     pprint.pprint(shapes_dict_list)
-    for i in range(2, 6):
+    for i in range(1, 6):
         scaled_shape_list(shapes_dict_list, i)
     for i in range(15, 181, 15):
         rotated_shape_list(shapes_dict_list, i)
+    for i in range(10, 51, 10):
+        translated_shape_list(shapes_dict_list, i)

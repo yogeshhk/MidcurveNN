@@ -7,6 +7,7 @@ INPUT_DATA_FOLDER = path.join(BASE_DIR, "data", "input")
 PIX2PIX_DATA_FOLDER = path.join(BASE_DIR, "data", "pix2pix")
 MODELS_FOLDER = path.join(BASE_DIR, "models")
 SEQUENCES_FILEPATH = path.join(BASE_DIR, "data", "sequences.json")
+JSON_FOLDER = path.join(BASE_DIR, "data", "raw", "Jsons")
 
 #UNet Approach Configurations
 TWO_STAGE = True
