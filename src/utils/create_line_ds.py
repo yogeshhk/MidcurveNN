@@ -1,5 +1,5 @@
 from config import *
-from prepare_data import read_dat_files, plot_profile_dict, scale_sequence
+from prepare_data import read_dat_files, plot_profile_dict, scale_sequence, rotate_sequence, translate_sequence
 import pprint
 import json
 
@@ -43,23 +43,43 @@ def convert_dict_to_lines(pdlist):
         shapename = dct['ShapeName']
         # original
         profile_point_list = dct['Profile']
-        midcurve_pointlist = dct['Midcurve']
+        midcurve_point_list = dct['Midcurve']
         proile_lines = convert_pointlist_to_linelist(True, shapename, profile_point_list)
-        midcurve_lines = convert_pointlist_to_linelist(False, shapename, midcurve_pointlist)
+        midcurve_lines = convert_pointlist_to_linelist(False, shapename, midcurve_point_list)
         dct['Profile_lines'] = proile_lines
         dct['Midcurve_lines'] = midcurve_lines
-        # scale
-        # for factor in range(1, 5):
-        #     scaled_profile_points = scale_sequence(profile_point_list, factor)
-        #     scaled_profile_lines = convert_pointlist_to_linelist(scaled_profile_points)
-        #     dct['Profile_scaled_lines_' + str(factor)] = scaled_profile_lines
-        # translate
-        # rotate
+
+
+def scaled_shape_list(pdlist, factor):
+    scaled_pdlist = []
+    for dct in pdlist:
+        profile_point_list = dct['Profile']
+        midcurve_point_list = dct['Midcurve']
+        scaled_dict = {'Profile': scale_sequence(profile_point_list, factor),
+                       'Midcurve': scale_sequence(midcurve_point_list, factor),
+                       'ShapeName': dct['ShapeName'] + "_scaled_" + str(factor)}
+        scaled_pdlist.append(scaled_dict)
+    convert_dict_to_lines(scaled_pdlist)
+    write_to_json(scaled_pdlist)
+
+
+def rotated_shape_list(pdlist, theta):
+    rotated_pdlist = []
+    for dct in pdlist:
+        profile_point_list = dct['Profile']
+        midcurve_point_list = dct['Midcurve']
+        rotated_dict = {'ShapeName': dct['ShapeName'] + "_rotated_" + str(theta),
+                        'Profile': rotate_sequence(profile_point_list, theta),
+                        'Midcurve': rotate_sequence(midcurve_point_list, theta)
+                        }
+        rotated_pdlist.append(rotated_dict)
+    convert_dict_to_lines(rotated_pdlist)
+    write_to_json(rotated_pdlist)
 
 
 def write_to_json(pdlist):
     for dct in pdlist:
-        filename = path.join(RAW_DATA_FOLDER, dct['ShapeName'] + ".json")
+        filename = path.join(RAW_DATA_FOLDER, "Jsons", dct['ShapeName'] + ".json")
         with open(filename, 'w') as fp:
             json.dump(dct, fp, indent=4)
 
@@ -67,7 +87,8 @@ def write_to_json(pdlist):
 if __name__ == "__main__":
     shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     convert_dict_to_lines(shapes_dict_list)
-    # for dct in profiles_dict_list:
-    #     plot_profile_dict(dct)
     pprint.pprint(shapes_dict_list)
-    write_to_json(shapes_dict_list)
+    for i in range(2, 6):
+        scaled_shape_list(shapes_dict_list, i)
+    for i in range(15, 181, 15):
+        rotated_shape_list(shapes_dict_list, i)
