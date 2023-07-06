@@ -114,12 +114,12 @@ def write_to_json(pdlist):
 if __name__ == "__main__":
     shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     convert_dict_to_lines(shapes_dict_list)
-    pprint.pprint(shapes_dict_list)
+    # pprint.pprint(shapes_dict_list)
     for i in range(2, 6):
         scaled_shape_list(shapes_dict_list, i)
     for i in range(1, 181):
         rotated_shape_list(shapes_dict_list, i)
-    for i in range(-50, 51):
+    for i in range(-50, 51, 2):
         translated_shape_list(shapes_dict_list, i)
     mirrored_shape_list(shapes_dict_list, True)
     mirrored_shape_list(shapes_dict_list, False)
