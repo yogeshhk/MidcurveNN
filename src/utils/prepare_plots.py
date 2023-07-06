@@ -44,6 +44,7 @@ def plot_jsons(datafolder=JSON_FOLDER):
                 x = a[:, 0].T
                 y = a[:, 1].T
                 plt.plot(x, y, c='red')
+        plt.axis('equal')
         plt.show()
 
 
