@@ -1,6 +1,6 @@
 """
     Prepare Data: populating input images from raw profile data
-    Takes raw data from "data/raw/*" files for both, profile shape (shape.dat) as well as midcurve shape (shape.mid)
+    Takes raw data from "data/raw/*" files for both, profile shape (shape.dat) and midcurve shape (shape.mid)
     Generates raster image files from svg (simple vector graphics)
     Multiple variations are populated using image transformations.
     These images become input for further modeling (stored in "data/input/*")
@@ -9,7 +9,6 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img, array_t
 from random import shuffle
 import PIL
 import PIL.ImageOps
-import json
 import numpy as np
 import os
 import shutil
@@ -124,13 +123,19 @@ def get_training_data(datafolder=INPUT_DATA_FOLDER, size=(100, 100)):
     return profile_pngs_gray_objs, midcurve_pngs_gray_objs
 
 
-def get_profile_dict(shapename, profiles_dict_list):
-    for i in profiles_dict_list:
-        if i['ShapeName'] == shapename:
+def get_index(shapename, profile_dict_list):
+    for i, dct in enumerate(profile_dict_list):
+        if dct['ShapeName'] == shapename:
             return i
-    profile_dict = {}
-    profile_dict['ShapeName'] = shapename
-    return profile_dict
+    return -1
+
+
+def get_profile_dict(shapename, profiles_dict_list):
+    i = get_index(shapename, profiles_dict_list)
+    if i == -1:  # not present
+        profile_dict = {'ShapeName': shapename}
+        return profile_dict
+    return profiles_dict_list[i]
 
 
 def read_dat_files(datafolder=RAW_DATA_FOLDER):
@@ -142,16 +147,16 @@ def read_dat_files(datafolder=RAW_DATA_FOLDER):
         profile_dict = get_profile_dict(filename, profiles_dict_list)
         if file.endswith(".dat"):
             with open(os.path.join(datafolder, file)) as f:
-                profile_dict['Profile'] = [tuple(map(float, i.split('\t'))) for i in f]
+                profile_dict['Profile'] = [tuple(map(float, i.split())) for i in f]
         if file.endswith(".mid"):
             with open(os.path.join(datafolder, file)) as f:
-                profile_dict['Midcurve'] = [tuple(map(float, i.split('\t'))) for i in f]
-
-        profiles_dict_list.append(profile_dict)
+                profile_dict['Midcurve'] = [tuple(map(float, i.split())) for i in f]
+        if get_index(profile_dict['ShapeName'], profiles_dict_list) == -1:
+            profiles_dict_list.append(profile_dict)
     return profiles_dict_list
 
 
-import drawSvg as draw
+import drawsvg as draw
 
 
 def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, imgsize=100, isOpenClose=True):
@@ -310,26 +315,43 @@ import math
 def rotate_sequence(sequence, theta=30):
     theta = math.radians(theta)
     input_point_sequence_extended = [(x, y, 1) for x, y in sequence]
-    scaled_points_list = []
-    A = np.array(input_point_sequence_extended)
-    T_s = np.array([[0, math.sin(theta), 0], [-1 * math.cos(theta), 0, 0], [0, 0, 1]])
-    for row in A:
-        output_row = T_s @ row
+    rotated_points_list = []
+    a = np.array(input_point_sequence_extended)
+    # T_s = np.array([[0, math.sin(theta), 0], [-1 * math.cos(theta), 0, 0], [0, 0, 1]])
+    t_s = np.array([[math.cos(theta), -1 * math.sin(theta), 0], [math.sin(theta), math.cos(theta), 0], [0, 0, 1]])
+
+    for row in a:
+        output_row = t_s @ row
         x_s, y_s, _ = output_row
-        scaled_points_list.append((round(x_s, 2), round(y_s, 2)))
-    return scaled_points_list
+        rotated_points_list.append((round(x_s, 2), round(y_s, 2)))
+    return rotated_points_list
 
 
 def translate_sequence(sequence, distance_x=10, distance_y=10):
     input_point_sequence_extended = [(x, y, 1) for x, y in sequence]
-    scaled_points_list = []
+    translated_points_list = []
     A = np.array(input_point_sequence_extended)
     T_s = np.array([[1, 0, distance_x], [0, 1, distance_y], [0, 0, 1]])
     for row in A:
         output_row = T_s @ row
         x_s, y_s, _ = output_row
-        scaled_points_list.append((round(x_s, 2), round(y_s, 2)))
-    return scaled_points_list
+        translated_points_list.append((round(x_s, 2), round(y_s, 2)))
+    return translated_points_list
+
+
+def mirror_sequence(sequence, axis_is_x):
+    input_point_sequence_extended = [(x, y, 1) for x, y in sequence]
+    mirrored_points_list = []
+    A = np.array(input_point_sequence_extended)
+    if axis_is_x:
+        T_s = np.array([[1, 0, 0], [0, -1, 0], [0, 0, 1]])
+    else:
+        T_s = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    for row in A:
+        output_row = T_s @ row
+        x_s, y_s, _ = output_row
+        mirrored_points_list.append((round(x_s, 2), round(y_s, 2)))
+    return mirrored_points_list
 
 
 def plot_profile_dict(profile_dict):
