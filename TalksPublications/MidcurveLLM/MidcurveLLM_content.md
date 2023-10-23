@@ -1,8 +1,9 @@
-
---
 # Large Language Model for  Computing Midcurve of a Thin Polygon
 
-Introduction:
+## Abstract
+This paper explores the potential of LLMs (Large Language Models) in computing the midcurve of a 2D geometric profile. The midcurve, a curve equidistant from the bounding curve of the profile, simplifies the representation of the profile-shape while retaining essential geometric information. Despite various approaches such as Medial Axis Transform, Chordal Axis Transform, Thinning and Pairing, the problem remains unsolved due to complexity of shapes and variety of connections. The paper evaluates if the LLMs can be used to generate the midcurve of a 2D geometric profile.
+
+## Introduction
 
 A midcurve of a 2D geometric profile is a curve that lies equidistant from the bounding curves of the profile. It is a curve that represents the “middle” of the profile. The midcurve can be used to represent the shape of the profile in a simpler way than the original profile, while still retaining important geometric information about the profile.
 
@@ -14,7 +15,7 @@ Although many approaches like Medial Axis Transform, Chordal Axis Transform, Thi
 
 Research project MidcurveNN attempts to evaluate if Neural Networks can be used to generate the midcurve of a 2D geometric profile.
 
-Problem Statement
+## Problem Statement
 - Goal: Given a 2D closed shape (closed polygon) find its midcurve (polyline, closed or open)
 - Input: set of points or set of connected lines, non-intersecting, simple, convex, closed polygon
 - Output: another set of points or set of connected lines, open/branched polygons possible
@@ -44,7 +45,7 @@ Various Image2Image networks have been tried by MidcurveNN project but with limi
 
 <image: Simple Encoder Decoder network in Tensorflow/Keras (ref)>
 
-Proposed Approach:
+## Proposed Approach:
 
 Now evaluating if LLMs (Large Language Models), like can be employed to generate the midcurve. Idea is to give prompt telling what needs to be done along with some examples, and see if LLMs can generate shape for the test example.
 
@@ -100,13 +101,11 @@ All of the above have failed. Even latest (Oct 2023), the results are:
 - GPT-4:
 [((12.5,0), (12.5,22.5)), ((12.5,22.5),(0,22.5)), ((12.5,22.5),(25.0,22.5))] just change in sequence of lines, and that's inconsequential, so the answer is correct.
 
-Conclusion:
+## Conclusion
 Although other proprietary and open-source models need to catch-up with GPT-4, even GPT-4 needs to be developed further to understand not just sequential lines but graphs/networks with different shapes, essentially, the geometry.
 
-References:
+## References
 - MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
 - Medium story Geometry, Graphs and GPT talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve.
-
-====
