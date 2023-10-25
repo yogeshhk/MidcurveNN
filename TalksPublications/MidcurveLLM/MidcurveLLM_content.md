@@ -1,4 +1,4 @@
-# Large Language Model for  Computing Midcurve of a Thin Polygon
+# Large Language Model for Computing Midcurve of a Thin Polygon
 
 ## Abstract
 This paper explores the potential of LLMs (Large Language Models) in computing the midcurve of a 2D geometric profile. The midcurve, a curve equidistant from the bounding curve of the profile, simplifies the representation of the profile-shape while retaining essential geometric information. Despite various approaches such as Medial Axis Transform, Chordal Axis Transform, Thinning and Pairing, the problem remains unsolved due to complexity of shapes and variety of connections. The paper evaluates if the LLMs can be used to generate the midcurve of a 2D geometric profile.
