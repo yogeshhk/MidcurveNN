@@ -7,11 +7,15 @@ This paper explores the potential of LLMs (Large Language Models) in computing t
 
 A midcurve of a 2D geometric profile is a curve that lies equidistant from the bounding curves of the profile. It is a curve that represents the “middle” of the profile. The midcurve can be used to represent the shape of the profile in a simpler way than the original profile, while still retaining important geometric information about the profile.
 
-![Example of Midcurves of 2D Geometric profiles](../images/midcurve13.jpg) [ref](https://www.researchgate.net/publication/312589418_Development_of_algorithms_for_generating_connected_midsurfaces_using_feature_information_in_thin-walled_parts)
+![Example of Midcurves of 2D Geometric profiles](../images/midcurve13.jpg) 
+
+[ref](https://www.researchgate.net/publication/312589418_Development_of_algorithms_for_generating_connected_midsurfaces_using_feature_information_in_thin-walled_parts)
  
 Although many approaches like Medial Axis Transform, Chordal Axis Transform, Thinning, Pairing, etc., have been tried for decades, the problem remains unsolved due to complexity of shapes and variety of connections.
 
-![Midcurve Approaches](../images/midcurve14.jpg) [ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
+![Midcurve Approaches](../images/midcurve14.jpg) 
+
+[ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
 
 Research project MidcurveNN attempts to evaluate if Neural Networks can be used to generate the midcurve of a 2D geometric profile.
 
@@ -35,19 +39,25 @@ To be able to use Neural Network based encoder decoders, both, input and output 
 
 So, though graphs are not perfect but with insertion of geometric information they can represent the 2D profiles well. Can Encoder-Decoder architectures (Transformers with Attention) be applied to generate the midcurve?
 
-![Midcurve by Encoder Decoder](../images/midcurve26.jpg) [ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
+![Midcurve by Encoder Decoder](../images/midcurve26.png) 
+
+[ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
 
 
 
 Such Transformers taking variable length input and output graphs have not been established. So, would taking this problem to image domain help?
 
-![Auto Encoder on images](../images/midcurve25.jpg) [ref](https://blog.keras.io/building-autoencoders-in-keras.html)
+![Auto Encoder on images](../images/midcurve25.jpg) 
+
+[ref](https://blog.keras.io/building-autoencoders-in-keras.html)
 
 
 
 Various Image2Image networks have been tried by MidcurveNN project but with limited success. Here is a sample:
 
-![Simple Encoder Decoder network in Tensorflow/Keras](../images/midcurve33.jpg) [ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
+![Simple Encoder Decoder network in Tensorflow/Keras](../images/midcurve35.jpg) 
+
+[ref](https://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf)
 
 
 ## Proposed Approach:
@@ -81,6 +91,7 @@ output:
 ```
 
 The first input example above represents ‘L’ shape (shown below) and the second is an ‘I’, whereas the 3rd is a ‘Plus’ sign shape.
+
 ![L](../images/L.png)
 
 The last shape for which LLM has been asked for the answer is actually a ‘T’ shape. The picture below shows the correct/actual answer as well.
