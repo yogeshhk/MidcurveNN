@@ -123,7 +123,16 @@ All of the above have failed. Even latest (Oct 2023), the results are:
 Although other proprietary and open-source models need to catch-up with GPT-4, even GPT-4 needs to be developed further to understand not just sequential lines but graphs/networks with different shapes, essentially, the geometry.
 
 ## References
+- Github repo: https://github.com/yogeshhk/MidcurveNN
 - MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
 - Medium story Geometry, Graphs and GPT talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve.
+
+
+-----------
+
+## Statement of Interest
+Title: Predicting next geometric element, not word
+
+The problem of dimensional reduction of a 2D geometric shape appears to be very specific to machine design domain, but I believe its abstraction of a wider set of problems. So far, LLMs (Large Language Models), as the name suggest are for Languages. These models though appear to generate large amount of text, but are actually predict one word at a time, sequentially. So theoretically its working on sequences. Geometric shapes are more complex representations. Only some simple shapes are sequences of points or lines, say rectangles, triangles, etc. But some are not, like a T or X shape where crossings/joints happen. The research challenge is can, sequence trained models like LLMs also understand the complex shapes (ie joints) and if not what can be done to make them do so. The models that can predict graphs or networks. If/once the network prediction happens, then applying to any field like social networks, pharma, etc, wherever graphs are present, come under the realm of possibilities.
