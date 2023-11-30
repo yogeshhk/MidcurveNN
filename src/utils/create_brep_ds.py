@@ -5,48 +5,55 @@ import json
 import pandas as pd
 
 
-def convert_pointlist_to_brep(is_profile, shapename, pointlist):
-    lines = []
-    if is_profile:
-        for n in range(len(pointlist)):
-            first_point = pointlist[n]
-            if n == len(pointlist) - 1:
-                end_point = pointlist[0]
-            else:
-                end_point = pointlist[n + 1]
-            line = [list(first_point), list(end_point)]
-            lines.append(line)
-    else:
-        if shapename == 'T':
-            for n in range(len(pointlist)):
-                if pointlist[n] != pointlist[1]:
-                    line = [list(pointlist[1]), list(pointlist[n])]
-                    lines.append(line)
-        elif shapename == 'Plus':
-            for n in range(len(pointlist)):
-                if pointlist[n] != pointlist[1]:
-                    line = [list(pointlist[1]), list(pointlist[n])]
-                    lines.append(line)
+def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
+    brep = dict()
+    brep["Points"] = pointlist
+    if shape_name == 'I':
+        if is_profile:
+            brep["Segments"] = [[0, 1, 2, 3]]
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]]
         else:
-            for n in range(len(pointlist)):
-                first_point = pointlist[n]
-                if n == len(pointlist) - 1:
-                    continue
-                else:
-                    end_point = pointlist[n + 1]
-                line = [list(first_point), list(end_point)]
-                lines.append(line)
-    return lines
+            brep["Segments"] = [[0]]
+            brep["Lines"] = [[0, 1]]
+    elif shape_name == 'T':
+        if is_profile:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+        else:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+    elif shape_name == 'L':
+        if is_profile:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+        else:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+    elif shape_name == 'Plus':
+        if is_profile:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+        else:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+    else:
+        if is_profile:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+        else:
+            brep["Segments"] = ""
+            brep["Lines"] = ""
+    return brep
 
 
 def convert_dict_to_brep(pdlist):
     for dct in pdlist:
-        shapename = dct['ShapeName']
+        shape_name = dct['ShapeName']
         # original
         profile_point_list = dct['Profile']
         midcurve_point_list = dct['Midcurve']
-        profile_brep = convert_pointlist_to_brep(True, shapename, profile_point_list)
-        midcurve_brep = convert_pointlist_to_brep(False, shapename, midcurve_point_list)
+        profile_brep = convert_pointlist_to_brep(True, shape_name, profile_point_list)
+        midcurve_brep = convert_pointlist_to_brep(False, shape_name, midcurve_point_list)
         dct['Profile_brep'] = profile_brep
         dct['Midcurve_brep'] = midcurve_brep
 
@@ -129,7 +136,7 @@ if __name__ == "__main__":
     shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     convert_dict_to_brep(shapes_dict_list)
     pprint.pprint(shapes_dict_list)
-    write_to_csv(shapes_dict_list)
+    # write_to_csv(shapes_dict_list)
 
     # for i in range(2, 6):
     #     scaled_shape_list(shapes_dict_list, i)
