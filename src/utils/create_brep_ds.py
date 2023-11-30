@@ -10,30 +10,38 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
     brep["Points"] = pointlist
     if shape_name == 'I':
         if is_profile:
-            brep["Segments"] = [[0, 1, 2, 3]]
-            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]]
+            # Pointlist [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)]
+            brep["Segments"] = [[0, 1, 2, 3]] # Point indices/Ids
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]] # Line indices/Ids
         else:
+            # Pointlist [(7.5, 5.0), (7.5, 20.0)]
             brep["Segments"] = [[0]]
             brep["Lines"] = [[0, 1]]
     elif shape_name == 'T':
         if is_profile:
+            # Pointlist : [(0.0, 25.0),(25.0, 25.0), (25.0, 20.0), (15.0, 20.0), (15.0, 0.0), (10.0, 0.0), (10.0, 20.0),(0.0, 20.0)]
             brep["Segments"] = ""
             brep["Lines"] = ""
         else:
+            # Pointlist : [(12.5, 0.0), (12.5, 22.5), (25.0, 22.5), (0.0, 22.5)]
             brep["Segments"] = ""
             brep["Lines"] = ""
     elif shape_name == 'L':
         if is_profile:
+            # Pointlist : [(5.0, 5.0), (10.0, 5.0), (10.0, 30.0), (35.0, 30.0), (35.0, 35.0), (5.0, 35.0)]
             brep["Segments"] = ""
             brep["Lines"] = ""
         else:
+            # Pointlist : [(7.5, 5.0), (7.5, 32.5), (35.0, 32.5)]
             brep["Segments"] = ""
             brep["Lines"] = ""
     elif shape_name == 'Plus':
         if is_profile:
+            # Pointlist : [(0.0, 25.0),(10.0, 25.0),(10.0, 45.0),(15.0, 45.0),(15.0, 25.0),(25.0, 25.0),(25.0, 20.0), (15.0, 20.0),(15.0, 0.0),(10.0, 0.0),(10.0, 20.0),(0.0, 20.0)]
             brep["Segments"] = ""
             brep["Lines"] = ""
         else:
+            # Pointlist : [(12.5, 0.0),(12.5, 22.5),(12.5, 45.0), (12.5, 22.5), (0.0, 22.5), (25.0, 22.5)]
             brep["Segments"] = ""
             brep["Lines"] = ""
     else:
@@ -41,6 +49,7 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
             brep["Segments"] = ""
             brep["Lines"] = ""
         else:
+            # Pointlist :
             brep["Segments"] = ""
             brep["Lines"] = ""
     return brep
