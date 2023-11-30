@@ -2,6 +2,7 @@ from config import *
 from prepare_data import read_dat_files, scale_sequence, rotate_sequence, translate_sequence, mirror_sequence
 import pprint
 import json
+import pandas as pd
 
 
 def convert_pointlist_to_brep(is_profile, shapename, pointlist):
@@ -48,7 +49,6 @@ def convert_dict_to_brep(pdlist):
         midcurve_brep = convert_pointlist_to_brep(False, shapename, midcurve_point_list)
         dct['Profile_brep'] = profile_brep
         dct['Midcurve_brep'] = midcurve_brep
-    write_to_json(pdlist)
 
 
 def scaled_shape_list(pdlist, factor):
@@ -104,22 +104,38 @@ def mirrored_shape_list(pdlist, axis_is_x):
     convert_dict_to_brep(mirrored_pdlist)
 
 
-def write_to_json(pdlist):
+def write_to_csv(pdlist):
+    filename = path.join(RAW_DATA_FOLDER, "brep.csv")
     for dct in pdlist:
-        filename = path.join(RAW_DATA_FOLDER, "Jsons", dct['ShapeName'] + ".json")
-        with open(filename, 'w') as fp:
-            json.dump(dct, fp, indent=4)
+        # convert dict values to strings
+        profile_point_list = dct['Profile']
+        midcurve_point_list = dct['Midcurve']
+        profile_brep = dct['Profile_brep']
+        midcurve_brep = dct['Midcurve_brep']
+        profile_point_list_s = json.dumps(profile_point_list)
+        midcurve_point_list_s = json.dumps(midcurve_point_list)
+        profile_brep_s = json.dumps(profile_brep)
+        midcurve_brep_s = json.dumps(midcurve_brep)
+        dct['Profile'] = profile_point_list_s
+        dct['Midcurve'] = midcurve_point_list_s
+        dct['Profile_brep'] = profile_brep_s
+        dct['Midcurve_brep'] = midcurve_brep_s
+    df = pd.DataFrame(pdlist)
+    print(df.head())
+    # df.to_csv(filename, index=False)
 
 
 if __name__ == "__main__":
     shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     convert_dict_to_brep(shapes_dict_list)
-    # pprint.pprint(shapes_dict_list)
-    for i in range(2, 6):
-        scaled_shape_list(shapes_dict_list, i)
-    for i in range(1, 181):
-        rotated_shape_list(shapes_dict_list, i)
-    for i in range(-50, 51, 2):
-        translated_shape_list(shapes_dict_list, i)
-    mirrored_shape_list(shapes_dict_list, True)
-    mirrored_shape_list(shapes_dict_list, False)
+    pprint.pprint(shapes_dict_list)
+    write_to_csv(shapes_dict_list)
+
+    # for i in range(2, 6):
+    #     scaled_shape_list(shapes_dict_list, i)
+    # for i in range(1, 181):
+    #     rotated_shape_list(shapes_dict_list, i)
+    # for i in range(-50, 51, 2):
+    #     translated_shape_list(shapes_dict_list, i)
+    # mirrored_shape_list(shapes_dict_list, True)
+    # mirrored_shape_list(shapes_dict_list, False)
