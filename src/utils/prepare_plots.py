@@ -51,6 +51,17 @@ def plot_jsons(datafolder=JSON_FOLDER):
         plt.show()
 
 
+def plot_segments(segments, lines, points, color='blue', marker='o'):
+    x_coords, y_coords = zip(*points)
+    for segment in segments:
+        for line_idx in segment:
+            line = lines[line_idx]
+            x_segment = [x_coords[i] for i in line]
+            y_segment = [y_coords[i] for i in line]
+            plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=color,
+                     marker=marker)
+
+
 def plot_breps(shapes_brep_dict_list):
     for dct in shapes_brep_dict_list:
         profile_point_list = dct['Profile']
@@ -60,13 +71,14 @@ def plot_breps(shapes_brep_dict_list):
         profile_lines = profile_brep["Lines"]
         profile_segment_color = 'black'
         # Plot Profile segments
-        for segment in profile_segments:
-            for line_idx in segment:
-                line = profile_lines[line_idx]
-                x_segment = [profile_x_coords[i] for i in line]
-                y_segment = [profile_y_coords[i] for i in line]
-                plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=profile_segment_color,
-                         marker='o')
+        # for segment in profile_segments:
+        #     for line_idx in segment:
+        #         line = profile_lines[line_idx]
+        #         x_segment = [profile_x_coords[i] for i in line]
+        #         y_segment = [profile_y_coords[i] for i in line]
+        #         plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=profile_segment_color,
+        #                  marker='o')
+        plot_segments(profile_segments, profile_lines, profile_point_list, profile_segment_color, 'o')
 
         midcurve_point_list = dct['Midcurve']
         midcurve_x_coords, midcurve_y_coords = zip(*midcurve_point_list)
@@ -76,14 +88,14 @@ def plot_breps(shapes_brep_dict_list):
         midcurve_segment_color = 'red'
 
         # Plot Midcurve segments
-        for segment in midcurve_segments:
-            for line_idx in segment:
-                line = midcurve_lines[line_idx]
-                x_segment = [midcurve_x_coords[i] for i in line]
-                y_segment = [midcurve_y_coords[i] for i in line]
-                plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=midcurve_segment_color,
-                         marker='x')
-
+        # for segment in midcurve_segments:
+        #     for line_idx in segment:
+        #         line = midcurve_lines[line_idx]
+        #         x_segment = [midcurve_x_coords[i] for i in line]
+        #         y_segment = [midcurve_y_coords[i] for i in line]
+        #         plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=midcurve_segment_color,
+        #                  marker='x')
+        plot_segments(midcurve_segments, midcurve_lines, midcurve_point_list, midcurve_segment_color, 'x')
         plt.axis('equal')
         plt.show()
 

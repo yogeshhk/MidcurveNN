@@ -4,7 +4,7 @@ import pprint
 import json
 import pandas as pd
 from collections import OrderedDict
-from prepare_plots import plot_breps
+from prepare_plots import plot_breps, plot_segments
 
 
 def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
@@ -71,7 +71,7 @@ def convert_dict_to_brep(points_dict_list):
         profile_brep = convert_pointlist_to_brep(True, shape_name, profile_point_list)
         midcurve_brep = convert_pointlist_to_brep(False, shape_name, midcurve_point_list)
 
-        brep_dict = OrderedDict()
+        brep_dict = dict()  # OrderedDict()
         brep_dict['ShapeName'] = shape_name
         brep_dict['Profile'] = profile_point_list
         brep_dict['Midcurve'] = midcurve_point_list
@@ -157,16 +157,24 @@ def write_to_csv(pdlist, filename):
 if __name__ == "__main__":
     original_shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     shapes_brep_dict_list = convert_dict_to_brep(original_shapes_dict_list)
+    pprint.pprint(shapes_brep_dict_list)
     plot_breps(shapes_brep_dict_list)
 
-    for i in range(2, 6):
-        shapes_brep_dict_list += scaled_shape_list(original_shapes_dict_list, i)
-    for i in range(1, 181):
-        shapes_brep_dict_list += rotated_shape_list(original_shapes_dict_list, i)
-    for i in range(-50, 51, 2):
-        shapes_brep_dict_list += translated_shape_list(original_shapes_dict_list, i)
-    shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, True)
-    shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, False)
+    # for i in range(2, 6):
+    #     shapes_brep_dict_list += scaled_shape_list(original_shapes_dict_list, i)
+    # for i in range(1, 181):
+    #     shapes_brep_dict_list += rotated_shape_list(original_shapes_dict_list, i)
+    # for i in range(-50, 51, 2):
+    #     shapes_brep_dict_list += translated_shape_list(original_shapes_dict_list, i)
+    # shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, True)
+    # shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, False)
+    #
+    # filename = "shapes2brep.csv"
+    # write_to_csv(shapes_brep_dict_list, filename)
 
-    filename = "shapes2brep.csv"
-    write_to_csv(shapes_brep_dict_list, filename)
+    # lines = [[0, 1], [1, 2], [3, 2], [4, 2]]
+    # points = [(12.48, 0.65), (11.31, 23.12), (10.13, 45.59), (-1.18, 22.47), (23.79, 23.78)]
+    # segments = [[0], [1], [2], [3]]
+    # plot_segments(segments, lines, points)
+    # plt.axis('equal')
+    # plt.show()
