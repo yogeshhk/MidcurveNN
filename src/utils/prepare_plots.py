@@ -35,8 +35,8 @@ def plot_jsons(datafolder=JSON_FOLDER):
                 shape_dict = json.load(json_file)
             profile_lines = shape_dict['Profile_lines']
             midcurve_lines = shape_dict['Midcurve_lines']
-            plot_lines(profile_lines,'black')
-            plot_lines(midcurve_lines,'red')
+            plot_lines(profile_lines, 'black')
+            plot_lines(midcurve_lines, 'red')
             # for line in profile_lines:
             #     a = np.asarray(line)
             #     x = a[:, 0].T
@@ -47,6 +47,43 @@ def plot_jsons(datafolder=JSON_FOLDER):
             #     x = a[:, 0].T
             #     y = a[:, 1].T
             #     plt.plot(x, y, c='red')
+        plt.axis('equal')
+        plt.show()
+
+
+def plot_breps(shapes_brep_dict_list):
+    for dct in shapes_brep_dict_list:
+        profile_point_list = dct['Profile']
+        profile_x_coords, profile_y_coords = zip(*profile_point_list)
+        profile_brep = dct['Profile_brep']
+        profile_segments = profile_brep["Segments"]
+        profile_lines = profile_brep["Lines"]
+        profile_segment_color = 'black'
+        # Plot Profile segments
+        for segment in profile_segments:
+            for line_idx in segment:
+                line = profile_lines[line_idx]
+                x_segment = [profile_x_coords[i] for i in line]
+                y_segment = [profile_y_coords[i] for i in line]
+                plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=profile_segment_color,
+                         marker='o')
+
+        midcurve_point_list = dct['Midcurve']
+        midcurve_x_coords, midcurve_y_coords = zip(*midcurve_point_list)
+        midcurve_brep = dct['Midcurve_brep']
+        midcurve_segments = midcurve_brep["Segments"]
+        midcurve_lines = midcurve_brep["Lines"]
+        midcurve_segment_color = 'red'
+
+        # Plot Midcurve segments
+        for segment in midcurve_segments:
+            for line_idx in segment:
+                line = midcurve_lines[line_idx]
+                x_segment = [midcurve_x_coords[i] for i in line]
+                y_segment = [midcurve_y_coords[i] for i in line]
+                plt.plot(x_segment + [x_segment[0]], y_segment + [y_segment[0]], color=midcurve_segment_color,
+                         marker='x')
+
         plt.axis('equal')
         plt.show()
 
@@ -62,14 +99,14 @@ def plot_lines(lines, color='black'):
 if __name__ == "__main__":
     chatgpt_lines = [((2.5, 0), (2.5, 22.5)), ((2.5, 22.5), (2.5, 45.0)), ((2.5, 22.5), (25.0, 22.5)),
                      ((2.5, 22.5), (12.5, 22.5)), ((2.5, 22.5), (0, 22.5)), ((2.5, 22.5), (25.0, 22.5))]
-    perplexity_lines = [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0,22.5)),
-                        ((12.5, 22.5), (25.0,22.5))]
+    perplexity_lines = [((12.5, 0), (12.5, 22.5)), ((12.5, 22.5), (12.5, 45.0)), ((12.5, 22.5), (0, 22.5)),
+                        ((12.5, 22.5), (25.0, 22.5))]
     bard_liens = [((12.5, 0), (12.5, 25.0)), ((12.5, 25.0), (25.0, 25.0)), ((25.0, 25.0), (25.0, 0))]
     huggingface_chat_lines = [((12.5, 0), (12.5, 22.5)), ((12.5, 22.5), (25.0, 22.5)), ((25.0, 22.5), (25.0, 25.0))]
-    gpt4_lines = [((12.5,0), (12.5,22.5)), ((12.5,22.5),(0,22.5)), ((12.5,22.5),(25.0,22.5))]
+    gpt4_lines = [((12.5, 0), (12.5, 22.5)), ((12.5, 22.5), (0, 22.5)), ((12.5, 22.5), (25.0, 22.5))]
     claude_lines = [((12.5, 0.0), (12.5, 22.5)), ((12.5, 22.5), (12.5, 25.0)), ((12.5, 22.5), (0.0, 22.5)),
-              ((12.5, 22.5), (25.0, 22.5))]
-    plot_lines(claude_lines,'red')
+                    ((12.5, 22.5), (25.0, 22.5))]
+    plot_lines(claude_lines, 'red')
     plt.axis('equal')
     plt.show()
     # plot_jsons()
