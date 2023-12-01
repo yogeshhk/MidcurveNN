@@ -65,8 +65,30 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- Generate variety of input-output polyline pairs, by using geometric transformations (and not image transformations as done in Phase I).
 		- See if Variational Graph Auto-Encoders https://github.com/dmlc/dgl/tree/master/examples/pytorch/vgae can help.
 
-- Currently Phase I is under implementation. Phase II can start only after suitable geometric-graph embedding representation becomes available.
+- Phase I has been implemented in a simplistic manner. 
+- Phase II is trying to look for a good representation to store geometry/graph/network as text so that NLP (Natural Language Techniques) can be applied. [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys many such representations and benchmarks them, but none of them looked appropriate for geometry. So, here we leverage a geometry representation similar to that found in 3D B-rep (Boundary representation), but in 2D. It can be shown as:
+```
+{
+	'ShapeName': 'I',
+	'Profile': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)],
+	'Midcurve': [(7.5, 5.0), (7.5, 20.0)],
+	'Profile_brep': {
+				'Points': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0),(5.0, 20.0)], # list of (x,y) coordinates
+				'Lines': [[0, 1], [1, 2], [2, 3], [3, 0]], # list of point ids (ie index in the Points list)
+                'Segments': [[0, 1, 2, 3]] # list of line ids (ie index in Lines list)
+				},
+	'Midcurve_brep': {
+				'Points': [(7.5, 5.0), (7.5, 20.0)],
+				'Lines': [[0, 1]],
+                'Segments': [[0]]
+				},				
+}
+```
+Each Segment is a continuous list of lines. In case of, say `Midcurve-T`, as there is a intersection, we can treat each line in a separate segment. In case of 'Profile O', there will be two segments, one for outer lines and another for inner lines. Each line is list of points, for now, linear. Points is list of coordinates (x,y), later can be (x,y,z).
 
+Once we have this brep representations of both, profile and the corresponding midcurve, in the text form, then we can try various machine translation approaches or LLM based fine tuning or few-shots prompt engineering.
+
+One major advantage of text based method over image based method is that image output still has stray pixels, cleaning which will be a complex task. But text method has exact points. It may just give odd lines, which can be removed easily.
 
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 

@@ -3,6 +3,7 @@ from prepare_data import read_dat_files, scale_sequence, rotate_sequence, transl
 import pprint
 import json
 import pandas as pd
+from collections import OrderedDict
 
 
 def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
@@ -11,52 +12,56 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
     if shape_name == 'I':
         if is_profile:
             # Pointlist [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)]
-            brep["Segments"] = [[0, 1, 2, 3]] # Point indices/Ids
-            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]] # Line indices/Ids
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]]  # Point indices/Ids
+            brep["Segments"] = [[0, 1, 2, 3]]  # Line indices/Ids
         else:
             # Pointlist [(7.5, 5.0), (7.5, 20.0)]
-            brep["Segments"] = [[0]]
-            brep["Lines"] = [[0, 1]]
+            brep["Lines"] = [[0, 1]]  # Point indices/Ids
+            brep["Segments"] = [[0]]  # Line indices/Ids
     elif shape_name == 'T':
         if is_profile:
-            # Pointlist : [(0.0, 25.0),(25.0, 25.0), (25.0, 20.0), (15.0, 20.0), (15.0, 0.0), (10.0, 0.0), (10.0, 20.0),(0.0, 20.0)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            # Pointlist : [(0.0, 25.0),(25.0, 25.0), (25.0, 20.0), (15.0, 20.0), (15.0, 0.0), (10.0, 0.0), (10.0,
+            # 20.0),(0.0, 20.0)]
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0]]  # Point indices/Ids
+            brep["Segments"] = [[0, 1, 2, 3, 4, 5, 6, 7]]  # Line indices/Ids
         else:
             # Pointlist : [(12.5, 0.0), (12.5, 22.5), (25.0, 22.5), (0.0, 22.5)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            brep["Lines"] = [[0, 1], [1, 2], [3, 1]]  # Point indices/Ids
+            brep["Segments"] = [[0], [1], [2]]  # Line indices/Ids
+
     elif shape_name == 'L':
         if is_profile:
             # Pointlist : [(5.0, 5.0), (10.0, 5.0), (10.0, 30.0), (35.0, 30.0), (35.0, 35.0), (5.0, 35.0)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]]  # Point indices/Ids
+            brep["Segments"] = [[0, 1, 2, 3, 4, 5]]  # Line indices/Ids
         else:
             # Pointlist : [(7.5, 5.0), (7.5, 32.5), (35.0, 32.5)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            brep["Lines"] = [[0, 1], [1, 2]]  # Point indices/Ids
+            brep["Segments"] = [[0, 1]]  # Line indices/Ids
     elif shape_name == 'Plus':
         if is_profile:
-            # Pointlist : [(0.0, 25.0),(10.0, 25.0),(10.0, 45.0),(15.0, 45.0),(15.0, 25.0),(25.0, 25.0),(25.0, 20.0), (15.0, 20.0),(15.0, 0.0),(10.0, 0.0),(10.0, 20.0),(0.0, 20.0)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            # Pointlist : [(0.0, 25.0),(10.0, 25.0),(10.0, 45.0),(15.0, 45.0),(15.0, 25.0),(25.0, 25.0),(25.0, 20.0),
+            # (15.0, 20.0),(15.0, 0.0),(10.0, 0.0),(10.0, 20.0),(0.0, 20.0)]
+            brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10], [10, 11],
+                             [11, 0]]  # Point indices/Ids
+            brep["Segments"] = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]  # Line indices/Ids
         else:
-            # Pointlist : [(12.5, 0.0),(12.5, 22.5),(12.5, 45.0), (12.5, 22.5), (0.0, 22.5), (25.0, 22.5)]
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            # Pointlist : [(12.5, 0.0),(12.5, 22.5),(12.5, 45.0), (0.0, 22.5), (25.0, 22.5)]
+            brep["Lines"] = [[0, 1], [4, 1], [2, 1], [3, 1]]  # Point indices/Ids
+            brep["Segments"] = [[0], [1], [2], [3]]  # Line indices/Ids
     else:
         if is_profile:
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            brep["Lines"] = []  # Point indices/Ids
+            brep["Segments"] = []  # Line indices/Ids
         else:
             # Pointlist :
-            brep["Segments"] = ""
-            brep["Lines"] = ""
+            brep["Lines"] = []  # Point indices/Ids
+            brep["Segments"] = []  # Line indices/Ids
     return brep
 
 
-def convert_dict_to_brep(pdlist):
-    for dct in pdlist:
+def convert_dict_to_brep(points_dict_list):
+    for dct in points_dict_list:
         shape_name = dct['ShapeName']
         # original
         profile_point_list = dct['Profile']
