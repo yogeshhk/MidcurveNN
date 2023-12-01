@@ -4,12 +4,13 @@ import pprint
 import json
 import pandas as pd
 from collections import OrderedDict
+from prepare_plots import plot_breps
 
 
 def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
     brep = dict()
     brep["Points"] = pointlist
-    if shape_name == 'I':
+    if shape_name.startswith('I'):
         if is_profile:
             # Pointlist [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)]
             brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 0]]  # Point indices/Ids
@@ -18,7 +19,7 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
             # Pointlist [(7.5, 5.0), (7.5, 20.0)]
             brep["Lines"] = [[0, 1]]  # Point indices/Ids
             brep["Segments"] = [[0]]  # Line indices/Ids
-    elif shape_name == 'T':
+    elif shape_name.startswith('T'):
         if is_profile:
             # Pointlist : [(0.0, 25.0),(25.0, 25.0), (25.0, 20.0), (15.0, 20.0), (15.0, 0.0), (10.0, 0.0), (10.0,
             # 20.0),(0.0, 20.0)]
@@ -29,7 +30,7 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
             brep["Lines"] = [[0, 1], [1, 2], [3, 1]]  # Point indices/Ids
             brep["Segments"] = [[0], [1], [2]]  # Line indices/Ids
 
-    elif shape_name == 'L':
+    elif shape_name.startswith('L'):
         if is_profile:
             # Pointlist : [(5.0, 5.0), (10.0, 5.0), (10.0, 30.0), (35.0, 30.0), (35.0, 35.0), (5.0, 35.0)]
             brep["Lines"] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]]  # Point indices/Ids
@@ -38,7 +39,7 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
             # Pointlist : [(7.5, 5.0), (7.5, 32.5), (35.0, 32.5)]
             brep["Lines"] = [[0, 1], [1, 2]]  # Point indices/Ids
             brep["Segments"] = [[0, 1]]  # Line indices/Ids
-    elif shape_name == 'Plus':
+    elif shape_name.startswith('Plus'):
         if is_profile:
             # Pointlist : [(0.0, 25.0),(10.0, 25.0),(10.0, 45.0),(15.0, 45.0),(15.0, 25.0),(25.0, 25.0),(25.0, 20.0),
             # (15.0, 20.0),(15.0, 0.0),(10.0, 0.0),(10.0, 20.0),(0.0, 20.0)]
@@ -61,6 +62,7 @@ def convert_pointlist_to_brep(is_profile, shape_name, pointlist):
 
 
 def convert_dict_to_brep(points_dict_list):
+    brep_dict_list = []
     for dct in points_dict_list:
         shape_name = dct['ShapeName']
         # original
@@ -68,8 +70,15 @@ def convert_dict_to_brep(points_dict_list):
         midcurve_point_list = dct['Midcurve']
         profile_brep = convert_pointlist_to_brep(True, shape_name, profile_point_list)
         midcurve_brep = convert_pointlist_to_brep(False, shape_name, midcurve_point_list)
-        dct['Profile_brep'] = profile_brep
-        dct['Midcurve_brep'] = midcurve_brep
+
+        brep_dict = OrderedDict()
+        brep_dict['ShapeName'] = shape_name
+        brep_dict['Profile'] = profile_point_list
+        brep_dict['Midcurve'] = midcurve_point_list
+        brep_dict['Profile_brep'] = profile_brep
+        brep_dict['Midcurve_brep'] = midcurve_brep
+        brep_dict_list.append(brep_dict)
+    return brep_dict_list
 
 
 def scaled_shape_list(pdlist, factor):
@@ -81,7 +90,7 @@ def scaled_shape_list(pdlist, factor):
                        'Midcurve': scale_sequence(midcurve_point_list, factor),
                        'ShapeName': dct['ShapeName'] + "_scaled_" + str(factor)}
         scaled_pdlist.append(scaled_dict)
-    convert_dict_to_brep(scaled_pdlist)
+    return convert_dict_to_brep(scaled_pdlist)
 
 
 def rotated_shape_list(pdlist, theta):
@@ -94,7 +103,7 @@ def rotated_shape_list(pdlist, theta):
                         'Midcurve': rotate_sequence(midcurve_point_list, theta)
                         }
         rotated_pdlist.append(rotated_dict)
-    convert_dict_to_brep(rotated_pdlist)
+    return convert_dict_to_brep(rotated_pdlist)
 
 
 def translated_shape_list(pdlist, dis):
@@ -107,7 +116,7 @@ def translated_shape_list(pdlist, dis):
                            'Midcurve': translate_sequence(midcurve_point_list, dis, dis)
                            }
         translated_pdlist.append(translated_dict)
-    convert_dict_to_brep(translated_pdlist)
+    return convert_dict_to_brep(translated_pdlist)
 
 
 def mirrored_shape_list(pdlist, axis_is_x):
@@ -122,11 +131,11 @@ def mirrored_shape_list(pdlist, axis_is_x):
         else:
             mirrored_dict['ShapeName'] = dct['ShapeName'] + "_mirrored_y"
         mirrored_pdlist.append(mirrored_dict)
-    convert_dict_to_brep(mirrored_pdlist)
+    return convert_dict_to_brep(mirrored_pdlist)
 
 
-def write_to_csv(pdlist):
-    filename = path.join(RAW_DATA_FOLDER, "brep.csv")
+def write_to_csv(pdlist, filename):
+    full_file_path = path.join(RAW_DATA_FOLDER, "brep", filename)
     for dct in pdlist:
         # convert dict values to strings
         profile_point_list = dct['Profile']
@@ -142,21 +151,22 @@ def write_to_csv(pdlist):
         dct['Profile_brep'] = profile_brep_s
         dct['Midcurve_brep'] = midcurve_brep_s
     df = pd.DataFrame(pdlist)
-    print(df.head())
-    # df.to_csv(filename, index=False)
+    df.to_csv(full_file_path, index=False)
 
 
 if __name__ == "__main__":
-    shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
-    convert_dict_to_brep(shapes_dict_list)
-    pprint.pprint(shapes_dict_list)
-    # write_to_csv(shapes_dict_list)
+    original_shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
+    shapes_brep_dict_list = convert_dict_to_brep(original_shapes_dict_list)
+    plot_breps(shapes_brep_dict_list)
 
-    # for i in range(2, 6):
-    #     scaled_shape_list(shapes_dict_list, i)
-    # for i in range(1, 181):
-    #     rotated_shape_list(shapes_dict_list, i)
-    # for i in range(-50, 51, 2):
-    #     translated_shape_list(shapes_dict_list, i)
-    # mirrored_shape_list(shapes_dict_list, True)
-    # mirrored_shape_list(shapes_dict_list, False)
+    for i in range(2, 6):
+        shapes_brep_dict_list += scaled_shape_list(original_shapes_dict_list, i)
+    for i in range(1, 181):
+        shapes_brep_dict_list += rotated_shape_list(original_shapes_dict_list, i)
+    for i in range(-50, 51, 2):
+        shapes_brep_dict_list += translated_shape_list(original_shapes_dict_list, i)
+    shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, True)
+    shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, False)
+
+    filename = "shapes2brep.csv"
+    write_to_csv(shapes_brep_dict_list, filename)
