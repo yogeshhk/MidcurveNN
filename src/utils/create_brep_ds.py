@@ -1,3 +1,5 @@
+import random
+
 from config import *
 from prepare_data import read_dat_files, scale_sequence, rotate_sequence, translate_sequence, mirror_sequence
 import pprint
@@ -154,24 +156,83 @@ def write_to_csv(pdlist, filename):
     df.to_csv(full_file_path, index=False)
 
 
+def populate_by_transformation(original_shapes_dict_list):
+    addto_shapes_brep_dict_list = []
+    # scaling
+    start = 2
+    end = 6
+    step = 0.25
+    for i in range(int((end - start) / step)):
+        current_value = start + i * step
+        addto_shapes_brep_dict_list += scaled_shape_list(original_shapes_dict_list, current_value)
+
+    # rotation
+    start = 1
+    end = 181
+    step = 1
+    for i in range(int((end - start) / step)):
+        current_value = start + i * step
+        addto_shapes_brep_dict_list += rotated_shape_list(original_shapes_dict_list, current_value)
+
+    # translate
+    start = -50
+    end = 51
+    step = 2
+    for i in range(int((end - start) / step)):
+        current_value = start + i * step
+        addto_shapes_brep_dict_list += translated_shape_list(original_shapes_dict_list, current_value)
+
+    # mirror
+    addto_shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, True)
+    addto_shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, False)
+
+    # Plot some random shapes
+    # random_shapes_brep_dict_list = random.sample(addto_shapes_brep_dict_list, 5)
+    # plot_breps(random_shapes_brep_dict_list)
+
+    return addto_shapes_brep_dict_list
+
+
+def get_original_shapes():
+    raw_shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
+    brep_dict_list = convert_dict_to_brep(raw_shapes_dict_list)
+    # pprint.pprint(brep_dict_list)
+    # plot_breps(brep_dict_list)
+    return brep_dict_list
+
+
+def save_to_files(original_list, filename):
+    write_to_csv(original_list, filename + ".csv")
+
+    # Calculate the number of dictionaries for each list
+    total_dicts = len(original_list)
+    train_list_size = int(0.8 * total_dicts)
+    test_list_size = int(0.1 * total_dicts)
+    validation_list_size = total_dicts - train_list_size - test_list_size
+
+    # Use random.sample() to select dictionaries for each list
+    train_list = random.sample(original_list, train_list_size)
+    remaining_list = [d for d in original_list if d not in train_list]
+    test_list = random.sample(remaining_list, test_list_size)
+    validation_list = [d for d in remaining_list if d not in test_list]
+
+    # Print or use the new lists as needed
+    print("Train List Size:", train_list_size)
+    print("Test List:", test_list_size)
+    print("Validation List:", validation_list_size)
+
+    write_to_csv(train_list, filename + "_train.csv")
+    write_to_csv(test_list, filename + "_test.csv")
+    write_to_csv(validation_list, filename + "_val.csv")
+
+
 if __name__ == "__main__":
-    original_shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
-    shapes_brep_dict_list = convert_dict_to_brep(original_shapes_dict_list)
-    pprint.pprint(shapes_brep_dict_list)
-    plot_breps(shapes_brep_dict_list)
+    original_shapes_brep_dict_list = get_original_shapes()
+    populated_list = populate_by_transformation(original_shapes_brep_dict_list)
 
-    # for i in range(2, 6):
-    #     shapes_brep_dict_list += scaled_shape_list(original_shapes_dict_list, i)
-    # for i in range(1, 181):
-    #     shapes_brep_dict_list += rotated_shape_list(original_shapes_dict_list, i)
-    # for i in range(-50, 51, 2):
-    #     shapes_brep_dict_list += translated_shape_list(original_shapes_dict_list, i)
-    # shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, True)
-    # shapes_brep_dict_list += mirrored_shape_list(original_shapes_dict_list, False)
-    #
-    # filename = "shapes2brep.csv"
-    # write_to_csv(shapes_brep_dict_list, filename)
+    save_to_files(populated_list, "midcurve_llm")
 
+    # Testing by plotting
     # lines = [[0, 1], [1, 2], [3, 2], [4, 2]]
     # points = [(12.48, 0.65), (11.31, 23.12), (10.13, 45.59), (-1.18, 22.47), (23.79, 23.78)]
     # segments = [[0], [1], [2], [3]]
