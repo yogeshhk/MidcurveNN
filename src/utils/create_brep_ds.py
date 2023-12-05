@@ -196,7 +196,7 @@ def populate_by_transformation(original_shapes_dict_list):
 def get_original_shapes():
     raw_shapes_dict_list = read_dat_files(RAW_DATA_FOLDER)
     brep_dict_list = convert_dict_to_brep(raw_shapes_dict_list)
-    # pprint.pprint(brep_dict_list)
+    pprint.pprint(brep_dict_list)
     # plot_breps(brep_dict_list)
     return brep_dict_list
 
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     original_shapes_brep_dict_list = get_original_shapes()
     populated_list = populate_by_transformation(original_shapes_brep_dict_list)
 
-    save_to_files(populated_list, "midcurve_llm")
+    # save_to_files(populated_list, "midcurve_llm")
 
     # Testing by plotting
     # lines = [[0, 1], [1, 2], [3, 2], [4, 2]]
