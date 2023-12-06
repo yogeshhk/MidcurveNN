@@ -84,11 +84,21 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 				},				
 }
 ```
+
+Column information is as below:
+- **ShapeName** (text): name of the shape. Just for visualization/reports.
+- **Profile**(text): List of Points coordinates (x,y) representing outer profile shape, typically closed.
+- **Midcurve**(text): List of Points coordinates (x,y) representing inner midcurve shape, typically open.
+- **Profile_brep**(text): Dictionary in Brep format representing outer profile shape, typically closed.
+- **Midcurve_brep**(text): Dictionary in Brep format representing inner midcurve shape, typically open.
+
 Each Segment is a continuous list of lines. In case of, say `Midcurve-T`, as there is a intersection, we can treat each line in a separate segment. In case of 'Profile O', there will be two segments, one for outer lines and another for inner lines. Each line is list of points, for now, linear. Points is list of coordinates (x,y), later can be (x,y,z).
 
 Once we have this brep representations of both, profile and the corresponding midcurve, in the text form, then we can try various machine translation approaches or LLM based fine tuning or few-shots prompt engineering.
 
 One major advantage of text based method over image based method is that image output still has stray pixels, cleaning which will be a complex task. But text method has exact points. It may just give odd lines, which can be removed easily.
+
+For a wider discussion on Use of Deep Learning in CAD (Computer-aided Design), refer [Notes](./Notes.md)
 
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
