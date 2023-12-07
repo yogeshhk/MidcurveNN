@@ -1,0 +1,173 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a contributed volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[graybox]{svmult}
+
+% choose options for [] as required from the list
+% in the Reference Guide
+
+
+\usepackage{type1cm}        % activate if the above 3 fonts are
+\usepackage{nicefrac}
+                            % not available on your system
+%
+\usepackage{makeidx}         % allows index generation
+\usepackage{graphicx}        % standard LaTeX graphics tool
+                             % when including figure files
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+
+\usepackage{newtxtext}       % 
+\usepackage[varvw]{newtxmath}       % selects Times Roman as basic font
+
+\usepackage{hyperref}
+\usepackage{cprotect}
+\def\ttdefault{cmtt}
+
+\pagestyle{plain}
+
+
+% see the list of further useful packages
+% in the Reference Guide
+
+\makeindex             % used for the subject index
+                       % please use the style svind.ist with
+                       % your makeindex program
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\parindent=0pt%
+\parskip=1em%
+\raggedbottom%
+
+\def\thechapter{\vspace*{-2pc}}
+\def\chaptername{}
+\begin{document}
+
+\title{1 Quick Start -- SVMult}
+
+\author{}
+
+\maketitle
+
+\begin{refguide}
+
+\begin{sloppy}
+
+\def\thechapter{\arabic{chapter}}
+
+\vspace*{-13pc}
+
+
+\section{Initializing the Class}
+
+To format a {\it document for a contributed book} enter
+\cprotect\boxtext{\verb|\documentclass{svmult}|}
+
+\vspace*{-5pc}
+\hspace*{28pc}\,{\it Tip}: \\
+\hspace*{28pc} \hbox{Use the pre-set}\\
+\hspace*{28pc} \hbox{templates}
+
+
+\bigskip at the beginning of your root file. This will set the text area to a \verb|\textwidth| of 117 mm or 27-3/4 pi pi and a \verb|\textheight| of 191 mm or 45-1/6 pi plus a \verb|\headsep| of 12 pt (space between the running head and text).
+
+{\it N.B.} Trim size (physical paper size) is $155 \times 235$ mm or $6\nicefrac{1}{8} \times 9\nicefrac{1}{4}$ in.
+
+For a description of all possible class options provided by {\sc SVMult} see the ``{\sc SVMult} Class Options'' section in the enclosed {\it Reference Guide}.
+
+\section{Required Packages}
+The following selection has proved to be essential in preparing a manuscript in the Springer Nature layout.
+
+Invoke the required packages with the command
+
+\cprotect\boxtext{\verb|\usepackage{}|}
+
+\begin{tabular}{p{7.5pc}@{\qquad}p{18.5pc}}
+{\tt newtxtext.sty} and {\tt newtxmath.sty} & Supports roman text font provided by a Times clone,  sans serif based on a Helvetica clone,  typewriter faces,  plus math symbol fonts whose math italic letters are from a Times Italic clone\\
+{\tt makeidx.sty} &  provides  and interprets the command  \verb|\printindex|  which ``prints'' the index file *.ind (compiled by an index processor) on a chosen page\\
+{\tt graphicx.sty} & is a powerful tool for including, rotating, scaling and sizing graphics files (preferably *.eps files)\\
+{\tt multicol.sty} & balances out the columns on the last page of, for example, your subject index\\
+{\tt footmisc.sty}  & together with style option {\tt [bottom]} places all footnotes at the bottom of the page
+\end{tabular}
+
+For a description of other useful packages and {\sc SVMult} class options, special commands and environments tested with the {\sc SVMult} document class see the {\it Reference Guide}.
+
+
+
+For a detailed description of how to fine-tune your text, mathematics, and references, of how to process your illustrations, and of how to set up your tables, see the enclosed {\it Author Instructions}.
+
+\section{Important Notes for the Production Process}
+
+Authors can support and speed up the production process by following the below described instructions.
+
+\subsection*{General instructions}
+
+\begin{itemize}
+\item Please make sure that any package used in the LaTeX file is compatible with MikTeX2.4/TeXlive2019 or higher.
+
+\item Along with the PDF we are also publishing your LaTeX works in other digital/online versions (in html and ePub). Point to highlight: All LaTeX flexible works to achieve a specific PDF output will not result in the same output in other online/digital versions due to limitations, e.g. dsfonts (double stroke fonts package), eucal (Euler calligraphic font package) --- the result of these packages in PDF will not show the same result in html/ePub. It is recommended to use \verb|\mathbb{...}| and to use \verb|\mathcal|, please do not include the package eucal.
+
+\item Please avoid multiple levels of linked sub-files in chapters: Too many linked files within chapter/book level, too many tree directories within the package will lead to additional work and challenges during the production process.
+
+\item The introduction of multiple math related packages/commands in the same manuscript (e.g. bbm, dsfonts, etc. and \verb|\mathrm|, \verb|\mathsf|, \verb|\mathtt|, \verb|\mathfrak|, \verb|\mathcal|, \verb|\mathbb|, \verb|\mathbbm|, \verb|\mathds| etc.) or the definition of different outputs for the same math command in different chapters (e.g. \verb|\mathcal{X}| as calliography in chapter one and \verb|\mathcal{X}| as fracture or script in chapter two) will lead to difficulties during proof generation. Instead please use default commands (as e.g. \verb|\mathcal| and \verb|\mathbb|) and use these commands consistently throughout all chapters.
+
+\item Usage of nested level macros, improper grouping, introduce \$ within equations (e.g. \verb|$ X + Y = 0 = \hbox{Revenge $X$} $|) will slow down the proofing works and will take additional efforts to produce a quality result and in some cases may lead to author queries and additional corrections.
+
+\item Any color text/shades/backgrounds which are handled in RGB mode will also need appropriate CMYK values in the manuscript. Please include them both one in active and other in comment is also fine. 
+    
+\noindent
+E.g. 
+\begin{center}
+\verb|	\definecolor{ultramarine}{RGB}{1,1,1}|
+
+\verb|	%%\definecolor{ultramarine}{cmyk}{0,0,0,1}|
+		
+\verb|	        \textcolor{ultramarine}{Colored text}|
+\end{center}
+    
+\noindent
+This eliminates incompatible color issues when we switch the color mode during print/online proof generation. Please note that owing to technical restrictions colored texts cannot be included in html and ePub. The colored text will have to be included as images for these online formats.
+
+\end{itemize}
+
+\subsection*{Package}
+
+\subsubsection*{Algorithm}
+
+To typeset algorithms or pseudocode in LaTeX you can use one of the following options: 
+
+\begin{itemize}
+\item Choose ONE of the (\texttt{algpseudocode} OR \texttt{algcompatible} OR \texttt{algorithmic}) packages to typeset algorithm bodies, and the algorithm package for captioning the algorithm.
+
+\item The \texttt{algorithm2e} package.
+\end{itemize}
+
+\noindent
+\textbf{Important: Please choose only one of the above groups of packages, and use only the commands and syntax provided by the package you choose}. These packages cannot be loaded simultaneously; otherwise you will get lots of errors.
+
+
+\section{LaTeX Good Practices}
+\begin{enumerate}\leftskip15pt
+\item[1.] Kindly avoid or reduce using the elements like footnote, section links, page ref. links and regular paragraph in bibliography. Bibliography can be considered only the reference details and adding special elements as mentioned in previous line, will facing challenge in production.
+
+\eject
+
+\item[2.] We recommend not to use ``amsmath'' package at preamble separately when you use ``newtxmath''. It is inbuilt within the package ``newtxmath''. The package which is not compatible for production work e.g \verb|exercise.sty| using command \verb|\shipoutAnswers| and \verb|cref.sty|.
+
+\item[3.] Please try to avoid regular float images using tikz and pstricks etc., because the process will be only in image formats not in tex drawn images.
+\end{enumerate}
+
+\end{sloppy}
+
+\end{refguide}
+
+\end{document}
