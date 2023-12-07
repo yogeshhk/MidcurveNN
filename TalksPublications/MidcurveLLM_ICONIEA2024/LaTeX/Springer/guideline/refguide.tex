@@ -1,0 +1,1178 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a contributed volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer Nature%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[graybox]{svmult}
+
+% choose options for [] as required from the list
+% in the Reference Guide
+
+
+\usepackage{type1cm}        % activate if the above 3 fonts are
+                            % not available on your system
+%
+\usepackage{makeidx}         % allows index generation
+\usepackage{graphicx}        % standard LaTeX graphics tool
+                             % when including figure files
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+
+\usepackage{newtxtext}       %
+\usepackage[varvw]{newtxmath}       % selects Times Roman as basic font
+
+\usepackage{hyperref}
+\usepackage{cprotect}
+\def\ttdefault{cmtt}
+
+\pagestyle{plain}
+
+
+% see the list of further useful packages
+% in the Reference Guide
+
+\makeindex             % used for the subject index
+                       % please use the style svind.ist with
+                       % your makeindex program
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title*{\LaTeX2$_{\varepsilon}$ \textsc{SVMult} Document Class Version 5.x\\
+\centerline{Reference Guide for}
+\centerline{Contributed Books}}
+%
+\author{\centerline{$\copyright$ 2018, Springer Nature}\hfill\break
+\centerline{All rights reserved.}}
+%
+
+\maketitle
+%
+\section*{Contents}
+\contentsline {section}{\numberline {1}Introduction}{1}{section.0.1}
+\contentsline {section}{\numberline {2}SVMult Class Features --- Contribution-wise}{3}{section.0.2}
+\contentsline {subsection}{\numberline {2.1}Initializing the SVMult Class}{3}{subsection.0.2.1}
+\contentsline {subsection}{\numberline {2.2}SVMult Class Options}{3}{subsection.0.2.2}
+\contentsline {subsection}{\numberline {2.3}Required and Recommended Packages}{6}{subsection.0.2.3}
+\contentsline {subsection}{\numberline {2.4}SVMult Commands and Environments in Text Mode}{8}{subsection.0.2.4}
+\contentsline {subsection}{\numberline {2.5}SVMult Commands in Math Mode}{13}{subsection.0.2.5}
+\contentsline {subsection}{\numberline {2.6}SVMult Theorem-Like Environments}{14}{subsection.0.2.6}
+\contentsline {subsection}{\numberline {2.7}SVMult Commands for the Figure and}{}{}
+\contentsline {subsection}{\numberline {}Table Environments}{16}{subsection.0.2.7}
+\contentsline {subsection}{\numberline {2.8}SVMult Environments for Exercises,}{}{}
+\contentsline {subsection}{\numberline {}Problems and Solutions}{18}{subsection.0.2.8}
+\contentsline {subsection}{\numberline {2.9}SVMult Commands for Styling References}{19}{subsection.0.2.9}
+\contentsline {section}{\numberline {3}SVMult Class Features -­ Book-wise}{19}{section.0.3}
+\contentsline {section}{References}{24}{section*.4}
+
+
+\begin{refguide}
+
+\begin{sloppy}
+
+\parindent=0pt%
+\parskip=1em%
+
+\section{Introduction}\label{sec:1}
+%
+This reference guide gives a detailed description of the \LaTeX2$_{\varepsilon}$ \textsc{SVMult} document class Version 5.x and its special features designed to facilitate the preparation of scientific books for Springer Nature. It always comes as part of the \textsc{SVMult} tool package and should not be used on its own.
+
+\clearpage
+
+The components of the \textsc{SVMult} tool package are:
+%
+\begin{itemize}\leftskip15pt
+\item The \textit{Springer Nature} \LaTeX~class \verb|SVMult.cls|, MakeIndex styles \texttt{svind.ist}, \texttt{svindd.ist}, BibTeX styles \texttt{spmpsci.bst}, \texttt{spphys.bst}, \texttt{spbasic.bst}{\break} as well as the \textit{templates} with preset class options, packages and coding{\break} examples;
+%
+\item[]\textit{Tip}: Copy all these files to your working directory, run \LaTeX2$_{\varepsilon}$, BibTeX and MakeIndex---as is applicable--- and and produce your own example *.dvi file; rename the template files as you see fit and use them for your own input.
+%
+\item \textit{Author Instructions} with style and coding instructions.
+%
+\item[]\textit{Tip}: Follow these instructions to set up your files, to type in your text and to obtain a consistent formal style in line with the Springer Nature layout specifications; use these pages as checklists before you submit your manuscript data.
+%
+\item The \textit{Reference Guide} describing \textsc{SVMult} features with regards to their functionality.
+%
+\item[]\textit{Tip}: Use it as a reference if you need to alter or enhance the default settings of the \textsc{SVMult} document class and/or the templates.
+\end{itemize}
+%
+
+For \textit{editors} only the \textsc{SVMult} tool package is enhanced by
+%
+\begin{itemize}\leftskip15pt
+\item the \textit{Editor Instructions} for compiling multiple contributions to a mutual book.
+\end{itemize}
+%
+
+The documentation in the \textsc{SVMult} tool package is not intended to be a general introduction to \LaTeX2$_{\varepsilon}$ or \TeX. For this we refer you to [1--3].
+
+Should we refer in this tool package to standard tools or packages that are not installed on your system, please consult the \textit{Comprehensive \TeX\ Archive Network} (CTAN) at [4--6].
+
+\textsc{SVMult} was derived from the \LaTeX2$_{\varepsilon}$ article.cls.
+%
+
+The main differences from the standard article class are the presence of
+\begin{itemize}\leftskip15pt
+\item multiple class options,
+\item a number of newly built-in environments for individual text structures like theorems, exercises, lemmas, proofs, etc.,
+\item enhanced environments for the layout of figures and captions, and
+\item new declarations, commands and useful enhancements of standard environments to facilitate your math and text input and to ensure their output is in line with the Springer Nature layout standards.
+\end{itemize}%
+
+
+Nevertheless, text, formulae, figures, and tables are typed using the standard \LaTeX2$_{\varepsilon}$ commands. The standard sectioning commands are also used.
+%
+
+Always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing. Such cross-references may then be converted to hyperlinks in any electronic version of your book.
+%
+
+The \verb|\cite| and \verb|\bibitem| mechanism for bibliographic references is also obligatory.
+
+\section{SVMult Class Features --- Contribution-wise}\label{sec:2}
+
+\subsection{Initializing the SVMult Class}\label{subsec:1}
+To use the document class, enter
+
+\cprotect\boxtext{\verb|\documentclass [|$\langle$\textit{options}$\rangle$\verb|] {svmult}|}
+
+
+at the beginning of your input.
+
+\subsection{SVMult Class Options}\label{subsec:2}
+Choose from the following list of class options if you need to alter the default
+layout settings of the \textsc{SVMult} document class. Please note that the
+optional features should only be chosen if instructed so by the editor of your
+book.
+
+
+\textbf{Page Style}
+
+\begin{description}[\textit{norunningheads}]
+\item[\textit{default}] twoside, single-spaced output, contributions starting always on a recto page
+\item[\textit{referee}] produces double-spaced output for proofreading
+\item[\textit{footinfo}] generates a footline with name, date, $\ldots$ at the bottom of each page
+\item[\textit{norunningheads}] suppresses any headers and footers
+\end{description}
+
+\textit{N.B.} If you want to use both options, you must type \texttt{referee} before \texttt{footinfo}.
+
+
+\textbf{Body Font Size}
+
+\begin{description}[\textit{11pt, 12pt}]
+\item[\textit{default}] 10 pt
+\item[\textit{11pt, 12pt}] are ignored
+\end{description}
+
+
+\textbf{Language for Fixed \LaTeX\ Texts}
+
+
+In the \textsc{SVMult} class we have changed a few standard \LaTeX\ texts (e.g. Figure
+to Fig. in figure captions) and assigned names to newly defined theorem-like
+environments so that they conform with Springer Nature style requirements.
+
+\begin{description}[\textit{francais}]
+\item[\textit{default}] English
+\item[\textit{deutsch}] translates fixed \LaTeX\ texts into their German equivalent
+\item[\textit{francais}] same as above for French
+\end{description}
+
+
+\textbf{Text Style}
+
+\begin{description}[\textit{graybox}]
+\item[\textit{default}] plain text
+\item[\textit{graybox}] automatically activates the packages \verb|color| and \verb|framed| and places a box with 15 percent gray shade in the background of the text when you use the \textsc{SVMult} environment \verb|\begin{svgraybox}...\end{svgraybox}|, see Sects.~\ref{subsec:3},~\ref{subsec:4}.
+\end{description}
+
+
+\textbf{Equations Style}
+
+\begin{description}[\textit{vecarrow}]
+\item[\textit{default}] centered layout, vectors boldface (\textit{math style})
+\item[\textit{vecphys}] produces boldface italic vectors (\textit{physics style}) when \verb|\vec|-command is used
+\item[\textit{vecarrow}] depicts vectors with an arrow above when \verb|\vec|-command is used
+\end{description}
+
+
+\textbf{Numbering and Layout of Headings}
+
+\begin{description}[\textit{nosecnum}]
+\item[\textit{default}] all section headings down to subsubsection level are numbered, second and subsequent lines in a multiline numbered heading are indented; Paragraph and Subparagraph headings are displayed but not numbered; figures, tables and equations are numbered chapterwise, individual theorem-like environments are counted consecutively throughout the book.
+\item[\textit{nosecnum}] suppresses any section numbering; figures, tables and equations are counted chapterwise displaying the chapter counter, if applicable.
+\end{description}
+
+
+\textbf{Numbering and Counting of Built-in Theorem-Like Environments}
+
+\begin{description}[\textit{envcountresetchap}]
+\item[\textit{default}] each built-in theorem-like environment gets its own
+counter without any chapter or section prefix and is
+reset for each unnumbered contribution.
+\item[\textit{envcountchap}] Each built-in environment gets its own counter and
+is numbered \textit{chapterwise}. \textit{To be selected as default
+setting for a volume with numbered contributions}.
+\item[\textit{envcountsect}] each built-in environment gets its own counter and
+is numbered \textit{sectionwise}
+\item[\textit{envcountsame}] all built-in environments follow a \textit{single counter}
+without any chapter or section prefix, and are
+counted consecutively throughout the book
+\item[\textit{envcountresetchap}] each built-in environment gets its own counter without any chapter or section prefix but with the counter
+\textit{reset for each chapter}
+\item[\textit{envcountresetsect}] each built-in environment gets its own counter without any chapter or section prefix but with the counter
+\textit{reset for each section}
+\end{description}
+
+
+\textit{N.B.1} When the option \textit{envcountsame} is combined with the options \textit{envcount-resetchap} or \textit{envcountresetsect} all predefined environments get the same
+counter; but the counter is reset for each chapter or section.
+
+
+\textit{N.B.2} When the option \textit{envcountsame} is combined with the options \textit{envcountchap}
+or \textit{envcountsect} all predefined environments get a common counter with
+a chapter or section prefix; but the counter is reset for each chapter or section.
+
+
+\textit{N.B.3} We have designed a new easy-to-use mechanism to define your own environments, see Sect.~\ref{subsec:6}.
+
+
+\textit{N.B.4} Be careful not to use layout options that contradict the parameter of the
+selected environment option and vice versa. \marginpar{\textbf{Warning !}}
+
+
+Use the Springer Nature class option
+
+\begin{description}[\textit{nospthms}]
+\item[\textit{nospthms}] \textit{only} if you want to suppress all defined theorem-like
+environments and use the theorem environments of original \LaTeX\ package or other theorem packages instead.
+(Please check this with your editor.)
+\end{description}
+
+
+\textbf{References}
+
+\begin{description}[\textit{chaprefs}]
+\item[\textit{default}] the list of references is set as an unnumbered section at
+the end of your contribution, with automatically correct
+running heads and an entry in the table of contents. The
+list itself is set in small print and numbered with ordinal
+numbers.
+\item[\textit{chaprefs}] sets the reference list as an unnumbered chapter
+e.g. at the end of the book
+\item[\textit{natbib}] sorts reference entries in the author-year system
+(make sure that you have the natbib package by
+Patrick~W. Daly installed. Otherwise it can be found at
+the \textit{Comprehensive \TeX\ Archive Network} (CTAN...texarchive/macros/latex/contrib/supported/natbib/), see [4-­6]
+\item[\textit{oribibl}] use the Springer Nature class option \textit{only} if you want to set reference numbers in square brackets without automatic TOC
+entry etc., as is the case in the original \LaTeX\ bibliography
+environment. But please note that most page layout features are nevertheless adjusted to Springer Nature requirements.
+(Please check usage of this option with your editor.)
+\end{description}
+
+\subsection{Required and Recommended Packages}\label{subsec:3}
+\textsc{SVMult} document class has been tested with a number of Standard \LaTeX\
+tools. Below we list and comment on a selection of recommended packages for
+preparing fully formatted book manuscripts for Springer Nature. If not installed
+on your system, the source of all standard \LaTeX\ tools and packages is the
+\textit{Comprehensive \TeX\ Archive Network} (CTAN) at [4-­6].
+
+
+\textbf{Font Selection}
+
+\begin{tabular}{p{7.5pc}@{\qquad}p{18.5pc}}
+\texttt{default} &Times font family as default text body font together with
+Helvetica clone as sans serif and Courier as typewriter font.\\
+\texttt{newtxtext.sty} and \texttt{newtxmath.sty} & Supports roman text font provided by a Times clone,  sans serif based on a Helvetica clone,  typewriter faces,  plus math symbol fonts whose math italic letters are from a Times Italic clone
+\end{tabular}
+
+If the packages `\texttt{newtxtext.sty} and \texttt{newtxmath.sty}' are not already installed
+with your \LaTeX\ they can be found at https://ctan.org/tex.archive/ fonts/newtx at the \textit{Comprehensive \TeX\ Archive Network} (CTAN), see [4-­6].
+
+
+If Times Roman is not available on your system you may revert to CM fonts.
+However, the \textsc{SVMult} layout requires font sizes which are not part of the
+default set of the computer modern fonts.
+
+\begin{description}[\texttt{type1cm.sty}]
+\item[\texttt{type1cm.sty}] The \texttt{type1cm} package enhances this default by enabling scalable versions of the (Type 1) CM fonts. If
+not already installed with your \LaTeX\ it can be found
+at ../tex-archive/macros/latex/contrib/type1cm/ at the
+\textit{Comprehensive \TeX\ Archive Network} (CTAN), see [4-­6].
+\end{description}
+
+
+\textbf{Body Text}
+
+
+When you select the \textsc{SVMult} class option \texttt{[graybox]} the packages \texttt{framed} and
+color are required, see Sect. \ref{subsec:2}
+
+\begin{description}[\texttt{framed.sty}]
+\item[\texttt{framed.sty}] makes it possible that framed or shaded regions can
+break across pages.
+\item[\texttt{color.sty}] is part of the \texttt{graphics} bundle and makes it possible to
+selct the color and define the percentage for the background of the box.
+\end{description}
+
+
+\textbf{Equations}
+
+
+A useful package for subnumbering each line of an equation array can be found
+at ../tex-archive/macros/latex/contrib/supported/subeqnarray/ at the \textit{Comprehensive \TeX\ Archive Network}(CTAN), see [4-­6].
+
+\vspace*{-2pt}
+\begin{description}[\texttt{subeqnarray.sty}]
+\item[\texttt{subeqnarray.sty}] defines the \texttt{subeqnarray} and \texttt{subeqnarray*} environments, which behave like the equivalent \texttt{eqnarray} and \texttt{eqnarray*} environments, except that the individual
+lines are numbered as 1a, 1b, 1c, etc.
+\end{description}
+
+
+\vspace*{-2pt}
+\textbf{Footnotes}
+
+\vspace*{-2pt}
+\begin{description}[\texttt{footmisc.sty}]
+\item[\texttt{footmisc.sty}] used with style option \texttt{[bottom]} places all footnotes at
+the bottom of the page
+\end{description}
+
+\vspace*{-2pt}
+\textbf{Figures}
+
+\vspace*{-2pt}
+\begin{description}[\texttt{graphicx.sty}]
+\item[\texttt{graphicx.sty}] tool for including graphics files (preferrably \texttt{eps} files)
+\end{description}
+
+\pagebreak
+
+
+\textbf{References}
+
+\begin{description}[\texttt{natbib.sty}]
+\item[\textit{default}] Reference lists are numbered with the references being
+cited in the text by their reference number
+\item[\texttt{natbib.sty}] sorts reference entries in the author­year system (among
+other features). \textit{N.B.} This style must be installed when
+the class option \textit{natbib} is used, see Sect. \ref{subsec:2}
+\item[\texttt{cite.sty}] generates compressed, sorted lists of numerical citations:
+e.g. [8,{\break}11-­16]; preferred style for books published in a print version only
+\end{description}
+
+
+\textbf{Index}
+
+\begin{description}[\texttt{multicol.sty}]
+\item[\texttt{makeidx.sty}] provides and interprets the command \verb|\printindex|
+which ``prints'' the externally generated index file *.ind.
+\item[\texttt{multicol.sty}] balances out multiple columns on the last page of your
+subject index, glossary or the like
+\end{description}
+
+
+\textit{N.B.} Use the \textit{MakeIndex} program together with one of the folllowing styles
+
+\begin{description}[\texttt{svindd.ist}]
+\item[\texttt{svind.ist}] for English texts
+\item[\texttt{svindd.ist}] for German texts
+\end{description}
+to generate a subject index automatically in accordance with Springer Nature layout
+requirements. For a detailed documentation of the program and its usage we
+refer you to [1].
+
+\subsection{SVMult Commands and Environments in Text Mode}\label{subsec:4}
+
+Use the command
+
+\cprotect\boxtext{%
+    \verb|\title*{}|}
+
+to typeset an unnumbered heading of your contribution.
+\cprotect\boxtext{\verb|\title{}|}
+to typeset a numbered heading of your contribution.
+
+Use the new command
+
+\cprotect\boxtext{\verb|\subtitle[|$\langle$\textit{subtitle}$\rangle$\verb|]|}
+
+
+to typeset a possible subtitle to your contribution title. Beware that this subtitle
+is not tranferred automatically to the table of contents.
+
+
+Alternatively use the \verb|\title|-command to typeset your subtitle together with
+the contribution title and separate the two titles by a period or an
+en-dash . \marginpar{\textbf{Alternative !}}
+
+
+Use the command
+
+\cprotect\boxtext{\verb|\toctitle{}|}
+
+
+if you want to alter the line break of your heading for the table of content.
+
+
+Use the command
+
+\cprotect\boxtext{\verb|\titlerunning{}|}
+
+
+if you need to abbreviate your heading to fit into the running head.
+
+
+Use the command
+
+\cprotect\boxtext{\verb|\author{}|}
+
+
+for your name(s). If there is more than one author, the names should be separated by \verb|\and|.
+
+
+The author names will appear beneath the contribution's title.
+
+%%
+
+Use the command
+
+\cprotect\boxtext{\verb|\orcidID{}|}
+
+ORCID identifiers can be included with
+
+\cprotect\boxtext{\verb|\orcidID{<ORCID identifier>}|}
+
+The ORCID (Open Researcher and Contributor ID) registry provides
+authors with unique digital identifiers that distinguish them from
+other researchers and help them link their research activities to
+these identifiers. Authors who are not yet registered with ORCID are
+encouraged to apply for an individual ORCID id at
+\url{https://www.orcid.org} and to include it in their papers. In
+the final publication, the ORCID id will be replaced by an ORCID
+icon, which will link from the eBook to the
+actual ID in the ORCID database. The ORCID icon will also replace
+the number in the printed book.
+
+If you have done this correctly, the author line now reads, for
+example:
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\author{First Author\orcidID{0000-1111-2222-3333} \and|\\
+\verb|Second Author\orcidID{1111-2222-3333-4444}}|
+\end{tabular}}
+
+The given name(s) should always be followed by the family name(s).
+Authors who have more than one family name should indicate which
+part of their name represents the family name(s), for example by
+non-breaking spaces \verb|Jos\'{e} Martinez~Perez| or curly braces
+\verb|Jos\'{e} {Martinez Perez}|.
+
+%%
+
+Use the command
+
+\cprotect\boxtext{\verb|\tocauthor{}|}
+
+
+to change manually the list of authors to appear in the table of contents.
+
+
+Use the command
+
+\cprotect\boxtext{\verb|\authorrunning{}|}
+
+
+if there are more than two authors; abbreviate the list of authors to the main
+author's name and add ``et al.'' for the running head.
+
+
+Use the command
+
+\cprotect\boxtext{\verb|\institute[|$\langle$\textit{author name}$\rangle$\verb|\at|$\langle$\textit{affiliation details separated by commas}$\rangle$\verb|\email|$\langle$\textit{email address}$\rangle$\verb|]|}
+
+
+when the authors' names and affiliations shall appear at the bottom of the
+contribution's first page.
+
+
+Please list multiple authors and/or affiliations by using the command \verb|\and|, cf.
+the example below:
+
+\verb|\institute{J.B. Doe|\\
+\verb|\at Doe Institute, 281 Prime Street, Daisy Town, NA 02467,USA\\|\\
+\verb|Tel.: +127-47-678901, Fax: +127-47-678907|\\
+\verb|\and|\\
+\verb|J.B. Doe|\\
+\verb|\and|\\
+\verb|S.Q. Public|\\
+\verb|\at Public-Enterprises|\\
+\verb|\and|\\
+\verb|J.A. Smith|\\
+\verb|\at Smith University,\email{smith@smith.edu}}|
+
+
+\eject
+
+Use the command
+
+\cprotect\boxtext{\verb|\maketitle|}
+
+
+to compile the header of your contribution.
+
+
+To create and format a short table of contents enter prior to the command
+\verb|\dominitoc|, \textit{see below}
+
+\cprotect\boxtext{\verb|\setcounter{minitocdepth}{|$\langle$$n$$\rangle$\verb|}|}
+
+
+with $n$ depicting the highest sectioning level of your short table of content
+(default is 0) and then enter
+
+\cprotect\boxtext{\verb|\dominitoc|}
+
+
+Use the new command
+
+\cprotect\boxtext{\verb|\motto[|$\langle$\textit{textwidth}$\rangle$\verb|]{|$\langle$\textit{text}$\rangle$\verb|}|}
+
+
+to include \textit{special text}, e.g. mottos, slogans, between the chapter heading and
+the actual content of the chapter.
+
+
+The default font size is ``small'', the default font shape is ``italic''.
+
+
+In the optional argument \verb|[|$\langle$\textit{textwidth}$\rangle$\verb|]| alternative widths may be indicated.
+
+
+The argument \verb|{|$\langle$\textit{text}$\rangle$\verb|}| contains the text of your inclusion. It may not contain
+any empty lines. To introduce vertical spaces use \verb|\\[height]|.
+
+
+The command must be placed \textit{before} the \verb|\title| command. Use the new commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\abstract{|$\langle$\textit{text}$\rangle$\verb|}|\\
+\verb|\abstract*{|$\langle$\textit{text}$\rangle$\verb|}|
+\end{tabular}}
+
+
+to typeset an abstract at the beginning of a contribution.
+
+The text of \verb|\abstract*| will be used for compiling \verb|html| abstracts for the online publication of the
+individual chapters \verb|www.SpringerLink.com|.
+
+Please do not use the standard \LaTeX\ environment \marginpar{\textbf{Warning !!!}}
+
+\verb|\begin{abstract}...\end{abstract}| -- it will be ignored when used with the
+\textsc{SVMult} document class!
+
+\eject
+
+Use the command
+
+\cprotect\boxtext{\verb|\keywords{|$\langle$\textit{keyword list}$\rangle$\verb|}|}
+
+\textit{within} the abstract environment to specify your keywords and/or subject classification.
+
+Use the new commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\runinhead[|$\langle$\textit{title}$\rangle$\verb|]|\\
+\verb|\subruninhead[|$\langle$\textit{title}$\rangle$\verb|]|
+\end{tabular}}
+
+when you want to use unnumbered run-in headings to structure your text.
+
+Use the new environment command
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{svgraybox}|\\
+\verb||$\langle$\textit{text}$\rangle$\verb||\\
+\verb|\end{svgraybox}|
+\end{tabular}}
+
+to typeset complete paragraphs within a box showing a 15 percent gray shade.
+
+\textit{N.B.} Make sure to select the \textsc{SVMult} class option \verb|[graybox]| in order to have
+all the required style packages available, see Sects. \ref{subsec:2}, \ref{subsec:3}. \marginpar{\textbf{Warning !}}
+
+Use the new environment command
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{petit}|\\
+\verb||$\langle$\textit{text}$\rangle$\verb||\\
+\verb|\end{petit}|
+\end{tabular}}
+
+to typeset complete paragraphs in small print.
+
+Use the enhanced environment command
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{description}[|$\langle$\textit{largelabel}$\rangle$\verb|]|\\
+\verb|\item[|$\langle$\textit{label1}\verb|] |$\langle$\textit{text1}$\rangle$\verb||\\
+\verb|\item[|$\langle$\textit{label2}\verb|] |$\langle$\textit{text2}$\rangle$\verb||\\
+\verb|\end{description}|
+\end{tabular}}
+
+for your individual itemized lists.
+
+The new optional parameter \verb|[|$\langle$\textit{largelabel}$\rangle$\verb|]| lets you specify the largest item label
+to appear within the list. The texts of all items are indented by the width of
+\verb||$\langle$\textit{largelabel}$\rangle$\verb|| and the item labels are typeset flush left within this space. Note,
+the optional parameter will work only two levels deep.
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\setitemindent{|$\langle$\textit{largelabel}$\rangle$\verb|}|\\
+\verb|\setitemitemindent{|$\langle$\textit{largelabel}$\rangle$\verb|}|
+\end{tabular}}
+
+if you need to customize the indention of your ``itemized'' or ``enumerated'' environments.
+
+\subsection{SVMult Commands in Math Mode}\label{subsec:5}
+
+Use the new or enhanced symbol commands provided by the \textsc{SVMult} document class:
+
+\cprotect\boxtext{\begin{tabular}{ll}
+\verb|\D| &upright d for differential d\\
+\verb|\I| &upright i for imaginary unit\\
+\verb|\E| &upright e for exponential function\\
+\verb|\tens| &depicts tensors as sans serif upright\\
+\verb|\vec| &depicts vectors as boldface characters instead of the arrow accent\\
+\end{tabular}}
+
+\textit{N.B.} By default the \textsc{SVMult} document class depicts Greek letters as italics
+because they are mostly used to symbolize variables. However, when used as
+operators, abbreviations, physical units, etc. they should be set upright.
+
+All \textit{upright} upper-case Greek letters have been defined in the \textsc{SVMult} document class and are taken from the \TeX\ alphabet.
+
+Use the command prefix
+
+\cprotect\boxtext{\verb|\var...|}
+
+with the upper-case name of the Greek letter to set it upright, e.g. \verb|\varDelta|.
+
+Many \textit{upright} lower-case Greek letters have been defined in the \textsc{SVMult} document class and are taken from the PostScript Symbol font.
+
+Use the command prefix
+
+\cprotect\boxtext{\verb|\u...|}
+
+with the lower-case name of the Greek letter to set it upright, e.g. \verb|\umu|.
+
+If you need to define further commands use the syntax below as an example:
+
+\cprotect\boxtext{\verb|\newcommand{\ualpha}{\allmodesymb{\greeksym}{a}}|}
+
+\subsection{SVMult Theorem-Like Environments}\label{subsec:6}
+
+For individual text structures such as theorems, and definitions, the
+\textsc{SVMult} document class provides a number of \textit{pre-defined} environments which
+conform with the specific Springer Nature layout requirements.
+
+Use the environment command
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{|$\langle$\textit{name of environment}$\rangle$\verb|}[|$\langle$\textit{optional material}$\rangle$\verb|]|\\
+\verb||$\langle$\textit{text for that environment}$\rangle$\verb||\\
+\verb|\end{|$\langle$\textit{name of environment}$\rangle$\verb|}|
+\end{tabular}}
+
+for the newly defined \textit{environments}.\\
+\textit{Unnumbered environments} will be produced by
+
+\verb|claim| and \verb|proof|.
+
+\textit{Numbered environments} will be produced by
+
+\verb|case, conjecture, corollary, definition, exercise, lemma, note|, \verb|problem, property, proposition, question, remark, solution|, and \verb|theorem|.
+
+The optional argument \verb|[|$\langle$\textit{optional material}$\rangle$\verb|]| lets you specify additional text
+which will follow the environment caption and counter.
+
+Furthermore the functions of the standard \verb|\newtheorem| command have been
+\textit{enhanced} to allow a more flexible font selection. All standard functions though
+remain intact (e.g. adding an optional argument specifying additional text after
+the environment counter).
+
+Use the mechanism
+
+\cprotect\boxtext{\verb|\spdefaulttheorem{|$\langle$\textit{env name}$\rangle$\verb|}{|$\langle$\textit{caption}$\rangle$\verb|}{|$\langle$\textit{cap font}$\rangle$\verb|}{|$\langle$\textit{body font}$\rangle$\verb|}|}
+
+to define an environment compliant with the selected class options (see Sect.\ref{subsec:2})
+and designed as the predefined theorem-like environments.
+
+The argument \verb|{|$\langle$\textit{env name}$\rangle$\verb|}| specifies the environment name; \verb|{|$\langle$\textit{caption}$\rangle$\verb|}| specifies the environment's heading; \verb|{|$\langle$\textit{cap font}$\rangle$\verb|}| and \verb|{|$\langle$\textit{body font}$\rangle$\verb|}| specify the font
+shape of the caption and the text body.
+
+\textit{N.B.} If you want to use optional arguments in your definition of a theorem-like environment as done in the standard \verb|\newtheorem| command, see below.
+
+Use the mechanism
+
+\cprotect\boxtext{\verb|\spnewtheorem{|$\langle$\textit{env name}$\rangle$\verb|}[|$\langle$\textit{numbered like}$\rangle$\verb|]{|$\langle$\textit{caption}$\rangle$\verb|}{|$\langle$\textit{cap font}$\rangle$\verb|}{|$\langle$\textit{body font}$\rangle$\verb|}|}
+
+to define an environment that shares its counter with another predefined environment \verb|[|$\langle$\textit{numbered like}$\rangle$\verb|]|.
+
+The optional argument \verb|[|$\langle$\textit{numbered like}$\rangle$\verb|]| specifies the environment with which
+to share the counter.
+
+\textit{N.B.} If you select the class option ``envcountsame'' the only valid ``numbered
+like'' argument is \verb|[theorem]|.
+
+Use the defined mechanism
+
+\cprotect\boxtext{\verb|\spnewtheorem{|$\langle$\textit{env name}$\rangle$\verb|}{|$\langle$\textit{caption}$\rangle$\verb|}[|$\langle\langle$\textit{within}$\rangle\rangle$\verb|]{|$\langle$\textit{cap font}$\rangle$\verb|}{|$\langle$\textit{body font}$\rangle$\verb|}|}
+
+to define an environment whose counter is prefixed by either the chapter or
+section number (use \verb|[chapter]| or \verb|[section]| for \verb|[|$\langle$\textit{within}$\rangle$\verb|]|).
+
+Use the defined mechanism
+
+\cprotect\boxtext{\verb|\spnewtheorem*{|$\langle$\textit{env name}$\rangle$\verb|}{|$\langle$\textit{caption}$\rangle$\verb|}{|$\langle$\textit{cap font}$\rangle$\verb|}{|$\langle$\textit{body font}$\rangle$\verb|}|}
+
+to define an \textit{unnumbered} environment such as the pre-defined unnumbered environments \textit{claim} and \textit{proof}.
+
+Use the newly defined declaration
+
+\cprotect\boxtext{\verb|\nocaption|}
+
+in the argument \verb|{|$\langle$\textit{caption}$\rangle$\verb|}| if you want to skip the environment caption and
+use an environment counter only.
+
+Use the defined environment
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{theopargself}|\\
+...\\
+\verb|\end{theopargself}|
+\end{tabular}}
+
+as a wrapper to any theorem-like environment defined with the mechanism. It suppresses the brackets of the optional argument specifying additional
+text after the environment counter.
+
+\subsection{SVMult Commands for the Figure and Table Environments}\label{subsec:7}
+
+Use the new declaration
+
+\cprotect\boxtext{\verb|\sidecaption[|$\langle$\textit{pos}$\rangle$\verb|]|}
+
+to move the figure caption from beneath the figure (\textit{default}) to the lower left-hand side of the figure.
+
+The optional parameter \verb|[t]| moves the figure caption to the upper left-hand
+side of the figure
+
+\textit{N.B.1} (1) Make sure the declaration \verb|\sidecaption| follows the \verb|\begin{figure}|
+command, and (2) remember to use the standard \verb|\caption{}| command for your
+caption text.
+
+\textit{N.B.2} This declaration works only if the figure width is less than 7.8~cm. The
+caption text will be set raggedright if the width of the caption is less than 3.4~cm.
+
+Use the new declaration
+
+\cprotect\boxtext{\verb|\samenumber|}
+
+\textit{within} the figure and table environment -- directly after the \verb|\begin{|$\langle$\textit{environment}$\rangle$\verb|}|
+command -- to give the caption concerned the same counter as its predecessor
+(useful for long tables or figures spanning more than one page, see also the
+declaration \verb|\subfigures| below.
+
+To arrange multiple figures in a single environment use the newly defined commands
+
+\cprotect\boxtext{\verb|\leftfigure[|$\langle$\textit{pos}$\rangle$\verb|]| and \verb|\rightfigure[|$\langle$\textit{pos}$\rangle$\verb|]|}
+
+\textit{within} a \verb|{minipage}{\textwidth}| environment. To allow enough space between two horizontally arranged figures use \verb|\hspace{\fill}| to separate the
+corresponding \verb|\includegraphics{}| commands . The required space between
+vertically arranged figures can be controlled with \verb|\\[12pt]|, for example.
+
+The default position of the figures within their predefined space is flush left.
+The optional parameter \verb|[c]| centers the figure, whereas \verb|[r]| positions it flush
+right -­ use the optional parameter \textit{only} if you need to specify a position other
+than flush left.
+
+Use the newly defined commands
+
+\cprotect\boxtext{\verb|\leftcaption{}| and \verb|\rightcaption{}|}
+
+\textit{outside} the \verb|minipage| environment to put two figure captions next to each other.
+
+Use the newly defined command
+
+\cprotect\boxtext{\verb|\twocaptionwidth{|$\langle$\textit{width}$\rangle$\verb|}{|$\langle$\textit{width}$\rangle$\verb|}|}
+
+to overrule the default horizontal space of 5.4~cm provided for each of the abovedescribed caption commands. The first argument corresponds to \verb|\leftcaption| and the latter to \verb|\rightcaption|.
+
+Use the new declaration
+
+\cprotect\boxtext{\verb|\subfigures|}
+
+\textit{within} the figure environment -- directly after the \verb|\begin{figure}| command --
+to subnumber multiple captions alphabetically within a single figure-environment.
+
+\textit{N.B.}: When used in combination with \verb|\samenumber| the main counter remains
+the same and the alphabetical subnumbering is continued. It works properly
+only when you stick to the sequence \verb|\samenumber\subfigures|.
+
+If you do not include your figures as electronic files use the defined command
+
+\cprotect\boxtext{\verb|\mpicplace{|$\langle$\textit{width}$\rangle$\verb|}{|$\langle$\textit{height}$\rangle$\verb|}|}
+
+to leave the desired amount of space for each figure. This command draws a
+vertical line of the height you specified.
+
+Use the new command
+
+\cprotect\boxtext{\verb|\svhline|}
+
+for setting in tables the horizontal line that separates the table header from the
+table content.
+
+Use the descriptions of images
+
+\cprotect\boxtext{\verb|\Description|}
+
+Some readers of publications might be visually challenged. These
+readers might use a voice-over software to read aloud the papers. It
+is important to provide them a description of each image used in the
+papers.
+
+The command \verb|\Description[<short description>]{<long description>}| 
+should be placed inside \texttt{every figure}, \texttt{teaserfigure}
+or \texttt{marginfigure}
+environment to provide a description of the image(s) used in the
+figure. Unlike \verb|\caption|, which is used along-side the image,
+\verb|\Description| is intended to be used instead of the image, for example,
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{figure}|\\
+\verb|\centering|\\
+\verb|\includegraphics{voltage}|\\
+\verb|\Description{A bell-like histogram centered at $0.5$ V with most|\\
+\verb|measurements between $0.25 V and $0.8$ V}|\\
+\verb|\caption{Histogram of the measurements of voltage}|\\
+\verb|\label{fig:voltage}|\\
+\verb|\end{figure}|\end{tabular}}
+
+\subsection{SVMult Environments for Exercises, Problems and Solutions}\label{subsec:8}
+
+Use the environment command
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{prob}|\\
+\verb|\label{|$\langle$\textit{problem:key}$\rangle$\verb|}|\\
+\verb||$\langle$\textit{problem text}$\rangle$\verb||\\
+\verb|\end{prob}|
+\end{tabular}}
+
+to typeset and number each problem individually.
+
+To facilitate the correct numbering of the solutions we have also defined a \textit{solution environment}, which takes the problem's key, i.e. \verb||$\langle$\textit{problem:key}$\rangle$\verb|| (see above) as argument.
+
+Use the environment syntax
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{sol}{|$\langle$\textit{problem:key}$\rangle$\verb|}|\\
+\verb||$\langle$\textit{solution text}$\rangle$\verb||\\
+\verb|\end{sol}|
+\end{tabular}}
+
+to get the correct (i.e. problem $=$) solution number automatically.
+
+\eject
+
+\subsection{SVMult Commands for Styling References}\label{subsec:9}
+
+The command
+
+\cprotect\boxtext{\verb|\biblstarthook{|$\langle$\textit{text}$\rangle$\verb|}|}
+
+allows the inclusion of explanatory \textit{text} between the bibliography heading
+and the actual list of references. The command must be placed before the
+\verb|thebibliography| environment.
+
+\section{SVMult Class Features -­ Book-wise}\label{sec:3}
+
+In addition to the \textit{Editor Instructions} and the details described in the previous
+sections of this \textit{Reference Guide} you find below a list of further \textsc{SVMult} class
+options, declarations and commands which you may find especially useful when
+compiling all contributions to a single book.
+
+Use the environment syntax
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{dedication}|\\
+\verb||$\langle$\textit{text}$\rangle$\verb||\\
+\verb|\end{dedication}|
+\end{tabular}}
+
+to typeset a dedication or quotation at the very beginning of the in book.
+
+Use the new commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\foreword|\\
+\verb|\preface|\\
+\verb|\contributors|
+\end{tabular}}
+
+to typeset a \textit{Foreword, Preface, or List of Contributors} with automatically generated runnings heads.
+
+\eject
+
+Use the environment syntax
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{thecontriblist}|\\
+\verb||$\langle$\textit{author name}$\rangle$\verb||\\
+\verb|\at |$\langle$\textit{affiliation details separated by commas}$\rangle$\verb||\\
+\verb|\email{|$\langle$\textit{email address}$\rangle$\verb|}|\\
+\verb|\and|\\
+\verb||$\langle$\textit{author name}$\rangle$\verb||\\
+\verb|\at |$\langle$\textit{XYZ Institute, Technical University, Albert-Schweitzer-Str. 34, 1000 Berlin, Germany}$\rangle$\verb||\\
+\verb|\email{|$\langle$\textit{meier@tu.edu}$\rangle$\verb|}|\\
+\verb|\end{thecontriblist}|
+\end{tabular}}
+
+to list and style the names and affiliation details of the contributors.
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\extrachap{|$\langle$\textit{heading}$\rangle$\verb|}|\\
+\verb|\Extrachap{|$\langle$\textit{heading}$\rangle$\verb|}|
+\end{tabular}}
+
+to typeset---in the front or back matter of the book---an extra unnumbered chapter with your preferred heading and automatically generated runnings heads.
+\verb|\Extrachap| furthermore generates an automated TOC entry.
+
+Use the new command
+
+\cprotect\boxtext{\verb|\partbacktext[|$\langle$\textit{text}$\rangle$\verb|]|}
+
+to typeset a text on the back side of a part title page.
+
+N.B. The command must be placed \textit{before} the \verb|part|-command.
+
+Use the new command
+
+\cprotect\boxtext{\verb|\motto{|$\langle$\textit{text}$\rangle$\verb|}|}
+
+to include \textit{special text}, e.g. mottos, slogans, between the chapter heading and
+the actual content of the chapter.
+
+The argument \verb|{|$\langle$\textit{text}$\rangle$\verb|}| contains the text of your inclusion. It may not contain
+any empty lines. To introduce vertical spaces use \verb|\\[height]|.
+
+If needed, the you may indicate an alternative widths in the optional argument.
+
+N.B. The command must be placed \textit{before} the relevant \verb|heading|-command.
+
+\eject
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\abstract{|$\langle$\textit{text}$\rangle$\verb|}|\\
+\verb|\abstract*{|$\langle$\textit{text}$\rangle$\verb|}|
+\end{tabular}}
+
+to typeset an abstract at the beginning of a contribution.
+
+The text of \verb|\abstract*| will be used for compiling \verb|html| abstracts for the online publication of the
+individual chapters \verb|www.SpringerLink.com|.
+
+Please do not use the standard \LaTeX\ environment \marginpar{\textbf{Warning !!!}}
+
+\verb|\begin{abstract}...\end{abstract}| -- it will be ignored when used with the
+\textsc{SVMult} document class!
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{trailer}{|$\langle$\textit{Trailer Head}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{trailer}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Trailer Head|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{questype}{|$\langle$\textit{Questions}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{questype}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Questions|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{important}{|$\langle$\textit{Important}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{important}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Important|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{warning}{|$\langle$\textit{Attention}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{warning}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Attention|.  
+
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{programcode}{|$\langle$\textit{Program Code}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{programcode}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Program Code|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{tips}{|$\langle$\textit{Tips}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{tips}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Tips|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{overview}{|$\langle$\textit{Overview}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{overview}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Overview|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{backgroundinformation}{|$\langle$\textit{Background Information}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{backgroundinformation}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Background| \verb|Information|.  
+
+Use the commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{legaltext}{|$\langle$\textit{Legal Text}$\rangle$\verb|}|\\
+\verb|...|\\
+\verb|\end{legaltext}|
+\end{tabular}}
+
+If you want to emphasize complete paragraphs of texts in an \verb|Legal Text|.  
+
+\eject
+
+Use the new commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\ethics{|$\langle heading \rangle$\verb|}{|$\langle text \rangle$\verb|}|
+\end{tabular}}
+
+Please follow the above command for ``Competing Interests'' and
+``Ethics Approval''.
+
+Use the declaration
+
+\cprotect\boxtext{\verb|\appendix|}
+
+after the \verb|\backmatter| command to add an appendix at the end of the book.
+Use the \verb|\chapter| command to typeset the heading.
+
+The declaration
+
+\cprotect\boxtext{\verb|\threecolindex|}
+
+allows the next index following the \verb|\threecolindex| declaration to be set in
+three columns.
+
+The Springer Nature declaration
+
+\cprotect\boxtext{\verb|\indexstarthook{|$\langle$\textit{text}$\rangle$\verb|}|}
+
+allows the inclusion of explanatory \textit{text} between the index heading and the
+actual list of references.
+
+N.B. The command must be placed \textit{before} the \verb|theindex| environment.
+
+Use the command
+
+\cprotect\boxtext{\verb|\setcounter{tocdepth}{number}|}
+
+to alter the numerical depth of your table of contents.
+
+\eject
+
+Use the macro
+
+\cprotect\boxtext{\verb|\calctocindent|}
+
+to recalculate the horizontal spacing for large section numbers in the table of
+contents set with the following variables:
+
+\begin{tabular}{ll}
+\verb|\tocchpnum| &for the chapter number\\
+\verb|\tocsecnum| &section number\\
+\verb|\tocsubsecnum| &subsection number\\
+\verb|\tocsubsubsecnum| &subsubsection\\
+\verb|\tocparanum| &paragraph number\\
+\end{tabular}
+
+Set the sizes of the variables concerned at the maximum numbering appearing
+in the current document.
+
+In the preamble set e.g:
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\settowidth{\tocchpnum}{36.\enspace}|\\
+\verb|\settowidth{\tocsecnum}{36.10\enspace}|\\
+\verb|\settowidth{\tocsubsecnum}{99.88.77}|\\
+\verb|\calctocindent|
+\end{tabular}}
+
+\end{sloppy}
+
+\end{refguide}
+
+\begin{thebibliography}{[6]}
+%References
+\bibitem{bib1} L. Lamport: \textit{\LaTeX: A Document Preparation System} 2nd ed. (Addison-Wesley, Reading, Ma 1994)
+\bibitem{bib2} M. Goossens, F. Mittelbach, A. Samarin: \textit{The \LaTeX\ Companion} (Addison-Wesley, Reading, Ma 1994)
+\bibitem{bib3} D. E. Knuth: \textit{The \TeX book} (Addison-Wesley, Reading, Ma 1986) revised to cover \TeX3 (1991)
+\bibitem{bib4} \TeX\ Users Group (TUG), \url{http://www.tug.org}
+\bibitem{bib5} Deutschsprachige Anwendervereinigung \TeX\ e.V. (DANTE), Heidelberg, Germany, \url{http://www.dante.de}
+\bibitem{bib6} UK \TeX\ Users' Group (UK-TuG), \url{http://uk.tug.org}
+\end{thebibliography}
+
+\end{document}
+

@@ -1,0 +1,621 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a contributed volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[graybox]{svmult}
+%\usepackage{showframe}
+% choose options for [] as required from the list
+% in the Reference Guide
+
+
+\usepackage{type1cm}        % activate if the above 3 fonts are
+                            % not available on your system
+%
+\usepackage{makeidx}         % allows index generation
+\usepackage{graphicx}        % standard LaTeX graphics tool
+                             % when including figure files
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+
+\usepackage{newtxtext}       %
+\usepackage[varvw]{newtxmath}       % selects Times Roman as basic font
+
+\usepackage{hyperref}
+\usepackage{cprotect}
+\def\ttdefault{cmtt}
+
+\pagestyle{plain}
+
+% see the list of further useful packages
+% in the Reference Guide
+
+\makeindex             % used for the subject index
+                       % please use the style svind.ist with
+                       % your makeindex program
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+
+\title*{\centerline{\LaTeX2$_\varepsilon$ {\sc SVMult} Document Class}
+\centerline{Author Instructions}
+\centerline{for}
+\centerline{-- Contributed Books --}}
+
+\author{\centerline{$\copyright$ 2018, Springer Nature}\hfill\break
+\centerline{All rights reserved.}\\[19pt]
+%\centerline{June 23, 2008}
+}
+
+
+\maketitle
+%
+\begin{refguide}
+
+\section*{Contents}
+\medskip\contentsline {section}{\numberline {{\bf 1}}{\bf Introduction}}{{\bf 2}}{section.0.1}
+\medskip\contentsline {section}{\numberline {{\bf 2}}{\bf Step-by-Step Instructions}}{{\bf 2}}{section.0.2}
+\contentsline {subsection}{\numberline {2.1}Initializing the Class}{3}{subsection.0.2.1}
+\contentsline {subsection}{\numberline {2.2}Required Packages}{3}{subsection.0.2.2}
+\contentsline {subsection}{\numberline {2.3}The Contribution Header}{4}{subsection.0.2.3}
+\contentsline {subsection}{\numberline {2.4}Fine-Tuning Your Text}{4}{subsection.0.2.4}
+\contentsline {subsection}{\numberline {2.5}Fine-Tuning Mathematics}{7}{subsection.0.2.5}
+\contentsline {subsection}{\numberline {2.6}Figures, Tables and Their Captions}{9}{subsection.0.2.6}
+\contentsline {subsection}{\numberline {2.6}Figures, Tables and Their Captions}{9}{subsection.0.2.6}
+\contentsline {subsection}{\numberline {2.7}Special Elements}{10}{subsection.0.2.7}
+\contentsline {subsection}{\numberline {2.8}Important Notes for the Production Process}{11}{subsection.0.2.8}
+\contentsline {subsection}{\numberline {2.9}LaTeX Good Practices}{12}{subsection.0.2.9}
+\contentsline {subsection}{\numberline {2.10}References}{13}{subsection.0.2.10}
+\contentsline {subsection}{\numberline {2.11}Index}{14}{subsection.0.2.11}
+\medskip\contentsline {section}{\numberline {{\bf 3}}{\bf Submitting your Manuscript}}{{\bf 14}}{section.0.3}
+\medskip\contentsline {section}{{\bf Further Reading}}{{\bf 14}}{section*.3}
+\medskip\contentsline {section}{{\bf Subject Index}}{{\bf 15}}{chapter*.4}
+
+\clearpage
+
+
+
+
+\parindent=0pt%
+\parskip=0.6em%
+
+\begin{sloppy}
+\section{ Introduction}\label{sec:1}
+The documentation in the Springer Nature {\sc SVMult} tool package is not intended to be a general introduction to \LaTeX$2_\varepsilon$ or \TeX. For this we refer you to [1--3] in the section ``Further Reading''.
+
+Instead, the Springer Nature {\sc SVMult} tool package has been set up for those who are familiar with the basics of \LaTeX. The {\sc SVMult} document class and its special features were designed to facilitate the preparation of scientific monographs for Springer Nature according to Springer Nature style requirements.
+
+If in this tool package we refer to standard tools or packages that are not in­stalled on your system, please consult the {\it Comprehensive \TeX Archive Network} (CTAN) at [4--6] in the section ``Further Reading''.
+
+The components of the {\sc SVMult} tool package are:
+
+\begin{itemize}\leftskip15pt
+\item The {\it Springer Nature \LaTeX~class} {\tt svmult.cls} (major version 5) and BiBTeX styles {\tt spmpsci.bst, spphys.bst, spbasic.bst} as well as the {\it template} with preset class options, packages and coding examples;
+
+{\it Tip}: Copy these files to your working directory, run \LaTeX2$_\varepsilon$ and produce your own example *.dvi or *.pdf file; rename the template file as you see fit and use it for your own input.
+
+\item {\it Instructions} with style and coding instructions {\it specific} to {\it contributed books};
+
+{\it Tip}: Follow these instructions to set up the files, to typeset the text and to obtain a consistent formal style; use these pages as checklists before finally submitting the manuscript or print data.
+\item The {\it Reference Guide} describing the {\sc SVMult} features independent of any specific style requirements.
+
+{\it Tip}: Use it as a reference if you need to alter or enhance the default settings of the {\sc SVMult} document class and the templates.
+\end{itemize}
+
+
+For {\it volume editors only} the {\sc SVMult} tool package is enhanced by
+
+\begin{itemize}\leftskip15pt
+\item the {\it editor instructions} for compiling multiple contributions into a single book.
+\end{itemize}
+
+\section{ Step-by-Step Instructions}
+
+The following sections give you detailed instructions on how to set up your files and meet Springer Nature specific style and layout requirements. Please try to adhere to these standards right from the start and use them as a checklist before submitting the manuscript or print data.
+
+\subsection{Initializing the Class}
+
+\hspace*{29pc}\hbox{{\it Tip}:}
+\hspace*{29pc}\hbox{Use the pre-set}
+\hspace*{29pc}\hbox{template}
+\hspace*{29pc}\hbox{{\it author.tex}}
+
+\vspace*{-4.5pc}
+
+To format a {\it document for a contributed book} enter
+
+\cprotect\boxtext{\verb|\documentclass{svmult}|}
+
+at the beginning of your root file. This will set the text area to a \verb|\textwidth| of 117~mm or 27-3/4 pi pi and a \verb|\textheight| of 191~mm or 45-1/6 pi plus a \verb|\headsep| of 12~pt (space between the running head and text).
+
+{\it N.B.} Trim size (physical paper size) is $155 \times 235$\,mm or $61/8 \times 91/4$\,in.
+
+Please refer to Sect. 2.6 for ``overwide'' fioating objects.
+
+For a description of all possible class options provided by {\sc SVMult} see the ``{\sc SVMult} Class Options'' section in the enclosed {\it Reference Guide}.
+
+\subsection{Required Packages}
+
+The following selection in the past has proved to be essential in preparing a fully formatted (i.e. ready-to-print) manuscript.
+
+Invoke the required packages with the command
+
+\cprotect\boxtext{\verb|\usepackage{}|}
+
+\begin{tabular}{p{7.5pc}@{\qquad}p{18.5pc}}
+{\tt newtxtext.sty} and {\tt newtxmath.sty} & Supports roman text font provided by a Times clone,  sans serif based on a Helvetica clone,  typewriter faces,  plus math symbol fonts whose math italic letters are from a Times Italic clone\\
+{\tt graphicx.sty} & is a powerful tool for including, rotating, scaling and sizing graphics files (preferably *.eps files) \\
+{\tt makeidx.sty} & provides and interprets the command \verb|\printindex| which ``prints'' the index file *.ind (compiled by an index processor) on a chosen page \\
+{\tt multicol.sty} & balances out the columns on the last page of, for exam­ple, your subject index \\
+{\tt footmisc.sty} & together with style option {\tt [bottom]} places all footnotes at the bottom of the page
+\end{tabular}
+
+For a description of other useful packages and {\sc SVMult} class options, special commands and environments tested with the {\sc SVMult} document class see the {\it Reference Guide}.
+
+\subsection{The Contribution Header}
+To format the header of your {\it contribution} enter
+
+\vspace*{-6pt}
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\title*{Title of Contribution}|\\
+\verb|\author{Name of Author}|\\
+\verb|\institute{Name of Author \at Name, Address of Institute, \email{name@email.address}}|\\
+\verb|\maketitle|
+\end{tabular}}
+
+
+immediately after the \verb|\begin{document}| command.
+
+Normally the running heads are produced automatically by the \verb|\maketitle| command using the contents of \verb|\title| (for right hand or recto pages) and \verb|\author| (on left hand or verso pages). If the result is too long for the page header (running head) the class will produce an error message and you will be asked to supply a shorter version. This is done using the syntax
+
+\vspace*{-6pt}
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\titlerunning{|$\langle${\it text}$\rangle$\verb|}|\\
+\verb|\authorrunning{|$\langle${\it first author} et al.$\rangle$\verb|}|
+\end{tabular}}
+
+These commands must be entered before \verb|\maketitle|.
+
+For a more detailed description of the relevant commands, see the global {\it Ref­erence Guide.}
+
+\enlargethispage{16pt}\vspace*{-6pt}
+
+\subsection{Fine-Tuning Your Text}
+
+\looseness-1 As a general rule, text, formulae, figures, and tables are typed using the standard \LaTeX2$_\varepsilon$ commands. The standard sectioning commands are also used.
+
+{\spaceskip .25em plus .1em minus .1em Nevertheless, in the {\sc SVMult} document class we have defined and en­hanced a few text mode commands (e.g. \verb|\dedication|, \verb|\preface|, \verb|\abstract*|; \verb|description environment|,...). Please refer to the {\it Reference Guide.}}
+
+Always use the \LaTeX~commands \verb|\label| and \verb|\ref| for cross-referencing to chap­ters, sections, theorems, equations, figures, and tables. In contrast to any hard-coded references these soft-coded cross-references can automatically be con­verted to hyperlinks for any possible electronic version of your book.
+
+{\it Abstracts.} Each chapter or contribution should be preceded by an abstract (10--15 lines long) that summarizes the content. The abstract will appear online at {\tt www.SpringerLink.com} and be available with unrestricted access. This allows unregistered users to read the abstract as a teaser for the complete chapter. As a general rule the abstracts will not appear in the printed version of the book unless it is the style of the particular volume or that of the series to which the book belongs. Please use the Springer Nature command \verb|\abstract*| for typesetting the text of the online abstracts and include them with the source files of the manuscript. Use the plain \verb|\abstract| command if the abstract is also to appear in the printed version of the book.
+
+{\it Headings.} In English texts all words of a heading have a leading capital letter except for articles (a, an, the), conjunctions and prepositions of up to four letters (e.g. on, of, at, to, by, and, or, but, from, with). If a heading needs more than one line please break the line at an appropriate place and position the binding word (conjunction, preposition, article, ...) at the beginning of the new line.
+
+It looks nicer if every heading is followed by at least a short passage of text in order to avoid simply listing headings of different levels.
+
+If the running heads at the tops of the pages do not fit into the space allocated to them, a shorter version has to be specified with the commands \verb|\authorrunning{}| and \verb|\titlerunning{}|.
+
+If a different version of your contribution title is to be used for the {\it table of contents} use the command \verb|\toctitle{|$\langle${\it title for table of contents}$\rangle$\verb|}|.
+
+{\it Emphasizing Text.} Use the command \verb|\emph{}| to emphasize (i.e. italicize) a selection of {\it individual} words.
+
+\looseness-1 {\it Theorem-Like Environments.} For individual text structures such as theorems, definitions, etc., the {\sc SVMult} document class provides numerous predefined environments ({\it numbered} as well as {\it unnumbered}) which conform with the specific Springer Nature layout requirements. Sections 2.7 and 3.3 of the {\it Reference Guide} give a complete list of the built-in environments as well as a description of the {\sc SVMult} mechanism for defining your own environments.
+
+{\it Special Expressions.} If a special, e.g. non-English, expression is used repeatedly, please spell it consistently throughout the book. Latin terms, e.g. ``in situ'', should not be italicized.
+
+{\it List of Symbols.} Please add a list of symbols or short definitions or explanations. (Even if this is not to be included in the final book, it's a very useful tool for the copyeditor who may work on your manuscript.)
+
+{\it Abbreviations.} Please set abbreviations such as ``e.g.'', ``cf.'', ``et al.'' and ``i.e.'' upright. Only abbreviations that can be found in a dictionary may be used without definition. Particular terminology that is often abbreviated should be defined on first usage.
+
+{\it Dashes.} In Springer Nature books we differentiate between three different types of dashes, which have to be coded individually:
+
+\begin{enumerate}\leftskip15pt
+\item[1.] To produce a simple hyphen, used to connect or separate dependent parts of a word such as prefixes, or in compound adjectives, please enter a single keyboard hyphen without any space on either side (-).
+\item[2.] To produce an en-dash, enter two single hyphens with no space on either side to stand in place of ``to'' in ranges, as in ``Fig. 3a--c'' or ``... in the range 10--20 eV'', or to connect two names or words that are independent of each other, such as ``... the electron-photon interaction''. However, double-barrelled names like Levi-Civita are connected with simple hyphens.
+\item[3.] To produce an em-dash--e.g. to denote an insertion within a sentence— please enter three hyphens without any spaces on either side (\verb|---|).
+\end{enumerate}
+
+
+{\it Quotation Marks.} Please use the following commands to create English-language quotation marks: \verb|`word'| gives `word' in the dvi file, and \verb|``word''| gives ``word'' in the dvi file.
+
+{\it Page Breaks.} Please see to it that you always have at least two lines of the same paragraph at the foot or head of a page. So-called ``orphans'' or ``widows'' reduce the readability of your text.
+
+{\it Cross-References Within Text.} Please always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing. Such cross-references may then easily be converted to hyperlinks in any electronic version of your book.
+
+The \verb|\cite| and \verb|\bibitem|~mechanism for bibliographic references is also obligatory.
+
+Cross-references to particular sections, figures, tables, equations and the like should be written in full when they stand at the beginning of a sentence, but in any other position within the text they should be abbreviated as follows:
+
+\begin{tabular}{l@{\quad}l@{\quad}l}
+(Chapter) Chap./Chaps. & (Section) Sect./Sects. & (Figure) Fig./Figs. \\
+(Page) p./pp. & (Volume) Vol./Vols.
+\end{tabular}
+
+{\it Exceptions}:
+\begin{enumerate}\leftskip15pt
+\item[1.] ``Table'' should always be written out in full---at the beginning of a sentence as well as within it, and please use ``Tables'' for the plural form.
+\item[2.] When referring to equations the abbreviations ``Eq./Eqs.'' may be used---but as a general it is suficient to use the equation number set in parenthe­ses, e.g. (1.45). At the beginning of a sentence you should write ``Equation (1.45)''.
+\item[3.] References are cited in the text simply as numbers in square brackets, e.g. [165], do not use the abbreviations ``Ref./Refs.'' in the middle of a sentence. Only at the beginning of a sentence should you write ``Reference [165]''.
+\end{enumerate}
+
+{\it Spelling Checker.} If possible, please use a computer program for verifying the spelling of your text prior to submitting your manuscript. Depending on your operating system you may choose from a number of freely available programs designed for \LaTeX~code. A list of such \LaTeX-aware spelling checkers can be found at {\tt http://www.tex.ac.uk/cgi-bin/texfaq2html?label=spell}
+
+\subsection{Fine-Tuning Mathematics}
+\looseness-1 As a general rule, text, formulae, figures, and tables are typed using the standard \LaTeX2$_\varepsilon$ commands. The standard sectioning commands are also used.
+
+\pagebreak
+
+Nevertheless, in the {\sc SVMult} document class we have some defined and enhanced math mode commands. Please refer to the {\it Reference Guide.}
+
+Always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing. Such cross-references may then be converted to hyperlinks in any electronic version of your book.
+
+Please set {\it mathematical expressions and formulae within the running text} in math mode, i.e. \verb|$...$|, so that the desired spaces are set automatically. In text mode please put a small space \verb|\,| between a number and its unit.
+
+{\it Displayed Formulae} will automatically be centered.
+
+{\it Equation Arrays.} In order to get a readable layout for your equation arrays we recommend that you use the \LaTeX~environment eqnarray. This will automati­cally use optimal line spaces and line breaks. If an equation spans more than one line place the equals sign at the beginning of the second (or subsequent) line(s); binary operators such as $+$, $-$, *, etc. should also appear at the beginning of the second or subsequent lines of an array, and the line should be indented to the right of the equals sign in the line before.
+
+If you want to sub-number individual lines of your equation array you may use the style \verb|subeqnarray.sty|. For a description see Sect. 3.1 in the {\it Reference Guide}.
+
+Please {\it punctuate} displayed equations in the same way as any other written statement and insert \verb|\;| before the punctuation to add a little extra space.
+
+%\enlargethispage{12pt}
+
+{\it Multiplication.} Where a multiplication sign is essential use the command \verb|\times| ($\times$), not \verb|\cdot| ($\cdot$). The \verb|\cdot| is reserved for vector dot products.
+
+{\it Vectors.} Use the command \verb|\vec{v}| to depict a vector. By default, vectors will be set bold face upright.
+
+To set vectors bold face italic -- as is common in physics texts -- use the class option {\it vecphys}.
+
+{\it Tensors.} Use the defined command \verb|\tens{A}| to depict an ordinary second-order tensor (without indices).
+
+{\it Chemical Symbols and Formulae} should be set upright. Where a ``--'' is used to combine parts of chemical compounds, please use an en-dash; see Sect. 2.4.
+
+{\it Computer Code.} To display computer code in your book, we recommend the use of the \verb|verbatim| environment.
+
+{\it Abbreviations} such as Ord, Var, Ker, const., etc. should be set upright.
+
+{\it Physical units} (and their prefixes) should correspond to the SI standards and be set upright. Always put a fixed space \verb|\,| between a number and its unit, and between elements of units. Both the ``... 3\,kms$^{-1}$ ...'' (note space between different units; please do not use a middot) and ``... 3\,km/s ...'' styles are acceptable, but please settle for one choice and use it consistently. In headers in tables please use the ``$v$ (m/s)'' or ``$v$ (m\,s$^{-1}$)'' styles, i.e. use parentheses, not brackets. Please use ``\%'' without a space, e.g. ``100\%'', and use the degree sign without a space, e.g. ``19$^{\circ}$''. For Celsius use ``100$^{\circ}$C'', i.e. no spaces.
+
+{\it Greek Letters.} By default the {\sc SVMult} document class depicts Greek letters as italics because they are mostly used to symbolize variables. However, when used as operators, abbreviations, physical units, etc., they should be set upright. For example, when $\varDelta$ (\verb|\varDelta|) is used to refer to an infinitesimal amount or $\umu$ (\verb|\umu|) is used to denote micro.
+
+All upper-case Greek letters have been defined in the document class in an {\it upright} version. The fonts are taken from the \TeX~alphabet. Use the command prefix \verb|\var...| followed by the upper-case name of the Greek letter to obtain an upright upper-case Greek letter.
+
+A number of lower-case Greek letters have been defined in the document class in an upright version: $\ualpha, \ubeta, \uchi, \udelta, \ugamma, \unu, \upi, \utau$. The letters are taken from the PostScript Symbol font. Use the command prefix \verb|\u...| with the lower­case name of the Greek letter to set it upright. Please refer to Sect. 2.6 in the Reference Guide.
+
+{\it Variables} should be represented by a unique single character and always, i.e. in math mode as well as in the text, be set in italics. If possible please use \verb|\varepsilon| for $\epsilon$ and \verb|\varrho| for $\varrho$.
+
+{\it Exponential terms} with long exponents or with exponents containing subscripts or superscripts should be set as ``exp(...)''.
+
+{\it Subscripts and superscripts} should always appear upright (use \verb|\mathrm{ }| in math mode) when they are abbreviations. If you need to depict a vector, please also use the syntax \verb|\vec{ }|. The font size will automatically be adjusted.
+
+The {\it Differential} d, {\it exponential} e and {\it imaginary} i should be set upright in Springer Nature books. Use the defined commands \verb|\D, \E| or \verb|\eul| and \verb|\I| or \verb|\imag|.
+
+{\it Fractions} in displayed equations should be coded with \verb|\frac|. When they appear within exponents, running text or narrow tables, they should be set with a slash. Otherwise the font size will be too small to be easily read.
+
+{\it Delimiters} should be large enough to completely enclose their content -- but no larger. We recommend using dynamic \LaTeX~input commands, e.g. \verb|\left[| or \verb|\right}|, \verb|\langle| or \verb|\rangle|, \verb|\left|${\tt \vert}$, \verb|\right|${\tt \vert}$,etc.
+
+
+\subsection{Figures, Tables and Their Captions}
+
+In general, text, formulae, figures and tables are typed using the standard \LaTeX2$_\varepsilon$ commands. The standard sectioning commands are also used.
+
+Nevertheless, in the \textsc{SVMult} document class we have defined new commands and environments, and in some cases, enhanced standard environments. Please refer to the enclosed \emph{Reference Guide}.
+
+Always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing. Such cross-references may then be converted to hyperlinks in any possible electronic version of your book.
+
+\textit{Figures}. Figures and their captions by default are set flushleft with the caption placed beneath the figure. If the figure width is smaller than 78 mm, use the command
+\texttt{sidecaption} to align the caption with the base of the figure when the figure is positioned at the bottom of the page, or use the command \texttt{sidecaption[t]} when the figure is positioned at the top of the page.
+
+``Overwide'' figures should be reduced to the normal page width, or if it improves the readability, may protrude into the page margin by a maximum of 5 mm or 1 pica on each side.
+
+\emph{Color Figures}. Despite the fast technical progress in digital printing the reproduction of color figures is still very costly in the field of scientific publishing. In general any colour figures will be converted into b/w figures or graytones for the printed version of the book. Only upon explicit agreement will Springer Nature reproduce color figures in the printed version of the book.
+
+\emph{Digital Illustrations}. Whenever possible illustrations (photos and drawings) should be supplied in digital form -- this will simplify production, provided a few basic rules are followed.
+
+For \emph{scanned line figures} the minimum resolution in the final print size is 1200\,dpi. For \emph{scanned photos}, 300 dpi in the final size is sufficient.
+
+\emph{Image Processing}. If illustrations are to appear in \textit{grayscale} or \textit{black and white}, do not produce them in color. Color fields often convert to screens that are almost indistinguishable from one another. Instead of screens, whenever possible please use cross-hatching, stippling, and other dot and line patterns to differentiate among elements in an illustration. If screens must be used, they must be between 15\% and 60\%. Screens must be differentiated from one another by at least 15\%. The lowest \emph{line weight} is 0.5 pt in the final print size (approx. 0.15\,mm).
+
+\emph{Grids and details} within the figures must be clearly readable and may not overlap.
+
+\enlargethispage{12pt}
+
+\emph{Lettering}. To add lettering, it is best to use a sans serif font; Helvetica is preferred. The font size should be approx. 2-3\,mm (8-10\,pt) in final print. Avoid effects such as shading, outline letters, etc. Lettering should not be added until after scanning, i.e. it should be added to the graphics file. Please do not insert any figure legends or figure headings in your illustration file.
+
+\emph{Further Instructions}. Please find more detailed instructions about figure and graphic sizing, placement, labeling, screenshots, halftones, shading, etc. at \texttt{http://www.springer.com} $>$ Our services for: authors $>$ Author Guidelines $>$ Preparing Illustrations.
+
+Figures should be in \emph{eps format} with fonts embedded, without preview and with the so-called bounding box adjusted to the actual content of the figure. Use the standard \LaTeX~``graphicx'' package to include your graphics files.
+
+\emph{Tables}. By default, tables and their captions are justified. Please make sure that every table is \emph{preceded} by a caption.
+
+The layout of your tables should not contain any vertical lines. The header of the table should not contain any extra lines. ``Overwide'' tables should be reduced to the normal page width, or, if this is not possible, should not exceed the page width by more than 5\,mm. Please find coding examples in the enclosed sample files.
+
+\emph{Captions}. A caption should read easily. It follows regular text rules for abbreviation, hyphenation, capitalization, and punctuation, however, it does not have end punctuation.
+
+Should a figure consist of several parts, please set the names of the parts in bold face type inside the caption, e.g. \textbf{Fig. 1.1} General explanation. \textbf{a} individual description. \textbf{b} individual description.
+
+Should you want to explain special line formats, etc. used in the figure, then please set their description in italics, e.g. \textbf{Fig. 1.1} In the upper edge the phenomenon is illustrated (\textit{dashed line}).
+
+\enlargethispage{12pt}
+
+\subsection{Special Elements}
+
+In the {\sc SVMult} document class we have defined a few environments. This is done using the following commands
+
+\cprotect\boxtext{\begin{tabular}{l}
+\verb|\begin{trailer}{Trailer Head}...{trailer}|\\[3pt]
+\verb|\begin{questype}{Questions}...\end{questype}|\\[3pt]
+\verb|\begin{important}{Important}...\end{important}|\\[3pt]
+\verb|\begin{attention}{Warning}...\end{attention}|\\[3pt]
+\verb|\begin{programcode}{Program Code}...\end{programcode}|\\[3pt]
+\verb|\begin{tips}{Tips}...\end{tips}|\\[3pt]
+\verb|\begin{overview}{Overview}...\end{overview}|\\[3pt]
+\verb|\begin{backgroundinformation}{Background Information}...|\\
+\verb|\end{backgroundinformation}|\\[3pt]
+\verb|\begin{legaltext}{Legal Text}...\end{legaltext}|
+\end{tabular}}
+
+\noindent
+Please refer to the {\it Reference Guide.}
+
+\eject
+
+\subsection{Important Notes for the Production Process}
+
+Authors can support and speed up the production process by following the below described instructions.
+
+\subsubsection*{General instructions}
+
+\begin{itemize}
+\item Please make sure that any package used in the LaTeX file is compatible with MikTeX2.4/TeXlive2019 or higher.
+
+\item Along with the PDF we are also publishing your LaTeX works in other digital/online versions (in html and ePub). Point to highlight: All LaTeX flexible works to achieve a specific PDF output will not result in the same output in other online/digital versions due to limitations, e.g. dsfonts (double stroke fonts package), eucal (Euler calligraphic font package) --- the result of these packages in PDF will not show the same result in html/ePub. It is recommended to use \verb|\mathbb{...}| and to use \verb|\mathcal|, please do not include the package eucal.
+
+\item Please avoid multiple levels of linked sub-files in chapters: Too many linked files within chapter/book level, too many tree directories within the package will lead to additional work and challenges during the production process.
+
+\item The introduction of multiple math related packages/commands in the same manuscript (e.g. bbm, dsfonts, etc. and \verb|\mathrm|, \verb|\mathsf|, \verb|\mathtt|, \verb|\mathfrak|, \verb|\mathcal|, \verb|\mathbb|, \verb|\mathbbm|, \verb|\mathds| etc.) or the definition of different outputs for the same math command in different chapters (e.g. \verb|\mathcal{X}| as calliography in chapter one and \verb|\mathcal{X}| as fracture or script in chapter two) will lead to difficulties during proof generation. Instead please use default commands (as e.g. \verb|\mathcal| and \verb|\mathbb|) and use these commands consistently throughout all chapters.
+
+\item Usage of nested level macros, improper grouping, introduce \$ within equations (e.g. \verb|$ X + Y = 0 = \hbox{Revenge $X$} $|) will slow down the proofing works and will take additional efforts to produce a quality result and in some cases may lead to author queries and additional corrections.
+
+\item Any color text/shades/backgrounds which are handled in RGB mode will also need appropriate CMYK values in the manuscript. Please include them both one in active and other in comment is also fine. 
+    
+\noindent
+E.g. 
+\begin{center}
+\verb|	\definecolor{ultramarine}{RGB}{1,1,1}|
+
+\verb|	%%\definecolor{ultramarine}{cmyk}{0,0,0,1}|
+		
+\verb|	        \textcolor{ultramarine}{Colored text}|
+\end{center}
+    
+\noindent
+This eliminates incompatible color issues when we switch the color mode during print/online proof generation. Please note that owing to technical restrictions colored texts cannot be included in html and ePub. The colored text will have to be included as images for these online formats.
+
+\end{itemize}
+
+\subsection*{Package}
+
+\subsubsection*{Algorithm}
+
+To typeset algorithms or pseudocode in LaTeX you can use one of the following options: 
+
+\begin{itemize}
+\item Choose ONE of the (\texttt{algpseudocode} OR \texttt{algcompatible} OR \texttt{algorithmic}) packages to typeset algorithm bodies, and the algorithm package for captioning the algorithm.
+
+\item The \texttt{algorithm2e} package.
+\end{itemize}
+
+\noindent
+\textbf{Important: Please choose only one of the above groups of packages, and use only the commands and syntax provided by the package you choose}. These packages cannot be loaded simultaneously; otherwise you will get lots of errors.
+
+
+\subsection{LaTeX Good Practices}
+\begin{enumerate}\leftskip15pt
+\item[1.] Kindly avoid or reduce using the elements like footnote, section links, page ref. links and regular paragraph in bibliography. Bibliography can be considered only the reference details and adding special elements as mentioned in previous line, will facing challenge in production.
+
+\item[2.] We recommend not to use ``amsmath'' package at preamble separately when you use ``newtxmath''. It is inbuilt within the package ``newtxmath''. The package which is not compatible for production work e.g \verb|exercise.sty| using command \verb|\shipoutAnswers| and \verb|cref.sty|.
+
+\item[3.] Please try to avoid regular float images using tikz and pstricks etc., because the process will be only in image formats not in tex drawn images.
+\end{enumerate}
+
+\eject
+
+\subsection{References}
+
+References may be \emph{cited} in the text either by number (preferred) or by author/year. 
+
+Please make sure that all references from the list are cited in the text. Those not cited should be moved to a separate \emph{Further Reading} section or chapter.
+
+In mathematical texts references are often labelled as author-year acronyms. In order to achieve this simply give an optional argument to the \verb|\bibitem| command. Always use \verb|\bibitem| and \verb|\cite| for cross-referencing.
+
+When producing your bibliography please make sure that the data is complete (name and initial of author, year of publication, book title, publisher's name and place, journal name, volume number, page numbers) and up to date (e.g. edition number).
+
+%\pagebreak
+
+If there are several works by the same author, the following order should be used:
+
+\begin{enumerate}\leftskip15pt
+\item[1.] all works by the author alone, ordered chronologically by year of publication
+\item[2.] all works by the author with a coauthor, ordered alphabetically by coauthor
+\item[3.] all works by the author with several coauthors, ordered chronologically by year of publication.
+\end{enumerate}
+
+Always use the standard abbreviation of a journal's name according to the ISSN \textit{List of Title Word Abbreviations}, see \texttt{http://www.issn.org/en/node/344}
+
+The \emph{styling} of references depends on the subject of your book:
+
+\begin{itemize}\leftskip15pt
+\item The \emph{two} recommended styles for references in books on \emph{mathematical}, \emph{physical}, \emph{statistical and computer sciences} are depicted in the reference section of the example pdf files [1--5] and [6--10]. If you use BiBTeX for generating your reference list please use one of the two Springer Nature styles \emph{spmpsci.bst} or \emph{spphys.bst}.
+\item Examples of the most commonly used reference style in books on \emph{Psychology}, \emph{Social Sciences} are depicted in the reference section of the example pdf files [11--15].
+\item Examples for references in books on \emph{Humanities}, \emph{Linguistics}, \emph{Philosophy} are depicted in the reference section of the example pdf files [16--20].
+\item Examples of the basic Springer Nature style used in publications on a wide range of subjects such as \emph{Computer Science, Economics, Engineering, Geosciences, Life Sciences, Medicine, Biomedicine} are depicted in the reference section of the example pdf files [21--25]. If you use BiBTeX for generating your reference list please use the Springer Nature style \emph{spbasic.bst}.
+\end{itemize}
+
+For your own input follow the syntax of the corresponding style examples in the pre-set template.
+
+Please make sure that, in the individual reference citations, the initials of names do not stand alone. Please connect them to their surname with the help of the tilda \~{} so that they will not be separated from each other when \LaTeX~breaks the line. The same applies to volume or page numbers.
+
+\vspace*{-4.5pc}
+\hspace*{29.5pc}\emph{Tip}:
+\hspace*{29.5pc}\mbox{Use the pre-set}
+\hspace*{29.5pc}\mbox{templates}
+
+\vspace*{3pc}
+For a description of \textsc{SVMult} enhancements to the bibliography environment refer to the enclosed \emph{Reference Guide}.
+
+\subsection{Index}
+
+Please make sure that your entries for the book's general subject index are coded with the command \verb|\index{}| and please check the output for any redundancy before submitting your manuscript files.
+
+For more information on generating an index see [1].
+
+
+\enlargethispage{12pt}
+
+\section{Submitting your Manuscript}
+
+As soon as you have decided on the content and structure of your contribution and have set up a representative portion of text, send this material including figures for evaluation to the \emph{volume editor}. Please check whether the source files (i.e. \verb|*.tex|, \verb|*.eps|, \verb|*.cls|, \verb|*.sty|) are needed besides a printout.
+
+Please direct any queries concerning the layout, \LaTeX~coding, figures or the contract side of your contribution to your contact person at Springer Nature. He or she will be happy to respond directly or pass on your query to the expert in charge.
+
+\section*{Further Reading}
+
+\begin{enumerate}\leftskip3pt
+\item[{[1]}] Lamport L.: \LaTeX~-- A Document Preparation System. 2nd ed. Addison-Wesley, Reading, MA (1994)
+\item[{[2]}] Goossens M., Mittelbach F., Samarin A.: The \LaTeX~Companion. Addison-Wesley, Reading, MA (1994)
+\item[{[3]}] Knuth D.E.: The \TeX~book. Addison-Wesley, Reading, MA (1986) and revised to cover \TeX3 (1991)
+\item[{[4]}] \TeX~Users Group (TUG), \texttt{http://www.tug.org}
+\item[{[5]}] Deutschsprachige Anwendervereinigung \TeX~e.V. (DANTE), Heidelberg, Germany, \texttt{http://www.dante.de}
+\item[{[6]}] UK \TeX~Users' Group (UK-TuG), \texttt{http://uk.tug.org}
+\end{enumerate}
+
+\end{sloppy}
+
+\def\indexname{Subject Index}
+
+%\section*{Subject Index}
+
+\begin{theindex}
+
+\vspace*{-13pc}
+
+
+
+\item class options, 3
+\item computer code, 7
+\item cross-referencing, 6
+  \indexspace
+
+  figures
+\subitem black and white, 9
+\subitem captions, 9, 10
+\subitem color, 9
+\subitem digital, 9
+\subitem graphics files
+\subsubitem fonts, 10
+\subsubitem format, 3, 10
+\subsubitem including, 3
+\subsubitem scaling, 3
+\subitem grids and details, 9
+\subitem lettering, 9
+\subitem line weight, 9
+\subitem overwide, 9
+\subitem positioning, 9
+\subitem scanned, 9
+\item fioating objects, 3
+
+\indexspace
+
+\item index, 3
+
+\indexspace
+
+\item layout
+\subitem page breaks, 6
+\subitem paper size, 3
+\subitem text area, 3
+\subitem textheight, 3
+\subitem textwidth, 3
+\item list of symbols, 5
+
+\indexspace
+
+\item math mode, 7
+\subitem abbreviations, 7
+\subitem chemical symbols and formulae, 7
+\subitem delimiters, 8
+\subitem differential d, 8
+\subitem displayed formulae, 7
+\subitem equation arrays, 7
+\subsubitem sub-numbering, 7
+\subitem exponential e, 8
+\subitem exponential terms, 8
+\subitem fractions, 8
+
+\vspace*{8pc}\columnbreak
+
+\vspace*{-12.8pc}
+
+\subitem Greek letters
+\subsubitem lower-case, 8
+\subsubitem upper-case, 8
+\subitem imaginary i, 8
+\subitem operators, 7
+\subitem physical units, 8
+\subitem punctuation, 7
+\subitem subscripts, 8
+\subitem superscripts, 8
+\subitem tensors, 7
+\subitem variables, 8
+\subitem vectors, 7
+
+\indexspace
+
+\item references
+\subitem data, 10
+\subitem numbering system, 10
+
+\indexspace
+
+\item spelling checker, 6
+
+\indexspace
+
+\item tables
+\subitem captions, 10
+\subitem header, 10
+\subitem layout, 10
+\subitem overwide, 10
+
+\item text mode
+\subitem abbreviations, 5
+\subitem abstracts, 4
+\subitem dashes, 5
+\subitem emphasizing text, 5
+\subitem headings, 5
+\subitem quotation marks, 6
+\subitem running heads, 5
+\subitem special expressions, 5
+\item theorem-like environments, 5
+
+\vfill\eject
+
+\end{theindex}
+
+\end{refguide}
+
+\end{document}
