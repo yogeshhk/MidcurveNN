@@ -1,379 +1,418 @@
-%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% sample root file for your "contribution" to a contributed volume
-%
-% Use this file as a template for your own input.
-%
-%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[graybox]{svmult}
-
-% choose options for [] as required from the list
-% in the Reference Guide
-
-\usepackage{type1cm}        % activate if the above 3 fonts are
-                            % not available on your system
-%
-\usepackage{makeidx}         % allows index generation
-\usepackage{graphicx}        % standard LaTeX graphics tool
-                             % when including figure files
-\usepackage{multicol}        % used for the two-column index
-\usepackage[bottom]{footmisc}% places footnotes at page bottom
-
-
-\usepackage{newtxtext}       % 
-\usepackage[varvw]{newtxmath}       % selects Times Roman as basic font
-
-% see the list of further useful packages
-% in the Reference Guide
-
-\makeindex             % used for the subject index
-                       % please use the style svind.ist with
-                       % your makeindex program
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{document}
+\title{MidcurveLLM: Geometric Dimension Reduction using Large Language Models}
 
-\title*{MidcurveLLM: Geometric Dimension Reduction using Large Language Models}
-% Use \titlerunning{Short Title} for an abbreviated version of
-% your contribution title if the original one is too long
-\author{Yogesh H. Kulkarni\orcidID{0000-0001-5431-5727}}% and\\ Name of Second Author\orcidID{1111-2222-3333-4444}}
-% Use \authorrunning{Short Title} for an abbreviated version of
-% your contribution title if the original one is too long
-\institute{Yogesh H. Kulkarni \email{yogeshkulkarni@yahoo.com}
-%\and Name of Second Author \at Name, Address of Institute \email{name@email.address}
+\author{\IEEEauthorblockN{Yogesh Kulkarni}
+\IEEEauthorblockA{ yogeshkulkarni@yahoo.com http://orcid.org/0000-0001-5431-5727}
 }
-%
-% Use the package "url.sty" to avoid
-% problems with special characters
-% used in your e-mail or web address
-%
+
 \maketitle
 
-%\abstract*{
-%Each chapter should be preceded by an abstract (no more than 200 words) that summarizes the content. The abstract will appear \textit{online} at \url{www.SpringerLink.com} and be available with unrestricted access. This allows unregistered users to read the abstract as a teaser for the complete chapter.
-%Please use the 'starred' version of the \texttt{abstract} command for typesetting the text of the online abstracts (cf. source file of this chapter template \texttt{abstract}) and include them with the source files of your manuscript. Use the plain \texttt{abstract} command if the abstract is also to appear in the printed version of the book.
-%}
-
-\abstract{
+\begin{abstract}
 Lower-dimensional representations of shapes are essential for numerous applications. The midcurve, a one-dimensional (1D) representation of a two-dimensional (2D) planar shape, serves as a concise and informative descriptor. Widely utilized in animation, shape matching, retrieval, finite element analysis, and other fields, midcurves offer a compact means of capturing geometric information. This paper explores diverse methods for midcurve computation, considering various input shape types (e.g., images, sketches) and processing techniques (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons).
-This paper further investigates the integration of Large Language Models (LLMs) for computing midcurves in 2D geometric profiles. LLMs offer a promising avenue for distilling complex shapes while retaining key geometric details. Notably, traditional methods like Medial Axis Transform and Chordal Axis Transform often encounter difficulties with intricately shaped profiles and diverse connections, prompting a thorough evaluation of LLMs' potential efficacy in this domain.
-This research tackles the challenge of midcurve extraction from 2D geometric profiles, framing it as a Graph Summarization problem analogous to text summarization. It meticulously addresses the specific challenges inherent in this domain, including geometric representation, variable-length input profiles, and branched midcurves. It explores neural network-based approaches such as Sequence-to-Sequence and Image-to-Image models, highlighting their strengths and limitations. Promisingly, Text-to-Text transformation using Large Language Models (LLMs) emerges as a novel and effective approach, demonstrated through prompt-based evaluations. This study contributes significantly to the advancement of midcurve computation, paving the way for efficient and accurate representation of complex 2D shapes.
-Fine-tuning LLMs using a Boundary Representation (Brep) structure demonstrates potential for overcoming the limitations inherent in sequential point lists. However, challenges remain in LLM fine-tuning, ranging from model quality to dataset size, demanding further investigation and refinement. The complex nature of midcurve generation necessitates ongoing exploration, particularly in conjunction with the evolving capabilities of LLMs. This research opens exciting avenues for scholars and practitioners to delve deeper into the realm of geometric dimension reduction using LLMs, paving the way for significant advancements in shape analysis and representation.
-}
 
-\section{Section Heading}
+This paper delves into the integration of Large Language Models (LLMs) for computing midcurves in 2D geometric profiles. Traditional methods face challenges with intricately shaped profiles, prompting a thorough evaluation of LLMs' efficacy. The research frames midcurve extraction as a Graph Summarization problem, addressing specific challenges in geometric representation, variable-length inputs, and branched midcurves. Neural network-based approaches, such as Sequence-to-Sequence and Image-to-Image models, are explored, with Text-to-Text transformation using LLMs emerging as a novel and effective approach. The study significantly contributes to the advancement of midcurve computation, paving the way for efficient representation of complex 2D shapes. 
+\end{abstract}
+
+
+
+% \begin{abstract}
+% Lower-dimensional representations of shapes are essential for numerous applications. The midcurve, a one-dimensional (1D) representation of a two-dimensional (2D) planar shape, serves as a concise and informative descriptor. Widely utilized in animation, shape matching, retrieval, finite element analysis, and other fields, midcurves offer a compact means of capturing geometric information. This paper explores diverse methods for midcurve computation, considering various input shape types (e.g., images, sketches) and processing techniques (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons).
+
+
+% This paper further investigates the integration of Large Language Models (LLMs) for computing midcurves in 2D geometric profiles. LLMs offer a promising avenue for distilling complex shapes while retaining key geometric details. Notably, traditional methods like Medial Axis Transform and Chordal Axis Transform often encounter difficulties with intricately shaped profiles and diverse connections, prompting a thorough evaluation of LLMs' potential efficacy in this domain.
+% This research tackles the challenge of midcurve extraction from 2D geometric profiles, framing it as a Graph Summarization problem analogous to text summarization. It meticulously addresses the specific challenges inherent in this domain, including geometric representation, variable-length input profiles, and branched midcurves. It explores neural network-based approaches such as Sequence-to-Sequence and Image-to-Image models, highlighting their strengths and limitations. Promisingly, Text-to-Text transformation using Large Language Models (LLMs) emerges as a novel and effective approach, demonstrated through prompt-based evaluations. This study contributes significantly to the advancement of midcurve computation, paving the way for efficient and accurate representation of complex 2D shapes.
+
+
+% Fine-tuning LLMs using a Boundary Representation (Brep) structure demonstrates potential for overcoming the limitations inherent in sequential point lists. However, challenges remain in LLM fine-tuning, ranging from model quality to dataset size, demanding further investigation and refinement. The complex nature of midcurve generation necessitates ongoing exploration, particularly in conjunction with the evolving capabilities of LLMs. This research opens exciting avenues for scholars and practitioners to delve deeper into the realm of geometric dimension reduction using LLMs, paving the way for significant advancements in shape analysis and representation. 
+% \end{abstract}
+
+\begin{IEEEkeywords}
+midcurve, dimension reduction, artificial intelligence, generative ai, large language models
+\end{IEEEkeywords}
+
+\section{Introduction}
 \label{sec:1}
-Use the template \emph{chapter.tex} together with the document class SVMono (monograph-type books) or SVMult (edited books) to style the various elements of your chapter content.
+In the field of Computer-Aided Design (CAD), particularly for thin-walled solids like sheet metal and plastic components, dimensional reduction plays a crucial role in expediting Computer-Aided Engineering (CAE) analysis. This is achieved through the creation of Mid-surfaces, defined as surfaces situated equidistantly between the bounding surfaces of the original solid. These Mid-surfaces serve as effective surrogates for analysis, significantly reducing computational complexity. Despite their importance, Mid-surface generation remains a laborious and predominantly manual process due to the scarcity of robust and efficient automated methodologies\cite{medial2010}.
 
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations. And please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
+Existing automatic approaches for Mid-surface generation frequently encounter difficulties, leading to problematic artifacts such as gaps, missing patches, and overlapping surfaces. The manual correction of these errors can be incredibly time-consuming, often requiring hours or even days of tedious work. This highlights the urgent need for a reliable and efficient automated process for generating accurate and robust Mid-surfaces.
 
-\section{Section Heading}
+The concept of Mid-surfaces extends to two-dimensional (2D) planar shapes, where the equivalent is known as the Midcurve. Defined as a curve equidistant from the bounding curves of a 2D profile, the Midcurve provides a simplified representation that retains essential geometric information \ref{fig_medialmethods}. While various traditional methods exist for Midcurve computation, the challenge of accurately representing complex shapes with diverse connections remains persistent.
+
+    \begin{center}
+	\includegraphics[width=\linewidth]{images/MedialMethodsOnlyShort}
+	\captionof{figure}{Medial Object computation methods} \cite{midcurvenn2022}
+	\label{fig_medialmethods}
+    \end{center}
+	
+Figure \ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
+
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/Letters}
+	\captionof{figure}{2D Thin Polygonal shapes} \cite{midcurvenn2023}
+	\label{fig_letters}
+    \end{center}
+	
+The MidcurveNN research project investigates the potential of employing Neural Networks, specifically Large Language Models (LLMs), for tackling the challenging task of Midcurve generation. LLMs offer a powerful and versatile tool for processing complex information, and their potential to revolutionize the field of Midcurve computation is being thoroughly explored within this research framework. We aim to address the limitations of existing methods and establish a robust and efficient workflow for generating accurate and reliable Midcurves for diverse 2D geometric profiles.
+
+Traditional methods often encounter limitations when faced with complex shapes and diverse connections. LLMs, on the other hand, offer a unique opportunity to overcome these limitations due to their ability to process and analyze large amounts of data, including complex geometric representations. By leveraging the power of LLMs, MidcurveNN aims to establish a robust and efficient framework for automatic midcurve generation, paving the way for significant advancements in shape analysis and representation.
+
+\section{Related Work}
 \label{sec:2}
-% Always give a unique label
-% and use \ref{<label>} for cross-references
-% and \cite{<label>} for bibliographic references
-% use \sectionmark{}
-% to alter or adjust the section heading in the running head
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations.
 
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
+The quest for efficient and robust methods for computing Mid-surfaces and Midcurves has spanned several decades, with significant advancements documented in a comprehensive review of the field available in the survey paper \cite{medial2010} and also show in Figure \ref{fig_timeline}
 
-Use the standard \verb|equation| environment to typeset your equations, e.g.
-%
-\begin{equation}
-a \times b = c\;,
-\end{equation}
-%
-however, for multiline equations we recommend to use the \verb|eqnarray| environment\footnote{In physics texts please activate the class option \texttt{vecphys} to depict your vectors in \textbf{\itshape boldface-italic} type - as is customary for a wide range of physical subjects}.
-\begin{eqnarray}
-\left|\nabla U_{\alpha}^{\mu}(y)\right| &\le&\frac1{d-\alpha}\int
-\left|\nabla\frac1{|\xi-y|^{d-\alpha}}\right|\,d\mu(\xi) =
-\int \frac1{|\xi-y|^{d-\alpha+1}} \,d\mu(\xi)  \\
-&=&(d-\alpha+1) \int\limits_{d(y)}^\infty
-\frac{\mu(B(y,r))}{r^{d-\alpha+2}}\,dr \le (d-\alpha+1)
-\int\limits_{d(y)}^\infty \frac{r^{d-\alpha}}{r^{d-\alpha+2}}\,dr
-\label{eq:01}
-\end{eqnarray}
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/midcurve16}
+	\captionof{figure}{Midcurve Research Timeline}
+	\label{fig_timeline}
+    \end{center}
+    
 
-\subsection{Subsection Heading}
+\subsection{Classical Approaches}
+\label{subsec:1}
+Several key observations emerge from the analysis of classical approaches:
+\begin{itemize}
+\item {\bf Formal methods}: Approaches like Medial Axis Transform (MAT) offer the advantage of being applicable to shapes of varying thickness and provide a reversible process for reconstructing the original shape. However, MAT and Thinning methods suffer from limitations such as generating unnecessary branches, reducing shape size, and being sensitive to changes in base geometry. Additionally, MAT-based approaches can be computationally expensive and require recomputation with altered base geometries, leading to potentially divergent results.
+\item {\bf Heuristic methods}: Chordal Axis Transform (CAT) approaches require pre-generated meshes, which can be challenging for complex 2D profiles. Thinning approaches, relying on straight line skeleton split events, can yield counterintuitive outcomes with sharp reflex vertices. The Pairs approach faces difficulties in maintaining continuity when the input curves or surfaces are not in one-to-one form. Moreover, the quality of the generated Midcurve depends heavily on the sampled input shape points. Finally, Midcurve by profile decomposition, while not widely adopted, suffers from issues of generating redundant sub-shapes, rendering it ineffective and unstable for further processing.
+\end{itemize}
+
+Prior research has generally discouraged the use of formal methods like MAT and Thinning for Midcurve computation due to their reliance on heavy post-processing to eliminate unwanted curves. Similarly, heuristic methods, particularly decomposition, have been error-prone and inefficient. While the author's prior work \ref{fig_phd}  demonstrates success on simpler shapes, it suffers from scalability limitations due to its rule-based nature.
+
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/midcurve15}
+	\captionof{figure}{Midcurve using Cellular Decomposition} \cite{kulkarni2017}
+	\label{fig_phd}
+    \end{center}
+
+
+\subsection{Recent Advances and Research Gaps}
 \label{subsec:2}
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references\index{cross-references} and citations\index{citations} as has already been described in Sect.~\ref{sec:2}.
 
-\begin{quotation}
-Please do not use quotation marks when quoting texts! Simply use the \verb|quotation| environment -- it will automatically be rendered in line with the preferred layout.
-\end{quotation}
-
-
-\subsubsection{Subsubsection Heading}
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{subsec:2}, see also Fig.~\ref{fig:1}\footnote{If you copy text passages, figures, or tables from other works, you must obtain \textit{permission} from the copyright holder (usually the original publisher). Please enclose the signed permission with the manuscript. The sources\index{permission to print} must be acknowledged either in the captions, as footnotes or in a separate section of the book.}
-
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
-
-% For figures use
-%
-\begin{figure}[b]
-\sidecaption
-% Use the relevant command for your figure-insertion program
-% to insert the figure file.
-% For example, with the graphicx style use
-\includegraphics[scale=.65]{figure}
-%
-% If no graphics program available, insert a blank space i.e. use
-%\picplace{5cm}{2cm} % Give the correct figure height and width in cm
-%
-\caption{If the width of the figure is less than 7.8 cm use the \texttt{sidecapion} command to flush the caption on the left side of the page. If the figure is positioned at the top of the page, align the sidecaption with the top of the figure -- to achieve this you simply need to use the optional argument \texttt{[t]} with the \texttt{sidecaption} command}
-\label{fig:1}       % Give a unique label
-\end{figure}
-
-
-\paragraph{Paragraph Heading} %
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}.
-
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
-
-For typesetting numbered lists we recommend to use the \verb|enumerate| environment -- it will automatically rendered in line with the preferred layout.
-
-\begin{enumerate}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\begin{enumerate}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\end{enumerate}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\end{enumerate}
-
-
-\subparagraph{Subparagraph Heading} In order to avoid simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text. Use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}, see also Fig.~\ref{fig:2}.
-
-For unnumbered list we recommend to use the \verb|itemize| environment -- it will automatically be rendered in line with the preferred layout.
-
+Recent advancements have seen the integration of Neural Network-based techniques for Skeleton Midcurve computation, primarily through image processing. Notable examples include:
 \begin{itemize}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development, cf. Table~\ref{tab:1}.}
-\begin{itemize}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
-\end{itemize}
-\item{Livelihood and survival mobility are oftentimes coutcomes of uneven socioeconomic development.}
+\item Rodas, Neumann, and Wimmer 2020\cite{Rodas2019JointOB}: Employed Deep Convolutional Neural Networks to simultaneously compute object boundaries and skeletons.
+\item Shen, Zhou, and Zeng 2021 \cite{shen2021convolutional}: Developed a Convolutional neural network-based skeleton extractor capturing both local and non-local image context.
+\item Shen et al 2021 \cite{shen2016object}: Introduced a hierarchical feature learning mechanism for skeleton extraction.
+\item Wang et al. 2023 \cite{wang2018deepflux}: Focused on content flux in skeletons as a learning objective.
+\item Panichev \cite{Panichev_2019_CVPR_Workshops}: Utilized U-net to extract skeletons, although not for Midcurve generation.
 \end{itemize}
 
-\begin{figure}[t]
-\sidecaption[t]
-% Use the relevant command for your figure-insertion program
-% to insert the figure file.
-% For example, with the option graphics use
-\includegraphics[scale=.65]{figure}
-%
-% If no graphics program available, insert a blank space i.e. use
-%\picplace{5cm}{2cm} % Give the correct figure height and width in cm
-%
-%\caption{Please write your figure caption here}
-\caption{If the width of the figure is less than 7.8 cm use the \texttt{sidecapion} command to flush the caption on the left side of the page. If the figure is positioned at the top of the page, align the sidecaption with the top of the figure -- to achieve this you simply need to use the optional argument \texttt{[t]} with the \texttt{sidecaption} command}
-\label{fig:2}       % Give a unique label
-\end{figure}
+Despite these advancements, a review of the state-of-the-art emphasizes the need for Midcurve computation approaches that consider several key factors:
+\begin{itemize}
+\item {\bf Application context}: The choice of method should be guided by the specific application and the desired level of accuracy.
+\item {\bf Shape characteristics}: Different approaches may be better suited for specific types of shapes, such as primitive-shaped, thin sub-polygons.
+\item {\bf Aspect ratio}: The aspect ratio of sub-polygons can significantly impact the effectiveness of various methods.
+\end{itemize}
+The current research gap lies in the need for efficient and accurate Midcurve generation for primitive-shaped, thin sub-polygons. Existing methods often struggle with non-primitive, skewed shapes and may yield inappropriate Midcurves
 
-\runinhead{Run-in Heading Boldface Version} Use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}.
 
-\subruninhead{Run-in Heading Boldface and Italic Version} Use the \LaTeX\ automatism for all your cross-refer\-ences and citations as has already been described in Sect.~\ref{sec:2}\index{paragraph}.
-
-\subsubruninhead{Run-in Heading Displayed Version} Use the \LaTeX\ automatism for all your cross-refer\-ences and citations as has already been described in Sect.~\ref{sec:2}\index{paragraph}.
-% Use the \index{} command to code your index words
-%
-% For tables use
-%
-\begin{table}[!t]
-\caption{Please write your table caption here}
-\label{tab:1}       % Give a unique label
-%
-% Follow this input for your own table layout
-%
-\begin{tabular}{p{2cm}p{2.4cm}p{2cm}p{4.9cm}}
-\hline\noalign{\smallskip}
-Classes & Subclass & Length & Action Mechanism  \\
-\noalign{\smallskip}\svhline\noalign{\smallskip}
-Translation & mRNA$^a$  & 22 (19--25) & Translation repression, mRNA cleavage\\
-Translation & mRNA cleavage & 21 & mRNA cleavage\\
-Translation & mRNA  & 21--22 & mRNA cleavage\\
-Translation & mRNA  & 24--26 & Histone and DNA Modification\\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-\end{tabular}
-$^a$ Table foot note (with superscript)
-\end{table}
-%
-\section{Section Heading}
+\section{Proposed Method}
 \label{sec:3}
-% Always give a unique label
-% and use \ref{<label>} for cross-references
-% and \cite{<label>} for bibliographic references
-% use \sectionmark{}
-% to alter or adjust the section heading in the running head
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}.
 
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
+Computation of midcurve, in its original form, is transformation of a 2D thin closed, with/without-holes polygon to 1D open/closed/branched polyline. Paper \cite{dimred2017} details one of the effective midcurve computation techniques, based on rule-based computational geometry approach. Such techniques have a shortcoming of not being scalable or generic enough to be able to handle variety of shapes. Deep Learning neural network architectures are showing potential of developing such generic models. This dimension reduction transformation should ideally be modeled as Sequence to Sequence (Seq2Seq) neural architecture, like Machine Translation.
 
-If you want to list definitions or the like we recommend to use the enhanced \verb|description| environment -- it will automatically rendered in line with the preferred layout.
-
-\begin{description}[Type 1]
-\item[Type 1]{That addresses central themes pertainng to migration, health, and disease. In Sect.~\ref{sec:1}, Wilson discusses the role of human migration in infectious disease distributions and patterns.}
-\item[Type 2]{That addresses central themes pertainng to migration, health, and disease. In Sect.~\ref{subsec:2}, Wilson discusses the role of human migration in infectious disease distributions and patterns.}
-\end{description}
-
-\subsection{Subsection Heading} %
-In order to avoid simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text. Use the \LaTeX\ automatism for all your cross-references and citations citations as has already been described in Sect.~\ref{sec:2}.
-
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
-
-\begin{svgraybox}
-If you want to emphasize complete paragraphs of texts we recommend to use the newly defined class option \verb|graybox| and the newly defined environment \verb|svgraybox|. This will produce a 15 percent screened box 'behind' your text.
-
-If you want to emphasize complete paragraphs of texts we recommend to use the newly defined class option and environment \verb|svgraybox|. This will produce a 15 percent screened box 'behind' your text.
-\end{svgraybox}
+In the current problem, the input and the output sizes could be different not just in a single sample, but across all samples. Many current Seq2Seq neural networks need fixed size inputs and outputs, which if not present in data, are artificially managed by adding padding of certain improbable value. Such padding is not appropriate for the current midcurve computation problem, as the padding-value can inappropriately get treated as part of the valid input. In this initial phase, to circumvent the problem of variable size, image-based inputs and outputs are used, which are of fixed size. Both input and output polygonal shapes are rasterized into images of 100x100, thus making them fixed size for all samples, irrespective of the original shapes.
 
 
-\subsubsection{Subsubsection Heading}
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}.
+Papers \cite{midcurvenn2022}, \cite{midcurvenn2023} and presentation \cite{Kulkarni2023} proposes to use such network for midcurve computation in the form of image-to-image mode. Input images have thin polygonal shapes whereas output images have corresponding midcurve images. Figure \ref{fig_endecoder} shows the Encoder-decoder architecture idea leveraged for MidcurveNN.
 
-Please note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/enc-dec}
+	\captionof{figure}{Encoder-Decoder Architecture} \cite{DasSeg2019}
+	\label{fig_endecoder}
+    \end{center}
+    
+This paper proposes a novel approach to Midcurve generation using Deep Learning, specifically Large Language Models (LLMs). LLMs offer a unique opportunity to leverage their powerful language processing capabilities to learn and represent complex geometric relationships between 2D profiles and their corresponding Midcurves. This approach promises to overcome the limitations of existing methods and offer a robust and efficient solution for Midcurve computation
 
-\begin{theorem}
-Theorem text goes here.
-\end{theorem}
-%
-% or
-%
-\begin{definition}
-Definition text goes here.
-\end{definition}
 
-\begin{proof}
-%\smartqed
-Proof text goes here.
-%\qed
-\end{proof}
+\subsection{Problem Statement}
+\label{subsec:3}
 
-\paragraph{Paragraph Heading} %
-Instead of simply listing headings of different levels we recommend to let every heading be followed by at least a short passage of text.  Further on please use the \LaTeX\ automatism for all your cross-references and citations as has already been described in Sect.~\ref{sec:2}.
+Given a 2D closed shape (simple, convex, closed polygon) represented as a set of points or connected lines, find its corresponding midcurve (polyline, either closed or open).
 
-Note that the first line of text that follows a heading is not indented, whereas the first lines of all subsequent paragraphs are.
-%
-% For built-in environments use
-%
-\begin{theorem}
-Theorem text goes here.
-\end{theorem}
-%
-\begin{definition}
-Definition text goes here.
-\end{definition}
-%
-\begin{proof}
-%\smartqed
-Proof text goes here.
-%\qed
-\end{proof}
-%
-\begin{trailer}{Trailer Head}
-If you want to emphasize complete paragraphs of texts in an \verb|Trailer Head| we recommend to
-use  \begin{verbatim}\begin{trailer}{Trailer Head}
-...
-\end{trailer}\end{verbatim}
-\end{trailer}
-%
-\begin{questype}{Questions}
-If you want to emphasize complete paragraphs of texts in an \verb|Questions| we recommend to
-use  \begin{verbatim}\begin{questype}{Questions}
-...
-\end{questype}\end{verbatim}
-\end{questype}
-\eject%
-\begin{important}{Important}
-If you want to emphasize complete paragraphs of texts in an \verb|Important| we recommend to
-use  \begin{verbatim}\begin{important}{Important}
-...
-\end{important}\end{verbatim}
-\end{important}
-%
-\begin{warning}{Attention}
-If you want to emphasize complete paragraphs of texts in an \verb|Attention| we recommend to
-use  \begin{verbatim}\begin{warning}{Attention}
-...
-\end{warning}\end{verbatim}
-\end{warning}
+The midcurve should be generated while preserving the key geometric properties of the original shape, similar to how text summarization retains the essence of a longer text document. This translates to the problem of Graph Summarization/Dimension-Reduction/Compression, where we aim to reduce the complexity of a larger graph (representing the polygon) to a smaller, simplified graph (representing the midcurve) while maintaining its underlying structure.
 
-\begin{programcode}{Program Code}
-If you want to emphasize complete paragraphs of texts in an \verb|Program Code| we recommend to
-use
+\subsection{Geometry Representation}
+\label{subsec:4}
 
-\verb|\begin{programcode}{Program Code}|
+A fundamental challenge in employing Neural Networks for midcurve generation lies in the inherent differences between geometric shapes and the vector representations required by these models. Traditional encoders and decoders rely on fixed-size input and output vectors, posing difficulties for variable-length geometric shapes like polygons and polylines.
 
-\verb|\begin{verbatim}...\end{verbatim}|
+Several key issues prevent modeling shapes as simple sequences:
+\begin{itemize}
+\item {\bf Non-sequential nature}: While a polygon may appear as a sequence of points, it lacks the inherent order and directionality of true sequential data.
+\item {\bf Incomplete representation}: Shapes like Y or concentric circles cannot be drawn without lifting a pencil, violating the fundamental principle of sequence generation.
+\item {\bf Spatial information loss}: Converting geometric shapes to vectors leads to information loss, particularly regarding spatial relationships and relative positions.
+\end{itemize}
 
-\verb|\end{programcode}|
+Existing graph-based representations, while addressing connectivity, fall short in capturing the crucial spatial information necessary for accurate midcurve generation. Nodes in such graphs carry coordinates, but the arcs lack inherent geometry (e.g., curvature, line segments). This limits the effectiveness of Graph Neural Networks, which rely on convolution and pooling operations that are not well-suited for handling both topology and geometry.
+Therefore, the research requires significant innovation in geometric-graph embedding techniques. Such methods should enable convolution operations at nodes while incorporating the geometry of arcs (e.g., sets of point coordinates). Additionally, a novel pooling strategy needs to be developed to effectively aggregate information from neighboring nodes, arcs, and their respective geometric features into a single, meaningful representation. Addressing these challenges is crucial for enabling Neural Networks to learn and process the complex geometric relationships underlying 2D shapes and their corresponding midcurves.
 
-\end{programcode}
-%
-\begin{tips}{Tips}
-If you want to emphasize complete paragraphs of texts in an \verb|Tips| we recommend to
-use  \begin{verbatim}\begin{tips}{Tips}
-...
-\end{tips}\end{verbatim}
-\end{tips}
-\eject
-%
-\begin{overview}{Overview}
-If you want to emphasize complete paragraphs of texts in an \verb|Overview| we recommend to
-use  \begin{verbatim}\begin{overview}{Overview}
-...
-\end{overview}\end{verbatim}
-\end{overview}
-\begin{backgroundinformation}{Background Information}
-If you want to emphasize complete paragraphs of texts in an \verb|Background|
-\verb|Information| we recommend to
-use
+\subsection{Variable Lengths Issue}
+\label{subsec:5}
 
-\verb|\begin{backgroundinformation}{Background Information}|
+Midcurve generation presents a unique challenge in the domain of Neural Network-based dimension reduction. Unlike traditional sequence-to-sequence tasks, this problem involves variable-length inputs and outputs. The input sketch profile, which is a 2D parametric representation, can have varying numbers of points and line segments. Similarly, the output midcurve, being a 1D representation, exhibits variable length and may even have branches, deviating from the linear structure expected by standard encoders and decoders.
 
-\verb|...|
 
-\verb|\end{backgroundinformation}|
-\end{backgroundinformation}
-\begin{legaltext}{Legal Text}
-If you want to emphasize complete paragraphs of texts in an \verb|Legal Text| we recommend to
-use  \begin{verbatim}\begin{legaltext}{Legal Text}
-...
-\end{legaltext}\end{verbatim}
-\end{legaltext}
-%
-\begin{acknowledgement}
-If you want to include acknowledgments of assistance and the like at the end of an individual chapter please use the \verb|acknowledgement| environment -- it will automatically be rendered in line with the preferred layout.
-\end{acknowledgement}
-%
-\ethics{Competing Interests}{Please declare any competing interests
-in the context of your chapter. The following sentences can be regarded as examples.\newline
-This study was funded by [X] [grant number X].\newline
- [Author A] has a received research grant from [Company W].\newline
- [Author B] has received a speaker honorarium from [Company X] and owns stock in [Company~Y].\newline 
- [Author C] is a member of [committee Z].\newline 
-The authors have no conflicts of interest to declare that are relevant to the content of this chapter.}
+This variable length characteristic poses significant difficulties for existing deep learning libraries like TensorFlow, which require fixed-size input and output vectors. Padding approaches, commonly employed for handling variable lengths, prove problematic in this scenario. Traditional padding values like "0, 0" would be misconstrued as valid points within the geometric representation of the shape.
 
-\eject
 
-\ethics{Ethics Approval}{If your chapter includes primary studies with humans please declare the adherence of ethical standards. Example text: This study was performed in line with the principles of the Declaration of Helsinki. Approval was granted by the Ethics Committee of University B (Date.../No. ...).\newline 
- In addition, for human participants, authors are required to include a statement that informed consent (to participate and/or to publish) was obtained from individual participants or parents/guardians if the participant is minor or incapable.\newline
-If animals are studied, authors should make sure that the legal requirements or guidelines in the country and/or state or province for the care and use of animals have been followed or specify that no ethics approval was required.}
+Furthermore, the non-linear connections present in both input polygons and branched midcurves render them unsuitable for typical Sequence-to-Sequence (seq2seq) networks. These networks rely on the linear order of data, which is not present in our domain due to potential loops and branches.
+To address these challenges, alternative approaches need to be explored. One potential solution involves representing both the input and output using a fixed-size image format like 64x64 pixels. By coloring the profile and midcurve in the corresponding image bitmap, we can leverage the established capabilities of LSTM encoders and decoders for seq2seq processing. This approach allows for data augmentation through shifting, rotating, and scaling both input and output images, further enriching the training data.
 
-\section*{Appendix}
-\addcontentsline{toc}{section}{Appendix}
-%
-%
-When placed at the end of a chapter or contribution (as opposed to at the end of the book), the numbering of tables, figures, and equations in the appendix section continues on from that in the main text. Hence please \textit{do not} use the \verb|appendix| command when writing an appendix at the end of your chapter or contribution. If there is only one the appendix is designated ``Appendix'', or ``Appendix 1'', or ``Appendix 2'', etc. if there is more than one.
 
-\begin{equation}
-a \times b = c
-\end{equation}
+However, this approach is limited to 2D sketch profiles with only linear segments and single, simple polygons without holes. The question of vectorization remains crucial. Representing each point as a 2D vector leads to variable-length input and output vectors, posing challenges for training. While potential solutions like padding with "0, 0" or "NULL" values exist, their validity within the context of geometric representations needs further investigation.
+Additionally, exploring different network architectures beyond simple feedforward networks is vital. Recurrent Neural Networks (RNNs) and specifically LSTMs are well-suited for handling sequential data and could offer improved performance. Exploring dedicated architectures designed for graph-based data with variable lengths and non-linear connections could also be a promising avenue.
 
-\input{references}
+Addressing the variable length issue is a crucial step in enabling Neural Networks to effectively learn and generate midcurves from diverse 2D shapes. By investigating alternative representations, data augmentation techniques, and specialized network architectures, we can pave the way for robust and accurate midcurve generation using deep learning.
+
+
+\section{Implementation}
+\label{sec:4}
+
+While representing geometric shapes as images addresses both the representation and variable-size issues, it introduces a significant dilution in information accuracy. True geometric shapes are vector-based, whereas images are raster-based. This introduces an inherent approximation, which can potentially affect the quality of the generated midcurve. Additionally, the predicted output from an image-based model likely requires post-processing to convert it back into a geometric form, introducing another layer of complexity and potential errors.
+Therefore, this project proposes a three-phase approach to address these challenges:
+
+\begin{itemize}
+\item {\bf Phase I}: Image to Image Transformation Learning:
+	\begin{itemize}
+	\item {\bf Img2Img}: This phase focuses on learning image-to-image transformation using fixed-size 100x100 bitmaps.
+	\item {\bf Data Augmentation}: The training data will be augmented by scaling, rotating, and translating both input and output shapes within the fixed size.
+	\item {\bf Network Architecture}: An Encoder-Decoder network, specifically Semantic Segmentation or Pix2Pix, will be employed for image-based dimension reduction.
+	\end{itemize}
+	
+\item {\bf Phase II}: Text to Text Transformation Learning:
+	\begin{itemize}
+	\item {\bf Geometric Representation}: A text-based representation of the geometry/graph/network will be explored to leverage Natural Language Processing (NLP) techniques.
+	\item {\bf Existing Methods}: The paper (Fatemi, Halcrow, and Bryan 2023) surveys several text-based representations for graph data, but none appear specifically suited for geometric shapes.
+	\item {\bf Proposed Approach}: A geometry representation similar to 2D Boundary Representation (B-rep) will be utilized, adapting the concept from 3D to 2D.
+	\end{itemize}
+		
+\item {\bf Phase III}: Geometry to Geometry Transformation Learning:
+	\begin{itemize}
+	\item {\bf Graph Representation}: Both input and output polyline graphs will be constructed with $(x,y)$ coordinates as node features and edge information represented by node ID pairs.
+	\item {\bf Polyline vs. Curve Representation}: For polylines, edges are straight lines, eliminating the need for storing geometric intermediate points as features. For curves, a fixed number "n" of sampled points will be stored as features.
+	\item {\bf Network Architecture}: An Image-Segmentation-like Encoder-Decoder network will be implemented, incorporating Graph Convolution Layers from DGL in place of the usual 2D convolution layers typically used in image-based models.
+	\item {\bf Data Generation}: A variety of input-output polyline pairs will be generated using geometric transformations, avoiding the image-based transformations employed in Phase I.
+	\item {\bf Potential Techniques}: The use of Variational Graph Auto-Encoders (Cai) will be investigated for its potential benefits in this phase.
+	\end{itemize}
+\end{itemize}		
+This phased approach aims to address the challenges of variable-size inputs and outputs while achieving accurate and robust midcurve generation by leveraging appropriate representation techniques and network architectures. Phase I lays the groundwork with a well-established approach in image-based processing, while Phase II explores the potential of text-based representations for geometric information. Phase III ultimately focuses on developing a network capable of directly processing and transforming geometric data, offering the most promising avenue for achieving high-fidelity midcurve generation.
+
+\subsection{Image-to-Image based Approach}
+\label{subsec:6}
+
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/midcurve26}
+	\captionof{figure}{Midcurve by Encoder Decoder} \cite{midcurvenn2022}
+	\label{fig_ecd}
+    \end{center}
+
+Such Transformers taking variable length input and output graphs have not been established. So, would taking this problem to image domain help?
+
+     \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/midcurve25}
+	\captionof{figure}{Auto Encoder on images} \cite{autoenkeras}
+	\label{fig_ecd}
+    \end{center}
+    
+    Various Image2Image networks have been tried by the MidcurveNN project but with limited success. Here is a sample:
+    
+         \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/midcurvenn_simpleencoderdecoder}
+	\captionof{figure}{Encoder Decoder network in Tensorflow/Keras} \cite{midcurvenngithub}
+	\label{fig_ecd}
+    \end{center}
+    
+\subsection{Text-to-Text  based Approach}
+\label{subsec:7}    
+    
+\subsubsection{Prompt-based Approach}
+\label{subsubsec:1} 
+Evaluating LLMs (Large Language Models), like can be employed to generate the midcurve. Idea is to give a prompt telling what needs to be done along with some examples, and see if LLMs can generate shape for the test example. Geometry has been serialized into text as a simple list of points \cite{kulkarni2023geometry}.
+
+A few shots prompt developed:
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
+You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline profile. 
+Input 2D polygonal profile is defined by set of connected lines with the format as:
+input : [line_1, line_2, line_3,....] where lines are defined by two points, where each point is defined by x and y coordinates. So
+line_1 is defined as ((x_1, y_1), (x_2,y_2)) and similarly the other lines.
+Output is also defined similar to the input as a set of connected lines where lines are defined by two points, where each point is defined by x and y coordinates. So,
+output : [line_1, line_2, line_3,....]
+
+Below are some example transformations, specified as pairs of 'input' and the corresponding 'output'. After learning from these examples, predict the 'output' of the last 'input' specified.
+Do not write code or explain the logic but just give the list of lines with point coordinates as specified for the 'output' format.
+
+input:[((5.0,5.0), (10.0,5.0)), ((10.0,5.0), (10.0,30.0)), ((10.0,30.0), (35.0,30.0)), ((35.0,30.0), (35.0, 35.0)), ((35.0, 35.0), (5.0,35.0)), ((5.0,35.0), (5.0,5.0))]
+output: [((7.5,5.0), (7.5, 32.5)), ((7.5, 32.5), (35.0, 32.5)), ((35.0, 32.5) (7.5, 32.5))]
+
+input: [((5,5), (10, 5)), ((10, 5), (10, 20)), ((10, 20), (5, 20)), ((5, 20),(5,5))]
+output: [((7.5, 5), (7.5, 20))]
+
+input: [((0,25.0), (10.0,25.0)), ((10.0,25.0),(10.0, 45.0)), ((10.0, 45.0),(15.0,45.0)), ((15.0,45.0), (15.0,25.0)), ((15.0,25.0),(25.0,25.0)), ((25.0,25.0),(25.0,20.0)), ((25.0,20.0),(15.0,20.0)), ((15.0,20.0),(15.0,0)), ((15.0,0),(10.0,0)), ((10.0,0),(10.0,20.0)), ((10.0,20.0),(0,20.0)), ((0,20.0),(0,25.0))]
+output: [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0,22.5)), ((12.5, 22.5), (25.0,22.5))]
+
+input:[((0, 25.0), (25.0,25.0)),((25.0,25.0),(25.0,20.0)), ((25.0,20.0),(15.0, 20.0)), ((15.0, 20.0),(15.0,0)), ((15.0,0),(10.0,0)), ((10.0,0),(10.0,20.0)), ((10.0,20.0),(0,20.0)), ((0,20.0),(0, 25.0))]
+output:
+
+
+\end{lstlisting}
+
+The first input example above represents an ‘L’ shape (shown \ref{fig_L}) and the second is an ‘I’, whereas the 3rd is a ‘Plus’ sign shape.
+
+         \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/L}
+	\label{fig_L}
+    \end{center}
+    
+    
+The last shape for which LLM has been asked for the answer is actually a ‘T’ shape \ref{fig_T}. The picture below shows the correct/actual answer as well.
+
+         \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/T}
+	\label{fig_T}
+    \end{center}
+    
+And the outputs computed by various LLMs (ChatGPT, Perplexity AI, Bard) , along with the real/actual answer:
+
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true, label=lst:python]
+Actual: [((12.5,0), (12.5,22.5)), ((12.5,22.5),(25.0,22.5)), ((12.5,22.5),(0,22.5))]
+ChatGPT: [((2.5, 0), (2.5, 22.5)), ((2.5, 22.5), (2.5, 45.0)), ((2.5, 22.5), (25.0, 22.5)), ((2.5, 22.5), (12.5, 22.5)), ((2.5, 22.5), (0, 22.5)), ((2.5, 22.5), (25.0, 22.5))]
+Perplexity: [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0,22.5)), ((12.5, 22.5), (25.0,22.5))]
+Bard: [((12.5, 0), (12.5, 25.0)), ((12.5, 25.0), (25.0, 25.0)), ((25.0, 25.0), (25.0, 0))]
+\end{lstlisting}
+
+Visually here is how results from different LLMs look:
+
+         \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/actual_predicted}
+	\label{fig_results}
+    \end{center}
+    
+All of the above have failed. Even latest (Oct 2023), the results are:
+	\begin{itemize}
+	\item {\bf llama 7B g4\_0 ggml}: \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]| (8, 17) & (64, 32)|: Wrong.
+	\item {\bf Bard}: \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]|[((8.33,5),(8.33, 22.5)), ((8.33, 22.5), (25,22.5)), ((8.33, 22.5), (0,25))]|: Wrong.
+	\item {\bf Hugging Chat}:  \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]|[((12.5, 0), (12.5, 22.5)), ((12.5, 22.5), (25.0, 22.5)), ((25.0, 22.5), (25.0, 25.0))]|: a bit wrong on the last line.
+	\item {\bf GPT 4}:  \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]|[((12.5,0), (12.5,22.5)), ((12.5,22.5),(0,22.5)), ((12.5,22.5),(25.0,22.5))]| just change in sequence of lines, and that's inconsequential, so the answer is correct.
+	\item {\bf Claude}:  \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]|[((12.5, 0.0), (12.5, 22.5)), ((12.5, 22.5), (12.5, 25.0)), ((12.5, 22.5), (0.0, 22.5)), ((12.5, 22.5), (25.0, 22.5))]|
+\end{itemize}		    
+    
+Although other proprietary and open-source models need to catch-up with GPT-4, even GPT-4 needs to be developed further to understand not just sequential lines but graphs/networks with different shapes, essentially, the geometry.
+
+\subsubsection{Fine-tuning based approach}
+\label{subsubsec:2} 
+
+One limitation of 2D geometry-shape, represented as a sequential list of points, is that we can not represent line intersections or concentric loops. To address this a more comprehensive structure has been proposed which is based on the corresponding 3D structure popular in Solid Modeling, called Brep (Boundary Representation).
+
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true, label=lst:python]
+{
+'ShapeName': 'I',
+'Profile': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)],
+'Midcurve': [(7.5, 5.0), (7.5, 20.0)],
+'Profile_brep': {
+			'Points': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0),(5.0, 20.0)], # list of (x,y) coordinates
+			'Lines': [[0, 1], [1, 2], [2, 3], [3, 0]], # list of point ids (ie index in the Points list)
+			'Segments': [[0, 1, 2, 3]] # list of line ids (ie index in Lines list)
+			},
+'Midcurve_brep': {
+			'Points': [(7.5, 5.0), (7.5, 20.0)],
+			'Lines': [[0, 1]],
+			'Segments': [[0]]
+			},				
+}
+\end{lstlisting}
+
+         \begin{center}
+	\includegraphics[width=0.8\linewidth]{images/shapes_csv}
+	\label{fig_csv}
+    \end{center}
+
+Column information is as below:
+	\begin{itemize}
+	\item {\bf ShapeName} (text): name of the shape. Just for visualization/reports.
+	\item {\bf Profile} (text): List of Points coordinates (x,y) representing outer profile shape, typically closed.
+	\item {\bf Midcurve} (text): List of Points coordinates (x,y) representing inner midcurve shape, typically open.
+	\item {\bf Profile\_brep} (text): Dictionary in Brep format representing outer profile shape, typically closed.
+	\item {\bf Midcurve\_brep} (text): Dictionary in Brep format representing inner midcurve shape, typically open.
+	\end{itemize}
+
+Each Segment is a continuous list of lines. In case of, say `Midcurve-T`, as there is an intersection, we can treat each line in a separate segment. In the case of 'Profile O', there will be two segments, one for outer lines and another for inner lines. Each line is a list of points, for now, linear. Points is a list of coordinates $(x,y)$, later can be $(x,y,z)$.
+
+Once we have this Brep representations of both, profile and the corresponding midcurve, in the text form, then we can try various machine translation approaches or LLM based fine tuning or few-shots prompt engineering.
+
+One major advantage of text based method over image based method is that image output still has stray pixels, cleaning which will be a complex task. But the text method has exact points. It may just give odd lines, which can be removed easily.
+
+Dataset when imported looks like
+
+         \begin{center}
+	\includegraphics[width=\linewidth]{images/kaggle1}
+	\label{fig_k1}
+    \end{center}
+
+Preprocessing is done to tokenize, generate ids and prepare attention.
+
+         \begin{center}
+	\includegraphics[width=\linewidth]{images/kaggle2}
+	\label{fig_k2}
+    \end{center}
+    
+
+The dataset is used to fine-tune the base model called ``Salesforce/codet5-small''. Trained model is saved and used for inference on test samples.
+
+         \begin{center}
+	\includegraphics[width=\linewidth]{images/kaggle3}
+	\label{fig_k3}
+    \end{center}
+    
+         \begin{center}
+	\includegraphics[width=\linewidth]{images/kaggle4}
+	\label{fig_k4}
+    \end{center}    
+    
+The output predicted far away from the corresponding ground truth. 
+
+         \begin{center}
+	\includegraphics[width=\linewidth]{images/kaggle5}
+	\label{fig_k5}
+    \end{center}
+    
+There could be many reasons, quality of LLM, training parameters, and above all, need for a far bigger dataset for fine-tuning.
+
+
+\section{Conclusions}
+\label{sec:5}
+
+This research not only contributes significantly to our understanding of midcurve computation but also illuminates the complex challenges and exciting potential avenues for future exploration. The study highlights the intricate interplay between established methodologies and cutting-edge approaches, particularly the integration of Large Language Models (LLMs) in midcurve generation. This underscores the nuanced nature of geometric dimension reduction and the need for innovative solutions to address the associated complexities.
+
+The work clearly delineates the challenges inherent in variable-length input data, the representation of intricate shapes, and the limitations of existing models like Seq2Seq and Image2Image networks. These limitations necessitate a paradigm shift towards more advanced and adaptable methodologies.
+The proposed MidcurveNN, utilizing an Encoder-Decoder architecture with supervised learning, demonstrates a promising direction for overcoming the hurdles plaguing traditional midcurve computation methods. The innovative application of Brep structures in fine-tuning LLMs represents a commendable effort towards achieving higher geometric precision in the generated midcurves.
+
+However, the observed discrepancies between the predicted outputs and ground truths highlight the need for more extensive datasets and further refinement of the training parameters. This ongoing research underscores the crucial role of extensive training data and meticulous fine-tuning in achieving optimal performance with LLM-based approaches.
+
+
+In essence, this research serves as a vital catalyst for the advancement of midcurve computation methodologies. The seamless integration of LLMs, the exploration of novel geometric representations, and the introspection into fine-tuning mechanisms collectively contribute to the ongoing dialogue in geometric dimension reduction. This work invites further scrutiny, refinement, and advancements, beckoning researchers and practitioners to delve deeper into the transformative intersection of geometry and advanced machine learning paradigms. As we navigate the intricate landscape of midcurve generation, the potential for groundbreaking discoveries and impactful applications remains vast and ever-evolving.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
 \end{document}
