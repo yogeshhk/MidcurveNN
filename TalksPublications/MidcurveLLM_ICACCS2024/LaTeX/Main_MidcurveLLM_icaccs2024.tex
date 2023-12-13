@@ -1,4 +1,4 @@
-\documentclass[conference]{IEEEtran}
+\documentclass[10pt, conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 \usepackage{cite}
@@ -24,9 +24,9 @@
 \maketitle
 
 \begin{abstract}
-Lower-dimensional representations of shapes are essential for numerous applications. The midcurve, a one-dimensional (1D) representation of a two-dimensional (2D) planar shape, serves as a concise and informative descriptor. Widely utilized in animation, shape matching, retrieval, finite element analysis, and other fields, midcurves offer a compact means of capturing geometric information. This paper explores diverse methods for midcurve computation, considering various input shape types (e.g., images, sketches) and processing techniques (thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons).
+Lower-dimensional representations of shapes are essential for numerous applications. The midcurve, a one-dimensional (1D) representation of a two-dimensional (2D) planar shape, serves as a concise and informative descriptor. Widely utilized in animation, shape matching, retrieval, finite element analysis, and other fields, midcurves offer a compact means of capturing geometric information.
 
-This paper delves into the integration of Large Language Models (LLMs) for computing midcurves in 2D geometric profiles. Traditional methods face challenges with intricately shaped profiles, prompting a thorough evaluation of LLMs' efficacy. The research frames midcurve extraction as a Graph Summarization problem, addressing specific challenges in geometric representation, variable-length inputs, and branched midcurves. Neural network-based approaches, such as Sequence-to-Sequence and Image-to-Image models, are explored, with Text-to-Text transformation using LLMs emerging as a novel and effective approach. The study significantly contributes to the advancement of midcurve computation, paving the way for efficient representation of complex 2D shapes. 
+This paper delves into the usage of Large Language Models (LLMs) for computing midcurves of 2D geometric profiles. Traditional methods face challenges with intricately shaped profiles, prompting a thorough evaluation of LLMs' efficacy. The research frames midcurve extraction as a Graph Summarization problem, addressing specific challenges in geometric representation, variable-length inputs, and branched midcurves. Neural network-based approaches, such as Sequence-to-Sequence and Image-to-Image models, are also presented, with Text-to-Text transformation using LLMs being explored as a novel and potentially effective approach. 
 \end{abstract}
 
 
@@ -43,16 +43,17 @@ This paper delves into the integration of Large Language Models (LLMs) for compu
 % \end{abstract}
 
 \begin{IEEEkeywords}
-midcurve, dimension reduction, artificial intelligence, generative ai, large language models
+midcurve, generative ai, large language models, graph algorithms, neural networks
 \end{IEEEkeywords}
 
 \section{Introduction}
 \label{sec:1}
-In the field of Computer-Aided Design (CAD), particularly for thin-walled solids like sheet metal and plastic components, dimensional reduction plays a crucial role in expediting Computer-Aided Engineering (CAE) analysis. This is achieved through the creation of Mid-surfaces, defined as surfaces situated equidistantly between the bounding surfaces of the original solid. These Mid-surfaces serve as effective surrogates for analysis, significantly reducing computational complexity. Despite their importance, Mid-surface generation remains a laborious and predominantly manual process due to the scarcity of robust and efficient automated methodologies\cite{medial2010}.
+In the field of Computer-Aided Design (CAD), especially concerning thin-walled solids such as sheet metal and plastic components, the process of dimensional reduction is pivotal for accelerating Computer-Aided Engineering (CAE) analysis. This acceleration is realized by generating Mid-surfaces, which are surfaces positioned equidistantly between the bounding surfaces of the original solid. These Mid-surfaces function as highly effective substitutes for analysis, leading to a notable decrease in computational complexity. Despite their significance, the generation of Mid-surfaces continues to be a labor-intensive and mostly manual task due to the limited availability of robust and efficient automated methodologies.\cite{medial2010}.
 
-Existing automatic approaches for Mid-surface generation frequently encounter difficulties, leading to problematic artifacts such as gaps, missing patches, and overlapping surfaces. The manual correction of these errors can be incredibly time-consuming, often requiring hours or even days of tedious work. This highlights the urgent need for a reliable and efficient automated process for generating accurate and robust Mid-surfaces.
 
-The concept of Mid-surfaces extends to two-dimensional (2D) planar shapes, where the equivalent is known as the Midcurve. Defined as a curve equidistant from the bounding curves of a 2D profile, the Midcurve provides a simplified representation that retains essential geometric information \ref{fig_medialmethods}. While various traditional methods exist for Midcurve computation, the challenge of accurately representing complex shapes with diverse connections remains persistent.
+Automated methods currently employed in Mid-surface generation often face challenges, resulting in undesirable artifacts like gaps, absent patches, and overlapping surfaces. Rectifying these errors manually is a highly time-consuming endeavor, demanding hours or even days of meticulous effort. This underscores the pressing necessity for a dependable and streamlined automated procedure to produce precise and resilient Mid-surfaces.
+
+The notion of Mid-surfaces extends to planar shapes in the realm of two-dimensional (2D) geometry, where its counterpart is referred to as the Midcurve. Described as a curve equidistant from the bounding curves of a 2D profile, the Midcurve offers a simplified representation while preserving essential geometric details (Fig. \ref{fig_medialmethods}). Despite the existence of several conventional methods for Midcurve computation, the persistent challenge lies in accurately representing intricate shapes with diverse connections.
 
     \begin{center}
 	\includegraphics[width=\linewidth]{images/MedialMethodsOnlyShort}
@@ -60,25 +61,27 @@ The concept of Mid-surfaces extends to two-dimensional (2D) planar shapes, where
 	\label{fig_medialmethods}
     \end{center}
 	
-Figure \ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
-
-     \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/Letters}
-	\captionof{figure}{2D Thin Polygonal shapes} \cite{midcurvenn2023}
-	\label{fig_letters}
-    \end{center}
+%Figure \ref{fig_letters} shows some of the input shapes which can be considered. English alphabets are chosen for easy understanding and verification of the proposed method.
+%
+%     \begin{center}
+%	\includegraphics[width=0.8\linewidth]{images/Letters}
+%	\captionof{figure}{2D Thin Polygonal shapes} \cite{midcurvenn2023}
+%	\label{fig_letters}
+%    \end{center}
 	
-The MidcurveNN research project investigates the potential of employing Neural Networks, specifically Large Language Models (LLMs), for tackling the challenging task of Midcurve generation. LLMs offer a powerful and versatile tool for processing complex information, and their potential to revolutionize the field of Midcurve computation is being thoroughly explored within this research framework. We aim to address the limitations of existing methods and establish a robust and efficient workflow for generating accurate and reliable Midcurves for diverse 2D geometric profiles.
+The research initiative MidcurveNN \cite{midcurvenngithub} explores the feasibility of utilizing Neural Networks, with a current emphasis on Large Language Models (LLMs), to address the complex task of Midcurve generation.
 
-Traditional methods often encounter limitations when faced with complex shapes and diverse connections. LLMs, on the other hand, offer a unique opportunity to overcome these limitations due to their ability to process and analyze large amounts of data, including complex geometric representations. By leveraging the power of LLMs, MidcurveNN aims to establish a robust and efficient framework for automatic midcurve generation, paving the way for significant advancements in shape analysis and representation.
+% LLMs offer a powerful and versatile tool for processing complex information, and their potential to revolutionize the field of Midcurve computation is being thoroughly explored within this research framework. We aim to address the limitations of existing methods and establish a robust and efficient workflow for generating accurate and reliable Midcurves for diverse 2D geometric profiles.
+
+%Traditional methods often encounter limitations when faced with complex shapes and diverse connections. LLMs, on the other hand, offer a unique opportunity to overcome these limitations due to their ability to process and analyze large amounts of data, including complex geometric representations. By leveraging the power of LLMs, MidcurveNN aims to establish a robust and efficient framework for automatic midcurve generation, paving the way for significant advancements in shape analysis and representation.
 
 \section{Related Work}
 \label{sec:2}
 
-The quest for efficient and robust methods for computing Mid-surfaces and Midcurves has spanned several decades, with significant advancements documented in a comprehensive review of the field available in the survey paper \cite{medial2010} and also show in Figure \ref{fig_timeline}
+The quest for efficient and robust methods for computing Mid-surfaces and Midcurves has spanned several decades, with significant advancements documented in a comprehensive review of the field available in the survey paper \cite{medial2010} and also show in Fig. \ref{fig_timeline}.
 
      \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/midcurve16}
+	\includegraphics[width=0.8\linewidth]{images/midcurve15}
 	\captionof{figure}{Midcurve Research Timeline}
 	\label{fig_timeline}
     \end{center}
@@ -88,14 +91,14 @@ The quest for efficient and robust methods for computing Mid-surfaces and Midcur
 \label{subsec:1}
 Several key observations emerge from the analysis of classical approaches:
 \begin{itemize}
-\item {\bf Formal methods}: Approaches like Medial Axis Transform (MAT) offer the advantage of being applicable to shapes of varying thickness and provide a reversible process for reconstructing the original shape. However, MAT and Thinning methods suffer from limitations such as generating unnecessary branches, reducing shape size, and being sensitive to changes in base geometry. Additionally, MAT-based approaches can be computationally expensive and require recomputation with altered base geometries, leading to potentially divergent results.
-\item {\bf Heuristic methods}: Chordal Axis Transform (CAT) approaches require pre-generated meshes, which can be challenging for complex 2D profiles. Thinning approaches, relying on straight line skeleton split events, can yield counterintuitive outcomes with sharp reflex vertices. The Pairs approach faces difficulties in maintaining continuity when the input curves or surfaces are not in one-to-one form. Moreover, the quality of the generated Midcurve depends heavily on the sampled input shape points. Finally, Midcurve by profile decomposition, while not widely adopted, suffers from issues of generating redundant sub-shapes, rendering it ineffective and unstable for further processing.
+\item {\bf Formal methods}: Approaches like Medial Axis Transform (MAT) while versatile and reversible for shapes of varying thickness, face drawbacks such as generating superfluous branches, diminishing shape size, and sensitivity to base geometry changes. MAT-based methods may incur computational expenses and necessitate re-computation with altered base geometries, introducing the possibility of divergent outcomes.
+\item {\bf Heuristic methods}: Chordal Axis Transform (CAT) approaches demand pre-existing meshes, posing challenges for complex 2D profiles, while Thinning approaches, reliant on straight line skeleton split events, may yield counter intuitive results, especially at sharp reflex vertices. The Pairs approach encounters difficulties in preserving continuity with non-one-to-one input forms, and Midcurve by profile decomposition, though less embraced, grapples with generating redundant sub-shapes, rendering it ineffective and unstable for further processing.
 \end{itemize}
 
-Prior research has generally discouraged the use of formal methods like MAT and Thinning for Midcurve computation due to their reliance on heavy post-processing to eliminate unwanted curves. Similarly, heuristic methods, particularly decomposition, have been error-prone and inefficient. While the author's prior work \ref{fig_phd}  demonstrates success on simpler shapes, it suffers from scalability limitations due to its rule-based nature.
+The author's own prior work (Fig. \ref{fig_phd})  demonstrates success on simpler shapes, it suffers from scalability limitations due to its rule-based nature.
 
      \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/midcurve15}
+	\includegraphics[width=\linewidth]{images/midcurve16}
 	\captionof{figure}{Midcurve using Cellular Decomposition} \cite{kulkarni2017}
 	\label{fig_phd}
     \end{center}
@@ -125,12 +128,12 @@ The current research gap lies in the need for efficient and accurate Midcurve ge
 \section{Proposed Method}
 \label{sec:3}
 
-Computation of midcurve, in its original form, is transformation of a 2D thin closed, with/without-holes polygon to 1D open/closed/branched polyline. Paper \cite{dimred2017} details one of the effective midcurve computation techniques, based on rule-based computational geometry approach. Such techniques have a shortcoming of not being scalable or generic enough to be able to handle variety of shapes. Deep Learning neural network architectures are showing potential of developing such generic models. This dimension reduction transformation should ideally be modeled as Sequence to Sequence (Seq2Seq) neural architecture, like Machine Translation.
+Computation of midcurve, in its original form, is transformation of a 2D thin closed, with/without-holes polygon to 1D open/closed/branched polyline. Research shown in \cite{dimred2017} details one of the effective midcurve computation techniques, based on rule-based computational geometry approach. Such techniques have a shortcoming of not being scalable or generic enough to be able to handle variety of shapes. Deep Learning neural network architectures have  shown potential of developing such generic models. This dimension reduction transformation is modeled as Sequence to Sequence (Seq2Seq) neural architecture, like Machine Translation.
 
-In the current problem, the input and the output sizes could be different not just in a single sample, but across all samples. Many current Seq2Seq neural networks need fixed size inputs and outputs, which if not present in data, are artificially managed by adding padding of certain improbable value. Such padding is not appropriate for the current midcurve computation problem, as the padding-value can inappropriately get treated as part of the valid input. In this initial phase, to circumvent the problem of variable size, image-based inputs and outputs are used, which are of fixed size. Both input and output polygonal shapes are rasterized into images of 100x100, thus making them fixed size for all samples, irrespective of the original shapes.
+In the current problem, the input and the output sizes could be different not just in a single sample, but across all samples. Many current Seq2Seq neural networks need fixed size inputs and outputs, which if not present in data, are artificially managed by adding padding of certain improbable value. Such padding is not appropriate for the current midcurve computation problem, as the padding-value can inappropriately get treated as part of the valid input. In this initial phase, to circumvent the problem of variable size, image-based inputs and outputs are used, which are of fixed size. Both input and output polygonal shapes are rasterized into images of $100 \times 100$, thus making them fixed size for all samples, irrespective of the original shapes.
 
 
-Papers \cite{midcurvenn2022}, \cite{midcurvenn2023} and presentation \cite{Kulkarni2023} proposes to use such network for midcurve computation in the form of image-to-image mode. Input images have thin polygonal shapes whereas output images have corresponding midcurve images. Figure \ref{fig_endecoder} shows the Encoder-decoder architecture idea leveraged for MidcurveNN.
+Research shown in \cite{midcurvenn2022}, \cite{midcurvenn2023} and \cite{Kulkarni2023} use such network for midcurve computation in the form of image-to-image mode. Input images have thin polygonal shapes whereas output images have corresponding midcurve images. Fig. \ref{fig_endecoder} shows the Encoder-decoder architecture idea leveraged for MidcurveNN.
 
      \begin{center}
 	\includegraphics[width=0.8\linewidth]{images/enc-dec}
@@ -177,7 +180,7 @@ To address these challenges, alternative approaches need to be explored. One pot
 
 
 However, this approach is limited to 2D sketch profiles with only linear segments and single, simple polygons without holes. The question of vectorization remains crucial. Representing each point as a 2D vector leads to variable-length input and output vectors, posing challenges for training. While potential solutions like padding with "0, 0" or "NULL" values exist, their validity within the context of geometric representations needs further investigation.
-Additionally, exploring different network architectures beyond simple feedforward networks is vital. Recurrent Neural Networks (RNNs) and specifically LSTMs are well-suited for handling sequential data and could offer improved performance. Exploring dedicated architectures designed for graph-based data with variable lengths and non-linear connections could also be a promising avenue.
+Additionally, exploring different network architectures beyond simple feed-forward networks is vital. Recurrent Neural Networks (RNNs) and specifically LSTMs are well-suited for handling sequential data and could offer improved performance. Exploring dedicated architectures designed for graph-based data with variable lengths and non-linear connections could also be a promising avenue.
 
 Addressing the variable length issue is a crucial step in enabling Neural Networks to effectively learn and generate midcurves from diverse 2D shapes. By investigating alternative representations, data augmentation techniques, and specialized network architectures, we can pave the way for robust and accurate midcurve generation using deep learning.
 
@@ -206,10 +209,10 @@ Therefore, this project proposes a three-phase approach to address these challen
 \item {\bf Phase III}: Geometry to Geometry Transformation Learning:
 	\begin{itemize}
 	\item {\bf Graph Representation}: Both input and output polyline graphs will be constructed with $(x,y)$ coordinates as node features and edge information represented by node ID pairs.
-	\item {\bf Polyline vs. Curve Representation}: For polylines, edges are straight lines, eliminating the need for storing geometric intermediate points as features. For curves, a fixed number "n" of sampled points will be stored as features.
+	\item {\bf Polyline vs. Curve Representation}: For polylines, edges are straight lines, eliminating the need for storing geometric intermediate points as features. For curves, a fixed number $n$ of sampled points will be stored as features.
 	\item {\bf Network Architecture}: An Image-Segmentation-like Encoder-Decoder network will be implemented, incorporating Graph Convolution Layers from DGL in place of the usual 2D convolution layers typically used in image-based models.
 	\item {\bf Data Generation}: A variety of input-output polyline pairs will be generated using geometric transformations, avoiding the image-based transformations employed in Phase I.
-	\item {\bf Potential Techniques}: The use of Variational Graph Auto-Encoders (Cai) will be investigated for its potential benefits in this phase.
+	\item {\bf Potential Techniques}: The use of Variational Graph Auto-Encoders will be investigated for its potential benefits in this phase.
 	\end{itemize}
 \end{itemize}		
 This phased approach aims to address the challenges of variable-size inputs and outputs while achieving accurate and robust midcurve generation by leveraging appropriate representation techniques and network architectures. Phase I lays the groundwork with a well-established approach in image-based processing, while Phase II explores the potential of text-based representations for geometric information. Phase III ultimately focuses on developing a network capable of directly processing and transforming geometric data, offering the most promising avenue for achieving high-fidelity midcurve generation.
@@ -228,15 +231,15 @@ Such Transformers taking variable length input and output graphs have not been e
      \begin{center}
 	\includegraphics[width=0.8\linewidth]{images/midcurve25}
 	\captionof{figure}{Auto Encoder on images} \cite{autoenkeras}
-	\label{fig_ecd}
+	\label{fig_autoecd}
     \end{center}
     
     Various Image2Image networks have been tried by the MidcurveNN project but with limited success. Here is a sample:
     
          \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/midcurvenn_simpleencoderdecoder}
+	\includegraphics[width=\linewidth]{images/midcurvenn_simpleencoderdecoder}
 	\captionof{figure}{Encoder Decoder network in Tensorflow/Keras} \cite{midcurvenngithub}
-	\label{fig_ecd}
+	\label{fig_simpleecd}
     \end{center}
     
 \subsection{Text-to-Text  based Approach}
@@ -244,9 +247,10 @@ Such Transformers taking variable length input and output graphs have not been e
     
 \subsubsection{Prompt-based Approach}
 \label{subsubsec:1} 
-Evaluating LLMs (Large Language Models), like can be employed to generate the midcurve. Idea is to give a prompt telling what needs to be done along with some examples, and see if LLMs can generate shape for the test example. Geometry has been serialized into text as a simple list of points \cite{kulkarni2023geometry}.
+LLMs (Large Language Models), like GPT (Generative Pretrained Transformers), Llama, etc. can be employed to generate the midcurve. Idea is to give a prompt telling what needs to be done along with some examples, and see if LLMs can generate shape for the test example. Geometry has been serialized into text as a simple list of points \cite{kulkarni2023geometry}.
 
 A few shots prompt developed:
+
 \begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
 You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline profile. 
 Input 2D polygonal profile is defined by set of connected lines with the format as:
@@ -269,13 +273,11 @@ output: [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0
 
 input:[((0, 25.0), (25.0,25.0)),((25.0,25.0),(25.0,20.0)), ((25.0,20.0),(15.0, 20.0)), ((15.0, 20.0),(15.0,0)), ((15.0,0),(10.0,0)), ((10.0,0),(10.0,20.0)), ((10.0,20.0),(0,20.0)), ((0,20.0),(0, 25.0))]
 output:
-
-
 \end{lstlisting}
 
 The first input example above represents an ‘L’ shape (shown \ref{fig_L}) and the second is an ‘I’, whereas the 3rd is a ‘Plus’ sign shape.
 
-         \begin{center}
+    \begin{center}
 	\includegraphics[width=0.8\linewidth]{images/L}
 	\label{fig_L}
     \end{center}
@@ -283,7 +285,7 @@ The first input example above represents an ‘L’ shape (shown \ref{fig_L}) an
     
 The last shape for which LLM has been asked for the answer is actually a ‘T’ shape \ref{fig_T}. The picture below shows the correct/actual answer as well.
 
-         \begin{center}
+    \begin{center}
 	\includegraphics[width=0.8\linewidth]{images/T}
 	\label{fig_T}
     \end{center}
@@ -299,12 +301,12 @@ Bard: [((12.5, 0), (12.5, 25.0)), ((12.5, 25.0), (25.0, 25.0)), ((25.0, 25.0), (
 
 Visually here is how results from different LLMs look:
 
-         \begin{center}
+    \begin{center}
 	\includegraphics[width=0.8\linewidth]{images/actual_predicted}
 	\label{fig_results}
     \end{center}
     
-All of the above have failed. Even latest (Oct 2023), the results are:
+All of the above have failed. Even for the latest run on Oct 2023), the results are:
 	\begin{itemize}
 	\item {\bf llama 7B g4\_0 ggml}: \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]| (8, 17) & (64, 32)|: Wrong.
 	\item {\bf Bard}: \lstinline[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]|[((8.33,5),(8.33, 22.5)), ((8.33, 22.5), (25,22.5)), ((8.33, 22.5), (0,25))]|: Wrong.
@@ -318,7 +320,7 @@ Although other proprietary and open-source models need to catch-up with GPT-4, e
 \subsubsection{Fine-tuning based approach}
 \label{subsubsec:2} 
 
-One limitation of 2D geometry-shape, represented as a sequential list of points, is that we can not represent line intersections or concentric loops. To address this a more comprehensive structure has been proposed which is based on the corresponding 3D structure popular in Solid Modeling, called Brep (Boundary Representation).
+One limitation of 2D geometry-shape, represented as a sequential list of points, is that we can not represent line intersections or concentric loops. To address this a more comprehensive structure has been proposed which is based on the corresponding 3D structure popular in Solid Modeling, called B-rep (Boundary Representation).
 
 \begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true, label=lst:python]
 {
@@ -339,7 +341,7 @@ One limitation of 2D geometry-shape, represented as a sequential list of points,
 \end{lstlisting}
 
          \begin{center}
-	\includegraphics[width=0.8\linewidth]{images/shapes_csv}
+	\includegraphics[width=\linewidth]{images/shapes_csv}
 	\label{fig_csv}
     \end{center}
 
@@ -348,8 +350,8 @@ Column information is as below:
 	\item {\bf ShapeName} (text): name of the shape. Just for visualization/reports.
 	\item {\bf Profile} (text): List of Points coordinates (x,y) representing outer profile shape, typically closed.
 	\item {\bf Midcurve} (text): List of Points coordinates (x,y) representing inner midcurve shape, typically open.
-	\item {\bf Profile\_brep} (text): Dictionary in Brep format representing outer profile shape, typically closed.
-	\item {\bf Midcurve\_brep} (text): Dictionary in Brep format representing inner midcurve shape, typically open.
+	\item {\bf Profile\_brep} (text): Dictionary in B-rep format representing outer profile shape, typically closed.
+	\item {\bf Midcurve\_brep} (text): Dictionary in B-rep format representing inner midcurve shape, typically open.
 	\end{itemize}
 
 Each Segment is a continuous list of lines. In case of, say `Midcurve-T`, as there is an intersection, we can treat each line in a separate segment. In the case of 'Profile O', there will be two segments, one for outer lines and another for inner lines. Each line is a list of points, for now, linear. Points is a list of coordinates $(x,y)$, later can be $(x,y,z)$.
@@ -360,53 +362,118 @@ One major advantage of text based method over image based method is that image o
 
 Dataset when imported looks like
 
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/kaggle1}
-	\label{fig_k1}
-    \end{center}
+%         \begin{center}
+%	\includegraphics[width=\linewidth]{images/kaggle1}
+%	\label{fig_k1}
+%    \end{center}
+
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
+from datasets import load_dataset, Dataset, DatasetDict
+
+base_url = "/content/drive/MyDrive/ImpDocs/Work/AICoach/Notebooks/data/"
+dataset = load_dataset("csv", data_files={"train": base_url + "midcurve_llm_train.csv",
+                                          "test": base_url + "midcurve_llm_test.csv",
+                                          "validation": base_url + "midcurve_llm_val.csv"})
+DatasetDict({
+    train: Dataset({
+        features: ['ShapeName', 'Profile', 'Midcurve', 'Profile_brep', 'Midcurve_brep'],
+        num_rows: 793
+    })
+    test: Dataset({
+        features: ['ShapeName', 'Profile', 'Midcurve', 'Profile_brep', 'Midcurve_brep'],
+        num_rows: 99
+    })
+    validation: Dataset({
+        features: ['ShapeName', 'Profile', 'Midcurve', 'Profile_brep', 'Midcurve_brep'],
+        num_rows: 100
+    })
+})
+
+\end{lstlisting}
 
 Preprocessing is done to tokenize, generate ids and prepare attention.
 
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/kaggle2}
-	\label{fig_k2}
-    \end{center}
-    
+%         \begin{center}
+%	\includegraphics[width=\linewidth]{images/kaggle2}
+%	\label{fig_k2}
+%    \end{center}
+%    
 
 The dataset is used to fine-tune the base model called ``Salesforce/codet5-small''. Trained model is saved and used for inference on test samples.
 
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/kaggle3}
-	\label{fig_k3}
-    \end{center}
-    
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/kaggle4}
-	\label{fig_k4}
-    \end{center}    
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
+from transformers import T5ForConditionalGeneration, AdamW, get_linear_schedule_with_warmup
+import pytorch_lightning as pl
+
+class CodeT5(pl.LightningModule):
+    def __init__(self, lr=5e-5, num_train_epochs=15, warmup_steps=1000):
+        super().__init__()
+        self.model_name = "Salesforce/codet5-small"
+        self.model = T5ForConditionalGeneration.from_pretrained(self.model_name)
+        self.save_hyperparameters()
+        
+    def forward(self, input_ids, attention_mask, labels=None):
+        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
+        return outputs        
+        :
+        :
+
+model = CodeT5()
+
+trainer = Trainer(max_epochs=5,accelerator="auto",# gpus=1,
+                  default_root_dir="/content/drive/MyDrive/CodeT5/Notebooks/Checkpoints",
+                  logger=wandb_logger,
+                  callbacks=[early_stop_callback, lr_monitor])
+trainer.fit(model)
+\end{lstlisting}
+
+%         \begin{center}
+%	\includegraphics[width=\linewidth]{images/kaggle3}
+%	\label{fig_k3}
+%    \end{center}
+%    
+%         \begin{center}
+%	\includegraphics[width=\linewidth]{images/kaggle4}
+%	\label{fig_k4}
+%    \end{center}    
     
 The output predicted far away from the corresponding ground truth. 
 
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/kaggle5}
-	\label{fig_k5}
-    \end{center}
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
+input_ids = tokenizer(test_example['Profile_brep'], return_tensors='pt').input_ids
+outputs = model.generate(input_ids)
+
+print("Ground truth:", test_example['Midcurve_brep'])
+print("Generated Midcurve:", tokenizer.decode(outputs[0], skip_special_tokens=True))
+
+Ground truth: "{\"Points\": [[-8.4, 3.28], [-20.68, -5.33]], \"Lines\": [[0, 1]], \"Segments\": [[0]]}"
+Generated Midcurve: "{\"Points\": [[-8.83, 4.32], [-21.23
+\end{lstlisting}
+
+%         \begin{center}
+%	\includegraphics[width=\linewidth]{images/kaggle5}
+%	\label{fig_k5}
+%    \end{center}
     
-There could be many reasons, quality of LLM, training parameters, and above all, need for a far bigger dataset for fine-tuning.
+There could be many reasons for the mismatch such as the quality of LLM, training parameters, and above all, need for a far bigger dataset for fine-tuning. But overall, the approach and priliminary results look promising to warrant further investigations.
 
 
 \section{Conclusions}
 \label{sec:5}
 
-This research not only contributes significantly to our understanding of midcurve computation but also illuminates the complex challenges and exciting potential avenues for future exploration. The study highlights the intricate interplay between established methodologies and cutting-edge approaches, particularly the integration of Large Language Models (LLMs) in midcurve generation. This underscores the nuanced nature of geometric dimension reduction and the need for innovative solutions to address the associated complexities.
+This research significantly advances midcurve computation by exploring the interplay between established methodologies and cutting-edge approaches, particularly integrating Large Language Models (LLMs). Emphasizing the nuanced nature of geometric dimension reduction, it identifies challenges in handling variable-length input data, representing intricate shapes, and addressing limitations in existing models.
 
-The work clearly delineates the challenges inherent in variable-length input data, the representation of intricate shapes, and the limitations of existing models like Seq2Seq and Image2Image networks. These limitations necessitate a paradigm shift towards more advanced and adaptable methodologies.
-The proposed MidcurveNN, utilizing an Encoder-Decoder architecture with supervised learning, demonstrates a promising direction for overcoming the hurdles plaguing traditional midcurve computation methods. The innovative application of Brep structures in fine-tuning LLMs represents a commendable effort towards achieving higher geometric precision in the generated midcurves.
-
-However, the observed discrepancies between the predicted outputs and ground truths highlight the need for more extensive datasets and further refinement of the training parameters. This ongoing research underscores the crucial role of extensive training data and meticulous fine-tuning in achieving optimal performance with LLM-based approaches.
+ The MidcurveLLM with an Encoder-Decoder architecture and B-rep structures showcases promise, despite discrepancies with ground truths, pointing to the need for more extensive datasets and refined training parameters. Overall, this study serves as a crucial catalyst for advancing midcurve computation methodologies, inviting further scrutiny and advancements in the transformative intersection of geometry and advanced machine learning.
 
 
-In essence, this research serves as a vital catalyst for the advancement of midcurve computation methodologies. The seamless integration of LLMs, the exploration of novel geometric representations, and the introspection into fine-tuning mechanisms collectively contribute to the ongoing dialogue in geometric dimension reduction. This work invites further scrutiny, refinement, and advancements, beckoning researchers and practitioners to delve deeper into the transformative intersection of geometry and advanced machine learning paradigms. As we navigate the intricate landscape of midcurve generation, the potential for groundbreaking discoveries and impactful applications remains vast and ever-evolving.
+%This research not only contributes significantly to our understanding of midcurve computation but also illuminates the complex challenges and exciting potential avenues for future exploration. The study highlights the intricate interplay between established methodologies and cutting-edge approaches, particularly the integration of Large Language Models (LLMs) in midcurve generation. This underscores the nuanced nature of geometric dimension reduction and the need for innovative solutions to address the associated complexities.
+%
+%The work clearly delineates the challenges inherent in variable-length input data, the representation of intricate shapes, and the limitations of existing models like Seq2Seq and Image2Image networks. These limitations necessitate a paradigm shift towards more advanced and adaptable methodologies.
+%The proposed MidcurveNN, utilizing an Encoder-Decoder architecture with supervised learning, demonstrates a promising direction for overcoming the hurdles plaguing traditional midcurve computation methods. The innovative application of Brep structures in fine-tuning LLMs represents a commendable effort towards achieving higher geometric precision in the generated midcurves.
+%
+%However, the observed discrepancies between the predicted outputs and ground truths highlight the need for more extensive datasets and further refinement of the training parameters. This ongoing research underscores the crucial role of extensive training data and meticulous fine-tuning in achieving optimal performance with LLM-based approaches.
+
+In essence, this research serves as a vital catalyst for the advancement of midcurve computation methodologies. The seamless integration of LLMs, the exploration of novel geometric representations, and the introspection into fine-tuning mechanisms collectively contribute to the ongoing dialogue in geometric dimension reduction. 
 
 
 
