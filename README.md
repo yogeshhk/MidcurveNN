@@ -1,7 +1,16 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
-![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/images/midcurvenn_simpleencoderdecoder.jpg)
+MidcurveNN is a project aimed at solving the challenging problem of finding the midcurve of a 2D closed shape using neural networks. The primary goal is to transform a closed polygon, represented by a set of points or connected lines, into another set of points or connected lines, allowing for the possibility of open or branched polygons in the output. To run the project, follow the provided instructions in the "Instructions to Run" section.
+
+
+
+![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/Midcurve_LaTeX/images/midcurvenn_simpleencoderdecoder.jpg)
+
+
+- *Goal*: Given a 2D closed shape (closed polygon), find its midcurve (polyline, closed or open).
+- *Input*: Set of points or set of connected lines, non-intersecting, simple, convex, closed polygon.
+- *Output*: Another set of points or set of connected lines, open/branched polygons possible.
 
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
@@ -13,10 +22,6 @@ as published by the Free Software Foundation; either version 2
 of the License, or any later version.
 -->
 
-## Description
-- Goal: Given a 2D closed shape (closed polygon) find its midcurve (polyline, closed or open)
-- Input: set of points or set of connected lines, non-intersecting, simple, convex, closed polygon 
-- Output: another set of points or set of connected lines, open/branched polygons possible
 
 ## Instructions to Run
 
@@ -41,15 +46,15 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 - Need RnD to come up with a way to generate geometric-graph embedding that will convolute at nodes (having coordinates) around arcs (having geometry, say, a set of point coordinates), then pool them to form a meaningful representation. Real crux would be how to formulate pooling to aggregate all incident curves info plus node coordinates info into a single number!!
 
 ### Variable Lengths Issue
-  - It is a dimension-reduction problem. In 2D, input is the sketch profile (parametrically 2D), whereas the output is the midcurve (parametrically 1D). Input points are ordered (mostly forming closed loop, manifold). Output points may not be ordered, and can have branches (non-manifold)
-  - It is a variable input and variable output problem as number of points and lines are different in input and output.
-  - It is a network 2 network problem (not Sequence to Sequence) with variable size inputs and outputs
-  - For Encoder Decoder like network, libraries like Tensorflow need fixed length inputs. If input has variable lengths then padding is done with some unused value. But the padding will be a big issue here as the padding value cannot be like 0,0 as it itself would be a valid point. 
-  - The problem of using seq2seq is that both input polygons and output branched midcurves are not linearly connected, they may have loops, or branches. Need to think more. (more details in LIMITATIONS below)
-  - Instead of going to point list as i/o let’s look at well worked format of images. Images are of constant size, say 64x64 pixels. Let’s colour profile in the bitmap (b&w only) similarly midcurve in output bitmap. With this as i/o LSTM encoder decoder seq2seq can be applied. Variety in training data can be populated by shifting/rotating/scaling both i/o. Only 2D sketch profile for now. Only linear segments. Only single simple polygon with no holes.
-  - How to vectorise? Each point as 2 floats/ints. So total input vector is polygon of m points is 2m floats/ints. Closed polygon with repeat the first point as last. Output is vector of 2n points. In case of closed figure, repeat the last point. Prepare training data using data files used in MIDAS. To make 100s, 1000s of input profiles, one can scale both input and output with different factors, and then randomly shuffle the entries. Find max num points of a profile, make that as fixed length for both input and output. Fill with 0,0??? As origin 0,0 could be valid part of profile…any other filler? NULL? Run simple feed forward NN, later RNN, LSTM, Seq2seq
-  - See https://www.tensorflow.org/tutorials/seq2seq, https://www.youtube.com/watch?v=G5RY_SUJih4, A Neural Representation of Sketch Drawings, https://magenta.tensorflow.org/sketch_rnn  https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/README.md 
-  - Add plotting capability, show polygons their midcurves etc, easy to debug and test unseen figures.
+- This is a dimension-reduction problem wherein, in 2D, the input constitutes the sketch profile (parametrically 2D), while the output represents the midcurve (parametrically 1D). Input points are ordered, mostly forming a closed loop known as a manifold. Conversely, output points may lack a defined order and can exhibit branches, referred to as non-manifold structures.
+- It poses a variable input and variable output challenge, given that the number of points and lines differs in the input and output.
+- This presents a network 2 network problem (not Sequence to Sequence) with variable-sized inputs and outputs.
+- For Encoder-Decoder networks like those in Tensorflow, fixed-length inputs are necessary. Introducing variable lengths poses a significant hurdle as padding with a distinct unused value, such as 0,0, is not feasible, considering it could represent a valid point.
+- The limitation with Seq2Seq models is notable; the input polygons and output branched midcurves are not linearly connected. They may exhibit loops or branches, necessitating further consideration for a more suitable solution. (More details on limitations below)
+- Instead of adopting a point list as input/output, let's consider the well-worked format of images. These images are standardized to a constant size, say 64x64 pixels. The sketch profile is represented as a color profile in a bitmap (black and white only), and similarly, the midcurve appears in the output bitmap. This image-based format allows for the application of LSTM encoder-decoder Seq2Seq models. To diversify training data, one can introduce variations by shifting, rotating, and scaling both input and output. The current focus is on 2D sketch profiles, limited to linear segments within a single, simple polygon without holes.
+- The vectorization process involves representing each point as 2 floats/ints. Consequently, the total input vector for a polygon with 'm' points is 2m floats/ints. For closed polygons, the first point is repeated as the last one. The output is a vector of 2n points, repeating the last point in the case of a closed figure. Preparing training data involves using data files from MIDAS. For scalability, input and output can be scaled with different factors, and entries can be randomly shuffled. Determining the maximum number of points in a profile establishes a fixed length for both input and output.
+- Resources and further exploration for Seq2Seq models can be found at [Tensorflow Seq2Seq Tutorial]( https://www.tensorflow.org/tutorials/seq2seq), [Seq2Seq Video Tutorial](https://www.youtube.com/watch?v=G5RY_SUJih4), [A Neural Representation of Sketch Drawings](https://magenta.tensorflow.org/sketch_rnn), and [Sketch RNN GitHub Repository](https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/README.md ).
+- Additionally, consider incorporating plotting capabilities to visualize polygons and their midcurves, facilitating easy debugging and testing of unseen figures.
 
 ### Dilution to Images
 - Images of geometric shapes address both, representation as well as variable-size issue. Big dilution is that, true geometric shapes are like Vector images, whereas images used here would be of Raster type. Approximation has crept in.
