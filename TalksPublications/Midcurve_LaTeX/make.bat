@@ -1,2 +1,2 @@
 @echo off
-for %%i in (Main*.tex) do texify -cp %%i
+for %%i in (Main_MidcurveLLM_Presentation*.tex) do texify -cp %%i
