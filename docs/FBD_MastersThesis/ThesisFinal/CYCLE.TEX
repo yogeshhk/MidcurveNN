@@ -1,0 +1,101 @@
+    \chapter{Cycle detection in Graphs} \label{cyldetect}
+
+    \section{Definitions}
+
+    \begin{itemize}
+
+    \item
+    An undirected graph G is {\em connected} if there is at least one
+    path between every pair of vertices $v_{i}$ and $v_{j}$ in G.
+    \item
+    A directed graph G is connected if the undirected graph obtained by
+    ignoring the edge directions in G is connected.
+    \item
+    A directed graph is said to be strongly connected if for every pair of
+    vertices $v_{i}$ and $v_{j}$ there exits at least one directed path from
+    $ v_{j} $to $v_{i}$.
+
+    \end{itemize}
+
+	\section{The algorithm}
+
+    The simplest problem, of course, is to determine whether a given graph,
+    directed or undirected contains a cycle. Depth first search suffices
+    to answer the question for both directed and undirected graphs : a graph
+    or a digraph has a cycle if and only if the DFS tree contains a back edge.
+    A slightly harder problem is to determine a minimal set of cycles of an
+    undirected graph from which all of the cycles in the graph can be
+    constructed ( a so called fundamental set of cycles).It is still harder
+    to determine all the cycles of a digraph. ~\cite{Rein}
+    With the combination of the fundamental cycles all other cycles can be
+    derived.
+        At first a spanning tree of the graph is generated with Depth first
+    search. When algorithm finds a back edge ( an edge is called Back edge
+    because they lead back to vertices that have been previously visited),
+    the cycle consists of the tree edges from the current node to the
+    destination node of the edge and the current edge. So as to collect proper
+    edges of tree a stack is used while performing depth first search which
+    stores all the vertices on the path from the root to the vertex currently
+    being visited. When the back edge is encountered, the cycle formed
+    consists of that back edge and the edges connecting the vertices on the
+    top of the stack.
+
+
+        Any algorithm for generating all the cycles of a
+    digraph can also be used for undirected graphs by converting the undirected
+    graph into a digraph by replacing each edge with two oppositely directed
+    edges between the same pair of vertices.~\cite{Rein}
+
+
+        The graph structure used here is actually bidirectional with directed
+    edges in both directions. Precaution is taken to remove all the cycles with
+    two edges and  thereby avoiding cycles between two adjacent nodes.
+
+
+        Extra care needs to be taken so that every cycle detected is new one and
+    not just combination of the already found ones.The process employed in
+    detection of cycles is based on CYCLE algorithm ~\cite{Rein} and
+    is explained briefly here.
+
+
+    All the nodes are numbered in an ascending order. This is done at the
+    creation stage only. We begin the search at a vertex $s$ and build a
+    (directed) path $(s,v_{1},v_{2},v_{3}....,v_{k})$, such that
+    $ v_{i} > s, 1 \leq i \leq k$.
+    A cycle is reported only when the next vertex $ v_{k+1} = s $.
+    After generating the cycle $ (s, v_{1},v_{2},... v_{k},s) $,
+    we explore the next edge going out of $v_{k}$. If all the edges going out
+    of $v_{k}$ have been explored, we back up to the previous vertex
+    $ v_{k-1}$ and try extending from it and so on. This process continues
+    until we finally try back up past the starting vertex $ s $;
+    all the cycles containing vertex $ s$ have been generated. This process is
+    repeated for all the nodes if we want to find out all the cycles. In the
+    current implementation the cycles having the edited node are only presented
+    to user for selection.
+
+
+    All the vertices are made {\em unavailable} ( by setting {\em available }
+    flag in the node as FALSE as soon as $ v $ is appended on the current path)
+    while searching with graph rooted at $ s $ so as to avoid the traversing of
+    the cycles originating at $ v_{i}$.It remains {\em unavailable} until search
+    backs up past $ v $ to the previous vertex on the current path. A record is
+    kept of the predecessors of all unavailable vertices that are not on the
+    current path by maintaining a separate set for each vertex. When $ u $
+
+    becomes available so do all its unavailable predecessors that are not in
+    the current path. Thus all the elements in that set are made available. As
+    these members are made available again, their unavailable predecessors that
+    are not the current path are made available again and so on.This recursive
+    procedure is called UNMARK in the implementation.
+
+
+    Every cycle in a digraph lies entirely within a strongly connected
+    component. So at start graph is decomposed into strongly connected
+    components.
+
+
+    After finding strong components, the above mentioned procedure is applied
+    to every component at a time. In the current implementation, cycle
+    detection is done only for the component that contains the edited node.
+
+

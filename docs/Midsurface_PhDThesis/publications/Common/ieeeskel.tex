@@ -1,0 +1,218 @@
+%======================================================================
+%----------------------------------------------------------------------
+%               XX                              X
+%                                               X
+%               XX    XXX   XXX   XXX      XXX  X  XXXX
+%                X   X   X X   X X   X    X   X X X
+%                X   XXXXX XXXXX XXXXX    X     X  XXX
+%                X   X     X     X     XX X   X X     X
+%               XXX   XXX   XXX   XXX  XX  XXX  X XXXX
+%----------------------------------------------------------------------
+%  	         A SKELETON FILE FOR IEEE PAPER GENERATION
+%----------------------------------------------------------------------
+%======================================================================
+
+% first, uncomment the desired options:
+\documentclass[%
+        draft,
+        %submission,
+        %compressed,
+        %final,
+        %
+        %technote,
+        %internal,
+        %submitted,
+        %inpress,
+        %reprint,
+        %
+        %titlepage,
+        notitlepage,
+        %anonymous,
+        narroweqnarray,
+        inline,
+        %twoside,
+        ]{ieee}
+%
+% some standard modes are:
+%
+% \documentclass[draft,narroweqnarray,inline]{ieee}
+% \documentclass[submission,anonymous,narroweqnarray,inline]{ieee}
+% \documentclass[final,narroweqnarray,inline]{ieee}
+
+% Use the `endfloat' package to move figures and tables to the end
+% of the paper. Useful for `submission' mode.
+%\usepackage {endfloat}
+
+% Use the `times' package to use Helvetica and Times-Roman fonts
+% instead of the standard Computer Modern fonts. Useful for the 
+% IEEE Computer Society transactions.
+% (Note: If you have the commercial package `mathtime,' it is much
+% better, but the `times' package works too).
+%\usepackage {times}
+
+% In order to use the figure-defining commands in ieeefig.sty...
+\usepackage{ieeefig}
+
+\begin{document}
+
+%----------------------------------------------------------------------
+% Title Information, Abstract and Keywords
+%----------------------------------------------------------------------
+\title[Short Title]{%
+       Long Title}
+
+% format author this way for journal articles.
+\author[SHORT NAMES]{%
+      First Author\member{Fellow}
+      \authorinfo{%
+      A. Author is with the Department of Electrical Engineering,
+      Some University, Somewhere CA, 90210, USA,
+      Phone: \mbox{(xxx) xxx-xxxx}, email: \mbox{xxx@xxxx.xxx.xxx}}
+    \and
+      Second Author\member{Senior Member}
+      \authorinfo{%
+      B. Author is with the Department of Electrical Engineering...}
+    \and
+      and Third Author\member{Student Member}
+      \authorinfo{...}
+  }
+
+% format author this way for conference proceedings
+\author[SHORT NAMES]{%
+      First Author\member{Fellow}
+      \authorinfo{%
+      Department of Electrical Engineering\\
+      Some University, Somewhere CA, 90210, USA\\
+      Phone: (xxx) xxx-xxxx, email: xxx@xxxx.xxx.xxx}
+    \and
+      Second Author\member{Senior Member}
+      \authorinfo{%
+      Department of Electrical Engineering...}
+    \and
+      and Third Author\member{Student Member}
+      \authorinfo{...}
+  }
+
+% specifiy the journal name
+\journal{IEEE Transactions on Something, 1997}
+
+% Or, when the paper is a preprint, try this...
+%\journal{IEEE Transactions on Something, 1997, TN\#9999.}
+
+% Or, specify the conference place and date.
+\confplacedate{Ottawa, Canada, May 19--21, 1997}
+
+% make the title
+\maketitle               
+
+% do the abstract
+\begin{abstract}
+Our premise is ...
+\end{abstract}
+
+% do the keywords
+\begin{keywords}
+keyword 1, keyword 2 ...
+\end{keywords}
+
+% start the main text ...
+%----------------------------------------------------------------------
+% SECTION I: Introduction
+%----------------------------------------------------------------------
+\section{Introduction}
+
+\PARstart Use the PARstart macro only for the first paragraph in 
+the entire paper...
+
+% try out a theorem...
+\newtheorem{theorem}{Theorem}
+
+\begin{theorem}[Theorem name]
+  Consider the system ...
+\end{theorem}
+
+\begin{proof}
+  The proof is trivial.
+\end{proof}
+
+% do the biliography:
+\bibliographystyle{IEEEbib}
+\bibliography{my-bibliography-file}
+
+% where ``my-bibliography-file.bib'' is the name of the file with all the 
+% BibTeX entries.
+
+% do the biographies...
+\begin{biography}{Gregory L. Plett}
+  A bio with no face...
+\end{biography}
+
+% If you want a picture with your biography, then specify the name of
+% the postscript file in square brackets. That is, uncomment the
+% following three lines and change the name of "face.ps" to the name of 
+% your file.
+%\begin{biography}[face.ps]{Gregory L. Plett}
+%  A bio with a face...
+%\end{biography}
+
+%----------------------------------------------------------------------
+% FIGURES
+%----------------------------------------------------------------------
+% There are many ways to include figures in the text. We will assume
+% that the figure is some sort of EPS file.
+%
+% The outdated packages epsfig and psfig allow you to insert figures
+% like: \psfig{filename.eps} These should really be done now using the
+% \includegraphics{filename.eps} command.  
+%
+% i.e.,
+%
+% \includegraphics{file.eps}
+%
+% whenever you want to include the EPS file 'file.eps'. There are many
+% options for the includegraphics command, and are outlined in the
+% on-line documentation for the "graphics bundle". Using the options,
+% you can specify the height, total height (height+depth), width, scale,
+% angle, origin, bounding box "bb",view port, and can trim from around
+% the sides of the figure. You can also force LaTeX to clip the EPS file
+% to the bounding box in the file. I find that I often use the scale,
+% trim and clip commands.
+% 
+% \includegraphics[scale=0.6,trim=0 0 0 0,clip=]{file.eps}
+% 
+% which magnifies the graphics by 0.6 (If I create a graphics for an
+% overhead projector transparency, I find that a magnification of 0.6
+% makes it look much better in a paper), trims 0 points off
+% of the left, bottom, right and top, and clips the graphics. If the
+% trim numbers are negative, space is added around the figure. This can
+% be useful to help center the graphics, if the EPS file bounding box is
+% not quite right.
+% 
+% To center the graphics,
+% 
+% \begin{center}
+% \includegraphics...
+% \end{center}
+% 
+% I have not yet written good documentation for this, but another 
+% package which helps in figure management is the package ieeefig.sty,
+% available at: http://www-isl.stanford.edu/people/glp/ieee.shtml
+% Specify:
+% 
+%\usepackage{ieeefig} 
+% 
+% in the preamble, and whenever you want a figure,
+% 
+\figdef{filename}
+% 
+% where, filename.tex is a LaTeX file which defines what the figure is.
+% It may be as simple as
+% 
+% \inserteps{filename.eps}
+%
+% or
+% \inserteps[includegraphics options]{filename.eps}
+% 
+% or may be a very complicated LaTeX file. 
+
+\end{document}

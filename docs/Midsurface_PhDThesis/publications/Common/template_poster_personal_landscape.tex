@@ -1,0 +1,38 @@
+\documentclass[final]{beamer}
+\usepackage[orientation=landscape,size=a0,scale=1.2,debug]{beamerposter}
+%\usepackage[size=custom,width=24.75in,height=35in,scale=2,debug]{beamerposter}
+
+\mode<presentation>{\usetheme{CoEPPoster}}
+%\mode<presentation>{\usetheme{Singapore}}
+\usepackage[english]{babel}
+%\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+
+\usepackage[disable]{todonotes} % To remove in-line review comments, use 'disable'
+%\usepackage[colorinlistoftodos,textsize=normalsize,textwidth=1\marginparwidth]{todonotes} % To add in-line review comments
+
+\usepackage{array,booktabs,tabularx}
+\newcolumntype{Z}{>{\centering\arraybackslash}X} % centered tabularx columns
+
+% comment 
+\newcommand{\comment}[1]{}
+
+% (relative) path to the figures
+%\graphicspath{{../Common/images/}}
+\newcommand{\generic}[7]{\ensuremath{#1{\bf \mathcal{#2}}_{#3}^{#4,#5} [\{#6\} (#7)]}}
+
+\newlength{\columnheight}
+\setlength{\columnheight}{105cm}
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\newlength{\threecolwid}
+\setlength{\sepwid}{0.024\paperwidth}
+\setlength{\onecolwid}{0.24\paperwidth}
+\setlength{\twocolwid}{0.4\paperwidth}
+\setlength{\threecolwid}{0.19\paperwidth}
+
+%\author{Yogesh H Kulkarni, Anil Sahasrabudhe, Mukund Kale}
+%\institute[CoEP]{College of Engineering Pune}
+%\subtitle[]{Development of algorithms for generating connected midsurfaces using feature information in thin-walled parts}

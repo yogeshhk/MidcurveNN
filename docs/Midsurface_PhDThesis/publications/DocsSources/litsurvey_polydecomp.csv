@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Keil \cite{Keil94},Polygon,Convex Partitioning,Partition with minimum cuttings,Optimal,Complexity order is high
+Lien et. al. \cite{Lien2004} \cite{Lien2005},,Convex Partitioning,Recursively resolving the non-convex elements,Natural looking decomposition,Selection of tolerance is hard
+Bayazit \cite{Bayazit},Polygon,Concave Vertex Partitioning,Rule based partitioning relfex verices,Intutive; customizable,Fails at colinear concave vertices

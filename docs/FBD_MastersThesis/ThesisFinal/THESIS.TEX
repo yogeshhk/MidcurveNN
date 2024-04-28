@@ -1,0 +1,44 @@
+%\documentstyle[psfig,verbatim,here]{ksthesis}
+\documentstyle[graphicx,verbatim,appendix, here]{ksthesis}
+
+\begin{document}
+
+	\include{frontcover}
+	\include{title}
+	\include{abstract}
+	\include{parents}
+	
+
+
+\pagenumbering{roman} \setcounter{page}{1}
+\addcontentsline{toc}{chapter}{Table of Contents}
+\tableofcontents
+\listoffigures
+\listoftables
+
+	\include{acknow}
+	
+	\include{intro}
+	\include{fbd}
+	\include{encaps}
+	\include{dt}
+	\include{implemnt}
+	%\include{examples}
+	\include{concl}
+
+
+\bibliographystyle{ieeetr}
+\bibliography{ref}
+
+\begin{appendices}
+%\appendix
+%    \include{cycle}
+%    \include{bspline}
+%    \include{phigs}
+    \include{classes}
+\end{appendices}
+
+\include{backcover}
+	
+\end{document}
+

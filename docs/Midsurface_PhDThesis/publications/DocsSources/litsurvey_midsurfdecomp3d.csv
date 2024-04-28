@@ -1,0 +1,7 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Chong \cite{Chong2004},Brep,Concave Edge Partitioning,Edge-pair detection and collapsing,Mixed dimensional modelling,Heuristic-Hardcoded; Analytical surfaces only
+Kageura \cite{Kageura2009},Brep,Decomposition,Cell based Midsurface and joining,Adjacency graph for generalness,Only simple academic shapes
+Cao \cite{Cao2009} \cite{Cao2011},Brep,Decomposition; Face Pairing,Protrusion detection; Midcurves of sketches,Better CAD-FEA integration,Only additive swept features
+Yoonhwan Woo \cite{Woo2013},Brep,Decomposition; MA,Maximal sub volumes; Midsurface Abstraction per cell,Detailed face pairing,Heavy use of Booleans
+Boussuge \cite{Boussuge2012} \cite{Boussuge2013} \cite{Boussuge2013a} \cite{Boussuge2014},Brep,Decomposition; Feature Recognition; MAT,Construction history by decomposition. Cellular FR for Extrudes,History tree independent,Only Extrudes. Parallel and Orthogonal connections only.
+Huawei Zhu \cite{Zhu2015},Brep,Decomposition; Parametric Midsurface,Virtual Decomposition by Face Group method; classification of connections,Booleans are avoided,Decomposition not possible for complex shapes

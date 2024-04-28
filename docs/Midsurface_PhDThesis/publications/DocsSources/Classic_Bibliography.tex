@@ -1,0 +1,14 @@
+% Bibliography
+
+\label{app:bibliography} % Reference the bibliography elsewhere with \autoref{app:bibliography}
+
+\manualmark
+\markboth{\spacedlowsmallcaps{\bibname}}{\spacedlowsmallcaps{\bibname}} 
+\refstepcounter{dummy}
+
+\addtocontents{toc}{\protect\vspace{\beforebibskip}} % Place the bibliography slightly below the rest of the document content in the table of contents
+\addcontentsline{toc}{chapter}{\tocEntry{\bibname}}
+
+\bibliographystyle{plainnat}
+
+\bibliography{../Common/Bibliography}

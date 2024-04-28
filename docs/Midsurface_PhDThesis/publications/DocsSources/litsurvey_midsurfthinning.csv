@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Montanari \cite{Montanari1969},polygon,Offset,Iterative offsetting;  breakpoint identification,Any input shape,Only polygons ; extra branches
+Gursoy \cite{Gursoy1989},Curves,Offset,Offsetting circular arcs,Curved shapes,Branches
+Aichholzer \cite{Aichholzer1991}\cite{Aichholzer2006},polygon,Straight Skeleton,Angular bisectors as partitions,Any input shape,Only polygons ; extra branches

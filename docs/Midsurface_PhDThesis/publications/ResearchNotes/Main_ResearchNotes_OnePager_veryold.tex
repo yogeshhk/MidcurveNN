@@ -1,0 +1,74 @@
+\input{../Common/template_article_colored_orig} % One pager
+%\input{../Common/template_article_colored}
+\usepackage{titling} % Allows custom title configuration
+\newcommand{\HorRule}{\color{DarkGoldenrod} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
+\pretitle{\vspace{-70pt} \begin{flushleft} \HorRule \fontsize{20}{20} \usefont{OT1}{phv}{b}{n} \color{DarkRed} \selectfont} % Horizontal rule before the title
+
+\title{Computing Midsurface} % Your article title
+
+\posttitle{\par\end{flushleft}\vskip 0.25em} % Whitespace under the title
+\preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
+\author{Yogesh Kulkarni\\} % Your name
+\postauthor{\footnotesize \usefont{OT1}{phv}{m}{sl} \color{Black} % Configuration for the institution name
+College of Engineering Pune, India % Your institution
+\par\end{flushleft}\HorRule} % Horizontal rule after the title
+
+\date{} % Add a date here if you would like one to appear underneath the title block
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+At early stages of design, CAD parts are often \textbf{idealized} before analyzing them in CAE, to save on compute time and resources. Thin-walled parts are idealized to \textbf{Midsurface}, a surface running through the part, midway of the thickness.
+\vskip 2mm
+\includegraphics[width=0.7\linewidth]{../Common/images/MidsurfSmallProfile.pdf}
+\vskip -2mm
+
+Getting a connected Midsurface, {\em representing} the overall shape of the part, is still a challenging problem, due to non-deterministic/agreeable expected results and also complexity of the shapes. These problems are relatively less in simple shapes where one can imagine and expect accurate Midsurface and current algorithms are able to handle them. 
+
+Typical approaches to compute Midsurface, in academics and commercial are:  Medial Axis Transform (MAT) and Medial Abstraction (MA).
+
+\includegraphics[width=0.8\linewidth]{../Common/images/MAT_Midsurf.png}
+
+MAT suffers from extraneous branches and MA suffers from complexity in finding the face pairs.
+
+Both approaches work on the final shape (Boundary representation - Brep) and thus find challenging to compute in case of complex surfaces, interactions etc. If this final shape is decomposed into smaller-simpler shapes, it would be easier and more deterministic to compute the Midsurface. Such decomposition is readily available in form of the \textbf{feature tree}.
+
+\section{Approach [1]}
+Many commercial CAD applications provide {\em Design-by-Features} approach. Part is built using features one-by-one in time-line order, almost in a Constructive-Solid-Geometry (CSG) like tree way. Leaves represent  Primitives/Tool-Bodies and internal nodes represent booleans. At each level of the tree, starting from first feature, shapes are simpler than the final shape. Boolean type is known. So computing Midsurface of the Tool-bodies and their boolean to the shape built till that level, is a more deterministic than detecting/computing Midsurface in the final shape.
+
+\begin{itemize}[noitemsep,nolistsep]
+\item Concurrently build Midsurface as the part gets created/updated. 
+\item For each feature, compute Midsurface as below;
+	\begin{itemize}[noitemsep,nolistsep]
+	\item 2D Profiles: Generate \textbf{Midcurves} [2]
+	\item Sweep based Features : Sweep \textbf{Midcurves} to generate Midsurface of the tool-body
+	\item Boolean : Join tool-body-Midsurface with the Midsurface computed so far.
+	\end{itemize}
+\end{itemize}
+%\centering \includegraphics[height=0.7\linewidth]{../Common/images/SystemArchitecture.pdf}
+
+%\section{De-featuring}
+\section{Midcurve [2]}
+\textbf{Goal}: Given a 2D profile (say, a closed polygon), how to compute the \textbf{Midcurve}.
+\begin{itemize}[noitemsep,nolistsep]
+\item Partition given shape into sub-shapes and then Midcurves can be generated for each eligible-simpler sub-polygon.
+\item Later such individual Midcurves can be joined to form continuous Midcurves representing the original shape.
+\end{itemize}
+\vskip 2mm
+\centering {\includegraphics[scale=0.4]{../Common/images/Crossm.png}}
+
+%\section{Midsurface}
+\section{Papers}
+\begin{enumerate}
+\item Strategies for using feature information in model simplification, CAE Conf, IITM, 2013
+\item Midcurves Generation Algorithm for Thin Polygons, ETES, Asansol, 2014
+%\item \href{https://www.researchgate.net/profile/Yogesh_Kulkarni4/publication/259396573_Strategies_for_using_feature_information_in_model_simplification/file/60b7d52b695bc9cd8c.pdf?ev=pub_int_doc_dl&origin=publication_detail&inViewer=true}{Strategies for using feature information in model simplification}, CAE Conf, IITM, 2013
+%\item \href{https://www.researchgate.net/profile/Yogesh_Kulkarni4/publication/259972281_Midcurves_Generation_Algorithm_for_Thin_Polygons/file/72e7e534148576285a.pdf?ev=pub_int_doc_dl&origin=publication_detail&inViewer=true}{Midcurves Generation Algorithm for Thin Polygons}, ETES, Asansol, 2014
+\end{enumerate}
+%\bibliographystyle{plain}
+%\bibliography{../Common/Bibliography}
+\end{document}

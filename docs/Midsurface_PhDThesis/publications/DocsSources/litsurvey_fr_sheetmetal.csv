@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Sunil \cite{Sunil2008},Surfaces,FR,Face-based ; edge-based and transitive,Definitive,Non intuitive
+Ravi Kumar Gupta \cite{Gupta2008} \cite{Gupta2013}  \cite{Gupta2013a} ,Brep,Face classification,Face classification,Intuitive definitions,Non definitive
+Kannan \cite{Kannan2009},Midsurface,Feature Recognition using midsurface,Midsurface subgraph matching,Dimension reduction is more efficient,Quality of midsurface affects FR

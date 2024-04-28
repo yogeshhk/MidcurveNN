@@ -1,0 +1,127 @@
+\documentclass[openany,oneside,12pt,a4paper]{UoP_template}
+%\documentclass[oneside,a4paper,12pt]{../Common/Thesis_UoP}
+%\usepackage[square, numbers, comma, sort&compress]{natbib} % option clash with many
+\input{Packages_2017_thesis}
+
+\pdfminorversion=5
+\pdfobjcompresslevel=3 
+\pdfcompresslevel=9
+
+% NO LINK COLORS
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\title{DEVELOPMENT OF ALGORITHMS FOR GENERATING CONNECTED MIDSURFACES USING FEATURE INFORMATION IN THIN-WALLED PARTS} % HAS TO BE IN CAPITAL LETTERS
+\degree{DOCTOR OF PHILOSOPHY (PH.D)}
+\degreedate{\today}
+\author{YOGESH H. KULKARNI}
+\collegeordept{Department of Mechanical Engineering}
+\university{SAVITRIBAI PHULE PUNE UNIVERSITY}
+\subject{MECHANICAL ENGINEERING}
+\guide{DR. ANIL SAHASRABUDHE AND DR. MUKUND KALE}
+\guideinstitute{COLLEGE OF ENGINEERING , PUNE}
+
+% turn of those nasty overfull and underfull hboxes
+\hbadness=10000
+\hfuzz=50pt
+
+\input{NewDefinitions_2017_thesis}
+\onehalfspacing
+
+\usepackage[explicit]{titlesec}
+\titleformat{\chapter}[display]{\bfseries \centering}{\huge Chapter \thechapter}{1em}{\Huge #1}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+
+\begin{document}
+
+%\clearpage
+%\thispagestyle{empty}
+%\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+%\pagenumbering{roman}
+%
+%\clearpage
+%\thispagestyle{empty}
+%
+\frontmatter % book mode only: turns off chapter numbering and uses roman numerals for page numbers;
+
+\maketitle
+
+\pagebreak  \thispagestyle{empty}
+\input{UoP_dedication}  
+\addcontentsline{toc}{chapter}{Dedication}
+
+%\pagebreak \thispagestyle{empty}
+%\input{UoP_Guide_certificate}
+%\addcontentsline{toc}{chapter}{Certificate of the Guide}
+%
+%\pagebreak \thispagestyle{empty}
+%\input{UoP_COEP_certificate}
+%\addcontentsline{toc}{chapter}{Certificate}
+%
+%\pagebreak \thispagestyle{empty}
+%\input{UoP_Declaration_certificate} 
+%\addcontentsline{toc}{chapter}{Declaration of the Candidate}
+
+\pagebreak %\newpage %\thispagestyle{empty}
+\addcontentsline{toc}{chapter}{Abstract}
+\chapter*{Abstract}
+\input{Abstract_Overall_2017_thesis}  % include if you want to add abastract
+
+
+\pagebreak \thispagestyle{empty}
+\addcontentsline{toc}{chapter}{Acknowledgment}
+\input{UoP_acknowledgement} 
+
+
+\pagebreak %\newpage % \thispagestyle{empty}
+\tableofcontents
+
+ \let\origaddvspace\addvspace
+ \renewcommand{\addvspace}[1]{}
+ \listoffigures
+ \listoftables
+ \renewcommand{\addvspace}[1]{\origaddvspace{#1}}
+ 
+\pagebreak
+
+%\thispagestyle{empty}
+%\printnomenclature  %% Print the nomenclature
+%\addcontentsline{toc}{chapter}{Nomenclature}
+
+
+\mainmatter % book mode only: turns on chapter numbering, resets page numbering and uses arabic numerals for page numbers;
+
+\thispagestyle{empty} % BLANK PAGE
+
+\input{Chapters_2017_thesis}
+
+
+\bibliographystyle{unsrtnat}
+\setcitestyle{numbers ,open={((},close={))}}
+\renewcommand{\bibname}{References} % changes default name Bibliography to References
+\bibliography{Bibliography_2017_thesis} % References file
+
+\thispagestyle{empty} % BLANK PAGE
+\chapter*{Publications}
+\input{Papers_2017_thesis}
+
+\pagebreak \thispagestyle{empty} % BLANK PAGE
+%\pagenumbering{roman}
+
+\begin{appendices}
+\chapter{Survey Responses} \label{appendix:survey}
+\input{Appendix_Survey_2017_thesis}
+\chapter{Defeaturing Threshold} \label{appendix:threshold}
+\input{Appendix_Threshold_2017_thesis}
+\chapter{ICE Schema} \label{appendix:ice}
+\input{Appendix_ICE_2017_thesis}
+\end{appendices}
+\end{document}

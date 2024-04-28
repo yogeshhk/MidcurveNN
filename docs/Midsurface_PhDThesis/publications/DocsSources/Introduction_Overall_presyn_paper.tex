@@ -1,0 +1,13 @@
+\section{Introduction}\label{sec:intro}
+
+Getting a quicker validation of the proposed product is crucial in the era of fierce competition and faster obsolescence. Digital product development, which includes, modeling by CAD and analysis by CAE, plays a crucial role in quicker ``Time to market''.  For sheet-metal/plastic products (generically classified as `thin-walled'),  a quick and fairly accurate CAE analysis is possible by idealizing their CAD models to the equivalent surface representation called ``Midsurface''.  
+
+Midsurface can be envisaged as a surface lying midway of a thin-walled CAD model, and mimicking its shape. In CAE analysis, instead of using expensive 3D elements, the midsurface is used to place 2D-Shell elements for fairly accurate results in far lesser computations-time. Because of this advantage, midsurface is widely used and is available in many commercial CAD-CAE packages.  Even in this age of scalable and near-infinite computing power, it is still desirable to idealize so as to run more design iterations quickly. 
+
+\section{Motivation}\label{sec:motivation}
+A Sandia report states that for the complex engineering models, their idealization amounts to about 60\% of overall analysis time, whereas the mesh generation consumes about 20\% and solving the actual problem takes about 12\% \cite{Ming2012}. Midsurface is the most used idealization for the thin-walled parts. In spite of its demand and popularity, the existing approaches fail to compute a well-connected midsurface, especially for the non-trivial shapes \cite{ Robinson2006, Lockett2008, Woo2013}. Failures manifest in the form of gaps, overlapping surfaces, not lying midway, not mimicking the input shape, etc. Correcting these errors is mostly a manual, tedious and highly time-consuming task, requiring hours to days. This correction time can be nearly equivalent to the time it can take to create the midsurface manually from scratch \cite{Stolt2006}.  Thus, developing an automated system for generating robust and well-connected midsurface is the need of the hour.
+
+The motivation of this work  is to address the midsurface problems by leveraging feature-based simplification, abstraction and decomposition (FSAD). Although feature-based CAD modeling paradigm has been prevalent for decades, many of the processes are still based on the final shape of the model represented by Boundary representation (Brep). Reason being, interoperability between CAD and CAE used to be through neutral, non feature-based formats. Now, with far more integrated CAD-CAE environments, and access of features through APIs it is possible to leverage them in geometric algorithms, as demonstrated in this work for generating midsurface.
+
+
+

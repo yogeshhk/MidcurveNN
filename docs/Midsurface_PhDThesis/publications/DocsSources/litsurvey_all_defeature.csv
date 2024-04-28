@@ -1,0 +1,14 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Dabke \cite{Dabke1994},Features,Feature size evaluation,Knowledge based idealization,Initial leveraging of feature information,Very primitive Feature recognition
+Smit \cite{Smit2009} \cite{Smit2011},Features,Full feature size evaluation,Less than threshold,Optimized remeshing,Wrong size criterion; Parent-child dependencies  
+Danglade \cite{Danglade2013},Features,Machine Learning,Capturing engineering judgement,Expert knowledge in rules,Large trials
+Kang et al. \cite{Kang2013},Features,Importance Rank,Feature rank and application rules,Application customization,Wrong volume criterion
+Sandia \cite{AmesRiveraWebbHensinger1997},Features,Feature size evaluation,Automatic feature routing,Simplified references ,Manual
+Sandia \cite{Watterberg1999},Brep,Feature recognition; Size,Recognizes Suppresses small features,Effective simplification,No Application  rules
+Belaziz \cite{BelazizBourasBrun2000},Brep,Feature Recognition,Morphology based simplification,Generic Recognition,Manual selection
+Joshi Datta  \cite{Joshi2003},Brep,Feature Recognition; Feature type based,Sheet metal features Feature Recognition,Holes fillets ,Limited primitives
+Hamdi et al.  \cite{Hamdi2005} \cite{Hamdi2007}  \cite{Hamdi2009}  \cite{Hamdi2010} \cite{Hamdi2012} \cite{Hamdi2012a},Brep,Feature Recognition; Size based Defeaturing; Proximity; Boundary Conditions,Merging faces,CAE input considered,Orientation not considered
+Jae Yeol Lee \cite{JaeLee2004},Features,Cellular; Size,Cellular; reorder by volume; suppress by size,Efficient Level of Details,Loss of history 
+Sang Hun Lee  \cite{SangHunLee2005} \cite{Lee2009} \cite{Lee2005},Features,Cellular Reordering,Reorder features;   Cellular model for performance.,Adjustable Level of Details and Level of Abstraction,Cannot update model
+Yoonhwan Woo \cite{Woo2009},Brep,Cellular; Feature recognition; Size,Recognizes and suppresses negative features,Independent of the modelling history,Limited to simple shapes
+Byung Chul Kim \cite{Kim2014},Brep,Cellular; Feature recognition; Size,Feature Recognition; Wrap; Split; ,Wide applicability,Feature Recognition difficulties

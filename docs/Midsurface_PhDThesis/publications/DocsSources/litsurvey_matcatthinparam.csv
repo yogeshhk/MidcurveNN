@@ -1,0 +1,13 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Harry Blum \cite{Harry1967},Curves,MAT,Grass Fire,Any input shape,Branches
+Ramanathan \cite{Ramanathan2004},Curves,Midcurve,Removed erroneous MAT branches,No branches,Limited shapes
+Robinson \cite{Robinson2006}  \cite{Robinson2007},Brep; Sketch,MAT,Rolling Ball,Thinness detection,Post processing
+Stanley \cite{Stanley2010},Curves,MAT,Voronoi Diagram,Any input shape,Branches
+Automex \cite{Automex},Brep,Scale Axis Transform,Scaled spheres to remove branches,No perturbations,Incorrect Fragments
+Prasad \cite{Prasad2007},2D 3D shapes,CDT,Mesh the shape; join midpoints of the triangles,Any shape can be the input,Dependence on triangulation;  gaps at the end
+Quadros \cite{Quadros2000}  \cite{QuadrosRoshanOwenBrewerShimada2004} \cite{QuadrosShimadaOwen2004} \cite{Quadros2008} \cite{QuadrosRoshanOwenBrewerShimada2004} ,Brep,CDT,Constrained meshing; cellular midsurface,Handling Complex parts,Triangulation problems
+Montanari \cite{Montanari1969},polygon,Offset,Iterative offsetting;  breakpoint identification,Any input shape,Only polygons ; extra branches
+Gursoy \cite{Gursoy1989},Curves,Offset,Offsetting circular arcs,Curved shapes,Branches
+Aichholzer \cite{Aichholzer1991}\cite{Aichholzer2006},polygon,Straight Skeleton,Angular bisectors as partitions,Any input shape,Only polygons ; extra branches
+Fischer \cite{Fischer1997},Sketch Profile,Normal Bisector,Midpoints at normal intersection; B-spline fitting,No branches,Post processing at intersecting midcurves
+Zhu \cite{Zhu2015} \cite{Zhu2016},Surfaces,Normal Bisector,Midpoints at normal intersection; surface fitting,Any surface,Sampling errors

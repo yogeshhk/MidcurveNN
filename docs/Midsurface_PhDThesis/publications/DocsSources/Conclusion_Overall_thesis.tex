@@ -1,0 +1,173 @@
+%Be reflective and honest
+%What were the lessons learned?
+%What were the overall insights?
+%Did you solve the problem completely? How much progress have we made in your field because of your work
+%Don’t bore the reader with a cut-and-paste of your Introduction chapter 
+
+\todo{Review comment: Give some precursor like chapter 1, then why this work was taken, how this work was carried out and then what was achieved. [DONE]}
+
+CAD models of thin-walled parts such as sheet metal or plastics are often reduced dimensionally to their corresponding midsurfaces for quicker and fairly accurate results of CAE analysis. Generation of the midsurface is still a time-consuming and mostly, a manual task due to lack of robust and automated techniques.  Midsurface failures manifest in the form of gaps, overlaps, not-lying-halfway, etc., which can take hours or even days to correct. Thus, the need of a robust method of computing a well-connected midsurface has been felt by the CAE community. The present research work has addressed this need, specifically for the parts in sheet metal domain.
+
+In the present research approach, input sheet metal feature-based CAD model is simplified first by defeaturing and making relevant negative features dormant. \deleted{Here, irrelevant features are removed based on criteria such as feature characteristics in the sheet metal application context and relative size of remnant portions of the features. At this stage, relevant negative features, called ``dormant'' features, are also removed after storing their tool-bodies. These bodies are used later for reapplication on the midsurface. }The defeatured model is further simplified by transforming the remaining sheet metal features into generalized features. Thus, the midsurface algorithm needs to handle only a limited set of generalized features. The generalized feature model is simplified one more level by cellular decomposition. The cells are classified and delegated with the tasks of creating midsurface patches and joining them, to form a well-connected midsurface. The quality of output midsurface is assessed by the newly developed topological validation method. The approach is implemented as a software system, called \mysystemname, using Autodesk Inventor API's. The algorithms for various modules are developed in VB and C\#.Net programming languages. \mysystemname~has been extensively tested for generating midsurface for sheet metal feature based CAD model, both from literature and industrial case studies. The output of \mysystemname~was found to provide well-connected midsurfaces, in a more deterministic manner with minimum failures.
+
+Major conclusions based on the present research work are listed below: 
+\begin{enumerate}
+\item 
+Most of the existing approaches of computing midsurface work on the Brep CAD models, which could be large and complex in case of real-life parts.  Hard-coded heuristic rules are used and algorithms are developed on a case-by-case basis, resulting in substantial failures. The research presented here has resolved these problems by leveraging feature information, made available by the modern CAD systems through APIs. 
+
+%The research reported in the present work has primarily addressed problems getting a well-connected midsurface.
+
+%Although Model Simplification using geometry has been in practice for many years, with possibility of extracting feature information, it can be taken to the next level. Features information, gives ready data needed for Model Simplification. In Dimension Reduction, it can give tips for creating medial geometries. Features such as Pattern leverage the symmetry in the part thereby reducing analysis time-resources. 
+\item
+
+The present research has achieved resolution of two of the most critical issues observed in the widely used existing approach for midsurface generation, called Face Pairing. They are, face-pair detection and midsurface patches joining. 
+
+\mysystemname~addresses these by simplifying the input model in multiple ways and then devising a generic algorithm for computing a well connected midsurface. 
+
+\item
+
+Apart from addressing some critical issues specific to computation of midsurface, the present research has demonstrated a higher level paradigm for developing CAD algorithms. It leverages use of features, simplification, abstraction and decomposition as a general approach to be used in the development of CAD functionalities. This has been demonstrated in the present research at two places, one in the computation of midsurface and the second in the computation of midcurves. In the computation of midsurface, which is a 3D$\rightarrow$2D, i.e. solid to surface transformation, input 3D solid model is simplified by removing irrelevant details. Abstraction by the way of generalization is then used to reduce a large variety of features to a limited set to work upon. Decomposition divides the model into manageable primitive 3D cells, which helps in devising more deterministic generic logic for computation. Same paradigm is used in case of computation of midcurves as well, which is a 2D$\rightarrow$1D, i.e. profile to curve transformation. In simplification, free-from profile shape is faceted into a polygon. Then inner polygons are connected to the outer one to make one general polygonal shape. The polygon is then decomposed into 2D cells, where devising generic logic for computation is easier and deterministic. Thus, the new paradigm has been used effectively at two different dimensionalities and for two different computations. It also has potential to be used in other domains such as CAM and CAE.
+
+\end{enumerate}
+%%
+%%``\mysystemname'' ({\bf Mid}surface {\bf A}lgorithms for {\bf S}heet-metal-parts) theme is used effectively in both, 2D as well as 3D. In 2D, for midcurve computation and in 3D for midsurface computation. 
+%%
+%%\begin{itemize}
+%%\item \textbf{Simplification}: 
+%%	\begin{itemize}
+%%	\item \textbf{Midcurves}: Curved profiles are faceted into line segments. The error introduced due to this approximation can be controlled by faceting parameters.
+%%	\item \textbf{Midsurface} Irrelevant features are removed during Defeaturing module, making computation of midsurface effectively, without losing the gross characteristics of the input shape.
+%%	\end{itemize}
+%%
+%%\item \textbf{Abstraction} 
+%%	\begin{itemize}
+%%	\item \textbf{Midcurves}: Faceted profiles are used as generic polygons. With this polygon decomposition algorithm can be leveraged. This work specifically works on thin-walled ribbon polygons, due to their relevance to the topic of midsurface-computation.
+%%	\item \textbf{Midsurface}: Domain specific features, such as, sheet metal features are generalized/abstracted to $\mathcal{ABLE}$ forms, making it easier to write a generic algorithm.
+%%	\end{itemize}
+%%\item \textbf{Decomposition}: 
+%%	\begin{itemize}
+%%	\item \textbf{Midcurves}: Thin-walled polygons are decomposed into primitive sub-polygons. Sub-polygons for midcurve segments and sub-polygons for connecting them are identified and respective tasks are delegated. This makes the overall midcurve computation algorithm generic and adaptable.
+%%	\item \textbf{Midsurface}: Thin-walled solids are decomposed into primitive sub-solids/cells. Cells for midsurface patches and those for connecting them are identified and respective tasks are delegated. This makes the overall midsurface computation algorithm generic and adaptable.
+%%	\end{itemize}
+%%\end{itemize}
+%%
+%% Table \ref{tbl:litsurvey:fbdcelldecompmids}  shows how existing methods  appear limited in terms of geometries and the types of connections  handled.
+%%%\todo[backgroundcolor=yellow]{\textbf{Reviewer}: The authors refer to the heuristics of prior work but the authors don't state precisely the limitations of these heuristics.\\ \textbf{Author}: Explained  pairing was done by CHONG, how BOUSSUGE does only parallel faces, only orthogonal connections etc.  Showed how our approach is more generic}
+%% 
+%%\begin{table}[!htb]
+%%\scriptsize
+%%  \centering 
+%%\resizebox{\linewidth}{!}{ 
+%%\begin{tabular}[htp]{@{} p{0.12\linewidth} p{0.22\linewidth}  p{0.22\linewidth} p{0.22\linewidth}  p{0.22\linewidth}@{}}
+%%\toprule
+%%\textbf{Researchers}  &	\textbf{Method} &	 \textbf{Shortcomings}  &  \textbf{Comparison with \mysystemname} \\ \midrule
+%%\textbf{Chong et al.} \cite{Chong2004}  & 
+%%Concave edge decomposition. Midcurves by collapsing edge pairs. If they form a loop, it creates a midsurface patch. & 
+%%Hard-coded inequalities/values to detect edge-pairs. Connection logic is not generic and comprehensive. &
+%%A generic treatment for the computation of midcurves, midsurface patches and their connections
+%%\\ \midrule
+%%
+%%\textbf{Cao et al.} \cite{Cao2009,Cao2011} &
+%%Concave edge decomposition. Midsurface patches using face pairs. &  No elaboration on joining method is provided. & Avoided error-prone face-pairing method. Comprehensive patch joining methodology\\ \midrule
+%%
+%%\textbf{Woo} \cite{Woo2013}  &
+%%Maximal volume decomposition \cite{Woo2002, Woo2003}.  Midsurface patches using face pairs.  Joins them using union boolean.&
+%% Criteria for removing unwanted patches does not cater to all situations. Extensions cases not elaborated. Only analytical surfaces and parallel face pairs. &  Avoided error-prone face-pairing method. Comprehensive patch joining methodology \\ \midrule
+%%
+%%
+%% \textbf{Boussuge et al.} \cite{Boussuge2014}  & 
+%% Generative decomposition. Recognizes Extrudes of each sub-volume. Creates midsurface patches in each sub-volume and connects them together. &
+%%No fillets/chamfers. Only Additive features. Only Extrudes with Analytical surfaces. Expensive MAT to detect thin profiles. Works only on Parallel and Orthogonal connections. &
+%%Fillets, chamfers are defeatured; Negative features are re-applied;  Generic Sweep extend-able to Loft; Generic logic for any numbers/types of connections.
+%%\\ \midrule
+%%
+%% \textbf{Zhu et al.} \cite{Zhu2015} &
+%% Virtual Decomposition. Midsurface patches using face pairs. &
+%%  Only 3 connection types. Sampling for mid-points may lose some geometries. & Generic logic for any numbers/types of connections. Avoided inefficient sampling based midsurface patch computation.\\ \bottomrule
+%%\end{tabular}
+%%}
+%% \caption{Comparison with some relevant Cellular Decomposition-based Midsurface Methods}
+%%  \label{tbl:litsurvey:fbdcelldecompmids}
+%%\end{table}
+
+Following section elaborates the contributions made by the present research.% in order to address the issues.
+
+
+\section{Research Contributions}
+
+Contributions in the present research work are:% is enumerated below:
+\begin{enumerate}
+\item {\bf Automatic defeaturing of sheet metal feature-based CAD model}:  The defeaturing approach in the present research has made contributions to all three phases. In the first phase, newly developed sheet metal features taxonomy was introduced to decide removal of irrelevant features. In the second phase, newly devised approach for removing features based on size of the remnant portions was introduced. These two criteria combined together enabled removal of all the irrelevant features within the context, without compromising on the gross shape. In the third phase, a new approach of temporarily removing features was introduced. Bulk negative features, called dormant features, were removed after storing their tool-bodies, to be used later for reapplication on the midsurface. The resultant model represented the gross shape, preserving the design intent of the input CAD model.
+\item {\bf Automatic transformation of sheet metal features to generalized features}: In order to make midsurface computation more generic, an automatic approach of  transforming sheet metal features to generalized features was developed. A new generalized CAD model representation, called $\mathcal{ABLE}$ was introduced to generalize the input set of features to a limited set of generic features. The resultant model has same shape and size but is built only with generalized features of $\mathcal{ABLE}$ paradigm.
+\item {\bf Enhancement of existing Cellular Decomposition approach}: Existing approach of convex partitioning was leveraged for feature based cellular decomposition. The decomposed cell would now have an owner feature as well. A graph based cellular model was used for generalizing midsurface computation. Thus, whatever the size or complexity of the input CAD model may be, this step reduced it to a set of primitive shaped cells, which are easier to compute midsurface.
+\item {\bf Automatic computation of Midsurface}: An automatic, generic way of computing midsurface has been developed based on cells generated by decomposition. The cells were classified and delegated task of either computing midsurface patches or joining them. The patch generating cells, based on their owner feature's profile and guide, computed midsurface patches. Midsurface patch joining cells, based on a generic logic, joined the incident patches by creating appropriate surfaces between them.
+\item {\bf Automatic computation of Midcurve}: An automatic, generic way of computing midcurve has been developed. Input 2D profile was simplified by polygonization and then decomposed into sub-polygons. A generic logic was developed to compute midcurve segments and their joining, to form a well-connected midcurve.
+\item {\bf Topological Validation}: Introduced topological validation method for assessing quality of the output midsurface, to be used along with the existing geometric validation methods. Transformation equations were developed to predict topological entities of output midsurface, given the topological entities of the input model, and vice versa. The predicted entities were compared against the actual entities to detect any failures in the output midsurface.
+\end{enumerate}
+
+
+
+%
+% Following is a  comparative analysis of some relevant approaches vis-a-vis our approach:
+%
+%\begin{table}[!htb]
+%  \centering 
+%\resizebox{0.95\linewidth}{!}{ 
+%\begin{tabular}[htp]{@{} p{0.15\linewidth} p{0.25\linewidth}  p{0.25\linewidth} p{0.25\linewidth} @{}}
+%\toprule
+%\textbf{Researcher}  &	\textbf{Method} &	 \textbf{Shortcomings}  &	 \textbf{Our Approach}\\ \midrule
+%\textbf{Chong et al.} \cite{Chong2004}  & 
+%Uses concave edge decomposition. Midcurves by collapsing edge pairs. If they form a loop, creates a midsurface patch & 
+%Hard-coded inequalities/values to detect edge-pairs. Connection logic is not generic and comprehensive &
+%A generic treatment for the computation of midcurves, midsurface patches and their connections
+%\\ \midrule
+% \textbf{Boussuge et al.} \cite{Boussuge2014}  & 
+% Generative decomposition. Recognizes Extrudes of each sub-volume. Creates midsurface patches in each and connects them together. &
+% 
+% \begin{itemize}[noitemsep,nosep,leftmargin=*]
+%\item No fillets/chamfers.
+%\item Only Additive cells.
+%\item Only Extrudes with Analytical surfaces
+%\item Expensive MAT to detect thin profiles
+%\item Works only on Parallel and Orthogonal connections.
+%\end{itemize}
+%&
+%\begin{itemize}[noitemsep,nosep,leftmargin=*]
+%\item No such restriction
+%\item Re-inserts -ve cells
+%\item Generic Sweep extend-able to Loft
+%\item Simple rules of size of profile/guide
+%\item Generic logic for any numbers/types of connections.
+%\end{itemize}
+%
+%\\ \midrule
+%
+%\end{tabular}
+%}
+%% \caption{Comparison with Other Simplification Methods}
+%%  \label{tab:defeat_test}
+%\end{table}
+
+%Contributions:
+%1.	Proposed and demonstrated use of Sheet Metal features taxonomy and remnant feature volumes for suppressibility criteria to get a gross shape
+%2.	Proposed and demonstrated abstraction of Sheet metal features as Lofts
+%3.	Proposed and demonstrated use of Feature based Cellular Graph representation for generic algorithms
+%4.	Proposed and demonstrated generic Feature based Midsurface patch generation, avoiding error-prone Face Pairing.
+%5.	Proposed and demonstrated generic Cellular Graph topology based patch connection method.
+%
+
+%Although individual functionalities such as defeaturing, abstraction, decomposition processes may show certain shortcomings, but overall, the proposed approach seems to work well and is able to compute a well-connected midsurface in robust, definitive and generic manner, with minimal failures.
+
+\section{Scope for Further Work}
+
+The present research work, \mysystemname, has addressed the critical issues of the existing approaches of computation of midsurface by effective use of a new paradigm. However, in order to broaden the scope, following enhancements can be incorporated:
+
+\begin{enumerate}
+\item More sheet metal features can be incorporated in the generalization module, which will increase \mysystemname's applicability to a wider range of parts.
+\item Development of \mysystemname~using APIs of other CAD-CAE applications will further increase its applicability.
+\item Extending the scope of \mysystemname~to include domains such as injection molding, where better midsurface is highly desirable.
+\end{enumerate}
+
+%The above functional modules can be built on the existing architecture of \mysystemname\quad in a modular fashion.
+
+\mysystemname~has presented an integrated approach to generation of well-connected midsurfaces of sheet metal CAD models using newly developed paradigm. It has thus enabled an important step towards the automation and integration of CAD-CAE activities for Product Development Process.

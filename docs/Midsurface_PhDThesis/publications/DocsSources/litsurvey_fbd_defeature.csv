@@ -1,0 +1,6 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Dabke \cite{Dabke1994},FCAD,Feature size,Loads + Constraints,Initial use of features,Basic feature recognition
+Smit \cite{Smit2009} \cite{Smit2011},FCAD,Full feature size,Less than threshold,Optimized remeshing,Wrong size criterion; Parent-child dependencies  
+Danglade \cite{Danglade2013},FCAD,Machine Learning,Capturing engineering judgement,Expert knowledge in rules,Large trials
+Kang et al. \cite{Kang2013},FCAD,Importance Rank,Feature rank and application rules,Application customization,Wrong volume criterion
+Sandia \cite{AmesRiveraWebbHensinger1997},FCAD,Size,Automatic feature routing,Simplified references ,Manual

@@ -1,0 +1,188 @@
+%%
+%%  showframe.sty  for LaTeX2e/209
+%%  Created by UMEKI, Hideo (1996/04/11)
+%%
+%%  Partly borrowed from
+%%      pageframe.sty  by Cameron Smith
+%%      18 Sept 1990, 16 Oct 1990, 21 Nov 1990, 14 Nov 1991
+%%      CAMERON@MIDD.BITNET  or  cameron@midd.cs.middlebury.edu
+%%
+%%  \usepackage{showframe} for 2e, 
+%%  or \documentstyle[showframe]{article} for 209,
+%%  draws page frame in each page.
+%%
+%%  Command \printparam is useful to print LaTeX parameters
+%%  for page layout. This should be used after \begin{document}
+%%  where you want to print them. 
+%%
+\@ifundefined{@@@innerframe}{}{\endinput}
+
+\def\@@@innerframe{\vbox to 0pt{%
+\vskip\topmargin\vbox to 0pt{\vss\hrule width\textwidth}%
+\vskip\headheight\vbox to 0pt{\vss\hrule width\textwidth}%
+\vskip\headsep\vbox to 0pt{\vss\hrule width\textwidth}%
+\hbox to \textwidth{\llap{\vrule height\textheight}\hfil% 
+\vrule height\textheight}%
+\vbox to 0pt{\vss\hrule width\textwidth}%
+\vskip \footskip\vbox to 0pt{\vss\hrule width\textwidth}%
+\@ifundefined{footheight}{}{\vskip -\footheight}
+\vbox to 0pt{\vss\hrule width\textwidth}%
+\vss
+}}
+
+\newif\if@latextwoe
+\@ifundefined{if@compatibility}{\@latextwoefalse}{\@latextwoetrue}
+
+\if@latextwoe
+%%%
+%%%    from latex.ltx (Release 1995/12/01)
+%%%
+\def\@outputpage{%
+\begingroup           % the \endgroup is put in by \aftergroup
+  \let \protect \noexpand
+  \@resetactivechars
+  \let\-\@dischyph
+  \let\'\@acci\let\`\@accii\let\=\@acciii
+  \let\\\@normalcr
+  \let\par\@@par          %% 15 Sep 87
+  \shipout \vbox{%
+    \set@typeset@protect
+    \aftergroup \endgroup
+    \aftergroup \set@typeset@protect
+                                % correct? or just restore by ending
+                                % the group?
+  \if@specialpage
+    \global\@specialpagefalse\@nameuse{ps@\@specialstyle}%
+  \fi
+  \if@twoside
+    \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+         \let\@themargin\oddsidemargin
+    \else \let\@thehead\@evenhead
+       \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+    \fi
+  \fi
+  \reset@font
+  \normalsize
+  \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+    \@begindvi
+    \moveright\@themargin %<<<<<<<<<<<<<<<<<<<<< added
+    \vtop{\@@@innerframe  %<<<<<<<<<<<<<<<<<<<<< added
+    \vskip \topmargin
+%%  \moveright\@themargin \vbox { %<<<<<<<<<<<< original
+      \vbox {             %<<<<<<<<<<<<<<<<<<<<< modified
+      \setbox\@tempboxa \vbox to\headheight{%
+        \vfil
+        \color@hbox
+          \normalcolor
+          \hb@xt@\textwidth {%
+            \let \label \@gobble
+            \let \index \@gobble
+            \let \glossary \@gobble %% 21 Jun 91
+            \@thehead
+            }%
+        \color@endbox
+        }%                        %% 22 Feb 87
+      \dp\@tempboxa \z@
+      \box\@tempboxa
+      \vskip \headsep
+      \box\@outputbox
+      \baselineskip \footskip
+      \color@hbox
+        \normalcolor
+        \hb@xt@\textwidth{%
+          \let \label \@gobble
+          \let \index \@gobble      %% 22 Feb 87
+          \let \glossary \@gobble   %% 21 Jun 91
+          \@thefoot
+          }%
+      \color@endbox
+      }}%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< One more close bracket added 
+    }%
+\global \@colht \textheight
+\stepcounter{page}%
+\let\firstmark\botmark
+}
+\else
+\@ifundefined{reset@font}{\let\reset@font\empty}{}
+%%%
+%%%    from LATEX VERSION 2.09 <25 March 1992>
+%%%
+\def\@outputpage{\begingroup\catcode`\ =10
+     \let\-\@dischyph \let\'\@acci \let\`\@accii \let\=\@acciii
+    \if@specialpage
+     \global\@specialpagefalse\@nameuse{ps@\@specialstyle}\fi
+     \if@twoside
+       \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+            \let\@themargin\oddsidemargin
+          \else \let\@thehead\@evenhead
+          \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+     \fi\fi
+     \shipout
+     \vbox{\reset@font %% RmS 91/08/15
+           \normalsize \baselineskip\z@ \lineskip\z@
+           \let\par\@@par %% 15 Sep 87
+           \moveright\@themargin                    %<<<<<<<<< added
+           \vtop{\@@@innerframe                     %<<<<<<<<< added
+           \vskip \topmargin                        %<<<<<<<<< added
+%%         \vskip \topmargin \moveright\@themargin  %<<<<<<<<< original
+           \vbox{\setbox\@tempboxa
+                   \vbox to\headheight{\vfil \hbox to\textwidth
+                                       {\let\label\@gobble \let\index\@gobble
+                                        \let\glossary\@gobble %% 21 Jun 91
+                                         \@thehead}}% %% 22 Feb 87
+                 \dp\@tempboxa\z@
+                 \box\@tempboxa
+                 \vskip \headsep
+                 \box\@outputbox
+                 \baselineskip\footskip
+                 \hbox to\textwidth{\let\label\@gobble
+                           \let\index\@gobble  %% 22 Feb 87
+                           \let\glossary\@gobble %% 21 Jun 91
+%%                         \@thefoot}}}\global\@colht\textheight  %<<<<< original 
+                           \@thefoot}}}     %<<<<<<<<<<<<<<<<<<<<<<<< added
+                 }                          %<<<<<<<<<<<<<<<<<<<<<<<< added
+                 \global\@colht\textheight  %<<<<<<<<<<<<<<<<<<<<<<<< added
+
+           \endgroup\stepcounter{page}\let\firstmark\botmark}
+\fi
+%%
+%%  \printparam
+%%
+\def\printparam{%\clearpage
+\noindent
+\null\vfill
+\begin{center}\footnotesize
+\begin{tabular}[t]{l}
+\@ifundefined{paperwidth}{}{paperwidth=\the\paperwidth\\}
+\@ifundefined{paperheight}{}{paperheight=\the\paperheight\\}
+textwidth=\the\textwidth\\
+textheight=\the\textheight\\
+hoffset=\the\hoffset\\
+voffset=\the\voffset\\
+topmargin=\the\topmargin\\
+topskip=\the\topskip\\
+headheight=\the\headheight\\
+headsep=\the\headsep\\
+footskip=\the\footskip\\
+\@ifundefined{footheight}{}{\footheight=\the\footheight\\}
+oddsidemargin=\the\oddsidemargin\\
+evensidemargin=\the\evensidemargin\\
+marginparwidth=\the\marginparwidth\\
+marginparsep=\the\marginparsep\\
+marginparpush=\the\marginparpush
+\end{tabular}
+\begin{tabular}[t]{l}
+\@tempdima=1pc\relax 1pc = \the\@tempdima\\
+\@tempdima=1in\relax 1in = \the\@tempdima\\
+\@tempdima=1cm\relax 1cm = \the\@tempdima\\[1em]
+In {\tt\char`\\{}normalsize}\\
+{\normalsize\@tempdima=1em\relax \footnotesize 1em = \the\@tempdima%
+{\normalsize ~(M)}}\\
+{\normalsize\@tempdima=1ex\relax \footnotesize 1ex = \the\@tempdima%
+{\normalsize ~(x)}}
+\end{tabular}
+\end{center}
+\vfill\null
+\clearpage}
+%%
+\endinput

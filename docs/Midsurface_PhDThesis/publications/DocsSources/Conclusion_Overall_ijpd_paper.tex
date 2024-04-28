@@ -1,0 +1,8 @@
+
+\section{Conclusion}
+
+Most of the Model Simplification algorithms so far have been based on the final shape of the CAD model. With more and more CAD modelers exposing their feature information it has become possible to leverage that for de-featuring and for idealization, where it can give hints for creating abstracted shapes. Symmetry features such as Pattern can be used to focus only on master region in the part thereby reducing the analysis time-resources. 
+	
+This paper has listed some existing approaches for Model Simplification using features, proposed two relatively novel approaches, one for de-featuring and the other for building Midsurface. In de-featuring, while traversing feature tree one by one, each feature (along with their child features in certain cases) is qualified for suppression and at the end, all the qualified features are removed from the part. In idealization Midsurface is simultaneously built as part gets created. For construction features, tool body shapes are relatively simple than final shape, thus creation of mid-surfaces at each stage is far simpler. With appropriate logic for boolean of the non-manifold shapes, this method can build connected-isomorphic Midsurface. 
+
+This work will be taken forward encompassing more features thereby addressing wider range of shapes for de-featuring and idealization.

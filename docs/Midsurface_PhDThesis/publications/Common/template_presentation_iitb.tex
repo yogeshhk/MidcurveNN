@@ -1,0 +1,131 @@
+%\documentclass[dvips]{beamer}
+\documentclass[handout]{beamer}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps}
+\mode<handout>
+{
+	\usepackage{pgfpages}	
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+}
+
+
+
+\usepackage{pstricks}
+%\usepackage{beamerthemeiitb}
+%\usetheme{Frankfurt}
+\usetheme{iitb}
+\usepackage{multirow}
+\usepackage{etex}
+
+\usepackage{pst-node}
+\usepackage{pst-grad}
+\usepackage{pst-text}
+\usepackage{pst-rel-points}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage{mydefs}
+\usepackage{rotating}
+\usepackage{hyperref}
+\usepackage[normalem]{ulem}
+
+
+\setbeamercolor{normal text}{fg=black,bg=white}
+%
+%
+\setbeamersize{text margin left=15pt}
+\setbeamersize{text margin right=15pt}
+\setbeamersize{sidebar width right=0pt}
+\setbeamersize{sidebar width left=0pt}
+%\setbeamercolor{structure}{fg=black,bg=gray!40!white}
+\setbeamercolor{frametitle}{fg=red}
+\setbeamercolor{footline}{fg=brown}
+\setbeamercolor{headline}{fg=brown}
+\setbeamerfont{title}{shape=\itshape}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{title}{bg=white,fg=blue}
+\setbeamercolor{author}{fg=brown}
+\setbeamerfont{date}{size=\footnotesize}
+\setbeamerfont{shortdate}{size=\footnotesize}
+\setbeamerfont{part page}{size=\huge,shape=\itshape}
+
+\setbeamertemplate{title page}
+{
+\hfill
+\begin{beamercolorbox}[wd=4in,center]{beamer color}
+{
+\Large\itshape\red
+\inserttitle
+}
+
+\vskip25pt
+\black
+\insertauthor
+\vskip2pt
+{\footnotesize\black
+(www.cse.iitb.ac.in/$\tilde{\ }$uday)
+}
+\vskip20pt
+{\footnotesize\black
+\insertinstitute
+}
+\vskip30pt
+\inserttitlegraphic
+
+\vskip10pt
+{\tiny\black
+\insertdate
+}
+\end{beamercolorbox}
+\hfill
+\addtocounter{framenumber}{-1}
+}
+
+\listfiles
+
+%%%%%%%%%%%%% Yellow
+\newrgbcolor{yel}{0.95 1 .8}
+\newcmykcolor{lightyellow}{0 0 .3 0}
+\newcmykcolor{llyellow}{0 0 .2 .1}
+%%%%%%%%%%%%% Green
+\newrgbcolor{darkgreen}{0 .5 0}
+%%%%%%%%%%%%% Gray
+\newgray{lightgray}{.85}
+\newgray{dgray}{.35}
+\newgray{ldgray}{.75}
+%%%%%%%%%%%%% Pink
+\newcmykcolor{lpink}{0 .2 0 0}
+\newrgbcolor{pink}{1 .5 .6}
+%%%%%%%%%%%%% Magenta
+\newcmykcolor{lmagenta}{0 .4 0 0}
+%%%%%%%%%%%%% Blue
+\newrgbcolor{oldlightblue}{.1 .85 1}
+\newrgbcolor{lightblue}{.75 0.85 1}
+\newrgbcolor{newlightblue}{.75 0.75 1}
+\newrgbcolor{myblueother}{.5 .5 1}
+\newrgbcolor{myblue}{.15 .15 .8}
+\newrgbcolor{darkblue}{0 0 .5}
+\newcmykcolor{llblue}{.2 .15 0 .1}
+\newcmykcolor{lblue}{.3 .2 0 .1}
+%%%%%%%%%%%%% Brown
+\newrgbcolor{brown}{.65 0.15 .0}
+%%%%%%%%%%%%% Cream
+\newrgbcolor{cream}{.95 0.95 .65}
+%%%%%%%%%%%%% Violet
+\newrgbcolor{violet}{.84 0 .96}
+\newrgbcolor{mygreen}{.24 .84 .72}
+\newcommand{\irulethree}{\rule{0cm}{.3cm}}
+\newcommand{\irulefour}{\rule{0cm}{.4cm}}
+\newcommand{\irulefive}{\rule{0cm}{.5cm}}
+\newcommand{\irulesix}{\rule{0cm}{.6cm}}
+
+
+\newcommand{\notesPage}{
+\psset{unit=1mm}
+\begin{pspicture}(0,0)(120,80)
+\rput{90}(0,40){\scalebox{1}{\Huge\bfseries\gray Notes}}
+\end{pspicture}
+}
+
+\psset{unit=1mm}

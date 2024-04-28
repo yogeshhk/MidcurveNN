@@ -1,0 +1,94 @@
+\RequirePackage{tikz, xcolor, textpos}
+\usetikzlibrary{shapes.geometric}
+\definecolor{KlopeCedar}{rgb}{.475,.376,.271}
+\definecolor{KlopeMoss}{rgb}{.682,.749,.376}
+\definecolor{KlopeSand}{rgb}{1,.949,.749}
+\definecolor{KlopeDriftwood}{rgb}{.749,.675,.376}
+
+\setbeamerfont{title}{size=\LARGE, series=\bfseries}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamerfont{block title}{series=\bfseries}
+
+\setbeamercolor{normal text}{fg=KlopeCedar}
+\setbeamercolor{item}{fg=KlopeCedar}
+\setbeamercolor{section in toc}{fg=KlopeCedar}
+\setbeamercolor{section page}{fg=KlopeCedar}
+\setbeamercolor{subtitle}{fg=KlopeCedar}
+\setbeamercolor{author}{fg=KlopeCedar}
+\setbeamercolor{institute}{fg=KlopeCedar}
+\setbeamercolor{date}{fg=KlopeCedar}
+\setbeamercolor{title}{fg=KlopeCedar}
+\setbeamercolor{frametitle}{fg=KlopeSand}
+\setbeamercolor{part title}{fg=KlopeCedar}
+\setbeamercolor{section title}{fg=KlopeCedar}
+\setbeamercolor{section name}{fg=KlopeCedar}
+\setbeamercolor{section in head/foot}{fg=KlopeSand}
+\setbeamercolor{block title}{fg=KlopeCedar}
+
+\setbeamertemplate{items}[square]
+\setbeamertemplate{itemize subitem}{\tikz{\coordinate[fill, shape=diamond, color=KlopeCedar, minimum size=0.2cm, inner sep=0pt];}}
+\setbeamertemplate{sections/subsections in toc}[square]
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{background canvas}[vertical shading][bottom=KlopeMoss,top=KlopeSand]
+\setbeamertemplate{headline}{
+	\ifnum\thepage>1\relax%
+		\begin{textblock*}{10cm}(1.3cm,1.2cm)
+			\insertsectionnavigationhorizontal{10cm}{\hskip0pt plus1fill}{\hskip0pt plus1fill}
+		\end{textblock*}
+	\fi
+}
+\setbeamertemplate{section in head/foot shaded}{\color{KlopeCedar}\insertsectionhead}
+\newcommand{\drawupperrectangles}{
+	\fill[color=KlopeCedar] (0.3,9.3) rectangle (1.1,8.5);
+	\fill[color=KlopeDriftwood] (0.55,9.05) rectangle (1.25,8.35);
+	\fill[color=KlopeCedar] (11.7,9.3) rectangle (12.5,8.5);
+	\fill[color=KlopeDriftwood] (11.55,9.05) rectangle (12.25,8.35);
+}
+\newcommand{\drawlowerrectangles}{
+		\fill[color=KlopeCedar] (0.3,0.3) rectangle (1.1, 1.1);
+		\fill[color=KlopeDriftwood] (0.55,0.55) rectangle (1.25,1.25);
+		\fill[color=KlopeCedar] (11.7,0.3) rectangle (12.5, 1.1);
+		\fill[color=KlopeDriftwood] (11.55,0.55) rectangle (12.25,1.25);	
+}
+\setbeamertemplate{background}{
+	  \begin{tikzpicture}
+		  \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+	\ifnum\thepage>1\relax%
+		\fill[color=KlopeSand] (0,0) rectangle (\the\paperwidth,\the\paperheight);
+		\fill[color=KlopeMoss] (0,10) rectangle(\the\paperwidth,8);
+	\else % Title page
+		\drawlowerrectangles
+	\fi
+	\drawupperrectangles
+	\end{tikzpicture}
+}
+\setbeamertemplate{frametitle}
+{%
+	\begin{beamercolorbox}[wd=12cm, center]{frametitle}
+	\insertframetitle
+	\end{beamercolorbox}
+}
+\newenvironment{xplainframe}{%
+	\bgroup%
+	\setbeamercolor{frametitle}{fg=KlopeCedar}
+	\setbeamertemplate{background}{%
+		\begin{tikzpicture}%
+		\useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);%
+		\fill[color=KlopeSand] rectangle (\the\paperwidth,\the\paperheight);%
+		\end{tikzpicture}%
+	}%
+	\begin{frame}[plain]%
+}{	\end{frame}%
+	\egroup%
+}
+\newcommand{\sectionframe}{{
+	\setbeamertemplate{background}{
+		  \begin{tikzpicture}
+		  \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+		  \drawupperrectangles
+		  \drawlowerrectangles
+		  \end{tikzpicture}
+	}
+	\setbeamertemplate{headline}{}
+	\frame{\sectionpage}
+}}

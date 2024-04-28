@@ -1,0 +1,233 @@
+	\chapter{Class Definitions} \label{appclas}
+
+	\begin{itemize}
+	\item
+
+	{\em Class Component} \label{appcomp}
+    \begin{verbatim}
+    class Component {
+        int     component_id ;          // component number
+        char    component_name[20] ;    // Component name (string)
+        int 	block_id_counter ;  	// for id assignment of blocks
+        int 	num_polygonsets; 		// Num of polysets attched to firstset
+        Component   *nextc;   			// next component
+        Block 		*comp_block ;   	// to the first block of block list
+        PolygonSet  *firstset;			// head of the list of polygon sets
+        Graph   	*comp_graph ;   	// graph which represents this comp
+        DimensionGraph  *ref_dim_graph; // Reference Dimension Graph
+        DimensionGraph  *spec_dim_graph;// Specified Dimension Graph
+    public :
+        /*
+        **          Link List functionality
+        */
+        void        Link_Blocks( Block *cb);
+        void        Link_PolygonSets(PolygonSet* pp);
+        /*
+        **          Display functionality
+        */
+        virtual double      Get_max_dimension();
+        virtual void        Display_by_phigs(int type);
+        virtual int         Check_coplanarity(Polygon* ,Polygon*);
+        virtual void        PolygonSet_Display();
+        /*
+        **          Dimensioning functionality
+        */
+        virtual void Create_default_dim_graphs();
+        /*
+        **          Editing functions
+        */
+        virtual void Copy_for_Edit( Component* co);
+        /*
+        **          File operations
+        */
+        virtual void Write_to_file( FILE *fp);
+        virtual void Write_to_Venkys_file( FILE *fp);
+};
+	\end{verbatim}
+
+	\item
+	{\em Class Block} \label{appblk}
+
+            \begin{verbatim}
+class Block {
+    protected :
+        /*
+        **      Block Identification
+        */
+        int     block_id ;      // block number
+        int     block_type;     // Block type
+        char    block_name[20]; // block name
+        /*
+        **      Link List members
+        */
+        Block   *nextb ; // next block in link list of blocks
+        Block   *prevb ; // previous block in link list of blocks
+        /*
+        **      Graph(Node) Representation
+        */
+        Node    *block_node ;// Node which represents this block
+        /*
+        **      Geometric Representation
+        */
+        Plane   *Xmin , *Xmid , *Xmax ; // Planes along X axis
+        Plane   *Ymin , *Ymid , *Ymax ; // Planes along Y axis
+        Plane   *Zmin , *Zmid , *Zmax ; // Planes along Z axis
+        Length  *Xlen , *Ylen , *Zlen ; // Lengths along 3 axes
+        /*
+        **      Connection to Component of which it is a part
+        */
+        Component   *block_comp ;   // parent component
+    public :
+        //...
+        virtual void        Initialize_flags(int boo);
+        virtual double      Get_max_dimension();
+        virtual void        Update(int axis);
+
+        virtual Face*       Create_Faces();
+        virtual Polygon*    Create_Polygons(){return NULL;}
+        virtual void        Display_by_phigs();
+        /*
+        **      Dimensioning Functionality
+        */
+        virtual Face*       Contribute_dim_Faces();
+};
+		\end{verbatim}
+
+
+	\item
+	{\em Subtractive Block} \label{appsblk}
+
+            \begin{verbatim}
+class SubBlock : public Block
+{
+    public:
+        // ...
+        virtual Face*  Create_Faces();
+        virtual void   Display_by_phigs();
+        /*
+        **      Dimensioning Functionality
+        */
+        virtual Face*   Contribute_dim_Faces();
+};
+            \end{verbatim}
+
+	\item
+	\label{appcyl}
+	{\em Cylinder}
+
+            \begin{verbatim}
+class Cylinder: public Block
+{
+    protected :
+
+        int  axis ;     // height axis
+        double  major_radius ;  // Major radius
+        double  minor_radius ;  // Minjor radius
+        double  height ;    // height along axis
+    public:
+        // ...
+        /*
+        **      Display functionality
+        */
+        virtual Polygon* Create_Polygons();
+        virtual void   Display_by_phigs();
+        /*
+        **      Dimensioning Functionality
+        */
+        virtual Face*  Contribute_dim_Faces();
+};
+            \end{verbatim}
+
+	\item
+	\label{appscyl}
+	{\em Subtractive Cylinder}
+            \begin{verbatim}
+class SubCylinder: public Cylinder
+{
+    public:
+        // ...
+        /*
+        **      Display functionality
+        */
+        virtual void        Display_by_phigs();
+};
+            \end{verbatim}
+
+	\item
+	\label{appprm}
+	{\em Prismatic}
+
+            \begin{verbatim}
+class Prismatic:public Block
+{
+    protected :
+        int prism_axis;
+    public:
+        // ..
+        /*
+        **      Display functionality
+        */
+        virtual Polygon*    Create_Polygons();
+        virtual void Display_by_phigs();
+        /*
+        **      Dimensioning Functionality
+        */
+        virtual Face* Contribute_dim_Faces();
+};
+            \end{verbatim}
+
+	\item
+	\label{appwed}
+	{\em Wedge}
+
+            \begin{verbatim}
+class Wedge:public Prismatic
+{
+    protected :
+        int butting_plane1;// Plane matching with Block
+        int butting_plane2;// Plane matching with Block
+    public:
+        /*
+        **      Display functionality
+        */
+        virtual Polygon* Create_Polygons();
+        virtual void Display_by_phigs();
+};
+            \end{verbatim}
+
+	\item
+	\label{appswed}
+	{\em Subtractive Wedge}
+
+            \begin{verbatim}
+class SubWedge:public Wedge
+{
+    public:
+        /*
+        **      Display functionality
+        */
+        virtual Polygon* Create_Polygons();
+        virtual void Display_by_phigs();
+};
+            \end{verbatim}
+
+	\item
+	\label{appbspline}
+	{\em B-spline}
+            \begin{verbatim}
+class Bspline:public Prismatic
+{
+    protected :
+        int     u_order;    //  Order in U direction = 3
+        int     u_num_pts;  //  Number of points in U direction
+        float   u_knot_vector[23];  //  Ends with multiplicity 3
+        Vertex  u_control_pts[20];  //  Control points
+    public:
+        // ...
+        /*
+        **      Display functionality
+        */
+        virtual void Display_by_phigs();
+};
+            \end{verbatim}
+\end{itemize}

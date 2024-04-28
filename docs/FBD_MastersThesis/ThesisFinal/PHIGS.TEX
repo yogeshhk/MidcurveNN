@@ -1,0 +1,88 @@
+    \chapter{Graphics} \label{appgra}
+
+    There are two aspects of Display functionality in current implementation.
+
+    \begin{enumerate}
+
+        \item
+        Application that provides raw data
+        \item
+        Graphics routines that display this raw data.
+
+    \end{enumerate}
+
+    We will take a look at where these above mentioned aspects stand in
+    case of each mode of display.
+
+
+    Programmers Hierarchical Interactive Graphics System(PHIGS) have been used
+    to perform the second part. Here is brief introduction to what PHIGS is.
+    In recent years,PHIGS has been championed by producers and consumers alike
+    as the
+    state of the art solution to the perennial problem of the CAD applications
+    developer : to find a standard device independent platform supporting
+    interactive 3D computer graphics and application modeling.~\cite{Howard}
+
+    PHIGS works on a database called Centralized structure store ( CSS). The
+    application uses graphics workstation ( which is abstracted Display driver)
+    to display and communicate with the model.This is similar to Document View
+    architecture where database and display are separated.  After defining the
+    model in terms of structures ,you can ask PHIGS to display all/ some part
+    of the network of structures in specified view coordinate system.Sun PHIGS
+    which is an extension of PHIGS called PHIGS PLUS( PHIGS Plus Lumie`re Und
+    Shading).
+
+
+    Despite PHIGS having been in widespread use for several years, a recent
+    survey shows that, while there are many sources that address the
+    functionality and technical implementation issues, remarkably little
+    information is yet available reporting experience of using PHIGS for solving
+    real problems.~\cite{Howard}
+
+
+    \section{Advantages of PHIGS }
+
+    \begin{enumerate}
+
+    \item
+    Its a higher level graphics library. It provides basic objects and
+    associated functionality with help of which you build your model.
+    Internal display procedure is abstracted from the user so that
+    almost no lower level routines are to be written by the user.
+
+    \item
+    The Database ( CSS) and viewing is separated giving capability of
+    selecting different parts of database to view at same or different
+    specifications.
+
+    \item
+    PHIGS abstracts display drivers, plotters, printers under one category
+    of Workstation making it advantageous in portability in terms of
+    output. It allows you to write applications that are almost independent
+    of hardware, operating system or graphics drivers.
+
+    \item
+    Its networked. You can produce pictures simultaneously on a whole
+    network of machines, with different picture on each.
+
+    \item
+    Easy to connect to almost all Windows Graphical User Interface libraries
+
+    \end{enumerate}
+
+    \section{Limitations of PHIGS}
+
+    \begin{enumerate}
+
+    \item
+    Its poor at animation.
+    \item
+    Lacks ray tracing or radiocity, texture mapping.
+    \item
+    Its not very flexible in terms of extending the capabilities.
+    \item
+    Need to use advanced constructs to control the traversal of network
+        there by controlling the final display.
+
+    \end{enumerate}
+

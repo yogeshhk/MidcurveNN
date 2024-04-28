@@ -1,0 +1,78 @@
+\documentclass[twoside, openright]{TuDelft_template}
+%\input{Packages_2017_thesis}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[export]{adjustbox}
+\usepackage{subfig} %BAD LIST OF FIGURES, BUT NEEDED FOR SUBFLOAT
+\usepackage[disable]{todonotes}
+\usepackage[final]{changes}
+\usepackage{csvsimple}
+\usepackage{dirtree}
+%%\setlength{\abovecaptionskip}{4pt} % Chosen fairly arbitrarily
+%%%\setlength{\belowcaptionskip}{4pt} % Chosen fairly arbitrarily
+%%\setlength{\textfloatsep}{1.5pt plus 1.0pt minus 2.0pt}
+%%\setlength{\floatsep}{1.5pt plus 1.0pt minus 2.0pt}
+%%\setlength{\intextsep }{1.5pt plus 1.0pt minus 2.0pt}
+\newtheorem{mydef}{Definition}
+\newtheorem{mylem}{Remark}
+\newtheorem{myhyp}{Hypothesis}
+
+% Margins were actually opposite, reversing them
+\setlength{\marginparwidth}{0pt}
+\let\tmp\oddsidemargin
+\let\oddsidemargin\evensidemargin
+\let\evensidemargin\tmp
+\reversemarginpar
+
+\input{NewDefinitions_2017_thesis}
+
+\begin{document}
+
+\title[]{Development of algorithms for generating connected midsurfaces using feature information in thin-walled parts}
+\author{Yogesh}{Kulkarni}
+
+\frontmatter
+
+\include{TuDelft_Coverpage_thesis}
+
+%\dedication{\epigraph{Science is a wonderful thing \\ if one does not have to earn one's living at it.}{Albert Einstein}}
+
+\dedication{\epigraph{To my parents...}{}}
+
+\chapter*{Acknowledgment}
+\setheader{Acknowledgment}
+\input{Acknowledgment_2017_thesis}
+
+
+\chapter*{Abstract}
+\setheader{Abstract}
+\input{Abstract_Overall_2017_thesis}
+
+\tableofcontents
+\mainmatter
+%\thumbtrue
+\input{Chapters_2017_thesis_quotes}
+
+\newpage
+
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{plainnat}
+\bibliography{Bibliography_2017_thesis}
+
+\appendix
+\chapter{Survey Responses} \label{appendix:survey}
+\input{Appendix_Survey_2017_thesis}
+\chapter{Defeaturing Threshold} \label{appendix:threshold}
+\input{Appendix_Threshold_2017_thesis}
+\chapter{ICE Schema} \label{appendix:ice}
+\input{Appendix_ICE_2017_thesis}
+
+%\thumbfalse
+
+%\include{TuDelft_cv_thesis}
+\include{TuDelft_publications_thesis}
+
+\end{document}

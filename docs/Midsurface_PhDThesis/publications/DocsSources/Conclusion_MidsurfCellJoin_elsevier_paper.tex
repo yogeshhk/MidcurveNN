@@ -1,0 +1,11 @@
+\section{Conclusion}
+
+Midsurface is one of the widely used idealization for CAE analysis of thin-walled models. Study of the existing method revealed critical insights into the causes of midsurface errors such gaps, overlaps, not lying midway, etc. These errors, in one of the most widely-used method, called Midsurface Abstraction (MA), are due to issues in face-pair detection and interactions. Issues in  midsurface patch generation were identified and the solution of feature-abstraction was proposed. Interactions were studied to conclude that the cellular decomposition can be used to develop a uniform logic for joining the midsurface patches. 
+
+The proposed system transforms the complex feature tree of the model into a simplified one first, then  transforms them to generic Loft features. The model is decomposed into cells with owner-loft features. Feature parameters are leveraged to compute midsurface patches and a generic joining logic is used to connect the patches. The proposed methodology scores over existing approaches \cite{Chong2004, Cao2009,Cao2011,Woo2013,Boussuge2013,Boussuge2013a, Boussuge2014,Zhu2015} in terms of simplifying the complexities to a great extent and solving them rapidly.   It is not restricted by the underlying geometries as well as a few hard-coded connection types.
+
+%Feature generalization is used to compute the midsurface patches to address the face pair detection problem, whereas the feature-based cellular decomposition  is used to address the midsurface patch interactions issues. This generic approach is advantageous as it is agnostic to underlying feature shapes as long as the basic methods of calculating the midsurface patches and joining are available for them.
+
+Although individual functionalities such as defeaturing, abstraction and decomposition processes may show certain shortcomings, but overall, the proposed approach seems to work well and is able to compute a well-connected midsurface in robust, definitive and generic manner, with minimal failures.
+
+%However, the proposed approach heavily depends on the quality of the cellular decomposition and correct assignment of the owner features. Any unappropriated cells, especially in the complex scenarios, can hamper the midsurface results in a negative manner.

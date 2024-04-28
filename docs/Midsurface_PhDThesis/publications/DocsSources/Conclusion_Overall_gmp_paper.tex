@@ -1,0 +1,50 @@
+\section{Conclusion}
+
+%Simplification by removing the irrelevant data, decomposition to reduce complexity of the domain, and abstraction/generalization to devise a generic logic, have been core themes of this work to compute a well-connected midsurface.
+
+Computation of midsurface is one of the popular simplification techniques for CAE analysis of  thin-walled models. Study of the existing techniques revealed critical insights into the problems of the  midsurface results (gaps, overlaps, lack of isomorphism, etc.), such as failures in the face-pair detection and interactions. Interactions were studied to conclude that the cellular decomposition can be used to develop a uniform logic for joining the midsurface patches.
+
+In the proposed approach, a feature-based  CAD model of thin-walled solid is simplified first by defeaturing techniques to result into ``gross shape'' which is found to reduces failures in the  downstream process. Then remaining features are converted to their equivalent generic form of Sweep/Loft.  Model is decomposed so that computing midsurface patches from each sub-volume, as well as connecting them becomes far easier.  %Thus, the proposed methodology scores over existing approaches not only in terms of simplifying the complexities to a great extent, but also being applicable over a wide variety of geometries and connection types. 
+Although individual functionalities such as defeaturing, abstraction, decomposition processes may show certain shortcomings, but overall, the proposed approach seems to work well and is able to compute a well-connected midsurface in robust, definitive and generic manner, with minimal failures.  Following is a  comparative analysis of some relevant approaches vis-a-vis our approach:
+
+\begin{table}[!htb]
+  \centering 
+\resizebox{0.7\linewidth}{!}{ 
+\begin{tabular}[htp]{@{} p{0.1\linewidth} p{0.2\linewidth}  p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth}@{}}
+\toprule
+\textbf{Researcher}  &	\textbf{Method} &	 \textbf{Shortcomings}  &	 \textbf{Our Approach}\\ \midrule
+\textbf{Chong et al.} \cite{Chong2004}  & 
+Uses concave edge decomposition. Midcurves by collapsing edge pairs. If they form a loop, creates a midsurface patch & 
+Hard-coded inequalities/values to detect edge-pairs. Connection logic is not generic and comprehensive &
+A generic treatment for the computation of midcurves, midsurface patches and their connections
+\\ \midrule
+ \textbf{Boussuge et al.} \cite{Boussuge2014}  & 
+ Generative decomposition. Recognizes Extrudes of each sub-volume. Creates midsurface patches in each and connects them together. &
+ 
+ \begin{itemize}[noitemsep,nosep,leftmargin=*]
+\item No fillets/chamfers.
+\item Only Additive cells.
+\item Only Extrudes with Analytical surfaces
+\item Expensive MAT to detect thin profiles
+\item Works only on Parallel and Orthogonal connections.
+\end{itemize}
+&
+\begin{itemize}[noitemsep,nosep,leftmargin=*]
+\item No such restriction
+\item Re-inserts -ve cells
+\item Generic Sweep extend-able to Loft
+\item Simple rules of size of profile/guide
+\item Generic logic for any numbers/types of connections.
+\end{itemize}
+
+\\ \midrule
+
+\end{tabular}
+}
+% \caption{Comparison with Other Simplification Methods}
+%  \label{tab:defeat_test}
+\end{table}
+
+\vspace{-8mm}
+
+

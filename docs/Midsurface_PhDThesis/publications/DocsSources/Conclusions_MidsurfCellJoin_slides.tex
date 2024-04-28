@@ -1,0 +1,22 @@
+\section{Conclusions}
+
+\begin{frame}{Summary}
+\begin{itemize}[noitemsep,label=\textbullet, topsep=2pt,parsep=2pt,partopsep=2pt]
+\item  Existing method fails (gaps, overlaps, lack of isomorphism, etc.), in the face pair detection and interactions. 
+\item Cellular decomposition can be used to develop a uniform logic for joining the midsurface patches.
+\item A novel method, uses abstractions at two levels. Feature abstraction is used to compute the midsurface patches and cellular decomposition  is used to abstract the feature interactions. \item Geometry-specific logic  is applicable only at the lower level of the actual midsurface computation and joining. 
+\item The advantage is that it can cater to various types of shapes (surfaces), as long as the basic methods of calculating the midsurface patches and joining are available for them.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Limitations of the Proposed Approach}
+\begin{itemize}[noitemsep,label=\textbullet, topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Heavily depends on cellular decomposition and feature assignments. 
+\item At times, cell formations can be odd, or the feature ownership may not be correct. 
+\item In such cases, this approach may not work as per expectations. 
+\item Many CAD modelers may not have cellular decomposition, for which, such a method needs to be written from scratch.  
+\item Sometimes, it may not be possible to represent a form-feature in the ``Loft or Sweep'' manner, resulting in a profile and a guide curve. 
+\item In such cases, we have to resort to face pair logic and interpolation of the faces to generate the midsurface patches.
+\end{itemize}
+\end{frame}

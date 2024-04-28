@@ -1,0 +1,6 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Stiny and Gips \cite{Stiny1971},Set of shapes labels and rules,Shape Grammar,,,
+ Middleditch \cite{Middleditch1997},,Taxonomy,Proposed structure; construction sequence and point-set; ,Separated issues of solid modeling; feature modeling and constraints,
+Hoisl et. al.\cite{Hoisl2009},Primitives,Spatial Grammar,Used primitives like block cylinder cone as initial shapes and proposed use of sweeping to generate different shapes depending on different profiles and guide curves. Boolean operations were used to build more complex shapes.,Generative solutions for CAD,
+Deak  \cite{Deak2006},,CAD Grammars,,useful in Design Modeling and Manufacturing,
+Tessier \cite{Tessier2011} \cite{Tessier2013},Feature based CAD model,Dynamic Mapping instance level feature interop,Rule based mapping from source feature Brep data to shared feature types (Figure \ref{fig:litsurvey:Tessier}) mainly for feature validation,No need of source feature classes but just instance file.,Better matching needed beyond Brep in case of no match

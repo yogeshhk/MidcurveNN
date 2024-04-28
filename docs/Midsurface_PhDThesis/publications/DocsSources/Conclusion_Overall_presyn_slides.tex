@@ -1,0 +1,112 @@
+\begin{frame}{Conclusions in the light of arguments of the thesis}
+\begin{itemize}[noitemsep,label=\textbullet,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Simplification: Feature-based defeaturing algorithms superior.  Results into ``gross shape'' Novelty: new taxonomy and Remnant method
+\item Abstraction: Form features as Loft. Develop further algorithms on only Lofts. Generic.
+\item Decomposition: Divide-and-Conquer in Midcurves and in Midcurface computation. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{``SAD'' (\textbf{s}implification, \textbf{A}bstraction, \textbf{D}ecoposition)}
+\begin{itemize}
+\item \textbf{Simplification}: 
+	\begin{itemize}
+	\item \textbf{Midcurves}: Curved profiles are faceted into line segments. Error introduced due to this approximation can be controlled by faceting parameters.
+	\item \textbf{Midsurface} Irrelevant features are removed during Defeaturing module, making computation of midsurface effective, without losing the gross characteristics of the input shape.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{``SAD'' (\textbf{s}implification, \textbf{A}bstraction, \textbf{D}ecoposition)}
+\begin{itemize}
+
+\item \textbf{Abstraction} 
+	\begin{itemize}
+	\item \textbf{Midcurves}: Faceted profiles are used as generic polygons. With this polygon decomposition algorithms can be leveraged. This work specificly works on thin-walled?ribbon polygons, due to their relevance to the topic of midsurface-computation.
+	\item \textbf{Midsurface}: Domain specific features, such as, sheet metal features are generalized/abstracted to $\mathcal{ABLE}$ forms, making it easier to write a generic algorithm.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{``SAD'' (\textbf{s}implification, \textbf{A}bstraction, \textbf{D}ecoposition)}
+\begin{itemize}
+\item \textbf{Decomposition}: 
+	\begin{itemize}
+	\item \textbf{Midcurves}: Thin-walled polygons are decomposed into primitive sub-polygons. Sub-polygons for midcurve segments and sub-polygons for connecting them are identified and respective tasks are delegated. This makes the overall midcurve computation algorithm generic and adaptable.
+	\item \textbf{Midsurface}: Thin-walled solids are decomposed into primitive sub-solids/cells. Cells for midsurface patches and those for connecting them are identified and respective tasks are delegated. This makes the overall midsurface computation algorithm generic and adaptable.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Comparative analysis of some relevant approaches}
+\begin{table}[!htb]
+  \centering 
+%\resizebox{0.95\linewidth}{!}{ 
+\begin{tabular}[htp]{@{} p{0.15\linewidth} p{0.25\linewidth}  p{0.25\linewidth} p{0.25\linewidth} @{}}
+\toprule
+\textbf{Researcher}  &	\textbf{Method} &	 \textbf{Shortcomings}  &	 \textbf{Our Approach}\\ \midrule
+\textbf{Chong et al.} \cite{Chong2004}  & 
+Uses concave edge decomposition. Midcurves by collapsing edge pairs. If they form a loop, creates a midsurface patch & 
+Hard-coded inequalities/values to detect edge-pairs. Connection logic is not generic and comprehensive &
+A generic treatment for the computation of midcurves, midsurface patches and their connections
+\\ \midrule
+\end{tabular}
+%}
+% \caption{Comparison with Other Simplification Methods}
+%  \label{tab:defeat_test}
+\end{table}
+\end{frame}
+
+
+
+\begin{frame}{Comparative analysis of some relevant approaches}
+\begin{table}[!htb]
+  \centering 
+%\resizebox{0.95\linewidth}{!}{ 
+\begin{tabular}[htp]{@{} p{0.15\linewidth} p{0.25\linewidth}  p{0.25\linewidth} p{0.25\linewidth} @{}}
+\toprule
+%\textbf{Researcher}  &	\textbf{Method} &	 \textbf{Shortcomings}  &	 \textbf{Our Approach}\\ \midrule
+ \textbf{Boussuge et al.} \cite{Boussuge2014}  & 
+ Generative decomposition. Recognizes Extrudes of each sub-volume. Creates midsurface patches in each and connects them together. &
+ 
+ \begin{itemize}[noitemsep,nosep,leftmargin=*]
+\item No fillets/chamfers.
+\item Only Additive cells.
+\item Only Extrudes with Analytical surfaces
+\item Expensive MAT to detect thin profiles
+\item Works only on Parallel and Orthogonal connections.
+\end{itemize}
+&
+\begin{itemize}[noitemsep,nosep,leftmargin=*]
+\item No such restriction
+\item Re-inserts -ve cells
+\item Generic Sweep extend-able to Loft
+\item Simple rules of size of profile/guide
+\item Generic logic for any numbers/types of connections.
+\end{itemize}
+
+\\ \midrule
+
+\end{tabular}
+%}
+% \caption{Comparison with Other Simplification Methods}
+%  \label{tab:defeat_test}
+\end{table}
+\end{frame}
+
+
+%------------------------------------------------------------------------------------------------------------------------------------
+\begin{frame}[<+-| alert@+>]{Conclusion}
+\begin{itemize}[noitemsep,label=\textbullet,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Although Model Simplification using geometry has been in practice for many years, with possibility of extracting feature information, it can be taken to the next level. 
+\item Feature information gives ready data needed for Model Simplification.  Features such as Pattern leverage the symmetry in the part thereby reducing analysis time-resources. 
+\item In Dimension Reduction, it can give tips for creating medial geometries.
+\item In the proposed approach Midsurface is concurrently built as part gets created (called forward create). At each feature step, shapes are relatively simple than final shape, thus creation of mid-surfaces at each stage is far simpler. 
+\item This approach can build well connected, isomorphic mid-surfaces better than extraction methods. 
+\end{itemize}
+
+%Notes: 
+
+\end{frame}
+%------------------------------------------------------------------------------------------------------------------------------------

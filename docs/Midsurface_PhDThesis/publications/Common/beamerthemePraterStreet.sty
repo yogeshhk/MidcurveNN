@@ -1,0 +1,81 @@
+\newif\ifadventor
+\adventortrue
+\DeclareOption{nofont}{\adventorfalse}
+\DeclareOption{widescreen}{
+	\geometry{paperheight=3.75in, paperwidth=6.66in}
+	\addtobeamertemplate{frametitle}{}{\vspace{1cm}}
+}
+\ProcessOptions
+\RequirePackage{geometry, textpos}
+\RequirePackage[framemethod=TikZ]{mdframed}
+\ifadventor
+	\RequirePackage{tgadventor}
+\fi
+\setbeamertemplate{background}{%
+	\ifnum\thepage>1\relax
+		\includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio]{PraterStreet_bg}
+	\else
+		\includegraphics[height=\paperheight, keepaspectratio]{PraterStreet_tp}
+	\fi
+}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{title page}{%
+	\begin{textblock*}{5cm}(-0.5cm,-4.5cm)
+		\begin{beamercolorbox}[wd=5cm, ht=5cm]{title}
+			\usebeamerfont{title}\inserttitle
+		\end{beamercolorbox}\bigskip
+		\begin{beamercolorbox}[wd=5cm]{subtitle}
+			\insertsubtitle
+		\end{beamercolorbox}\bigskip
+		\begin{beamercolorbox}[wd=5cm]{author}
+			\insertauthor
+		\end{beamercolorbox}
+		\begin{beamercolorbox}[wd=5cm]{date}
+			\insertdate
+		\end{beamercolorbox}
+	\end{textblock*}
+}
+\setbeamertemplate{section page}{%
+  \vskip1cm
+  \begin{centering}
+    \begin{beamercolorbox}[sep=12pt,center]{section title}
+      \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+  \end{centering}
+}
+\surroundwithmdframed[roundcorner=5pt,
+					  linewidth=0.7pt,
+					  linecolor=PraterStreetMediumBlue,
+					  innertopmargin=0pt]{example}
+
+\setbeamerfont{title}{size=\LARGE}
+\setbeamerfont{title page}{size=\normalsize}
+
+\definecolor{PraterStreetLightBlue}{RGB}{183,223,248}
+\definecolor{PraterStreetMediumBlue}{RGB}{0,176,240}
+\definecolor{PraterStreetDeepBlue}{RGB}{0,128,176}
+\definecolor{PraterStreetTitleBlue}{RGB}{82,108,165}
+
+\setbeamercolor{block title}{fg=white, bg=PraterStreetMediumBlue}
+\setbeamercolor{block title example}{fg=PraterStreetMediumBlue}
+\setbeamercolor{block body}{fg=black, bg=PraterStreetLightBlue}
+\setbeamercolor{title page}{fg=white}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{subtitle}{fg=white}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{date}{fg=white}
+\setbeamercolor{frametitle}{fg=white}
+\setbeamercolor{itemize item}{fg=PraterStreetMediumBlue}
+\setbeamercolor{itemize subitem}{fg=PraterStreetMediumBlue}
+\setbeamercolor{itemize subsubitem}{fg=PraterStreetMediumBlue}
+\setbeamercolor{enumerate item}{fg=PraterStreetMediumBlue}
+\setbeamercolor{enumerate subitem}{fg=PraterStreetMediumBlue}
+\setbeamercolor{enumerate subsubitem}{fg=PraterStreetMediumBlue}
+\setbeamercolor{section title}{fg=PraterStreetMediumBlue}
+\setbeamercolor{section in toc}{fg=PraterStreetMediumBlue}
+\newenvironment{xplainframe}{\bgroup%
+	\setbeamertemplate{background}{}%
+	\setbeamercolor{frametitle}{bg=PraterStreetTitleBlue}%
+	\begin{frame}[plain]}{\end{frame}\egroup}
+\newcommand{\sectionframe}{\frame{\sectionpage}}
+

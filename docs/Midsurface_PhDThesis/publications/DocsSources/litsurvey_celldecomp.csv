@@ -1,0 +1,6 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Bih-Yaw Shih \cite{Shih1996},Brep,Sweep Direction Extraction, Swept volume detection and subtraction,For hexahedral mesh generation,Only linearly swept volumes (extrudes)
+Yong Lu \cite{LuGadhTautges2001},Brep,Concave Edge Partitioning,Edge loops to find convex and sweep-able sub-volumes ,Hexahedral meshing,Loop detection complex
+Yoonhwan Woo \cite{Woo2002} \cite{Woo2003} \cite{Woo2003a} \cite{Woo2006} \cite{Woo2009} ,Brep,Concave Edge Partitioning,Decomposition; Maximal Collection,Far less cells,Only analytical surface shapes
+Haiyan Wu \cite{Wu2014},Brep; Medial,Sweep Direction Extraction, Swept volume detection and subtraction,Recognize heavy interactions,Straight line guide curves only
+Byung Chul Kim \cite{Kim2014a},Brep,Wrap;  Volume splitting,Defeature; Wrap to detect negatives; volume split,Generates modifiable feature tree from Brep,Basic decomposition and editing only

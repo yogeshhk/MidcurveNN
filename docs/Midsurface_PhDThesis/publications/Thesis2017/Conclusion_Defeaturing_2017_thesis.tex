@@ -1,0 +1,55 @@
+
+\section{Conclusions}
+
+Literature reports that most of the defeaturing algorithms are based on the mesh or solid (Brep) as input. In these cases some kind of feature recognition needs to be performed first and then irrelevant features are identified and removed. With the availability of ready feature information in the feature based CAD models, it has become possible to leverage it for defeaturing purpose effectively. 
+
+The present research proposes to leverage feature information and presents a three phase systematic approach for defeaturing. Each phase employs a different criteria for defeaturing the model. In the first phase, particular sheet metal feature is removed based on its sheet metal characteristics. The second phase uses the size of the remnant portion of a feature for deciding its candidature for removal of the feature. In the third phase all remaining negative features are temporarily removed and their stored tool bodies are brought back for piercing on the computed midsurface. Effectiveness of the defeaturing process is then computed based on the \%age reduction in the number of faces during defeaturing.
+
+\todo{[ADDED ROW FOR ADVANTAGES. CHANGED HEADINGS]}
+
+
+%%%%%%\bigskip
+%%
+%%%------------------------------------------------------------------------------------
+%%\begin{table}[!h]
+%%  \centering
+%%   \caption{Comparison of the Present Research with Other Methods}
+%%  \label{tbl:defeaturing:benchmarking}
+%%  \resizebox{\linewidth}{!}{ 
+%%\begin{tabular}[htp]{@{} p{0.19\linewidth} |p{0.19\linewidth} | p{0.20\linewidth}| p{0.19\linewidth} |p{0.20\linewidth}@{}}
+%%\toprule
+%%\textbf{Methods} & \textbf{Russ \cite{Russ2012}} &	\textbf{Kim \cite{Kim2005}} &	\textbf{Lee \cite{Lee2005}} & \textbf{\mysystemname}\\
+%%\midrule
+%%\textbf{Input} & Features	& Brep	& Features	& Features\\
+%%\midrule
+%%\textbf{Approach} & Suppresses if feature size is less than threshold.&
+%%Wrap-around. Negative volumes removed totally. &
+%%Feature volumes are reordered in sorted manner.&
+%%Suppress based on taxonomy and remnant volumes.\\
+%%\midrule
+%%\textbf{Advantages} & Automatic identification of non-critical features &
+%% Does not need features; Works on Brep&
+%% Multiple defeaturing levels possible& More accurate criteria for defeaturing
+%%\\
+%%\midrule
+%%\textbf{Limitations} & Limited to FEM as BC and Load path features are not suppressed. &
+%%Concave edge filling creates odd shapes. Principal shape is lost. &
+%%Due merged Cellular model, update capability is lost forever. &
+%%Taxonomy needs to be updated for new features\\	
+%%\bottomrule
+%%\end{tabular}
+%%}
+%%
+%%\end{table}
+%%
+%%Table \ref{tbl:defeaturing:benchmarking} shows a brief comparison of the present research work, as implemented in \mysystemname, with the other defeaturing approaches, such as, by Brian Russ~\cite{Russ2012},  Sungchan Kim et. al~\cite{Kim2005} and Sang Hun Lee~\cite{Lee2005}.
+%%
+%%%%%%\bigskip
+%%
+%%\added{The comparison indicates that the defeaturing approach presented in this chapter significantly reduces the number of faces in the CAD model thus simplifying it considerably for the purpose of midsurface computation. It, however, still ensures that the gross shape of the input CAD model is retained so that underlying design intent is not lost. The subsequent chapter presents transformation of the features of this gross shape to a generalized feature representation.}
+
+ The subsequent chapter presents transformation of the features of this gross shape to a generalized feature representation.
+ 
+\deleted{Practical example shown in section~\ref{sec:defeaturing:results} demonstrates the efficacy of \mysystemname. It is evident that, even after substantial defeaturing the gross shape computed retains the features essential for computation of a well-connected midsurface.}
+%\vspace{-2em}
+

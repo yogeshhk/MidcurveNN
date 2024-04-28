@@ -1,0 +1,144 @@
+\chapter{Examples}
+
+	\section{Introduction}
+
+		In the previous chapter, a detailed description of the user
+		interface for a prototype FBD system for orthohedral components
+		was presented.
+		This chapter demonstrates some of the capabilities developed in
+		the current prototype system with the help of few examples. 
+		All the examples indirectly demonstrate the ``Creation'' capability
+		also.
+
+	\section{Dimensioning}
+
+		The example shown in Fig.~\ref{ex1dim1} depicts how a component gets 
+		dimensioned by default. Internally,
+		the dimensioning scheme uses the graph data structures for reference
+		dimension graph(RDG) and specified dimension graph(SDG) which are also 
+		shown in the Fig.~\ref{ex1dim1}.
+
+        \begin{figure}[htbp]
+          %  \centerline{\psfig{figure=ex1dim1.ps,width=4.0in,height=5.0in}}
+            \caption{Dimensioning the component}
+            \label{ex1dim1}
+        \end{figure}
+
+		The Fig.~\ref{ex1dim1} shows default dimensioning scheme which is a
+		datum dimensioning scheme along X axis.
+
+		Operations performed by the user to change the dimensioning scheme
+		are reflected only in the specified dimension graph while the reference
+		dimension graph remains unchanged. 
+		The operations are listed below.
+
+		\begin{enumerate}
+		\item
+					{\em Specifying the dimension between two planes} :
+
+                    If the user wants to specify the dimension ``e'' between 
+                    (say) plane 6 and plane 7, following actions are performed :
+
+        \begin{figure}[htbp]
+         %  \centerline{\psfig{figure=ex1dim2.ps,width=4.0in,height=5.0in}}
+            \caption{Specifying the dimension between two planes}
+            \label{ex1dim2}
+        \end{figure}
+
+
+                    When the input is given, the two selected primitives are
+                    located in the RDG and are checked for connectedness to
+                    ensure that a path exists between them. If no such path is
+                    found, an error message is issued since the dimension
+                    cannot be specified. If a path is found, the value of the
+                    dimension is computed by adding (or subtracting)
+                    and is checked with the value specified by the
+                    user. If this matches, checks are made to see if the
+                    modification will lead redundancy in the 
+                    dimensioning. If this check is passed,
+                    the SDG is modified while the RDG is kept unchanged.
+					The modified SDG is shown in Fig.~\ref{ex1dim2}, where
+					a new arc is added between nodes 6 and 7 and the arc
+					between nodes 1 and 7 is deleted as it would have created
+					redundancy represented by a cycle.
+
+		\item
+
+    				{\em Change in Datum} :
+
+    				The user may want to change the datum plane to plane 7
+    				in the mentioned dimensioning scheme so that all the other
+					planes are dimensioned with plane 7 as datum plane. 
+					This is accomplished 
+					by removing all arcs emanating from previous datum plane 1
+					and making them emanate from the new datum plane 7 in
+					the specified dimension graph.
+					The modified SDG is shown in Fig~\ref{ex1dim3}.
+
+        \begin{figure}[htbp]
+         %   \centerline{\psfig{figure=ex1dim3.ps,width=4.0in,height=5.0in}}
+            \caption{Change in Datum}
+            \label{ex1dim3}
+        \end{figure}
+
+		\item
+
+    				{\em Query of Dimension} :
+
+    				If the user wants to query the distance between (say) 
+					plane 2 and
+					plane 7. A graph traversal algorithm first locates the 
+					two primitives in the SDG, finds the unique path between 
+					them and computes the distance by summing the dimension 
+					attributes on the arcs that make up the path. 
+					The computed distance is displayed to the user.
+
+		\end{enumerate}
+
+	\section{Bspline Dimensioning}
+
+	The following example of a vice demonstrates the capability of 
+	dimensioning the Bspline extruded block. The vice consists of two 
+	rectangular blocks and a Bspline extruded block.
+    Formation of the RDG and the SDG requires contribution of the dimensioning
+    planes from individual blocks. These planes can be used to specify a
+    dimension with any other dimensioning plane. It is necessary that the
+    B-spline extruded block provides not only the dimensioning planes 
+	corresponding to the
+    external rectangular block but also the dimensioning planes corresponding
+    to selected points on the profile of the Bspline.
+	The example shows dimensions along X axis (see Fig.~\ref{ex2dim}).
+
+
+        \begin{figure}[htbp]
+          %  \centerline{\psfig{figure=ex2dim.ps,width=4.0in,height=5.0in}}
+            \caption{Bspline Dimensioning}
+            \label{ex2dim}
+        \end{figure}
+
+
+        The dimensioning procedure is as follows :
+            \begin{itemize}
+
+            \item
+            For pre-specified intervals (say $n$), values $x_{1}$ to $x_{n}$
+            are generated at equal intervals, where $x_{1}$ corresponds to the
+            Xmin plane and $x_{n}$ corresponds to the Xmax plane.
+			Secant method is used to solve the non linear Bspline equation 
+			to get the parameter value for each co-ordinate point $x_{i}$.
+
+            \item
+            For each parameter value corresponding to $x_{i}$ a corresponding 
+			$y_{i}$ is calculated from the profile equation.
+
+            \item
+            For each $i$, a plane normal to Y direction passing through $x_{i}$
+            and a plane normal to the X direction passing through $y_{i}$ are
+            contributed to the dimensioning procedure.
+
+			\item
+			At the dimension graph level, these contributed planes are used
+			dimension planes in the dimension scheme which is dealt with in
+            detail in section ~\ref{dimpts}.
+			\end{itemize}
+

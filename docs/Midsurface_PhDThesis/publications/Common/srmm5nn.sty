@@ -1,0 +1,253 @@
+%%
+%% This is file `srmm5nn.sty',
+%% Copyright 2003, Ragu
+%% v. 0.102 2000/11/01 [support for LM5 (M5-101) encoding, normal weight
+%%   font loaded from math style]
+%%
+\ProvidesPackage{srmm5nn}
+ [2000/11/01 v0.102 %
+  MSAM and MSBM symbols normal LM5 encoding macros]
+%
+%
+%%% The regular version (font = m5-n101) is "symii":
+%
+\DeclareMathSymbol{\lvertneqq}    {\mathrel}{symii}{"00}
+\DeclareMathSymbol{\gvertneqq}    {\mathrel}{symii}{"01}
+\DeclareMathSymbol{\nleq}         {\mathrel}{symii}{"02}
+\DeclareMathSymbol{\ngeq}         {\mathrel}{symii}{"03}
+\DeclareMathSymbol{\nless}        {\mathrel}{symii}{"04}
+\DeclareMathSymbol{\ngtr}         {\mathrel}{symii}{"05}
+\DeclareMathSymbol{\nprec}        {\mathrel}{symii}{"06}
+\DeclareMathSymbol{\nsucc}        {\mathrel}{symii}{"07}
+\DeclareMathSymbol{\lneqq}        {\mathrel}{symii}{"08}
+\DeclareMathSymbol{\gneqq}        {\mathrel}{symii}{"09}
+\DeclareMathSymbol{\nleqslant}    {\mathrel}{symii}{"0A}
+\DeclareMathSymbol{\ngeqslant}    {\mathrel}{symii}{"0B}
+\DeclareMathSymbol{\lneq}         {\mathrel}{symii}{"0C}
+\DeclareMathSymbol{\gneq}         {\mathrel}{symii}{"0D}
+\DeclareMathSymbol{\npreceq}      {\mathrel}{symii}{"0E}
+\DeclareMathSymbol{\nsucceq}      {\mathrel}{symii}{"0F}
+\DeclareMathSymbol{\precnsim}     {\mathrel}{symii}{"10}
+\DeclareMathSymbol{\succnsim}     {\mathrel}{symii}{"11}
+\DeclareMathSymbol{\lnsim}        {\mathrel}{symii}{"12}
+\DeclareMathSymbol{\gnsim}        {\mathrel}{symii}{"13}
+\DeclareMathSymbol{\nleqq}        {\mathrel}{symii}{"14}
+\DeclareMathSymbol{\ngeqq}        {\mathrel}{symii}{"15}
+\DeclareMathSymbol{\precneqq}     {\mathrel}{symii}{"16}
+\DeclareMathSymbol{\succneqq}     {\mathrel}{symii}{"17}
+\DeclareMathSymbol{\precnapprox}  {\mathrel}{symii}{"18}
+\DeclareMathSymbol{\succnapprox}  {\mathrel}{symii}{"19}
+\DeclareMathSymbol{\lnapprox}     {\mathrel}{symii}{"1A}
+\DeclareMathSymbol{\gnapprox}     {\mathrel}{symii}{"1B}
+\DeclareMathSymbol{\nsim}         {\mathrel}{symii}{"1C}
+\DeclareMathSymbol{\ncong}        {\mathrel}{symii}{"1D}
+\DeclareMathSymbol{\diagup}       {\mathrel}{symii}{"1E}
+\DeclareMathSymbol{\diagdown}     {\mathrel}{symii}{"1F}
+\DeclareMathSymbol{\varsubsetneq}   {\mathrel}{symii}{"20}
+\DeclareMathSymbol{\varsupsetneq}   {\mathrel}{symii}{"21}
+\DeclareMathSymbol{\nsubseteqq}     {\mathrel}{symii}{"22}
+\DeclareMathSymbol{\nsupseteqq}     {\mathrel}{symii}{"23}
+\DeclareMathSymbol{\subsetneqq}     {\mathrel}{symii}{"24}
+\DeclareMathSymbol{\supsetneqq}     {\mathrel}{symii}{"25}
+\DeclareMathSymbol{\varsubsetneqq}  {\mathrel}{symii}{"26}
+\DeclareMathSymbol{\varsupsetneqq}  {\mathrel}{symii}{"27}
+\DeclareMathSymbol{\subsetneq}      {\mathrel}{symii}{"28}
+\DeclareMathSymbol{\supsetneq}      {\mathrel}{symii}{"29}
+\DeclareMathSymbol{\nsubseteq}      {\mathrel}{symii}{"2A}
+\DeclareMathSymbol{\nsupseteq}      {\mathrel}{symii}{"2B}
+\DeclareMathSymbol{\nparallel}      {\mathrel}{symii}{"2C}
+\DeclareMathSymbol{\nmid}           {\mathrel}{symii}{"2D}
+\DeclareMathSymbol{\nshortmid}      {\mathrel}{symii}{"2E}
+\DeclareMathSymbol{\nshortparallel} {\mathrel}{symii}{"2F}
+\DeclareMathSymbol{\nvdash}         {\mathrel}{symii}{"30}
+\DeclareMathSymbol{\nVdash}         {\mathrel}{symii}{"31}
+\DeclareMathSymbol{\nvDash}         {\mathrel}{symii}{"32}
+\DeclareMathSymbol{\nVDash}         {\mathrel}{symii}{"33}
+\DeclareMathSymbol{\ntrianglerighteq}{\mathrel}{symii}{"34}
+\DeclareMathSymbol{\ntrianglelefteq}{\mathrel}{symii}{"35}
+\DeclareMathSymbol{\ntriangleleft}  {\mathrel}{symii}{"36}
+\DeclareMathSymbol{\ntriangleright} {\mathrel}{symii}{"37}
+\DeclareMathSymbol{\nleftarrow}     {\mathrel}{symii}{"38}
+\DeclareMathSymbol{\nrightarrow}    {\mathrel}{symii}{"39}
+\DeclareMathSymbol{\nLeftarrow}     {\mathrel}{symii}{"3A}
+\DeclareMathSymbol{\nRightarrow}    {\mathrel}{symii}{"3B}
+\DeclareMathSymbol{\nLeftrightarrow}{\mathrel}{symii}{"3C}
+\DeclareMathSymbol{\nleftrightarrow}{\mathrel}{symii}{"3D}
+\DeclareMathSymbol{\divideontimes}  {\mathbin}{symii}{"3E}
+\DeclareMathSymbol{\varnothing}     {\mathord}{symii}{"3F}
+\DeclareMathSymbol{\nexists}        {\mathord}{symii}{"40}
+\DeclareMathSymbol{\verywidehat}    {\mathord}{symii}{"5B}
+\DeclareMathSymbol{\verywidehatt}   {\mathord}{symii}{"5C}
+\DeclareMathSymbol{\verywidetilde}  {\mathord}{symii}{"5D}
+\DeclareMathSymbol{\verywidetildee} {\mathord}{symii}{"5E}
+\DeclareMathSymbol{\Finv}           {\mathord}{symii}{"60}
+\DeclareMathSymbol{\Game}           {\mathord}{symii}{"61}
+  \let\mho\undefined
+\DeclareMathSymbol{\mho}            {\mathord}{symii}{"66}
+\DeclareMathSymbol{\eth}            {\mathord}{symii}{"67}
+\DeclareMathSymbol{\eqsim}          {\mathrel}{symii}{"68}
+\DeclareMathSymbol{\beth}           {\mathord}{symii}{"69}
+\DeclareMathSymbol{\gimel}          {\mathord}{symii}{"6A}
+\DeclareMathSymbol{\daleth}         {\mathord}{symii}{"6B}
+\DeclareMathSymbol{\lessdot}        {\mathbin}{symii}{"6C}
+\DeclareMathSymbol{\gtrdot}         {\mathbin}{symii}{"6D}
+\DeclareMathSymbol{\ltimes}         {\mathbin}{symii}{"6E}
+\DeclareMathSymbol{\rtimes}         {\mathbin}{symii}{"6F}
+\DeclareMathSymbol{\shortmid}       {\mathrel}{symii}{"70}
+\DeclareMathSymbol{\shortparallel}  {\mathrel}{symii}{"71}
+\DeclareMathSymbol{\smallsetminus}  {\mathbin}{symii}{"72}
+\DeclareMathSymbol{\thicksim}       {\mathrel}{symii}{"73}
+\DeclareMathSymbol{\thickapprox}    {\mathrel}{symii}{"74}
+\DeclareMathSymbol{\approxeq}       {\mathrel}{symii}{"75}
+\DeclareMathSymbol{\succapprox}     {\mathrel}{symii}{"76}
+\DeclareMathSymbol{\precapprox}     {\mathrel}{symii}{"77}
+\DeclareMathSymbol{\curvearrowleft} {\mathrel}{symii}{"78}
+\DeclareMathSymbol{\curvearrowright}{\mathrel}{symii}{"79}
+\DeclareMathSymbol{\digamma}        {\mathord}{symii}{"7A}
+\DeclareMathSymbol{\varkappa}       {\mathord}{symii}{"7B}
+\DeclareMathSymbol{\Bbbk}           {\mathord}{symii}{"7C}
+\DeclareMathSymbol{\hslash}         {\mathord}{symii}{"7D}
+\DeclareMathSymbol{\hbar}           {\mathord}{symii}{"7E}
+\DeclareMathSymbol{\backepsilon}    {\mathrel}{symii}{"7F}
+\DeclareMathSymbol{\boxdot}       {\mathbin}{symii}{"80}
+\DeclareMathSymbol{\boxplus}      {\mathbin}{symii}{"81}
+\DeclareMathSymbol{\boxtimes}     {\mathbin}{symii}{"82}
+\DeclareMathSymbol{\square}       {\mathord}{symii}{"83}
+\DeclareMathSymbol{\blacksquare}  {\mathord}{symii}{"84}
+\DeclareMathSymbol{\centerdot}    {\mathbin}{symii}{"85}
+\DeclareMathSymbol{\lozenge}      {\mathord}{symii}{"86}
+\DeclareMathSymbol{\blacklozenge} {\mathord}{symii}{"87}
+\DeclareMathSymbol{\circlearrowright}   {\mathrel}{symii}{"88}
+\DeclareMathSymbol{\circlearrowleft}    {\mathrel}{symii}{"89}
+  \let\rightleftharpoons\undefined
+\DeclareMathSymbol{\rightleftharpoons}{\mathrel}{symii}{"8A}
+\DeclareMathSymbol{\leftrightharpoons}  {\mathrel}{symii}{"8B}
+\DeclareMathSymbol{\boxminus}     {\mathbin}{symii}{"8C}
+\DeclareMathSymbol{\Vdash}        {\mathrel}{symii}{"8D}
+\DeclareMathSymbol{\Vvdash}       {\mathrel}{symii}{"8E}
+\DeclareMathSymbol{\vDash}        {\mathrel}{symii}{"8F}
+\DeclareMathSymbol{\twoheadrightarrow}  {\mathrel}{symii}{"90}
+\DeclareMathSymbol{\twoheadleftarrow}   {\mathrel}{symii}{"91}
+\DeclareMathSymbol{\leftleftarrows}     {\mathrel}{symii}{"92}
+\DeclareMathSymbol{\rightrightarrows}   {\mathrel}{symii}{"93}
+\DeclareMathSymbol{\upuparrows}         {\mathrel}{symii}{"94}
+\DeclareMathSymbol{\downdownarrows} {\mathrel}{symii}{"95}
+\DeclareMathSymbol{\upharpoonright} {\mathrel}{symii}{"96}
+  \let\restriction\upharpoonright
+\DeclareMathSymbol{\downharpoonright}{\mathrel}{symii}{"97}
+\DeclareMathSymbol{\upharpoonleft}  {\mathrel}{symii}{"98}
+\DeclareMathSymbol{\downharpoonleft}{\mathrel}{symii}{"99}
+\DeclareMathSymbol{\rightarrowtail} {\mathrel}{symii}{"9A}
+\DeclareMathSymbol{\leftarrowtail}  {\mathrel}{symii}{"9B}
+\DeclareMathSymbol{\leftrightarrows}{\mathrel}{symii}{"9C}
+\DeclareMathSymbol{\rightleftarrows}{\mathrel}{symii}{"9D}
+\DeclareMathSymbol{\Lsh}            {\mathrel}{symii}{"9E}
+\DeclareMathSymbol{\Rsh}            {\mathrel}{symii}{"9F}
+\DeclareMathSymbol{\rightsquigarrow}{\mathrel}{symii}{"A0}
+\DeclareMathSymbol{\leftrightsquigarrow}{\mathrel}{symii}{"A1}
+\DeclareMathSymbol{\looparrowleft}  {\mathrel}{symii}{"A2}
+\DeclareMathSymbol{\looparrowright} {\mathrel}{symii}{"A3}
+\DeclareMathSymbol{\circeq}       {\mathrel}{symii}{"A4}
+\DeclareMathSymbol{\succsim}      {\mathrel}{symii}{"A5}
+\DeclareMathSymbol{\gtrsim}       {\mathrel}{symii}{"A6}
+\DeclareMathSymbol{\gtrapprox}    {\mathrel}{symii}{"A7}
+\DeclareMathSymbol{\multimap}     {\mathrel}{symii}{"A8}
+\DeclareMathSymbol{\therefore}    {\mathrel}{symii}{"A9}
+\DeclareMathSymbol{\because}      {\mathrel}{symii}{"AA}
+\DeclareMathSymbol{\doteqdot}     {\mathrel}{symii}{"AB}
+  \let\Doteq\doteqdot
+\DeclareMathSymbol{\triangleq}    {\mathrel}{symii}{"AC}
+\DeclareMathSymbol{\precsim}      {\mathrel}{symii}{"AD}
+\DeclareMathSymbol{\lesssim}      {\mathrel}{symii}{"AE}
+\DeclareMathSymbol{\lessapprox}   {\mathrel}{symii}{"AF}
+\DeclareMathSymbol{\eqslantless}  {\mathrel}{symii}{"B0}
+\DeclareMathSymbol{\eqslantgtr}   {\mathrel}{symii}{"B1}
+\DeclareMathSymbol{\curlyeqprec}  {\mathrel}{symii}{"B2}
+\DeclareMathSymbol{\curlyeqsucc}  {\mathrel}{symii}{"B3}
+\DeclareMathSymbol{\preccurlyeq}  {\mathrel}{symii}{"B4}
+\DeclareMathSymbol{\leqq}         {\mathrel}{symii}{"B5}
+\DeclareMathSymbol{\leqslant}     {\mathrel}{symii}{"B6}
+\DeclareMathSymbol{\lessgtr}      {\mathrel}{symii}{"B7}
+\DeclareMathSymbol{\backprime}    {\mathord}{symii}{"B8}
+\DeclareMathSymbol{\axisshort}    {\mathord}{symii}{"B9}
+\DeclareMathSymbol{\risingdotseq} {\mathrel}{symii}{"BA}
+\DeclareMathSymbol{\fallingdotseq}{\mathrel}{symii}{"BB}
+\DeclareMathSymbol{\succcurlyeq}  {\mathrel}{symii}{"BC}
+\DeclareMathSymbol{\geqq}         {\mathrel}{symii}{"BD}
+\DeclareMathSymbol{\geqslant}     {\mathrel}{symii}{"BE}
+\DeclareMathSymbol{\gtrless}      {\mathrel}{symii}{"BF}
+  \let\sqsubset\undefined  \let\sqsupset\undefined
+\DeclareMathSymbol{\sqsubset}     {\mathrel}{symii}{"C0}
+\DeclareMathSymbol{\sqsupset}     {\mathrel}{symii}{"C1}
+\DeclareMathSymbol{\vartriangleright}{\mathrel}{symii}{"C2}
+\DeclareMathSymbol{\vartriangleleft} {\mathrel}{symii}{"C3}
+\DeclareMathSymbol{\trianglerighteq} {\mathrel}{symii}{"C4}
+\DeclareMathSymbol{\trianglelefteq}  {\mathrel}{symii}{"C5}
+\DeclareMathSymbol{\bigstar}    {\mathord}{symii}{"C6}
+\DeclareMathSymbol{\between}    {\mathrel}{symii}{"C7}
+\DeclareMathSymbol{\blacktriangledown}  {\mathord}{symii}{"C8}
+\DeclareMathSymbol{\blacktriangleright} {\mathrel}{symii}{"C9}
+\DeclareMathSymbol{\blacktriangleleft}  {\mathrel}{symii}{"CA}
+\DeclareMathSymbol{\arrowaxisright}     {\mathord}{symii}{"CB}
+\DeclareMathSymbol{\arrowaxisleft}      {\mathord}{symii}{"CC}
+\DeclareMathSymbol{\vartriangle}        {\mathrel}{symii}{"CD}
+\DeclareMathSymbol{\blacktriangle}      {\mathord}{symii}{"CE}
+\DeclareMathSymbol{\triangledown}       {\mathord}{symii}{"CF}
+\DeclareMathSymbol{\eqcirc}       {\mathrel}{symii}{"D0}
+\DeclareMathSymbol{\lesseqgtr}    {\mathrel}{symii}{"D1}
+\DeclareMathSymbol{\gtreqless}    {\mathrel}{symii}{"D2}
+\DeclareMathSymbol{\lesseqqgtr}   {\mathrel}{symii}{"D3}
+\DeclareMathSymbol{\gtreqqless}   {\mathrel}{symii}{"D4}
+\DeclareMathSymbol{\yensymbol}    {\mathrel}{symii}{"D5}
+\DeclareMathSymbol{\Rrightarrow}  {\mathrel}{symii}{"D6}
+\DeclareMathSymbol{\Lleftarrow}   {\mathrel}{symii}{"D7}
+\DeclareMathSymbol{\checkalt}  {\mathord}{symii}{"D8}
+\DeclareMathSymbol{\veebar}       {\mathbin}{symii}{"D9}
+\DeclareMathSymbol{\barwedge}     {\mathbin}{symii}{"DA}
+\DeclareMathSymbol{\doublebarwedge} {\mathbin}{symii}{"DB}
+  \let\angle\undefined
+\DeclareMathSymbol{\angle}        {\mathord}{symii}{"DC}
+\DeclareMathSymbol{\measuredangle}  {\mathord}{symii}{"DD}
+\DeclareMathSymbol{\sphericalangle} {\mathord}{symii}{"DE}
+\DeclareMathSymbol{\varpropto}    {\mathrel}{symii}{"DF}
+\DeclareMathSymbol{\smallsmile}   {\mathrel}{symii}{"E0}
+\DeclareMathSymbol{\smallfrown}   {\mathrel}{symii}{"E1}
+\DeclareMathSymbol{\Subset}       {\mathrel}{symii}{"E2}
+\DeclareMathSymbol{\Supset}       {\mathrel}{symii}{"E3}
+\DeclareMathSymbol{\Cup}          {\mathbin}{symii}{"E4}
+  \let\doublecup\Cup
+\DeclareMathSymbol{\Cap}          {\mathbin}{symii}{"E5}
+  \let\doublecap\Cap
+\DeclareMathSymbol{\curlywedge}   {\mathbin}{symii}{"E6}
+\DeclareMathSymbol{\curlyvee}     {\mathbin}{symii}{"E7}
+\DeclareMathSymbol{\leftthreetimes} {\mathbin}{symii}{"E8}
+\DeclareMathSymbol{\rightthreetimes}{\mathbin}{symii}{"E9}
+\DeclareMathSymbol{\subseteqq}    {\mathrel}{symii}{"EA}
+\DeclareMathSymbol{\supseteqq}    {\mathrel}{symii}{"EB}
+\DeclareMathSymbol{\bumpeq}       {\mathrel}{symii}{"EC}
+\DeclareMathSymbol{\Bumpeq}       {\mathrel}{symii}{"ED}
+\DeclareMathSymbol{\lll}          {\mathrel}{symii}{"EE}
+  \let\llless\lll
+\DeclareMathSymbol{\ggg}          {\mathrel}{symii}{"EF}
+  \let\gggtr\ggg
+\DeclareMathSymbol{\rightanglenw} {\mathord}{symii}{"F0}
+\DeclareMathSymbol{\rightanglene} {\mathord}{symii}{"F1}
+\DeclareMathSymbol{\circledR}     {\mathord}{symii}{"F2}
+\DeclareMathSymbol{\circledS}     {\mathord}{symii}{"F3}
+\DeclareMathSymbol{\pitchfork}    {\mathrel}{symii}{"F4}
+\DeclareMathSymbol{\dotplus}      {\mathbin}{symii}{"F5}
+\DeclareMathSymbol{\backsim}      {\mathrel}{symii}{"F6}
+\DeclareMathSymbol{\backsimeq}    {\mathrel}{symii}{"F7}
+\DeclareMathSymbol{\rightanglesw} {\mathord}{symii}{"F8}
+\DeclareMathSymbol{\rightanglese} {\mathord}{symii}{"F9}
+\DeclareMathSymbol{\maltesecross} {\mathord}{symii}{"FA}
+\DeclareMathSymbol{\complement}   {\mathord}{symii}{"FB}
+\DeclareMathSymbol{\intercal}     {\mathbin}{symii}{"FC}
+\DeclareMathSymbol{\circledcirc}  {\mathbin}{symii}{"FD}
+\DeclareMathSymbol{\circledast}   {\mathbin}{symii}{"FE}
+\DeclareMathSymbol{\circleddash}  {\mathbin}{symii}{"FF}
+%
+\endinput
+%%
+%% End of file `srmm5nn.sty'.
+

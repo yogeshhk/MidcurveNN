@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Bidarra \cite{Bidarra1993} \cite{Bidarra1996} \cite{Bidarra1997}  \cite{BidarraKrakerBronsvoort1998} \cite{Bidarra1999} \cite{Bidarra1999a} \cite{BidarraBronsvoort2000}  \cite{BronsvoortBidarraNyirenda2006} ,Feature-based CAD model,Feature cells,Cellular model with feature owners; Boundary evaluation,Efficient boundary evaluation,Simplistic cases presented
+Kraker \cite{Kraker1998},Feature-based CAD model,Features are added as cells,Feature operations in Cellular model,Multi view feature architecture,Complex cellular decomposition
+Treeck \cite{Treeck},Brep,Concave Edge Partitioning,Decomposition at geometric intersections,Attributes like FEM loads and boundary conditions,Splitting is not elaborated

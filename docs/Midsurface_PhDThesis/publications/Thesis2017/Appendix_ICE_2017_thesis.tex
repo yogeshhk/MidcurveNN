@@ -1,0 +1,74 @@
+\begin{itemize}%[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+
+	\item {\em Regulators} are in {\bf bold}, {\bf  $\mathcal{R}$}, represents a unit of action
+	\item \textcolor{black}{\em shapes} are in {\em lowercase}, say, \textcolor{black}{\em circle, profile}
+	\item Prefix to a  {\em Regulator} is its {\em category}, like, \\
+		 \textcolor{black}{$\Delta$}	 :  transformations  \\
+		 \textcolor{black}{$\Phi$} 	 :  constraints  \\
+		 \textcolor{black}{$\Psi$}		 :  hierarchies  \\
+		 \textcolor{black}{$\Pi$}		 :  topologies  \\
+		 \textcolor{black}{$\Xi$}		 : variations  \\
+		 \textcolor{black}{$\Omega$}  :  operations
+
+	\item Superscripted$^{suffixes}$  indicate  regulator  {\em subtype},  for instance, \textcolor{black}{$\Delta C^p$} and  \textcolor{black}{$\Delta C^e$}  respectively specify parabolic and elliptical curve regulators
+
+	\item Numerical$^{suffixes}$ denote the dimension of the {\em Regulator}, for instance, \textcolor{black}{$\Delta M^0$} ,   \textcolor{black}{$\Delta M^1$ }, and   \textcolor{black}{$\Delta M^2$}, respectively represent a mirror point (0-dimensions), a mirror line (1-dimension) and a mirror plane (2-dimensions)
+
+	\item  Subscripted$_{suffixes}$ for {\em Regulators,  shapes} represent  as  indices;  for  example  \textcolor{black}{$\Delta T_1$},  and  \textcolor{black}{$\Delta T_2$} are  two different instances of {\em Translation Regulators} used in the same configuration.
+
+	\item {\em Regulators} can be generative or non-generative.  Generative  regulators (depicted by the presence of the ``n'' parameter)  take  an  input  shape  and  create output  shapes,  while  non-generative  regulators  act  on  the  input  shape.
+
+	\item \textcolor{black}{$\Delta {\bf T}$}\textcolor{black}{($\bar{s})^{<0><1><2>}$}  is  a  discrete  application  generating disjoint points, while  \textcolor{black}{$\Delta  {\bf T}$}\textcolor{black}{($\bar{s})^{<0,1,2>}$}  is a continuous application generating a line.  
+
+	\item Key-points ($ e$ : endpoint,   $m$ : midpoint,   $s$ : start-point) To access key-points (such as the midpoint): \textcolor{black}{$ shape_A \langle m_1 \rangle$}, length by \textcolor{black}{$shape_A \langle l \rangle$}
+\end{itemize}
+
+Although entities like {\em point}, {\em line} are present in ICE but entities and features pertinent to Mechanical CAD are not present. Also treatment given to primitives is different in the proposed approach. The additions to ICE are:
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item {\bf Entities} : CAD objects like {\em profile}, {\em sketch} etc.
+\item {\bf Regulator}: Changed the definition to include $guide$ (directrix) and removed hard coded $\bar{t}, d$
+\item {\bf Class Hierarchy} : Inheritance {\em derived::parent} relationships between entities. Operations can be defined in terms of the {\em parent} entities so that they are applicable to {\em Derived} classes as well.\\
+		$derived::base$ : subclass relationship\\
+		$|$ : logical OR\\
+		$\&$ : logical AND
+\item {\bf Form Features} : Definitions of variety of form feature and operations like patterning etc.
+\end{itemize}
+
+
+%\begin{itemize}%[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+%[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+%
+%	\item {\em Regulators} are in {\bf bold}, {\bf  $\mathcal{R}$}, represents a unit of action
+%	\item \textcolor{red}{\em shapes} are in {\em lowercase}, say, \textcolor{red}{\em circle, profile}
+%	\item Prefix to a  {\em Regulator} is its {\em category}, like, \\
+%		 \textcolor{magenta}{$\Delta$}	 :  transformations  \\
+%		 \textcolor{magenta}{$\Phi$} 	 :  constraints  \\
+%		 \textcolor{magenta}{$\Psi$}		 :  hierarchies  \\
+%		 \textcolor{magenta}{$\Pi$}		 :  topologies  \\
+%		 \textcolor{magenta}{$\Xi$}		 : variations  \\
+%		 \textcolor{magenta}{$\Omega$}  :  operations
+%
+%	\item Superscripted$^{suffixes}$  indicate  regulator  {\em subtype},  for instance, \textcolor{magenta}{$\Delta C^p$} and  \textcolor{magenta}{$\Delta C^e$}  respectively specify parabolic and elliptical curve regulators
+%
+%	\item Numerical$^{suffixes}$ denote the dimension of the {\em Regulator}, for instance, \textcolor{magenta}{$\Delta M^0$} ,   \textcolor{magenta}{$\Delta M^1$ }, and   \textcolor{magenta}{$\Delta M^2$}, respectively represent a mirror point (0-dimensions), a mirror line (1-dimension) and a mirror plane (2-dimensions)
+%
+%	\item  Subscripted$_{suffixes}$ for {\em Regulators,  shapes} represent  as  indices;  for  example  \textcolor{magenta}{$\Delta T_1$},  and  \textcolor{magenta}{$\Delta T_2$} are  two different instances of {\em Translation Regulators} used in the same configuration.
+%
+%	\item {\em Regulators} can be generative or non-generative.  Generative  regulators (depicted by the presence of the ``n'' parameter)  take  an  input  shape  and  create output  shapes,  while  non-generative  regulators  act  on  the  input  shape.
+%
+%	\item \textcolor{magenta}{$\Delta {\bf T}$}\textcolor{red}{($\bar{s})^{<0><1><2>}$}  is  a  discrete  application  generating disjoint points, while  \textcolor{magenta}{$\Delta  {\bf T}$}\textcolor{red}{($\bar{s})^{<0,1,2>}$}  is a continuous application generating a line.  
+%
+%	\item Key-points ($ e$ : endpoint,   $m$ : midpoint,   $s$ : start-point) To access key-points (such as the midpoint): \textcolor{red}{$ shape_A \langle m_1 \rangle$}, length by \textcolor{red}{$shape_A \langle l \rangle$}
+%\end{itemize}
+%
+%Although entities like {\em point}, {\em line} are present in ICE but entities and features pertinent to Mechanical CAD are not present. Also treatment given to primitives is different in the proposed approach. The additions to ICE are:
+%\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+%\item {\bf Entities} : CAD objects like {\em profile}, {\em sketch} etc.
+%\item {\bf Regulator}: Changed the definition to include $guide$ (directrix) and removed hard coded $\bar{t}, d$
+%\item {\bf Class Hierarchy} : Inheritance {\em derived::parent} relationships between entities. Operations can be defined in terms of the {\em parent} entities so that they are applicable to {\em Derived} classes as well.\\
+%		$derived::base$ : subclass relationship\\
+%		$|$ : logical OR\\
+%		$\&$ : logical AND
+%\item {\bf Form Features} : Definitions of variety of form feature and operations like patterning etc.
+%\end{itemize}

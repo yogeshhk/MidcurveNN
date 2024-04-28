@@ -1,0 +1,5 @@
+\section{Conclusion}
+
+Skeleton represents lower dimensional equivalent of a 2D or 3D shape. It is computed by methods like MAT, CAT, Straight Skeleton. Output computed by these methods typically does not represent the shape as per human perception, due to presence of gaps and unnecessary branches. Skeleton that lies midway of the 2D shape is called {\em Midcurve}. For a non-trivial shape, instead of computing midcurve of the whole shape in one go, one can divide the shape in more manageable, simpler shapes, for which midcurve generation is a way simpler problem. 
+
+This paper presents such a {\em divide-and-conquer} strategy. Polygons are decomposed into primitive sub-polygons, Midcurves are created for each of them, and wherever necessary they are joined by extension.  The results of improved partitioning (over Bayazit's \citep{Bayazit} approach) and its usage in creating properly connected midcurve are shown.

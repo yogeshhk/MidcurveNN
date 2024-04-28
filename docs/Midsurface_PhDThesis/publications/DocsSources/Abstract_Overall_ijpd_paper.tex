@@ -1,0 +1,11 @@
+\begin{abstract}                          	% Abstract of not more than 200 words.
+
+At the conceptual design phase, relatively complex solid models created by Computer Aided Design (CAD) applications are typically not directly taken for analysis in Computer Aided Engineering (CAE) applications. Such CAD models are first simplified so as to have analysis performed with lesser computational resources as well as in lesser time, without compromising much on the accuracy of the results. This process of simplification involves primarily two phases, first of suppressing small-irrelevant features (also called de-featuring) and the second one of dimension reduction (also called idealization) where 3D shapes are abstracted to either surfaces or curve-skeletons. This simplification is still largely a manual and time-consuming process owing to the complexity of shapes as well as due to domain expertize needed. Some attempts have been made to incorporate automation into both phases but they are far from being practically useful for complex cases.
+
+Many simplification techniques use final shape of the CAD model as input, and do not utilize the feature information available in many commercial CAD models. CAD Feature information, which used to be unexposed for proprietary reasons, has started being made available by many CAD applications. Features are higher level entities than just geometry and topology. They carry meta information such as Designer's intent, sequence in which part was built etc. De-featuring becomes relatively straightforward in feature-based CAD models as features are directly available to be suppressed or deleted. In Idealization, models which are of slender or thin-wall in nature are abstracted to Curves or Mid-surfaces to be represented by Beam or Shell elements respectively. 
+
+This paper lists some of the past attempts of Model Simplifications using feature information and brings out issues-limitations in them. It then presents high level algorithms for de-featuring and idealization (Midsurface generation) to address some of the issues. 
+
+\todo[inline]{Revise the abstract to focus on the novelty of the research presented in this paper rather than a general summary of the field}
+
+\end{abstract}

@@ -1,0 +1,9 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Dabke \cite{Dabke1994},Features,Pre Defined,Per feature pre defined midsurface,Feature based CAD-CAE migration,Primitives only
+Fischer \cite{Elber1999},Features,Parametric,Parametric midcurves swept,3D midsurface to 2D midcurve,Specific input surfaces only
+Stolt \cite{Stolt2005} \cite{Stolt2006a},Features,Pre Defined,Midcurves of sections lofted or pre defined from database,Customized to Injection Moulding,Sectioning not perfect
+Hamdi \cite{Hamdi2005} \cite{Hamdi2007} \cite{Hamdi2009} \cite{Hamdi2010}  \cite{Hamdi2012} \cite{Hamdi2012a},Features,Pre Defined,Hardcoded pre defined primitive midsurface,Leveraging feature information,Very primitive features only
+Robinson \cite{Robinson2006}  \cite{Robinson2007},Brep; Features,MAT,Thin portions in Brep or per feature midcurve of a feature by MAT,Mixed dimensional model possible,Post processing needed for MAT
+Sang Hun Lee \cite{SangHunLee2005} \cite{Lee2009},Features,Pre Defined; MAT,Primitive feature based pre defined midsurface ,CAD-CAE integrated data-model and workflow,Connection logic unclear
+Smit \cite{Smit2009} \cite{Smit2011},Features,Pre Defined,Primitive feature based pre defined midsurface ,Design Analysis feature mapping,Connection logic unclear
+Aimin \cite{Aimin2013},Features,MA,Feature based model simplification. ,Defeaturing parameters are collected upfront,No details on how midsurface are connected

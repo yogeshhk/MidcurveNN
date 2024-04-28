@@ -1,0 +1,5 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Sandia \cite{Watterberg1999},ACIS Brep,Surface type; Size,Recognizes Suppresses small features,Effective simplification,No Application  rules
+Belaziz \cite{BelazizBourasBrun2000},Brep,Manual,Morphological simplification,Generic Recognition,Manual selection
+Joshi Datta  \cite{Joshi2003},Brep Free-from surfaces,Type-based,Sheet metal features FR,Holes fillets ,Limited primitives
+Hamdi et al.  \cite{Hamdi2005} \cite{Hamdi2007}  \cite{Hamdi2009}  \cite{Hamdi2010} \cite{Hamdi2012} \cite{Hamdi2012a},Brep,Size; Proximity; Boundary Conditions,Merging faces,CAE input considered,Orientation not considered
