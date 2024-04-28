@@ -1,0 +1,274 @@
+\chapter{Editing}
+
+
+	Editing is one of the most complex tasks in a software system largely
+	because it involves ,in most cases , some sort of human interference.Proper
+	care needs to be taken in the editing process to perform the modifications
+	asked by the user. Editing process can be broken down in following major
+	tasks.
+
+	\begin{enumerate}
+
+	\item
+	Selecting an object to modify
+	\item
+	Accepting the parameters to modify the selected entity 
+	\item
+	Validating the specified  parameters and also its applicability to the
+		problem domain.
+	\item
+	Actually performing the changes as asked by the user.
+	\item
+	Displaying them correctly.
+
+	\end{enumerate}
+
+	A subtask, of above mentioned steps could be an UNDO operation which
+	brings user back to the state of previous action's result.
+
+
+	\section{ Feature Editing }
+
+	There are two types of entities involved in this implementation.
+	Geometry and Topology. Geometrical editing involves changing the shape
+	parameters of the blocks and Topological editing involves change in the
+	topological relations between the blocks.
+
+	Graph structure used to model the component proves especially advantageous
+	in editing algorithms as almost all the core processes boil down to change
+	in graph topology and internal node data.~\cite{Howard}
+
+	\subsection{Geometrical Editing} 
+
+		The shape of the block can be changed in various fashions and in almost
+	all cases is dependent on the data structure used to model it. Feature
+	based design models the block in parametric representatioins and thus shape
+	parameters become obvious choice for editing.Geometric editing in feature
+	based design involves much more work than just changing the dimensions of
+	the block selected by the user.The complexity comes as blocks are linked
+	to each other by the topological links. As it is must to maintain the
+	topological relations the changes in the dimensions of one block may
+	affect changes in the dimension of all blocks that are connected to it
+	and also the blocks subsequently connected to them.
+
+		Geometrical editing is performed at two levels.
+
+		\begin{enumerate}
+
+		\item
+		External, which involves changes in external block shapes
+		\item
+		Internal, which involves changes in shape parameters specific to
+			the shape involved.
+
+		\end{enumerate}
+
+		We will take a close look at how External editing is performed.At a
+	time only one external block ( called just block hereafetr unless specified)	parameter is allowed to be changed. Multiple changes can be performed one 
+	by one.Each Block axis is characterized by 4 parameters. MIN, MID, MAX and 
+	Length.
+	For changing one of them needs specification of other parameter that needs
+	to be fixed so that the remaining two can be calculated internally.
+
+	EXAMPLE : of maintanence of CFM with explanation.
+
+
+
+
+
+
+
+
+
+
+
+
+	(see 25 Iyad/41 Venky)
+
+	The example explained was a simple one as some of the components are
+	linked such that the n th block is by some path connected to 1 st block
+	forming what is called as Cycle in the Graph terminology .Editing involves 
+	different set of algorithms as changes from the original modified block
+	come to the same one after propagating through sets of block and may
+	result in inconsistency in geometry.	
+
+	EXAMPLE : of cycle in component and inconsistency that may cause
+
+
+
+
+
+
+
+
+	(prepare your own, 28 Iyad)
+
+	\section{Cycle detection in Graphs}
+
+    \subsection{Definitions}
+
+	\begin{itemize}
+
+	\item
+    A undirected graph G is "connected" if there is at least one
+    path between every pair of vertices vi and vj in G.
+	\item
+    A directed graph G is connected if the undirected graph obtained by
+    ignoring the edge directions in G is connected.
+	\item
+    A directed graph is said to be strongly connected if for every pair of
+    vertices vi and vj there exits at least one directed path form vj to vi.
+
+	\end{itemize}
+
+	The simplest problem, of course, is to determine whether a given graph,
+	directed or undirected contains a cycle. Depth first search suffices
+	to answer the question for both directed and undirected graphs : a graph
+	or a digraph has a cycle if and only if the DFS-tree contains a back edge.	
+	A slightly harder problem is to determine a minimal set of cycles of an
+	undirected graph from which all of the cycles in the graph can be 
+	constructed ( a so called fundamental set of cycles).It is still harder
+	to determine all the cycles of a digraph.[BOOK/graph/Reingold] With the
+	combination of the fundamental cycles all other cycles can be derived.
+
+
+		At first a spanning tree of the graph is generated with Depth first
+	search. When algorithm finds a back edge ( an edge is called Back edge
+	because they lead back to vertices that have been previously visited),
+	the cycle consists of the tree edges from the current node to the
+	destination node of the edge and the current edge. So as to collect proper
+	edges of tree a stack is used while performing depth first search which
+	stores all the vertices on the path from the root to the vertex currently
+	being visited. When the back edge is encountered, the cycle formed
+	consists of that back edge and the edges connecting the vertices on the
+	top of the stack.
+
+
+		Any algorithm for generating all the cycles of a
+	digraph can also be used for undirected graphs by converting the undirected
+	graph into a digraph by replacing each edge with two oppositely directed
+	edges between the same pair of vertices.~\cite{Rein}
+
+
+		The graph structure used here is actually bidirectional with directed
+	edges in both directions. Precaution is taken to remove all the cycles with
+	two edges and  thereby avoiding cycles between two adjacent nodes.
+
+
+		Extra care needs to be taken so that every cycle detected is new one and
+	not just combination of the already found ones.The process employed in
+	detection of cycles is based on CYCLE algorithm ~\cite{Rein} and 
+	is explained briefly here.
+
+
+	All the nodes are numbered in an ascending order. This is done at the
+	creation stage only. We begin the search at a vertex s and build a(directed)
+	path (s,v1,v2,v3....,vk), such that vi > s, 1<= i <=k. A cycle is reported
+	only when the next vertex vk+1 = s. After generating the cycle(s ,v1,v2,...
+	vk,s), we explore the next edge going out of vk. If all the edges going out
+	of vk have been explored, we back up to the previous vertex vk-1 and try
+	extending from it and so on. This process continues until we finally try
+	back up past the starting vertex s;all the cycles containing vertex s have
+	been generated. This process is repeated for all the nodes if we want to
+	find out all the cycles. In the current implementation the cycles having
+	the edited node are only presented to user for selection.
+
+	All the vertices are made "unavailable"( by setting available flag in the
+	node as FALSE as soon as v is appended on the current path) 
+	while searching with graph
+	rooted at s so as to avoid the traversing of the cycles origina-
+	ting at vi.It remains "unavailable" until search backs up past v to the
+	previous vertex on the current path. A record is kept of the predecessors
+	of all unavailable vertices that are not on the current path by maintaining
+	a separate set for each vertex. When u becomes available so do all its
+	unavailable predecessors that are not in the current path. Thus all the
+	elements in that set are made available. As these members are made 
+	available again, their unavailable predecessors that are not the current 
+	path are made available again and so on.This recursive procedure is called
+	UNMARK in the implementation.
+
+
+    Every cycle in a digraph lies entirely within a strongly connected
+    component. So at start graph is decomposed into strongly connected
+    components.
+
+
+	After finding strong components, the above mentioned procedure is applied
+	to every component at a time. In the current implementation , cycle
+	detection is done only for the component that contains the edited node.
+
+
+	INSERT : Flow chart for Editing(Venky)
+
+
+	\subsection{Complete Procedure}
+
+	\begin{itemize}
+
+	\item
+   Set current component
+	\item
+   Select Block ( Node ) for editing
+    i.e length to be edited and the constraint plane
+
+	\item
+   FINDCYCLES for all the nodes ( actually for the time being I am
+    doing it for the edited node only to save the extra computations
+
+	\item
+   Processthe cycles to remove all the cycles having path of 2 nodes
+    only and removing the duplicate Cycles
+
+	\item
+   Present the cycles to the user to pick for processing
+
+	\item
+   If there are NO cycles then he indicates such thing or else if he
+    he wants cycle processing then he has to give the modification node
+
+	\item
+   while traversing the cycle from both sides go on putting the  nodes
+    in the queue (respective to the axis chosen)
+
+	\item
+   If you don-t want cycles then you come to following steps directly
+
+	\item
+   Put this node in the Queue ( of the type of the length to be edited)
+
+	\item
+	
+	\begin{verbatim}
+
+    for( XQ, YQ, ZQ){
+
+        while( not end of Q){
+
+            Set current node as Base Node
+
+            Modifylength();
+
+            // Searches for "lengthid" in the Length-Listid and
+            // finds other links.
+            // if edited length is different and NOT fixed Add
+            // those other nodes to the Qs of that Length type
+
+            if all the adjacent nodes of Base Node are Resolved
+
+                mark the base node as VISITED
+                Remove this Base node from the Q
+
+            Go to the Next Node in the Q
+
+        }
+
+    }// end of all Qs
+
+	\end{verbatim}
+
+	\item
+   Done.
+
+	\end{itemize}
+
+

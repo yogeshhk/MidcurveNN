@@ -1,0 +1,726 @@
+%%
+%% This is file `srmm1-01.sty', derived from `srmm1.sty' (and simplified)
+%% Copyright 2000, Ragu
+%% v. 0.1 2000/12/04 (support for LM1 encoding: letters, bletters)
+%%   8 options for Greek (see below!)
+%%
+\ProvidesPackage{srmm1-01}
+ [2000/10/23 v0.101 %
+  support for LM1 encoding letters bletters]
+%
+%
+% Greek normal lowercase slanted = nls
+% Greek normal lowercase upright = nlu
+\newif\if@greeknls\@greeknlstrue
+\DeclareOption{greeknls}{\@greeknlstrue}
+\DeclareOption{greeknlu}{\@greeknlsfalse}
+%
+% Greek normal uppercase slanted = nus
+% Greek normal uppercase upright = nuu
+\newif\if@greeknus\@greeknusfalse
+\DeclareOption{greeknus}{\@greeknustrue}
+\DeclareOption{greeknuu}{\@greeknusfalse}
+%
+% Greek bold lowercase slanted = bls
+% Greek bold lowercase upright = blu
+\newif\if@greekbls\@greekblsfalse
+\DeclareOption{greekbls}{\@greekblstrue}
+\DeclareOption{greekblu}{\@greekblsfalse}
+%
+% Greek bold uppercase slanted = bus
+% Greek bold uppercase upright = buu
+\newif\if@greekbus\@greekbusfalse
+\DeclareOption{greekbus}{\@greekbustrue}
+\DeclareOption{greekbuu}{\@greekbusfalse}
+%
+\ExecuteOptions{greeknls,greeknuu,greekblu,greekbuu}
+%\ExecuteOptions{greeknls}
+\ProcessOptions
+%
+%
+%
+\DeclareMathSymbol{A}{\mathalpha}{letters}{`A}
+\DeclareMathSymbol{B}{\mathalpha}{letters}{`B}
+\DeclareMathSymbol{C}{\mathalpha}{letters}{`C}
+\DeclareMathSymbol{D}{\mathalpha}{letters}{`D}
+\DeclareMathSymbol{E}{\mathalpha}{letters}{`E}
+\DeclareMathSymbol{F}{\mathalpha}{letters}{`F}
+\DeclareMathSymbol{G}{\mathalpha}{letters}{`G}
+\DeclareMathSymbol{H}{\mathalpha}{letters}{`H}
+\DeclareMathSymbol{I}{\mathalpha}{letters}{`I}
+\DeclareMathSymbol{J}{\mathalpha}{letters}{`J}
+\DeclareMathSymbol{K}{\mathalpha}{letters}{`K}
+\DeclareMathSymbol{L}{\mathalpha}{letters}{`L}
+\DeclareMathSymbol{M}{\mathalpha}{letters}{`M}
+\DeclareMathSymbol{N}{\mathalpha}{letters}{`N}
+\DeclareMathSymbol{O}{\mathalpha}{letters}{`O}
+\DeclareMathSymbol{P}{\mathalpha}{letters}{`P}
+\DeclareMathSymbol{Q}{\mathalpha}{letters}{`Q}
+\DeclareMathSymbol{R}{\mathalpha}{letters}{`R}
+\DeclareMathSymbol{S}{\mathalpha}{letters}{`S}
+\DeclareMathSymbol{T}{\mathalpha}{letters}{`T}
+\DeclareMathSymbol{U}{\mathalpha}{letters}{`U}
+\DeclareMathSymbol{V}{\mathalpha}{letters}{`V}
+\DeclareMathSymbol{W}{\mathalpha}{letters}{`W}
+\DeclareMathSymbol{X}{\mathalpha}{letters}{`X}
+\DeclareMathSymbol{Y}{\mathalpha}{letters}{`Y}
+\DeclareMathSymbol{Z}{\mathalpha}{letters}{`Z}
+%
+\DeclareMathSymbol{a}{\mathalpha}{letters}{`a}
+\DeclareMathSymbol{b}{\mathalpha}{letters}{`b}
+\DeclareMathSymbol{c}{\mathalpha}{letters}{`c}
+\DeclareMathSymbol{d}{\mathalpha}{letters}{`d}
+\DeclareMathSymbol{e}{\mathalpha}{letters}{`e}
+\DeclareMathSymbol{f}{\mathalpha}{letters}{`f}
+\DeclareMathSymbol{g}{\mathalpha}{letters}{`g}
+\DeclareMathSymbol{h}{\mathalpha}{letters}{`h}
+\DeclareMathSymbol{i}{\mathalpha}{letters}{`i}
+\DeclareMathSymbol{j}{\mathalpha}{letters}{`j}
+\DeclareMathSymbol{k}{\mathalpha}{letters}{`k}
+\DeclareMathSymbol{l}{\mathalpha}{letters}{`l}
+\DeclareMathSymbol{m}{\mathalpha}{letters}{`m}
+\DeclareMathSymbol{n}{\mathalpha}{letters}{`n}
+\DeclareMathSymbol{o}{\mathalpha}{letters}{`o}
+\DeclareMathSymbol{p}{\mathalpha}{letters}{`p}
+\DeclareMathSymbol{q}{\mathalpha}{letters}{`q}
+\DeclareMathSymbol{r}{\mathalpha}{letters}{`r}
+\DeclareMathSymbol{s}{\mathalpha}{letters}{`s}
+\DeclareMathSymbol{t}{\mathalpha}{letters}{`t}
+\DeclareMathSymbol{u}{\mathalpha}{letters}{`u}
+\DeclareMathSymbol{v}{\mathalpha}{letters}{`v}
+\DeclareMathSymbol{w}{\mathalpha}{letters}{`w}
+\DeclareMathSymbol{x}{\mathalpha}{letters}{`x}
+\DeclareMathSymbol{y}{\mathalpha}{letters}{`y}
+\DeclareMathSymbol{z}{\mathalpha}{letters}{`z}
+%
+%
+%
+\DeclareMathSymbol{\SLalpha}{\mathord}{letters}{129}
+\DeclareMathSymbol{\SLbeta}{\mathord}{letters}{130}
+\DeclareMathSymbol{\SLgamma}{\mathord}{letters}{131}
+\DeclareMathSymbol{\SLdelta}{\mathord}{letters}{132}
+\DeclareMathSymbol{\SLepsilon}{\mathord}{letters}{133}
+\DeclareMathSymbol{\SLzeta}{\mathord}{letters}{134}
+\DeclareMathSymbol{\SLeta}{\mathord}{letters}{135}
+\DeclareMathSymbol{\SLtheta}{\mathord}{letters}{136}
+\DeclareMathSymbol{\SLiota}{\mathord}{letters}{137}
+\DeclareMathSymbol{\SLkappa}{\mathord}{letters}{138}
+\DeclareMathSymbol{\SLlambda}{\mathord}{letters}{139}
+\DeclareMathSymbol{\SLmu}{\mathord}{letters}{140}
+\DeclareMathSymbol{\SLnu}{\mathord}{letters}{141}
+\DeclareMathSymbol{\SLxi}{\mathord}{letters}{142}
+\DeclareMathSymbol{\SLpi}{\mathord}{letters}{143}
+\DeclareMathSymbol{\SLrho}{\mathord}{letters}{144}
+\DeclareMathSymbol{\SLsigma}{\mathord}{letters}{145}
+\DeclareMathSymbol{\SLtau}{\mathord}{letters}{146}
+\DeclareMathSymbol{\SLupsilon}{\mathord}{letters}{147}
+\DeclareMathSymbol{\SLphi}{\mathord}{letters}{148}
+\DeclareMathSymbol{\SLchi}{\mathord}{letters}{149}
+\DeclareMathSymbol{\SLpsi}{\mathord}{letters}{150}
+\DeclareMathSymbol{\SLomega}{\mathord}{letters}{151}
+\DeclareMathSymbol{\SLvarepsilon}{\mathord}{letters}{152}
+\DeclareMathSymbol{\SLvartheta}{\mathord}{letters}{153}
+\DeclareMathSymbol{\SLvarpi}{\mathord}{letters}{154}
+\DeclareMathSymbol{\SLvarrho}{\mathord}{letters}{155}
+\DeclareMathSymbol{\SLvarsigma}{\mathord}{letters}{156}
+\DeclareMathSymbol{\SLvarphi}{\mathord}{letters}{157}
+\DeclareMathSymbol{\SLvarkappa}{\mathord}{letters}{158}
+\DeclareMathSymbol{\SLlambdabar}{\mathord}{letters}{159}
+\DeclareMathSymbol{\SLbetanew}{\mathord}{letters}{160}
+\DeclareMathSymbol{\SLpartialdiff}{\mathord}{letters}{161}
+%
+\DeclareMathSymbol{\SLGamma}{\mathord}{letters}{162}
+\DeclareMathSymbol{\SLDelta}{\mathord}{letters}{163}
+\DeclareMathSymbol{\SLTheta}{\mathord}{letters}{164}
+\DeclareMathSymbol{\SLLambda}{\mathord}{letters}{165}
+\DeclareMathSymbol{\SLXi}{\mathord}{letters}{166}
+\DeclareMathSymbol{\SLPi}{\mathord}{letters}{167}
+\DeclareMathSymbol{\SLSigma}{\mathord}{letters}{168}
+\DeclareMathSymbol{\SLUpsilonold}{\mathord}{letters}{169}
+\DeclareMathSymbol{\SLPhi}{\mathord}{letters}{170}
+\DeclareMathSymbol{\SLPsi}{\mathord}{letters}{171}
+\DeclareMathSymbol{\SLOmega}{\mathord}{letters}{172}
+\DeclareMathSymbol{\SLUpsilonnew}{\mathord}{letters}{173}
+\DeclareMathSymbol{\SLThetanew}{\mathord}{letters}{174}
+\DeclareMathSymbol{\SLnabla}{\mathord}{letters}{175}
+%
+\DeclareMathSymbol{\UPalpha}{\mathord}{letters}{193}
+\DeclareMathSymbol{\UPbeta}{\mathord}{letters}{194}
+\DeclareMathSymbol{\UPgamma}{\mathord}{letters}{195}
+\DeclareMathSymbol{\UPdelta}{\mathord}{letters}{196}
+\DeclareMathSymbol{\UPepsilon}{\mathord}{letters}{197}
+\DeclareMathSymbol{\UPzeta}{\mathord}{letters}{198}
+\DeclareMathSymbol{\UPeta}{\mathord}{letters}{199}
+\DeclareMathSymbol{\UPtheta}{\mathord}{letters}{200}
+\DeclareMathSymbol{\UPiota}{\mathord}{letters}{201}
+\DeclareMathSymbol{\UPkappa}{\mathord}{letters}{202}
+\DeclareMathSymbol{\UPlambda}{\mathord}{letters}{203}
+\DeclareMathSymbol{\UPmu}{\mathord}{letters}{204}
+\DeclareMathSymbol{\UPnu}{\mathord}{letters}{205}
+\DeclareMathSymbol{\UPxi}{\mathord}{letters}{206}
+\DeclareMathSymbol{\UPpi}{\mathord}{letters}{207}
+\DeclareMathSymbol{\UPrho}{\mathord}{letters}{208}
+\DeclareMathSymbol{\UPsigma}{\mathord}{letters}{209}
+\DeclareMathSymbol{\UPtau}{\mathord}{letters}{210}
+\DeclareMathSymbol{\UPupsilon}{\mathord}{letters}{211}
+\DeclareMathSymbol{\UPphi}{\mathord}{letters}{212}
+\DeclareMathSymbol{\UPchi}{\mathord}{letters}{213}
+\DeclareMathSymbol{\UPpsi}{\mathord}{letters}{214}
+\DeclareMathSymbol{\UPomega}{\mathord}{letters}{215}
+\DeclareMathSymbol{\UPvarepsilon}{\mathord}{letters}{216}
+\DeclareMathSymbol{\UPvartheta}{\mathord}{letters}{217}
+\DeclareMathSymbol{\UPvarpi}{\mathord}{letters}{218}
+\DeclareMathSymbol{\UPvarrho}{\mathord}{letters}{219}
+\DeclareMathSymbol{\UPvarsigma}{\mathord}{letters}{220}
+\DeclareMathSymbol{\UPvarphi}{\mathord}{letters}{221}
+\DeclareMathSymbol{\UPvarkappa}{\mathord}{letters}{222}
+\DeclareMathSymbol{\UPlambdabar}{\mathord}{letters}{223}
+\DeclareMathSymbol{\UPbetanew}{\mathord}{letters}{224}
+\DeclareMathSymbol{\UPpartialdiff}{\mathord}{letters}{225}
+%
+\DeclareMathSymbol{\UPGamma}{\mathord}{letters}{226}
+\DeclareMathSymbol{\UPDelta}{\mathord}{letters}{227}
+\DeclareMathSymbol{\UPTheta}{\mathord}{letters}{228}
+\DeclareMathSymbol{\UPLambda}{\mathord}{letters}{229}
+\DeclareMathSymbol{\UPXi}{\mathord}{letters}{230}
+\DeclareMathSymbol{\UPPi}{\mathord}{letters}{231}
+\DeclareMathSymbol{\UPSigma}{\mathord}{letters}{232}
+\DeclareMathSymbol{\UPUpsilonold}{\mathord}{letters}{233}
+\DeclareMathSymbol{\UPPhi}{\mathord}{letters}{234}
+\DeclareMathSymbol{\UPPsi}{\mathord}{letters}{235}
+\DeclareMathSymbol{\UPOmega}{\mathord}{letters}{236}
+\DeclareMathSymbol{\UPUpsilonnew}{\mathord}{letters}{237}
+\DeclareMathSymbol{\UPThetanew}{\mathord}{letters}{238}
+\DeclareMathSymbol{\UPnabla}{\mathord}{letters}{239}
+%
+%
+%
+\DeclareMathSymbol{\dagger}{\mathbin}{letters}{33}
+\DeclareMathSymbol{\ddagger}{\mathbin}{letters}{34}
+\DeclareMathSymbol{\mathsection}{\mathord}{letters}{35}
+\DeclareMathSymbol{\mathparagraph}{\mathord}{letters}{36}
+\DeclareMathSymbol{\wp}{\mathord}{letters}{37}
+\DeclareMathSymbol{\vori}{\mathord}{letters}{38}
+\DeclareMathSymbol{\wori}{\mathord}{letters}{39}
+%
+\DeclareMathSymbol{\leftharpoonup}{\mathrel}{letters}{40}
+\DeclareMathSymbol{\leftharpoondown}{\mathrel}{letters}{41}
+\DeclareMathSymbol{\rightharpoonup}{\mathrel}{letters}{42}
+\DeclareMathSymbol{\rightharpoondown}{\mathrel}{letters}{43}
+\DeclareMathSymbol{\lhook}{\mathrel}{letters}{44}
+\DeclareMathSymbol{\rhook}{\mathrel}{letters}{45}
+%
+\DeclareMathSymbol{.}{\mathord}{letters}{48}
+\DeclareMathSymbol{\ldotp}{\mathpunct}{letters}{48}
+\DeclareMathSymbol{,}{\mathpunct}{letters}{49}
+\DeclareMathSymbol{:}{\mathrel}{letters}{50}
+\DeclareMathSymbol{\colon}{\mathpunct}{letters}{50}
+\DeclareMathSymbol{;}{\mathpunct}{letters}{51}
+\DeclareMathSymbol{<}{\mathrel}{letters}{60}
+\DeclareMathSymbol{/}{\mathord}{letters}{61}
+\DeclareMathSymbol{>}{\mathrel}{letters}{62}
+\DeclareMathSymbol{\star}{\mathbin}{letters}{63}
+%
+\DeclareMathSymbol{\flat}{\mathord}{letters}{91}
+\DeclareMathSymbol{\natural}{\mathord}{letters}{92}
+\DeclareMathSymbol{\sharp}{\mathord}{letters}{93}
+\DeclareMathSymbol{\smile}{\mathrel}{letters}{94}
+\DeclareMathSymbol{\frown}{\mathrel}{letters}{95}
+\DeclareMathSymbol{\ell}{\mathord}{letters}{96}
+%
+\DeclareMathSymbol{\imath}{\mathord}{letters}{123}
+\DeclareMathSymbol{\jmath}{\mathord}{letters}{124}
+\DeclareMathSymbol{\UPimath}{\mathord}{letters}{125}
+\DeclareMathSymbol{\UPjmath}{\mathord}{letters}{126}
+%
+\DeclareMathSymbol{(}{\mathopen} {letters}{"34}
+\DeclareMathSymbol{)}{\mathclose}{letters}{"35}
+\DeclareMathSymbol{[}{\mathopen} {letters}{"36}
+\DeclareMathSymbol{]}{\mathclose}{letters}{"37}
+\DeclareMathDelimiter{(}{\mathopen} {letters}{"34}{largesymbols}{"00}
+\DeclareMathDelimiter{)}{\mathclose}{letters}{"35}{largesymbols}{"01}
+\DeclareMathDelimiter{[}{\mathopen} {letters}{"36}{largesymbols}{"02}
+\DeclareMathDelimiter{]}{\mathclose}{letters}{"37}{largesymbols}{"03}
+\DeclareMathDelimiter{\lbrace}
+   {\mathopen}{letters}{"38}{largesymbols}{"08}
+\DeclareMathDelimiter{\rbrace}
+   {\mathclose}{letters}{"39}{largesymbols}{"09}
+%
+%
+%
+% bold italic letters "bletters"
+%
+\DeclareMathSymbol{\BIA}{\mathord}{bletters}{65}
+\DeclareMathSymbol{\BIB}{\mathord}{bletters}{66}
+\DeclareMathSymbol{\BIC}{\mathord}{bletters}{67}
+\DeclareMathSymbol{\BID}{\mathord}{bletters}{68}
+\DeclareMathSymbol{\BIE}{\mathord}{bletters}{69}
+\DeclareMathSymbol{\BIF}{\mathord}{bletters}{70}
+\DeclareMathSymbol{\BIG}{\mathord}{bletters}{71}
+\DeclareMathSymbol{\BIH}{\mathord}{bletters}{72}
+\DeclareMathSymbol{\BII}{\mathord}{bletters}{73}
+\DeclareMathSymbol{\BIJ}{\mathord}{bletters}{74}
+\DeclareMathSymbol{\BIK}{\mathord}{bletters}{75}
+\DeclareMathSymbol{\BIL}{\mathord}{bletters}{76}
+\DeclareMathSymbol{\BIM}{\mathord}{bletters}{77}
+\DeclareMathSymbol{\BIN}{\mathord}{bletters}{78}
+\DeclareMathSymbol{\BIO}{\mathord}{bletters}{79}
+\DeclareMathSymbol{\BIP}{\mathord}{bletters}{80}
+\DeclareMathSymbol{\BIQ}{\mathord}{bletters}{81}
+\DeclareMathSymbol{\BIR}{\mathord}{bletters}{82}
+\DeclareMathSymbol{\BIS}{\mathord}{bletters}{83}
+\DeclareMathSymbol{\BIT}{\mathord}{bletters}{84}
+\DeclareMathSymbol{\BIU}{\mathord}{bletters}{85}
+\DeclareMathSymbol{\BIV}{\mathord}{bletters}{86}
+\DeclareMathSymbol{\BIW}{\mathord}{bletters}{87}
+\DeclareMathSymbol{\BIX}{\mathord}{bletters}{88}
+\DeclareMathSymbol{\BIY}{\mathord}{bletters}{89}
+\DeclareMathSymbol{\BIZ}{\mathord}{bletters}{90}
+%
+\DeclareMathSymbol{\BIa}{\mathord}{bletters}{97}
+\DeclareMathSymbol{\BIb}{\mathord}{bletters}{98}
+\DeclareMathSymbol{\BIc}{\mathord}{bletters}{99}
+\DeclareMathSymbol{\BId}{\mathord}{bletters}{100}
+\DeclareMathSymbol{\BIe}{\mathord}{bletters}{101}
+\DeclareMathSymbol{\BIf}{\mathord}{bletters}{102}
+\DeclareMathSymbol{\BIg}{\mathord}{bletters}{103}
+\DeclareMathSymbol{\BIh}{\mathord}{bletters}{104}
+\DeclareMathSymbol{\BIi}{\mathord}{bletters}{105}
+\DeclareMathSymbol{\BIj}{\mathord}{bletters}{106}
+\DeclareMathSymbol{\BIk}{\mathord}{bletters}{107}
+\DeclareMathSymbol{\BIl}{\mathord}{bletters}{108}
+\DeclareMathSymbol{\BIm}{\mathord}{bletters}{109}
+\DeclareMathSymbol{\BIn}{\mathord}{bletters}{110}
+\DeclareMathSymbol{\BIo}{\mathord}{bletters}{111}
+\DeclareMathSymbol{\BIp}{\mathord}{bletters}{112}
+\DeclareMathSymbol{\BIq}{\mathord}{bletters}{113}
+\DeclareMathSymbol{\BIr}{\mathord}{bletters}{114}
+\DeclareMathSymbol{\BIs}{\mathord}{bletters}{115}
+\DeclareMathSymbol{\BIt}{\mathord}{bletters}{116}
+\DeclareMathSymbol{\BIu}{\mathord}{bletters}{117}
+\DeclareMathSymbol{\BIv}{\mathord}{bletters}{118}
+\DeclareMathSymbol{\BIw}{\mathord}{bletters}{119}
+\DeclareMathSymbol{\BIx}{\mathord}{bletters}{120}
+\DeclareMathSymbol{\BIy}{\mathord}{bletters}{121}
+\DeclareMathSymbol{\BIz}{\mathord}{bletters}{122}
+%
+% bold upright letters "boperators"
+%
+\DeclareMathSymbol{\BFA}{\mathord}{boperators}{65}
+\DeclareMathSymbol{\BFB}{\mathord}{boperators}{66}
+\DeclareMathSymbol{\BFC}{\mathord}{boperators}{67}
+\DeclareMathSymbol{\BFD}{\mathord}{boperators}{68}
+\DeclareMathSymbol{\BFE}{\mathord}{boperators}{69}
+\DeclareMathSymbol{\BFF}{\mathord}{boperators}{70}
+\DeclareMathSymbol{\BFG}{\mathord}{boperators}{71}
+\DeclareMathSymbol{\BFH}{\mathord}{boperators}{72}
+\DeclareMathSymbol{\BFI}{\mathord}{boperators}{73}
+\DeclareMathSymbol{\BFJ}{\mathord}{boperators}{74}
+\DeclareMathSymbol{\BFK}{\mathord}{boperators}{75}
+\DeclareMathSymbol{\BFL}{\mathord}{boperators}{76}
+\DeclareMathSymbol{\BFM}{\mathord}{boperators}{77}
+\DeclareMathSymbol{\BFN}{\mathord}{boperators}{78}
+\DeclareMathSymbol{\BFO}{\mathord}{boperators}{79}
+\DeclareMathSymbol{\BFP}{\mathord}{boperators}{80}
+\DeclareMathSymbol{\BFQ}{\mathord}{boperators}{81}
+\DeclareMathSymbol{\BFR}{\mathord}{boperators}{82}
+\DeclareMathSymbol{\BFS}{\mathord}{boperators}{83}
+\DeclareMathSymbol{\BFT}{\mathord}{boperators}{84}
+\DeclareMathSymbol{\BFU}{\mathord}{boperators}{85}
+\DeclareMathSymbol{\BFV}{\mathord}{boperators}{86}
+\DeclareMathSymbol{\BFW}{\mathord}{boperators}{87}
+\DeclareMathSymbol{\BFX}{\mathord}{boperators}{88}
+\DeclareMathSymbol{\BFY}{\mathord}{boperators}{89}
+\DeclareMathSymbol{\BFZ}{\mathord}{boperators}{90}
+%
+\DeclareMathSymbol{\BFa}{\mathord}{boperators}{97}
+\DeclareMathSymbol{\BFb}{\mathord}{boperators}{98}
+\DeclareMathSymbol{\BFc}{\mathord}{boperators}{99}
+\DeclareMathSymbol{\BFd}{\mathord}{boperators}{100}
+\DeclareMathSymbol{\BFe}{\mathord}{boperators}{101}
+\DeclareMathSymbol{\BFf}{\mathord}{boperators}{102}
+\DeclareMathSymbol{\BFg}{\mathord}{boperators}{103}
+\DeclareMathSymbol{\BFh}{\mathord}{boperators}{104}
+\DeclareMathSymbol{\BFi}{\mathord}{boperators}{105}
+\DeclareMathSymbol{\BFj}{\mathord}{boperators}{106}
+\DeclareMathSymbol{\BFk}{\mathord}{boperators}{107}
+\DeclareMathSymbol{\BFl}{\mathord}{boperators}{108}
+\DeclareMathSymbol{\BFm}{\mathord}{boperators}{109}
+\DeclareMathSymbol{\BFn}{\mathord}{boperators}{110}
+\DeclareMathSymbol{\BFo}{\mathord}{boperators}{111}
+\DeclareMathSymbol{\BFp}{\mathord}{boperators}{112}
+\DeclareMathSymbol{\BFq}{\mathord}{boperators}{113}
+\DeclareMathSymbol{\BFr}{\mathord}{boperators}{114}
+\DeclareMathSymbol{\BFs}{\mathord}{boperators}{115}
+\DeclareMathSymbol{\BFt}{\mathord}{boperators}{116}
+\DeclareMathSymbol{\BFu}{\mathord}{boperators}{117}
+\DeclareMathSymbol{\BFv}{\mathord}{boperators}{118}
+\DeclareMathSymbol{\BFw}{\mathord}{boperators}{119}
+\DeclareMathSymbol{\BFx}{\mathord}{boperators}{120}
+\DeclareMathSymbol{\BFy}{\mathord}{boperators}{121}
+\DeclareMathSymbol{\BFz}{\mathord}{boperators}{122}
+%
+%
+%
+\DeclareMathSymbol{\BFSLalpha}{\mathord}{bletters}{129}
+\DeclareMathSymbol{\BFSLbeta}{\mathord}{bletters}{130}
+\DeclareMathSymbol{\BFSLgamma}{\mathord}{bletters}{131}
+\DeclareMathSymbol{\BFSLdelta}{\mathord}{bletters}{132}
+\DeclareMathSymbol{\BFSLepsilon}{\mathord}{bletters}{133}
+\DeclareMathSymbol{\BFSLzeta}{\mathord}{bletters}{134}
+\DeclareMathSymbol{\BFSLeta}{\mathord}{bletters}{135}
+\DeclareMathSymbol{\BFSLtheta}{\mathord}{bletters}{136}
+\DeclareMathSymbol{\BFSLiota}{\mathord}{bletters}{137}
+\DeclareMathSymbol{\BFSLkappa}{\mathord}{bletters}{138}
+\DeclareMathSymbol{\BFSLlambda}{\mathord}{bletters}{139}
+\DeclareMathSymbol{\BFSLmu}{\mathord}{bletters}{140}
+\DeclareMathSymbol{\BFSLnu}{\mathord}{bletters}{141}
+\DeclareMathSymbol{\BFSLxi}{\mathord}{bletters}{142}
+\DeclareMathSymbol{\BFSLpi}{\mathord}{bletters}{143}
+\DeclareMathSymbol{\BFSLrho}{\mathord}{bletters}{144}
+\DeclareMathSymbol{\BFSLsigma}{\mathord}{bletters}{145}
+\DeclareMathSymbol{\BFSLtau}{\mathord}{bletters}{146}
+\DeclareMathSymbol{\BFSLupsilon}{\mathord}{bletters}{147}
+\DeclareMathSymbol{\BFSLphi}{\mathord}{bletters}{148}
+\DeclareMathSymbol{\BFSLchi}{\mathord}{bletters}{149}
+\DeclareMathSymbol{\BFSLpsi}{\mathord}{bletters}{150}
+\DeclareMathSymbol{\BFSLomega}{\mathord}{bletters}{151}
+\DeclareMathSymbol{\BFSLvarepsilon}{\mathord}{bletters}{152}
+\DeclareMathSymbol{\BFSLvartheta}{\mathord}{bletters}{153}
+\DeclareMathSymbol{\BFSLvarpi}{\mathord}{bletters}{154}
+\DeclareMathSymbol{\BFSLvarrho}{\mathord}{bletters}{155}
+\DeclareMathSymbol{\BFSLvarsigma}{\mathord}{bletters}{156}
+\DeclareMathSymbol{\BFSLvarphi}{\mathord}{bletters}{157}
+\DeclareMathSymbol{\BFSLvarkappa}{\mathord}{bletters}{158}
+\DeclareMathSymbol{\BFSLlambdabar}{\mathord}{bletters}{159}
+\DeclareMathSymbol{\BFSLbetanew}{\mathord}{bletters}{160}
+\DeclareMathSymbol{\BFSLpartialdiff}{\mathord}{bletters}{161}
+%
+\DeclareMathSymbol{\BFSLGamma}{\mathord}{bletters}{162}
+\DeclareMathSymbol{\BFSLDelta}{\mathord}{bletters}{163}
+\DeclareMathSymbol{\BFSLTheta}{\mathord}{bletters}{164}
+\DeclareMathSymbol{\BFSLLambda}{\mathord}{bletters}{165}
+\DeclareMathSymbol{\BFSLXi}{\mathord}{bletters}{166}
+\DeclareMathSymbol{\BFSLPi}{\mathord}{bletters}{167}
+\DeclareMathSymbol{\BFSLSigma}{\mathord}{bletters}{168}
+\DeclareMathSymbol{\BFSLUpsilonold}{\mathord}{bletters}{169}
+\DeclareMathSymbol{\BFSLPhi}{\mathord}{bletters}{170}
+\DeclareMathSymbol{\BFSLPsi}{\mathord}{bletters}{171}
+\DeclareMathSymbol{\BFSLOmega}{\mathord}{bletters}{172}
+\DeclareMathSymbol{\BFSLUpsilonnew}{\mathord}{bletters}{173}
+\DeclareMathSymbol{\BFSLThetanew}{\mathord}{bletters}{174}
+\DeclareMathSymbol{\BFSLnabla}{\mathord}{bletters}{175}
+%
+\DeclareMathSymbol{\BFUPalpha}{\mathord}{bletters}{193}
+\DeclareMathSymbol{\BFUPbeta}{\mathord}{bletters}{194}
+\DeclareMathSymbol{\BFUPgamma}{\mathord}{bletters}{195}
+\DeclareMathSymbol{\BFUPdelta}{\mathord}{bletters}{196}
+\DeclareMathSymbol{\BFUPepsilon}{\mathord}{bletters}{197}
+\DeclareMathSymbol{\BFUPzeta}{\mathord}{bletters}{198}
+\DeclareMathSymbol{\BFUPeta}{\mathord}{bletters}{199}
+\DeclareMathSymbol{\BFUPtheta}{\mathord}{bletters}{200}
+\DeclareMathSymbol{\BFUPiota}{\mathord}{bletters}{201}
+\DeclareMathSymbol{\BFUPkappa}{\mathord}{bletters}{202}
+\DeclareMathSymbol{\BFUPlambda}{\mathord}{bletters}{203}
+\DeclareMathSymbol{\BFUPmu}{\mathord}{bletters}{204}
+\DeclareMathSymbol{\BFUPnu}{\mathord}{bletters}{205}
+\DeclareMathSymbol{\BFUPxi}{\mathord}{bletters}{206}
+\DeclareMathSymbol{\BFUPpi}{\mathord}{bletters}{207}
+\DeclareMathSymbol{\BFUPrho}{\mathord}{bletters}{208}
+\DeclareMathSymbol{\BFUPsigma}{\mathord}{bletters}{209}
+\DeclareMathSymbol{\BFUPtau}{\mathord}{bletters}{210}
+\DeclareMathSymbol{\BFUPupsilon}{\mathord}{bletters}{211}
+\DeclareMathSymbol{\BFUPphi}{\mathord}{bletters}{212}
+\DeclareMathSymbol{\BFUPchi}{\mathord}{bletters}{213}
+\DeclareMathSymbol{\BFUPpsi}{\mathord}{bletters}{214}
+\DeclareMathSymbol{\BFUPomega}{\mathord}{bletters}{215}
+\DeclareMathSymbol{\BFUPvarepsilon}{\mathord}{bletters}{216}
+\DeclareMathSymbol{\BFUPvartheta}{\mathord}{bletters}{217}
+\DeclareMathSymbol{\BFUPvarpi}{\mathord}{bletters}{218}
+\DeclareMathSymbol{\BFUPvarrho}{\mathord}{bletters}{219}
+\DeclareMathSymbol{\BFUPvarsigma}{\mathord}{bletters}{220}
+\DeclareMathSymbol{\BFUPvarphi}{\mathord}{bletters}{221}
+\DeclareMathSymbol{\BFUPvarkappa}{\mathord}{bletters}{222}
+\DeclareMathSymbol{\BFUPlambdabar}{\mathord}{bletters}{223}
+\DeclareMathSymbol{\BFUPbetanew}{\mathord}{bletters}{224}
+\DeclareMathSymbol{\BFUPpartialdiff}{\mathord}{bletters}{225}
+%
+\DeclareMathSymbol{\BFUPGamma}{\mathord}{bletters}{226}
+\DeclareMathSymbol{\BFUPDelta}{\mathord}{bletters}{227}
+\DeclareMathSymbol{\BFUPTheta}{\mathord}{bletters}{228}
+\DeclareMathSymbol{\BFUPLambda}{\mathord}{bletters}{229}
+\DeclareMathSymbol{\BFUPXi}{\mathord}{bletters}{230}
+\DeclareMathSymbol{\BFUPPi}{\mathord}{bletters}{231}
+\DeclareMathSymbol{\BFUPSigma}{\mathord}{bletters}{232}
+\DeclareMathSymbol{\BFUPUpsilonold}{\mathord}{bletters}{233}
+\DeclareMathSymbol{\BFUPPhi}{\mathord}{bletters}{234}
+\DeclareMathSymbol{\BFUPPsi}{\mathord}{bletters}{235}
+\DeclareMathSymbol{\BFUPOmega}{\mathord}{bletters}{236}
+\DeclareMathSymbol{\BFUPUpsilonnew}{\mathord}{bletters}{237}
+\DeclareMathSymbol{\BFUPThetanew}{\mathord}{bletters}{238}
+\DeclareMathSymbol{\BFUPnabla}{\mathord}{bletters}{239}
+%
+%
+\DeclareMathSymbol{\BFdagger}{\mathrel}{bletters}{33}
+\DeclareMathSymbol{\BFddagger}{\mathrel}{bletters}{34}
+\DeclareMathSymbol{\BFmathsection}{\mathord}{bletters}{35}
+\DeclareMathSymbol{\BFmathparagraph}{\mathord}{bletters}{36}
+\DeclareMathSymbol{\BFwp}{\mathord}{bletters}{37}
+\DeclareMathSymbol{\BFvori}{\mathord}{bletters}{38}
+\DeclareMathSymbol{\BFwori}{\mathord}{bletters}{39}
+%
+\DeclareMathSymbol{\BFleftharpoonup}{\mathrel}{bletters}{"28}
+\DeclareMathSymbol{\BFleftharpoondown}{\mathrel}{bletters}{"29}
+\DeclareMathSymbol{\BFrightharpoonup}{\mathrel}{bletters}{"2A}
+\DeclareMathSymbol{\BFrightharpoondown}{\mathrel}{bletters}{"2B}
+\DeclareMathSymbol{\BFlhook}{\mathrel}{bletters}{44}
+\DeclareMathSymbol{\BFrhook}{\mathrel}{bletters}{45}
+%
+\DeclareMathSymbol{\BFperiod}{\mathord}{bletters}{48}%
+\DeclareMathSymbol{\BFcomma}{\mathord}{bletters}{49}% spacing manual!
+\DeclareMathSymbol{\BFcolon}{\mathord}{bletters}{50}% spacing manual!
+\DeclareMathSymbol{\BFsemicolon}{\mathord}{bletters}{51}% spacing manual!
+%
+% bold parens as ordinary chars
+\DeclareMathSymbol{\BFlparen}{\mathord}{bletters}{"34}
+\DeclareMathSymbol{\BFrparen}{\mathord}{bletters}{"35}
+\DeclareMathSymbol{\BFlbrack}{\mathord}{bletters}{"36}
+\DeclareMathSymbol{\BFrbrack}{\mathord}{bletters}{"37}
+\DeclareMathSymbol{\BFlbrace}{\mathord}{bletters}{"38}
+\DeclareMathSymbol{\BFrbrace}{\mathord}{bletters}{"39}
+%
+\DeclareMathSymbol{\BFless}{\mathrel}{bletters}{"3C}
+\DeclareMathSymbol{\BFslash}{\mathord}{bletters}{"3D}
+\DeclareMathSymbol{\BFgreater}{\mathrel}{bletters}{"3E}
+\DeclareMathSymbol{\BFstar}{\mathbin}{bletters}{"3F}
+%
+\DeclareMathSymbol{\BFflat}{\mathord}{bletters}{91}
+\DeclareMathSymbol{\BFnatural}{\mathord}{bletters}{92}
+\DeclareMathSymbol{\BFsharp}{\mathord}{bletters}{93}
+\DeclareMathSymbol{\BFsmile}{\mathrel}{bletters}{94}
+\DeclareMathSymbol{\BFfrown}{\mathrel}{bletters}{95}
+\DeclareMathSymbol{\BFell}{\mathord}{bletters}{96}
+%
+\DeclareMathSymbol{\BFimath}{\mathord}{bletters}{123}
+\DeclareMathSymbol{\BFjmath}{\mathord}{bletters}{124}
+\DeclareMathSymbol{\BFUPimath}{\mathord}{bletters}{125}
+\DeclareMathSymbol{\BFUPjmath}{\mathord}{bletters}{126}
+%
+%
+%
+% Options for Greek:
+% greeknls, greeknlu, greeknus, greeknuu
+% greekbls, greekblu, greekbus, greekbuu
+%
+%
+%
+\if@greeknls
+%%% Greek normal lowercase slanted = nls
+  \let\alpha\SLalpha
+  \let\beta\SLbeta
+  \let\gamma\SLgamma
+  \let\delta\SLdelta
+  \let\epsilon\SLepsilon
+  \let\zeta\SLzeta
+  \let\eta\SLeta
+  \let\theta\SLtheta
+  \let\iota\SLiota
+  \let\kappa\SLkappa
+  \let\lambda\SLlambda
+  \let\mu\SLmu
+  \let\nu\SLnu
+  \let\xi\SLxi
+  \let\pi\SLpi
+  \let\rho\SLrho
+  \let\sigma\SLsigma
+  \let\tau\SLtau
+  \let\upsilon\SLupsilon
+  \let\phi\SLphi
+  \let\chi\SLchi
+  \let\psi\SLpsi
+  \let\omega\SLomega
+  \let\varepsilon\SLvarepsilon
+  \let\vartheta\SLvartheta
+  \let\varpi\SLvarpi
+  \let\varrho\SLvarrho
+  \let\varsigma\SLvarsigma
+  \let\varphi\SLvarphi
+  \let\varkappa\SLvarkappa
+  \let\partial\SLpartialdiff
+  \let\lambdabar\SLlambdabar
+\else
+%%% Greek normal lowercase upright = nlu
+  \let\alpha\UPalpha
+  \let\beta\UPbeta
+  \let\gamma\UPgamma
+  \let\delta\UPdelta
+  \let\epsilon\UPepsilon
+  \let\zeta\UPzeta
+  \let\eta\UPeta
+  \let\theta\UPtheta
+  \let\iota\UPiota
+  \let\kappa\UPkappa
+  \let\lambda\UPlambda
+  \let\mu\UPmu
+  \let\nu\UPnu
+  \let\xi\UPxi
+  \let\pi\UPpi
+  \let\rho\UPrho
+  \let\sigma\UPsigma
+  \let\tau\UPtau
+  \let\upsilon\UPupsilon
+  \let\phi\UPphi
+  \let\chi\UPchi
+  \let\psi\UPpsi
+  \let\omega\UPomega
+  \let\varepsilon\UPvarepsilon
+  \let\vartheta\UPvartheta
+  \let\varpi\UPvarpi
+  \let\varrho\UPvarrho
+  \let\varsigma\UPvarsigma
+  \let\varphi\UPvarphi
+  \let\varkappa\UPvarkappa
+  \let\partial\UPpartialdiff
+  \let\lambdabar\UPlambdabar
+\fi
+%
+%
+%
+\if@greeknus
+%%% Greek normal uppercase slanted = nus
+  \let\Gamma\SLGamma
+  \let\Delta\SLDelta
+  \let\Theta\SLTheta
+  \let\Lambda\SLLambda
+  \let\Xi\SLXi
+  \let\Pi\SLPi
+  \let\Sigma\SLSigma
+  \let\Upsilon\SLUpsilonold
+  \let\Phi\SLPhi
+  \let\Psi\SLPsi
+  \let\Omega\SLOmega
+  \let\nabla\SLnabla
+\else
+%%% Greek normal uppercase upright = nuu
+  \let\Gamma\UPGamma
+  \let\Delta\UPDelta
+  \let\Theta\UPTheta
+  \let\Lambda\UPLambda
+  \let\Xi\UPXi
+  \let\Pi\UPPi
+  \let\Sigma\UPSigma
+  \let\Upsilon\UPUpsilonold
+  \let\Phi\UPPhi
+  \let\Psi\UPPsi
+  \let\Omega\UPOmega
+  \let\nabla\UPnabla
+\fi
+%
+%
+%
+\if@greekbls
+%%% Greek bold lowercase slanted = bls
+  \let\BFalpha\BFSLalpha
+  \let\BFbeta\BFSLbeta
+  \let\BFgamma\BFSLgamma
+  \let\BFdelta\BFSLdelta
+  \let\BFepsilon\BFSLepsilon
+  \let\BFzeta\BFSLzeta
+  \let\BFeta\BFSLeta
+  \let\BFtheta\BFSLtheta
+  \let\BFiota\BFSLiota
+  \let\BFkappa\BFSLkappa
+  \let\BFlambda\BFSLlambda
+  \let\BFmu\BFSLmu
+  \let\BFnu\BFSLnu
+  \let\BFxi\BFSLxi
+  \let\BFpi\BFSLpi
+  \let\BFrho\BFSLrho
+  \let\BFsigma\BFSLsigma
+  \let\BFtau\BFSLtau
+  \let\BFupsilon\BFSLupsilon
+  \let\BFphi\BFSLphi
+  \let\BFchi\BFSLchi
+  \let\BFpsi\BFSLpsi
+  \let\BFomega\BFSLomega
+  \let\BFvarepsilon\BFSLvarepsilon
+  \let\BFvartheta\BFSLvartheta
+  \let\BFvarpi\BFSLvarpi
+  \let\BFvarrho\BFSLvarrho
+  \let\BFvarsigma\BFSLvarsigma
+  \let\BFvarphi\BFSLvarphi
+  \let\BFvarkappa\BFSLvarkappa
+  \let\BFpartial\BFSLpartialdiff
+  \let\BFlambdabar\BFSLlambdabar
+\else
+%%% Greek bold lowercase upright = blu
+  \let\BFalpha\BFUPalpha
+  \let\BFbeta\BFUPbeta
+  \let\BFgamma\BFUPgamma
+  \let\BFdelta\BFUPdelta
+  \let\BFepsilon\BFUPepsilon
+  \let\BFzeta\BFUPzeta
+  \let\BFeta\BFUPeta
+  \let\BFtheta\BFUPtheta
+  \let\BFiota\BFUPiota
+  \let\BFkappa\BFUPkappa
+  \let\BFlambda\BFUPlambda
+  \let\BFmu\BFUPmu
+  \let\BFnu\BFUPnu
+  \let\BFxi\BFUPxi
+  \let\BFpi\BFUPpi
+  \let\BFrho\BFUPrho
+  \let\BFsigma\BFUPsigma
+  \let\BFtau\BFUPtau
+  \let\BFupsilon\BFUPupsilon
+  \let\BFphi\BFUPphi
+  \let\BFchi\BFUPchi
+  \let\BFpsi\BFUPpsi
+  \let\BFomega\BFUPomega
+  \let\BFvarepsilon\BFUPvarepsilon
+  \let\BFvartheta\BFUPvartheta
+  \let\BFvarpi\BFUPvarpi
+  \let\BFvarrho\BFUPvarrho
+  \let\BFvarsigma\BFUPvarsigma
+  \let\BFvarphi\BFUPvarphi
+  \let\BFvarkappa\BFUPvarkappa
+  \let\BFpartial\BFUPpartialdiff
+  \let\BFlambdabar\BFUPlambdabar
+\fi
+%
+%
+%
+\if@greekbus
+%%% Greek bold uppercase slanted = bus
+  \let\BFGamma\BFSLGamma
+  \let\BFDelta\BFSLDelta
+  \let\BFTheta\BFSLTheta
+  \let\BFLambda\BFSLLambda
+  \let\BFXi\BFSLXi
+  \let\BFPi\BFSLPi
+  \let\BFSigma\BFSLSigma
+  \let\BFUpsilon\BFSLUpsilonold
+  \let\BFPhi\BFSLPhi
+  \let\BFPsi\BFSLPsi
+  \let\BFOmega\BFSLOmega
+  \let\BFnabla\BFSLnabla
+\else
+%%% Greek bold uppercase upright = buu
+  \let\BFGamma\BFUPGamma
+  \let\BFDelta\BFUPDelta
+  \let\BFTheta\BFUPTheta
+  \let\BFLambda\BFUPLambda
+  \let\BFXi\BFUPXi
+  \let\BFPi\BFUPPi
+  \let\BFSigma\BFUPSigma
+  \let\BFUpsilon\BFUPUpsilonold
+  \let\BFPhi\BFUPPhi
+  \let\BFPsi\BFUPPsi
+  \let\BFOmega\BFUPOmega
+  \let\BFnabla\BFUPnabla
+\fi
+%
+\endinput
+%%
+%% End of file `srmm1-01.sty'.
+

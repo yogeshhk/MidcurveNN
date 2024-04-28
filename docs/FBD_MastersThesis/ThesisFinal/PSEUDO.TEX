@@ -1,0 +1,237 @@
+    \subsubsection{Creation Process }
+ 
+    \paragraph{New Component}
+ 
+        Creation of a component is started by the creation of the first block
+    purely from geometrical data. This block serves as the base to which other
+    blocks can be added to form the desired component.
+ 
+ 
+    \begin{verbatim}
+ 
+    *   call back for New Component
+        Make_data_entry_table()
+ 
+    OK =    "data_entry_call back.c"
+        Get data values from widget
+        new Component {
+                new Block
+                Link_blocks
+                new Component Graph(comp,block){
+                    new Feature node
+                    Link_Nodes()
+ 
+                }
+ 
+        }
+ 
+        Link_comp();Set currc
+        comp_flag = OLD_COMP;
+        Display_by_phigs ( new comp);
+ 
+ 
+ 
+    CANCEL = "data_entry_call back.c"
+ 
+        reinitialize data_flags and other flags appropriately
+ 
+    \end{verbatim}
+ 
+ 
+    \paragraph{Adding Block to Existing Component}
+ 
+    To add a block to the existing component , the type of topology that will
+    exist between the new block and the preexisting block needs to be specified
+    Depending on the type of the topological link, certain planes of the new
+    block get fixed according to the dimensions of the planes of the old block.
+ 
+ 
+    \begin{verbatim}
+ 
+    *   call back for any addblk option in Create
+        Set block_flag to the appropriate block_type
+ 
+    *   Ask for number of topological links
+ 
+    *   FOR those many times create Topo_Selection Box +
+        final Full_data_entry_table( " topo_selection_callbacks.c")
+ 
+    *   In Topo_selection_box
+            Select Parent_Block ( set blk_num)
+            Select topological link ( Set topo_type)
+            Get reqd planes and store them in array of Planes[6]
+ 
+        APPLY = ( for every Topo_selection_Box )
+ 
+            Fill the latest ( globally) available information in
+            array of Topo_info[10]
+ 
+            switch( topo_type) fill up data_flags //
+                // in "topo_data_assignments.c "
+ 
+            Write_in _data_table( data_flags);
+ 
+            OK = ( data_table )("data_entry_callbacks.c")
+ 
+                Get values from data widgets
+                Depending on block_type instantiate Block
+                Link_Blocks to currc
+ 
+                new Feature Node( new block)
+                // sets it in
+ 
+                comp_graph->Link_nodes // Vertically
+ 
+                We still have information stored in Topo_info[i]
+ 
+ 
+                For each topo_info[i] depending on the topo_type
+                instantiate new Topo link(topo_info,new blk) {
+                    new Feature Node
+                    set new blk in it
+                    new arcs
+                    put Topo links in them
+ 
+                    Join nodes by arcs
+                    Join nodes in everyone s node list
+                    Join arcs in everyone s arc list
+                }
+ 
+                data flags are reinitialized
+ 
+            CANCEL =
+ 
+                initialize Planes[6]
+                initialize topo_info[10]
+                initialize data_flags
+ 
+    \end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ 
+    \subsubsection{Complete Procedure}
+ 
+    \begin{itemize}
+ 
+    \item
+   Set current component
+    \item
+   Select Block ( Node ) for editing
+    i.e length to be edited and the constraint plane
+ 
+    \item
+   FINDCYCLES for all the nodes ( actually for the time being I am
+ 
+    doing it for the edited node only to save the extra computations
+ 
+    \item
+   Process the cycles to remove all the cycles having path of 2 nodes
+    only and removing the duplicate Cycles
+ 
+    \item
+   Present the cycles to the user to pick for processing
+ 
+    \item
+   If there are NO cycles then he indicates such thing or else if he
+    he wants cycle processing then he has to give the modification node
+ 
+    \item
+   while traversing the cycle from both sides go on putting the  nodes
+    in the queue (respective to the axis chosen)
+ 
+    \item
+   If you dont want cycles then you come to following steps directly
+ 
+    \item
+   Put this node in the Queue ( of the type of the length to be edited)
+ 
+    \item
+ 
+    \begin{verbatim}
+ 
+    for( XQ, YQ, ZQ){
+ 
+        while( not end of Q){
+ 
+            Set current node as Base Node
+ 
+            Modifylength();
+ 
+            // Searches for "lengthid" in the LengthListid and
+            // finds other links.
+            // if edited length is different and NOT fixed Add
+            // those other nodes to the Qs of that Length type
+ 
+            if all the adjacent nodes of Base Node are Resolved
+ 
+                mark the base node as VISITED
+                Remove this Base node from the Q
+ 
+            Go to the Next Node in the Q
+ 
+        }
+ 
+    }// end of all Qs
+ 
+    \end{verbatim}
+ 
+    \item
+   Done.
+ 
+	\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    The whole process is explained in the following algorithm
+ 
+ 
+    \begin{verbatim}
+ 
+    Go to each block{
+ 
+        Create_Faces();
+        Make_them_polygons(Face*);  // within polygon, calculate Normal &
+                                    // distance from origin
+ 
+        Traverse_List_of_polygons(){
+ 
+            if(normal matches )Add_to_existing list of Polygonset;
+            else{
+ 
+                Create_new_polygonset and add the polygon to it;
+                Add polygon set to the list of polygonsets in curr_component;
+            }
+ 
+        }
+ 
+    }
+ 
+    Go_to_each polygonset{
+ 
+        See if any of the two have common edge;
+        if(yes){
+                //Merge the polygons to first and delete the second one
+ 
+                Merge(){
+ 
+                    // Take two polygons from the polygonset P1,P2
+                    Join_if_edge_common(P1,P2){
+ 
+                        // Go to each pair of vertices in P1 and check
+                        // with each vertex of P2
+ 
+                        check = Test_edges(V1,V2,W1,W2);
+                        if(check){
+ 
+                            // Collect vertices in P1
+                    }
+                }
+                Test the Merged polygon to further check the common edges
+                and split it if necessary
+        }
+    }
+ 
+    Go to each polygon set and Display_by_phigs();
+ 
+    \end{verbatim}
+

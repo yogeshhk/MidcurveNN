@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg2984"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="SG_entity_polygon.svg">
+  <defs
+     id="defs2986" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.8890873"
+     inkscape:cx="151.63614"
+     inkscape:cy="14.139696"
+     inkscape:current-layer="g3124"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="716"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata2989">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <g
+       id="g3124"
+       transform="translate(-362.34242,-103.51059)">
+      <polygon
+         id="polygon2984"
+         points="126.643,235.75 8.646,168.875 28.114,110.572 92.1,137.679 122.646,115.099 168.846,15.293 224.255,141.833 "
+         enable-background="new    "
+         style="opacity:0.2;fill:#2d3082"
+         transform="matrix(0.27146323,0,0,0.27422318,362.59395,101.48094)" />
+      <polygon
+         id="polygon2986"
+         points="126.643,235.75 8.646,168.875 28.114,110.572 92.1,137.679 122.646,115.099 168.846,15.293 224.255,141.833 "
+         style="fill:none;stroke:#010101;stroke-width:1.71270001;stroke-linejoin:round"
+         transform="matrix(0.27146323,0,0,0.27422318,362.59395,101.48094)" />
+      <circle
+         id="circle2988"
+         r="3.71"
+         cy="34.709999"
+         cx="114.147"
+         sodipodi:cx="114.147"
+         sodipodi:cy="34.709999"
+         sodipodi:rx="3.71"
+         sodipodi:ry="3.71"
+         style="fill:none"
+         d="m 117.857,34.709999 c 0,2.048977 -1.66102,3.71 -3.71,3.71 -2.04897,0 -3.71,-1.661023 -3.71,-3.71 0,-2.048976 1.66103,-3.71 3.71,-3.71 2.04898,0 3.71,1.661024 3.71,3.71 z"
+         transform="matrix(0.27146323,0,0,0.27422318,362.59395,101.48094)" />
+      <path
+         id="path2994"
+         d="M 370.22587,131.80234"
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#010101;stroke-width:0.23365994;stroke-dasharray:1.55764196" />
+      <path
+         id="path2996"
+         d="M 408.42944,105.67463"
+         inkscape:connector-curvature="0"
+         style="fill:none;stroke:#010101;stroke-width:0.23365994;stroke-dasharray:1.55764196" />
+    </g>
+  </g>
+</svg>

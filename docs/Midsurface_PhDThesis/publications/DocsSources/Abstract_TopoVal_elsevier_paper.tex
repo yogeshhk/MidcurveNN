@@ -1,0 +1,6 @@
+During the initial stages of design, where quick (but a bit-approximate) analysis results are acceptable, complex models developed in Computer Aided Design (CAD) applications are often simplified before taking them for simulation in Computer Aided Engineering (CAE) domain. Thin walled parts, such as Sheet Metal parts are often simplified to a set of surfaces lying midway, called Midsurfaces. They, along with thickness information, are used in creation of shell elements during CAE meshing. 
+
+Midsurface is expected to mimic shape of the original part, both, geometrically and topologically.  Distance from the Midsurface to its corresponding faces in the original part, should be about half of the thickness. Topologically, the Midsurface should represent all the shape characteristics present in the original part, like junctions, configurations etc.
+
+This paper attempts to derive a topological transformation relationship between Sheet Metal part (Solid) to its Midsurface (Surface), in both directions (from Solid to Surface and then from Surface to Solid). It goes on to prove the efficacy of the derivation using basic as well as practical examples.
+

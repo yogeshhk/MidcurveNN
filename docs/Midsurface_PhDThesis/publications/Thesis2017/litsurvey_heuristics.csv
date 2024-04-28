@@ -1,0 +1,19 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Rezayat \cite{Rezayat1996},Brep,Face Pairing,Face pairing; Midsurface patches; Adjacency Graph; Extend and trim,No branches,Complex Face pairing
+Sungchan Kim \cite{Kim2005},Brep,Face Pairing,Defeaturing; Face pair method,Usage of Face pairing on feature-basis,Connection details missing
+Sheen \cite{Sheen2005}  \cite{Sheen2008}   \cite{Sheen2010},Features,Defeaturing; Face pairing,Feature based model simplification; Face pairing,Better simplification,Co-planar;  T and L type only
+Hanmin Lee \cite{Lee2007},Brep,Face Pairing,"Face pairing; Midsurface patches; Adjacency Graph;
+Extend and trim",Edges decide the extension rule for correct topological boundary,Complex Face pairing
+Aimin \cite{Aimin2013},Features,Defeaturing; Face pairing,Defeaturing; Face pair method,Defeaturing parameters  collected upfront,Connection details missing
+Dabke \cite{Dabke1994},Features,Pre Defined,Per feature pre defined midsurface,Feature based CAD-CAE migration,Primitives only
+Fischer \cite{Elber1999},Features,Parametric,Parametric midcurves swept,3D midsurface to 2D midcurve,Specific input surfaces only
+Stolt \cite{Stolt2005} \cite{Stolt2006a},Features,Pre Defined,Midcurves of sections lofted or pre defined from database,Customized to Injection Moulding,Sectioning not perfect
+Hamdi \cite{Hamdi2005} \cite{Hamdi2007} \cite{Hamdi2009} \cite{Hamdi2010}  \cite{Hamdi2012} \cite{Hamdi2012a},Features,Pre Defined,Hardcoded pre defined primitive midsurface,Leveraging feature information,Very primitive features only
+Smit \cite{Smit2009} \cite{Smit2011},Features,Pre Defined,Primitive feature based pre defined midsurface ,Design Analysis feature mapping,Connection logic unclear
+Aimin \cite{Aimin2013},Features,MA,Feature based model simplification. ,Defeaturing parameters are collected upfront,No details on how midsurface are connected
+Chong \cite{Chong2004},Brep,Concave Edge Partitioning,Edge-pair detection and collapsing,Mixed dimensional modelling,Heuristic-Hardcoded; Analytical surfaces only
+Kageura \cite{Kageura2009},Brep,Cellular,Cell based Midsurface and joining,Adjacency graph for generalness,Only simple academic shapes
+Cao \cite{Cao2009} \cite{Cao2011},Brep,Cellular; Face Pairing,Protrusion detection; Midcurves of sketches,Better CAD-FEA integration,Only additive swept features
+Yoonhwan Woo \cite{Woo2013},Brep,Cellular; MA,Maximal sub volumes; Midsurface Abstraction per cell,Detailed face pairing,Heavy use of Booleans
+Boussuge \cite{Boussuge2012} \cite{Boussuge2013} \cite{Boussuge2013a} \cite{Boussuge2014},Brep,Cellular; Feature Recognition; MAT,Construction history by Cellular. Cellular FR for Extrudes,History tree independent,Only Extrudes. Parallel and Orthogonal connections only.
+Huawei Zhu \cite{Zhu2015},Brep,Cellular; Parametric Midsurface,Virtual Cellular by Face Group method; classification of connections,Booleans are avoided,Cellular not possible for complex shapes

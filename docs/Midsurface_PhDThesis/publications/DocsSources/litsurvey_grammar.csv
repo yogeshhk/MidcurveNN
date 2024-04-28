@@ -1,0 +1,6 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Stiny and Gips \cite{Stiny1971},Set of shapes labels and rules,Shape Grammar,Formal notation for geometric configuration for architecture,Useful Generative design,
+John Gero \cite{Gero1997},Shape schema,Spatial Grammar,,Architectural patterns,
+Hoda Moustapha \cite{Moustapha2004} \cite{Akin2004} \cite{Hoda2005},Shape elements,Geometric Transformations,Formalism for Geometric Transformation,Useful Generative design; Architecture,Only basic transformations mentioned
+Hoisl et. al.\cite{Hoisl2009},Primitives,Spatial Grammar,Sweeping to generate different shapes depending on different profiles and guide curves. ,Generative solutions for CAD,
+Li Rong \cite{Rong2012},Feature based CAD,Macro Parametric,Feature formulation ,Enhanced Interoperability,

@@ -1,0 +1,3 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Rocha \cite{Rocha98} \cite{Rocha99},Images,Decomposition; Skeletonization,For character recognition in images,Divide boundary; mid segment; joining,Improper junctions
+Bag \cite{Bag2011},Images,Decomposition; Skeletonization,For character recognition in images,Avoids shape distortion,Speed disadvantages

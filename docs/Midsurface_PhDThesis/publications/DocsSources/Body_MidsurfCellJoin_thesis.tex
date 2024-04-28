@@ -1,0 +1,994 @@
+\section{Limitations of Existing Approaches}
+\label{sec:midsurfcelljoin:existingapproach}
+
+\replaced{Review of the}{After analyzing various} past approaches \replaced{indicate}{it can be concluded} that, Face Pairing (also known as Midsurface Abstraction) is one of the most representative approaches for midsurface generation~\cite{Sheen2008}. 
+\todo[inline]{Telephone comment: Explain face pairing midsurface generation approach with figure, label face pairs, how midsurface is generated. [DONE]}
+In the Face Pairing approach, faces opposite each other are identified by ray-firing method and are grouped as face-pairs \cite{Rezayat1996}.
+
+\todo{Review comment: Can you enlarge this and show separately, to show master, slave, ray fired. [ADDED SEPARATE ENLARGED PICTURE. MASTER SLAVE IN THE SCHEMATICS LATER]}
+
+%%\bigskip
+
+	\begin{figure}[h!]
+	\centering 
+	%\includegraphics[width=0.85\linewidth]{../Common/images/facepairing}
+	\subfloat[Full model view]{\label{fig:midsurfcelljoin:facepairmids}\includegraphics[width=0.72\linewidth,valign=t]{../Common/images/facepairing}} \quad
+	\subfloat[Magnified view]{\label{fig:midsurfcelljoin:midsjoining}\includegraphics[width=0.62\linewidth,valign=t]{../Common/images/facepairingamplified}}
+	\caption{Face Pairing Approach (Source: Boussuge \cite{Boussuge2014})}
+	\label{fig:midsurfcelljoin:facepairing}
+	\end{figure}
+
+%%\bigskip
+
+Figure~\ref{fig:midsurfcelljoin:facepairing} shows an example model in two stages of midsurface computation. Figure~\ref{fig:midsurfcelljoin:facepairmids}(1) shows midsurface patches whereas Figure~\ref{fig:midsurfcelljoin:facepairmids}(2) shows them joined. Figure~\ref{fig:midsurfcelljoin:midsjoining} shows magnified view of the same model. In Figure \ref{fig:midsurfcelljoin:facepairmids}(1), one of the face-pairs is marked for an example, as $F_1-F_2$. The face from which a ray is fired is called as ``master face'' ($F_1$) and the target which got identified as the opposite face, is called as the ``slave face'' ($F_2$). Figure~\ref{fig:midsurfcelljoin:facepairmids}(2) shows the patches extended or trimmed, brought at a common edge and then joined to form a well-connected midsurface. 
+\todo{Review comment: How midsurface is generated. [ADDED]}
+ The face pairing approach scores over the other approaches such as MAT, as it is intuitive and does not need post-processing to remove extra branches \cite{Rezayat1996}. It is widely researched and used in academic as well as commercial CAD-CAE systems.
+
+\todo[inline]{Review comment: May be you could give 2-3 lines before you start the section. [DONE AS BELOW]}
+
+\replaced{In-spite of its wide usage, the face pairing approach however has two critical issues, namely, Face Pairs Detection and Midsurface Patch Joining. These issues aggravate as the complexity of the model increases and result in various errors in the output midsuface. These are explained in the following subsections.}{Two of the critical problems, which are hindrance to computing a quality midsurface, are elaborated below, along with the proposed approaches to tackle them. }\deleted{ such as missing surfaces, gaps, overlaps, etc. Correcting these errors is tedious and often manually laborious task ranging from hours to days. So, addressing these critical issues is of utmost importance in getting a quality midsurface.}
+	
+\subsection{Face Pairs Detection Problem}  \label{sec:midsurfcelljoin:facepairdetection}
+%A widely used Face pairing process, a ray is fired from a seed face in the given CAD model. The nearest face that is hit by the ray and  which is within given threshold thickness distance, is the target and is selected to form the face pair along with the seed face. The process repeats with another faces as the seed face, till all the remaining faces are processed. The output face-pairs list is sent for mdisurface patch generation.
+
+\todo{Reviewer comment: Explain only face pairing problem. Do not give any solution here. [DONE]}
+
+For real-life complex CAD models detecting opposite faces is challenging \cite{Woo2014, Zhu2016}. 
+%\deleted{As seen in Section \ref{sec:midsurfcelljoin:existingapproach}, a}A face pair is formed by finding opposite faces. A ray from a face (called `master') fired which hits other faces in its direction. Face hit by the ray within a threshold distance (equivalent to the sheet metal thickness) are the opposite faces (called `slaves'). One master and multiple slave faces form a face pair. Finding face pairs in a complex model is challenging and error-prone. 
+Some of such scenarios are described below:
+
+%%\bigskip
+
+
+\begin{figure}[!h]%[!h]
+\centering     %%% not \center
+\subfloat[Missing target]{\label{fig:midsurfcelljoin:missingtarget}\includegraphics[width=0.21\linewidth,valign=t]{../Common/images/missingtarget.pdf}} \quad
+\subfloat[Multiple targets]{\label{fig:midsurfcelljoin:multipletargets}\includegraphics[width=0.21\linewidth,valign=t]{../Common/images/multipletargets.pdf}} \quad
+\subfloat[Angled targets]{\label{fig:midsurfcelljoin:angledtargets}\includegraphics[width=0.21\linewidth,valign=t]{../Common/images/angledtargets.pdf}}
+\caption{Problems in Identification of Face Pairs} 
+\label{fig:midsurfcelljoin:facepairingproblems}
+\end{figure}
+
+%%\bigskip
+
+
+\todo{Reviewer comment: Label master and slave. [LABELED MASTER BUT NOT SLAVE BECAUSE IT HAS NOT BEEN SELECTED]}
+
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Missing target}: If a face is not within threshold distance, or not in the direction of the ray-fire from the master, it fails to get detected as the slave. In Figure \ref{fig:midsurfcelljoin:missingtarget}, $F_1$ is the master face from which a ray is fired (shown by an arrow). It does not hit $F_2$\deleted{as it does not in the ray firing direction}, so it does not get qualified as the slave face. The ray hits $F_3$ but it is too far way, so fails the threshold distance criteria, thus $F_3$ also does not get qualified as the slave. So, incorrect choice of the location from which ray is fired, misses as the otherwise qualified slave face, such as $F_2$ in this case.
+\item \textbf{Multiple targets}: There could be multiple candidate salve faces for a single master face, approximately at similar distances, but, either due to tolerance issues or due to location from which the ray is fired, only one of them gets selected, discarding other equally eligible candidate slave faces. In Figure \ref{fig:midsurfcelljoin:multipletargets}, master face $F_1$ correctly identifies $F_2$ but does not find $F_3$ as the ray was not fired from the location which would find it. So $F_3$ does not get added to the same face pair as with $F_2$. Ideally a face pair with $F_1$ as master face and $F_2 \& F_3$ as slave faces should have got formed.
+\item \textbf{Angled targets}: In case of variable thickness shapes, distance between master and slave faces vary, making it challenging to decide appropriate slave face. Figure \ref{fig:midsurfcelljoin:angledtargets} shows that $F_1$ is not able to pair up with $F_2$ due to being farther away from the allowed distance threshold.
+\item \textbf{Non-planar targets}: Non planar geometries such as free-form surfaces also pose problems in calculation of distances and finding slave faces \cite{Zhu2016}.
+\end{itemize}
+
+Such undetected or inappropriately detected face pairs do not create appropriate midsurface patches thus leaving gaps in the overall midsurface output. Next section discusses problems encountered in joining the midsurface patches.
+
+%%Face pairs, in an abstracted way, decompose the whole model into sub-volumes. Each sub-volume creates its own midsurface patch which, later, are ``sewed'' together. Detecting face-pairs are extremely challenging task, especially for complex shapes and is prone to failures. Instead of working on the final shape, this work tests if features can be used to alleviate this problem (Hypothesis \ref{hyp:features}).
+
+%%In the feature based CAD model, at each feature step, a tool-body/sub-volume is created and booleaned to the existing model.  Instead of detecting face pairs in the final solid,  feature information, at each step, can be leveraged to compute the midsurface patch for it's corresponding sub-volume. But, writing the midsurface computation logic for each of the features-types would be a humongous and error-prone task.  This work solves this problem by abstracting/generalizing these individual feature types into a generic form and then compute midsurface patches for just the generic type (Hypothesis \ref{hyp:Abstraction}). Feature abstraction called $\mathcal{ABLE}$ has been proposed to generalize the form features into a generic ``Loft'' feature having profile(s) and a guide curve. Midsurface patch can then be computed by sweeping midcurve of the profile(s) along the guide curve (Section \ref{sec:midsurfcelljoin:scell}) (\cite{YogeshIITG2014}).
+
+%A feature generalization framework called $\mathcal{ABLE}$ ({\bf A}ffine transformations-{\bf B}ooleans-{\bf E}ntities-{\bf L}ofts), shows that a majority of the widely-used form-features can be represented as the ``Sweep'' feature (Figure \ref{fig:midsurfcelljoin:loftschematic}, Sweep, being a special case of Loft, both terms are used interchangeably in this paper), having inputs as a profile and  a guide curve. Figure \ref{fig:midsurfcelljoin:extrudeschematic} shows how the generic Sweep manifests into Extrude and Revolve features, where as Figure \ref{fig:midsurfcelljoin:primitivesschematic} shows further manifestations into primitive shapes. 
+%
+%
+%\begin{figure}[!h]%[!h]
+%\centering     %%% not \center
+%\subfloat[Generic Loft/Sweep]{\label{fig:midsurfcelljoin:loftschematic}\includegraphics[width=0.4\linewidth,valign=t]{../Common/images/LoftPreview.pdf}}
+%\subfloat[Extrude/Revolve as Sweep]{\label{fig:midsurfcelljoin:extrudeschematic}\includegraphics[width=0.31\linewidth,valign=t]{../Common/images/LoftExtrudeRevSwp.pdf}}
+%\subfloat[Primitives as Extrudes]{\label{fig:midsurfcelljoin:primitivesschematic}\includegraphics[width=0.28\linewidth,valign=t]{../Common/images/ExtrudeBoxCylCone.pdf}}
+%\caption{Manifestation of Generic Sweep/Loft into other features (\cite{YogeshIITG2014})} %%%%%%%%% ADD  (\cite{YogeshIITG2014}) LATER
+%\label{fig:midsurfcelljoin:ableschematic}
+%\end{figure}
+%\begin{figure}[!h]%[!h]
+%\centering     %%% not \center
+%\subfloat{\label{fig:midsurfcelljoin:Ubracketnormalfeatures}\includegraphics[width=0.25\linewidth,valign=t]{../Common/images/UBracket_normalfeatures}}
+%\subfloat{\label{fig:midsurfcelljoin:Ubracketpart}\includegraphics[width=0.45\linewidth,valign=t]{../Common/images/UBracket_part}}
+%\subfloat{\label{fig:midsurfcelljoin:Ubrackettree}\includegraphics[width=0.25\linewidth,valign=t]{../Common/images/UBracket_abelfeatures}}
+%\caption{Conversion of Normal Feature tree to $\mathcal{ABLE}$ feature Tree (\cite{YogeshIITG2014})} 
+%\label{fig:midsurfcelljoin:Ubracketable}
+%\end{figure}
+% Figure \ref{fig:midsurfcelljoin:Ubracketable} shows how $\mathcal{ABLE}$ converts a usual feature tree to a Sweep tree (Extrude/Revolve being special cases of Sweep). By developing midsurface logic just for the ``Sweep'' feature, midsurface patches can be extracted for the majority of the models. This feature generalization, as proposed by $\mathcal{ABLE}$, thus, removes the need for doing face-pair detection and also simplifies midsurface patch computation by making it more generic and deterministic (\cite{YogeshIITG2014}).
+
+%%Section \ref{sec:midsurfcelljoin:scell} details on how generalized features representation ($\mathcal{ABLE}$) avoids these face pairing problems. 
+
+ 
+\subsection{Midsurface Patches Joining Problems} \label{sec:midsurfcelljoin:facepairinteraction}
+
+Midsurface patches are generated from each face pair, either by offsetting the master face in the middle or by computing a surface equidistant from both, master and slave faces. As seen in Figure~\ref{fig:midsurfcelljoin:midsjoining}, they are then joined, either by extending or trimming up-to a common edge between them. Failing to compute correct extensions, trimmings, etc. result in unconnected midsurface patches.
+
+\begin{figure}[h!]
+	\centering 
+	\includegraphics[width=0.62\linewidth]{../Common/images/patchjoiningproblems.pdf}
+	\caption{Problems in Joining Midsurface Patches (Source: Sheen \cite{Sheen2005}) }
+	\label{fig:midsurfcelljoin:patchjoiningproblems}
+	\end{figure}
+	
+%In traditional approaches, many midsurface patches fail to get joined, resulting in gaps, overlaps, etc. to form a well connected, continuous midsurface. 
+Figure \ref{fig:midsurfcelljoin:patchjoiningproblems} shows cases where the midsurface patches, either got extended too much or failed short of the common edge. 
+
+%%%\bigskip
+
+Basic principle of joining the midsurface patches is that they need to be connected in the same manner as their corresponding face-pairs are connected, in the input model. Detecting when to extend the midsurface patches and by what amount, also, when to trim the midsurface patches and by what amount, are complex \replaced{problems}{decisions}. These depend on various configurations in which face pairs or features (and their corresponding midsurface patches) are connected in the input model.
+
+%%\bigskip
+
+%\begin{table}[H]%[!h]
+\begin{center}
+\captionof{table}{Variety of Configurations of Interactions of Midsurfaces Patches}
+%\resizebox{0.8\linewidth}{!}{
+\begin{longtable}[htb]{@{}p{0.18\linewidth} p{0.25\linewidth}  p{0.25\linewidth}  p{0.25\linewidth} @{}} \toprule
+{\bf Configuration} & {\bf Interaction}  & {\bf Midsurface} & {\bf Midsurface Joining Strategy} \\ \midrule  
+L   &
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/L_interaction_part.pdf}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/L_interaction_midsurf.pdf}} &  
+$m_2$ needs to be extended to meet $m_1$, whereas $m_1$ needs to be trimmed. 
+\\ \\ \midrule
+
+T   &
+\adjustbox{valign=t}{\includegraphics[width=0.9\linewidth]{../Common/images/T_interaction_part.pdf}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/T_interaction_midsurf.pdf}} &  
+$m_2$ needs to be extended to meet $m_1$, whereas $m_1$ remains unchanged. 
+\\ \\ \midrule
+
+X  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/X_interaction_part.pdf}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/X_interaction_midsurf.pdf}} &  
+Both $m_1$ and $m_2$ remain unchanged.
+\\ \\ \midrule
+
+Align  &
+\adjustbox{valign=t}{\includegraphics[width=0.9\linewidth]{../Common/images/Align_interaction_part.pdf}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.9\linewidth]{../Common/images/Align_interaction_midsurf.pdf}} &  
+Both $m_1$ and $m_2$ remain unchanged.
+\\ \midrule
+
+Overlap  &
+\adjustbox{valign=t}{\includegraphics[width=0.9\linewidth]{../Common/images/Overlap_interaction_part.pdf}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.9\linewidth]{../Common/images/Overlap_interaction_midsurf.pdf}} &  
+ The extra patches are removed from both $m_1$ and $m_2$, whereas both are joined with an additional patch.
+\\
+\bottomrule
+\end{longtable}
+%}
+\label{tbl:midsurfcelljoin:midsurfinteraction}
+\end{center}
+%\end{table}
+
+%%\bigskip
+
+
+Table \ref{tbl:midsurfcelljoin:midsurfinteraction} illustrates some of the representative configurations of interaction of two face pairs (or features), along with their corresponding midsurface patches. Face pairs (or features) $f_1$ and $f_2$ include $m_1$ and $m_2$ as their corresponding midsurface patches. Both interact in multiple ways, which can be commonly referred to as `L', `T', `X', Align and Overlap configurations. Each configuration needs different adjustments to midsurface patches to get them connected.
+
+
+The first row of Table \ref{tbl:midsurfcelljoin:midsurfinteraction} shows the configuration type `L'. The first picture depicts interaction of face pairs f1 and f2 and the second picture shows adjustments needed to connect two midsurface patches $m_1$ and $m_2$ i.e. $m_2$ needs to be extended to meet $m_1$, whereas $m_1$ needs to be trimmed.
+
+The second row of Table \ref{tbl:midsurfcelljoin:midsurfinteraction} shows the configuration type `T', where two midsurface patches get connected by logic: $m_2$ needs to be extended to meet $m_1$, whereas $m_1$ remains unchanged.
+
+Similarly further rows elaborate remaining configuration types. The table clearly shows that developing the midsurface patch joining logic involves dealing with a variety of different configurations, which need to be addressed on case-by-case basis. This makes devising a generic midsurface patch joining approach, a challenging task. \deleted{real life models can have even more configurations than shown in Table \ref{tbl:midsurfcelljoin:midsurfinteraction}. Such unaccounted cases also manifests in the form of midsurface errors such as gaps, overlaps, etc.} Thus failures to join midsurface patches are very common and manifest in the form of gaps, overlaps, etc.
+
+
+\todo{Review comment: Add figures for errors. [DONE]}
+
+%%%\bigskip
+
+
+ 
+%%\bigskip
+
+
+ \begin{figure}[h!]
+\centering     %%% not \center
+\subfloat[Gaps]{\label{fig_midsurfgap}\includegraphics[width=0.23\linewidth]{../Common/images/midsurfgap.pdf}} \quad
+\subfloat[Overlaps]{\label{fig_midsurfoverlap}\includegraphics[width=0.23\linewidth]{../Common/images/midsurfoverlap.pdf}} \quad
+\subfloat[Extra Extension]{\label{fig_midsurfextra}\includegraphics[width=0.23\linewidth]{../Common/images/midsurfextra.pdf}} 
+\subfloat[Missing Patches]{\label{fig_midsurfmissing}\includegraphics[width=0.23\linewidth]{../Common/images/midsurfmissing.pdf}} 
+\caption{Typical Errors in Generating Connected Midsurfaces}
+  \label{fig:midsurfcelljoin:midsurferrors}
+\end{figure}
+ 
+%%\bigskip
+
+Figure~\ref{fig:midsurfcelljoin:midsurferrors} shows some of the commonly occurring midsurface errors. Figure~\ref{fig_midsurfgap} shows that midsurface patches ($m_1,m_2,m_3$) could not extend properly thus resulting in gaps between them. Figure~\ref{fig_midsurfoverlap} shows that two of the patches ($m_2,m_3$) got extended more than necessary thus resulting in overlaps. Figure~\ref{fig_midsurfextra} shows that one patch ($m_1$) got extended so much that the midsurface went out of the model's boundaries. Figure~\ref{fig_midsurfmissing}  shows that one of the patches ($m_2$, not shown) did not get created at all.
+
+
+ To get the idea of gravity of this challenging problem,  Figure~\ref{fig_comm} shows the output of automatic midsurfacing by two of the leading CAD-CAE commercial systems, which primarily use face Pairing approach.
+ 
+CAD models of English alphabets are chosen for benchmarking as they are easy to understand and represent a wide variety of shapes and interaction types found in the real-life thin-walled parts. Figures \ref{fig_mcad} and \ref{fig_mcae} demonstrate the midsurface failures such as missing surfaces, gaps, not lying midway, etc.
+\todo{Review comment: These figures are not clear. [ENLARGED]}
+
+\def \myfigcommcolumnwidth{0.55}
+
+%
+%%%\bigskip
+% 
+%\begin{figure}[htbp]
+%\centering     %%% not \center
+%\subfloat[CAD Models]{\label{fig_mmodel}\includegraphics[width=\myfigcommcolumnwidth\linewidth]{../Common/images/Yogesh_Inv}} \quad
+%\subfloat[Midsurface: Application 1]{\label{fig_mcad}\includegraphics[width=\myfigcommcolumnwidth\linewidth]{../Common/images/Yogesh_InvMids}} \quad
+%\subfloat[Midsurface: Application 2]{\label{fig_mcae}\includegraphics[width=\myfigcommcolumnwidth\linewidth]{../Common/images/Yogesh_HM_notOK}} 
+%\caption{Midsurface outputs of commercial applications}
+%  \label{fig_comm}
+%\end{figure}
+%
+%
+%%%\bigskip
+% 
+Developing a generic logic for joining midsurface patches is thus the need of the hour. As there is no theoretical framework encompassing all the possible interaction types, so far an unified logic has not been possible~\cite{Stolt2006}.  
+
+The present research leverages generalized feature-based CAD model to address the issues related to face pairing. It proposes to use cellular decomposition approach to address the problems of midsurface patch joining. 
+
+\subsection{Using Feature Information Instead of Face Pairing}
+As seen in Section \ref{sec:midsurfcelljoin:facepairdetection} detecting face pairs is a challenging and error prone task. Information stored in the features in the feature-based CAD model has potential of replacing the need of face pairing altogether. In feature-based CAD modeling paradigm, model is built step-by-step using features. At each step, a new feature is booleaned to (i.e.`added to' or `subtracted from') the existing model, \replaced{thus making final model at the end}{at the end, making final, often complex shape}.
+
+%%%\bigskip
+%
+%\begin{figure}[h!]
+%	\centering 
+%	\includegraphics[width=0.75\linewidth]{../Common/images/usbfeaturetree}
+%	\caption{Feature based construction of USB CAD model}
+%	\label{fig:midsurfcelljoin:usbfeaturetree}
+%	\end{figure}
+%	
+%
+%%%\bigskip
+%
+%Figure \ref{fig:midsurfcelljoin:usbfeaturetree} shows a CAD model USB  built by booleaning features at each step. Looking at the final shape it is evident that detecting face-pairs in the final shape (B-rep) is complex task.
+\deleted{Thus generating midsurface patches is challenging if worked on the B-rep. Instead, the} The present research proposes to use each feature's parameters to compute its own midsurface patch and thus avoiding the need of face pairing altogether. For example, Extrude feature computes its own midsurface using own sketch-profile and other parameters. This idea is advantageous, because, it not only avoids the problems of face pairing but it is also regenerates models upon parameter changes. \added{Whenever a feature undergoes any dimension change, only the dependent features are updated to maintain the validity and constraints defined in the model.}Thus, in the idea of computing midsurface from feature parameters, only the features which have updated need to re-compute the midsurface patches, whereas in the traditional face pairing approach, the whole model needs to be reevaluated for face pair detections and midsurface computations\deleted{upon any model updates}.
+
+One of the limitations of using features in midsurface computation is the variety of features present in a typical sheet metal parts CAD model. All these features would need to have their own logic of computing midsurface patches. \deleted{, thus devising the midsurface computation logic is highly laborious task.} Another limitation is that even after implementation is over with the available set of features, introduction of any new feature would need additional logic for computing their own midsurface patches. These problems can be avoided by \replaced{proposing use of generalized features, i.e. $\mathcal{ABLE}$ model}{using generalized CAD model using $\mathcal{ABLE}$} paradigm. As elaborated in Chapter \ref{ch:Abstraction}, $\mathcal{ABLE}$ models are made up of only a set of loft-equivalent features such as Extrude, Revolve, Sweep and Loft. With $\mathcal{ABLE}$ model as input, the midsurface patch generation needs to be implemented only for limited number of  loft-equivalent features.
+
+\todo{Review comment: Not yet true, so don't mention here}
+
+\deleted{Thus the proposed approach addresses the original problem of face pairing by leveraging feature information and it addresses the problem of variety of features by using a reduced set of $\mathcal{ABLE}$  features, thereby} Thus the proposed solution of using $\mathcal{ABLE}$ model avoids face pairing altogether, making midsurface patch generation less error prone.
+
+\subsection{Using Feature-based Cellular Topology for Joining Patches}
+
+In Section~\ref{sec:midsurfcelljoin:facepairinteraction}, Table \ref{tbl:midsurfcelljoin:midsurfinteraction} showed a variety of configurations in which midsurface patch joining takes place in the existing face pairing approaches. \replaced{It can be clearly seen that there are a variety of configurations that need to be solved for connecting midsurface patches. The reported past  approaches have not demonstrated any generic approach to solve them generically, i.e. with a singular rule.}{These cases have their own patch joining logic, making algorithm development cumbersome and error-prone.}
+
+The present research \replaced{uses}{proposes} feature-based cellular topology (FBCT) to address the problems in joining midsurface patches. Figure \ref{fig:midsurfcelljoin:featureinteractions} shows a schematic representation of a typical feature interaction, explains the context of feature-based cellular decomposition (FBCD), its outcome i.e. FBCT and its advantage in devising generic midsurface patch joining approach.
+
+\todo{Review comment: I think you need to describe cellular decomposition of a generalized feature-based CAD model and then come to this point. [THIS SECTION IS ONLY DESCRIBE RESOLUTION OF MIDSURFACE PATCH JOININNG. FBCD IS DETAILED LATER]}
+
+%%\bigskip
+
+\begin{figure}[h!]
+\centering     %%% not \center
+\subfloat[Features]{\label{fig_twofeat}\includegraphics[width=0.21\linewidth]{../Common/images/twofeatures1.pdf}} \quad
+\subfloat[Boolean]{\label{fig_featbool}\includegraphics[width=0.17\linewidth]{../Common/images/featuresboolean1.pdf}} \quad
+\subfloat[FBCD]{\label{fig_fbcdfig}\includegraphics[width=0.23\linewidth]{../Common/images/fbcdfig1.pdf}} 
+\subfloat[FBCT with Midsurface]{\label{fig_mpatch}\includegraphics[width=0.235\linewidth]{../Common/images/patchinteraction1.pdf}} 
+\caption{Feature Interactions and Cellular Decomposition}
+  \label{fig:midsurfcelljoin:featureinteractions}
+\end{figure}
+
+%%\bigskip
+
+Figure \ref{fig_twofeat} shows feature $f_2$ getting booleaned to the existing model, denoted by feature $f_1$. After boolean, both features are merged with some portion (shown as $f_1f_2$) of $f_2$ getting consumed inside $f_1$, as seen in Figure \ref{fig_featbool}. Figure \ref{fig_fbcdfig} depicts the cellular decomposition with cells having owner features such as $c_1(f_1)$, $c_2(f_2)$ and $c_3(f_1f_2)$. Figure~\ref{fig_mpatch} shows same cells with midsurface patches computed for each. Table \ref{tbl:midsurfcelljoin:midsurfinteraction} clearly indicates that $f_1f_2$ portion is the place where midsurface patches interact differently in different configurations. 
+
+Cellular decomposition refers to technique of decomposition of a shape into sub-shapes called cells. 
+\todo{Review comment: Do not need this para here. Add high level need. [DONE]}
+Primary advantage of cellular decomposition is simplification. Instead of working on complex shapes, cells having primitive shapes, are easier to handle. For example, instead of meshing whole model, cells are meshed based on their characteristics. Cellular decomposition not only reduces the number of types of shapes to be handled, but also creates a possibility of working on them parallelly. Because of such substantial advantages, cellular decomposition has been used in variety of domains such as CAM for pocket machining, CAE for isolating sub-volumes with different meshing patterns, CAD model transitions with different level of details (LoDs), etc. Cellular Decomposition suffers from certain limitations as well. The choice of locations and cutting-geometries for decomposition decides the quality of resultant decomposition. Wrong choices result in a large number of redundant cells or in the cells which are not of primitive shapes. 
+
+
+\section{Proposed Approach for Midsurface Computation}  \label{sec:midsurfcelljoin:proposal}
+As discussed in the previous sections, two of the most critical problems faced in the face pairing approach are, face pair detection and midsurface patch joining.  The present research proposes to leverage generalized Loft-equivalent features to address the issues related to face pairing and use feature-based cellular topology to address the problems of midsurface patch joining. \deleted{Following subsections detail the rational of these proposals and their advantages.} The proposed solution is to separate out the common area by decomposition, so that generic rules for joining midsurface patches, can be derived. 
+
+%%Figure \ref{fig_fbcdfig} shows feature based cellular decomposition (FBCD) of the input model into 3 ``cells''. This decomposition happens at the concave edge shown as dot in Figure \ref{fig_fbcdfig}. The cutting-geometry lines (cutting planes in 3D) are shown with dotted lines. The resultant cells do not have any volumetric overlapping, they touch each other only at the boundaries. Cells retain their owner feature information. Thus, cell $c_1$ has owner feature $f_1$, $c_2$ has owner feature $f_2$ and the common portions cell $c_3$ has two owners $f_1,f_2$.
+%%
+%%%Using both, $\mathcal{ABLE}$ and FBCT, following section presents the proposed algorithm to compute a quality midsurface of sheet metal feature-based CAD model.
+%%%
+%%%Chapter~\ref{ch:Abstraction} has already elaborated the approach of transforming sheet metal feature based CAD model to generalized CAD model called $\mathcal{ABLE}$. Following section explains the cellular decomposition along with its state of the art. \deleted{Following sections presents the proposed approach that leverages cellular decomposition to devise a generic, singular logic for midsurface patch joining algorithm.}
+%%
+%%In the proposed approach, the midsurface patch joining rule is that cells $c_1$ and $c_2$ are delegated to compute midsurface patches $m_1, m_2$, whereas common cell $c_3$ (the one with two owners $f_1, f_2$) is delegated to join the incident midsurface patches $m_1, m_2$. This rule is singular and generic, applicable not only to all the cases in mentioned Table \ref{tbl:midsurfcelljoin:midsurfinteraction} but also to the cases found in real life part models. %Thus feature based cellular decomposition allowed formulation of singular, generic midsurface patch joining logic.
+%%%\subsection{Proposed Algorithm for Computing Midsurface}  \label{sec:midsurfcelljoin:algorithm}
+%%%The proposed midsurface computation approach is presented in the following sections. 
+
+The generalized feature-based CAD model is suitably decomposed into manageable cell volumes. Cells are classified into solid cells ($sCell$) and interface cells ($iCell$). Midsurface patches are first computed from $sCell$s and are then joined in the $iCell$s.  The detailed treatment is presented in the sections to follow. To begin with Cellular Decomposition approaches are reviewed in the below section.
+
+%Algorithm \ref{alg_FBDMidsurf} shows the pseudo-code view of the overall approach presented in Chapter \ref{ch:Proposal}. It can be seen that, the input sheet metal feature based CAD model has been simplified by defeaturing, before this module for computing midsurface (Algorithm \ref{alg_FBDMidsurf}, line: 1). Remaining features have got transformed to generalized Loft-equivalents ( Algorithm \ref{alg_FBDMidsurf}, line: 2). 
+%
+%%%\bigskip
+%
+%
+%\begin{algorithm}[!h]
+%\caption{Feature-based midsurface computation}
+%\label{alg_FBDMidsurf}
+%\begin{algorithmic}[1]
+%	\REQUIRE Sheet metal Feature-based CAD model ($smfbcd$)
+%	\STATE $defeatured\_model = feature\_based\_defeaturing(smfbcd)$
+%	\STATE $generalized\_model = feature\_based\_generalization(defeatured\_model)$
+%	\STATE $decomposed\_model =feature\_based\_cellular\_decomposition(generalized\_model)$
+%	\STATE $G(n,e ) = populate\_graph(decomposed\_model)$
+%	\STATE $(sCell,iCell) = classify\_cells((Gn,e))$
+%	\FORALL{$sCell$}
+%		\STATE $compute\_midsurface\_patch(sCell)$ (Algorithm \ref{alg:midsurfcelljoin:MidsurfsCell})
+%	\ENDFOR
+%	\FORALL{$iCell$}
+%		\STATE $join\_midsurface\_patches(iCell)$ (Algorithm \ref{alg:midsurfcelljoin:MidsurfiCell})
+%	\ENDFOR
+%\end{algorithmic}
+%\end{algorithm}
+%
+%%%\bigskip
+%
+%%Following sections elaborate the further steps (Algorithm \ref{alg_FBDMidsurf}, line: 3 onwards). 
+%
+%The generalized model, i.e. the $\mathcal{ABLE}$ model, is then decomposed by feature based cellular decomposition to form cells (Algorithm \ref{alg_FBDMidsurf} line:3) while retaining their respective $\mathcal{ABLE}$ owner features. The cells are then classified as solid cells ($sCell$) and interface cells ($iCell$) and are delegated with the task of computing the midsurface patches and joining them, respectively (Algorithm \ref{alg_FBDMidsurf} lines: 5 onwards ). 
+%In proposed algorithm, both the problems of traditional face-pairing approach, i.e. face pair detection and multiple cases of patch joining, have been avoided completely. Thus the proposed algorithm reduces the midsurface errors present in the traditional approach of face pairing.
+%
+%Following section elaborates on how lacunae in face pairing approach have been avoided by leveraging Cellular Decomposition (CellDecomp) and feature-based cellular topology (FBCT).
+%Both, CellDecomp and FBCT, have been part of the CAD domain for years, but their usage together, as a hybrid concept, is uncommon and has been proposed in the present work. Following sections elaborate more on this hybrid approach and its usage in the computation of the midsurface (Algorithm \ref{alg_FBDMidsurf} lines 3-11). 
+%
+%Following section elaborates on how Feature-based cellular topology is arrived at by decomposing $\mathcal{ABLE}$ feature based CAD model.
+
+
+
+%\section{Feature-based Cellular decomposition of CAD Model} 
+%\label{sec:midsurfcelljoin:decomposition}
+
+
+\subsection{Literature Review of Cellular Decomposition}
+
+Cellular decomposing has been researched extensively, especially for CAM applications~\cite{Ma2009}. Manufacturing sequences need different cells to be assigned with different machining processes. Generation of such cells is done by cellular decomposition of the CAD model such as Brep model. Similarly, in CAE, identification and separation of cells is carried out to assign different meshing patterns to different cells. Following are some of the relevant past approaches for cellular decomposition:
+
+Bih-Yaw Shih \cite{Shih1996} presented an automated swept volume detection and decomposition algorithm for \added{hexahedral mesh generation}. This approach was computationally intensive for complex model. 
+
+Yong Lu \cite{LuGadhTautges2001} reported the work on shape recognition and volume decomposition to automatically decompose a CAD model into hex meshable volumes. 
+
+Yoonhwan Woo \cite{Woo2002} \cite{Woo2003} \cite{Woo2003a} \cite{Woo2006} \cite{Woo2009}  did extensive work in fast and maximal cellular decomposition. He found that in typical cell decomposition, each of the faces having a concave edge, act as cutting geometries and are extended spanning whole model, generating a large number of cells. Many of them were redundant. To avoid this he proposed a concept of `maximal volume'. 
+
+Figure \ref{fig:litsurvey:maxcd} depicts Woo's process in which (a) shows the input model and (b) shows result of the cellular decomposition, generating large number of cells. His process combines cells based on certain criteria. Figure \ref{fig:litsurvey:maxcd}c shows the output having far lesser number of cells, i.e. just 2 cells having primitive shapes. 
+ 
+ %%\bigskip
+ 
+\begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.7\linewidth,valign=t]{../Common/images/WooMax}
+\caption{Maximal Cellular Decomposition (Source : Woo \cite{Woo2003})}
+\label{fig:litsurvey:maxcd}
+\end{figure}
+
+%%\bigskip
+
+Woo's method was superior to other prevalent methods but was restricted to shapes with analytical surfaces only.
+ 
+
+%%Review of the cellular decomposition approaches suggests that, \deleted{although it is widely used in CAM, it has found limited usage in CAD modeling applications. T}the cost of creating cells and maintaining their connectivity and validity during the CAD modeling operations far outweighs the flexibility they provide. That is the reason, cellular decomposition has not been hugely popular in CAD systems. 
+
+%Following subsection reviews reported approaches of feature based cellular topology, generated when cellular decomposition is performed on feature based CAD model.
+ 
+%\subsection{Literature Review of Feature-based Cellular Topology}
+ 
+ \todo{Review comment: Whats the connection between these  Lit survey paragraphs. [IT HAS BEEN EXPLAINED JUST BEFORE THESE SURVEYS]}
+ 
+The result of Cellular Decomposition is a collection of cells, termed as `cellular topology (CT)' model~\cite{Chen2006}. \todo{Review comment: Here state what are the downstream applications that use decomposed cad model. [DONE]}
+Cellular decomposition of a feature-based CAD model results in feature-based cellular topology (FBCT) model. Figure \ref{fig:litsurvey:fbct} shows one such example of FBCT model, in which, $cell 1$ has $block$ as the owner feature whereas $cell 2$ is the common cell for features $block$ and $roundedRectPocket$, etc. %So, all the overlapping feature portions have been decomposed into cells with those features as owners. In Feature-based cellular topology, thus, there are not overlapping solid cells. They touch each other, fully at cells boundary surfaces.
+
+%%\bigskip
+ 
+ \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.62\linewidth,valign=t]{../Common/images/fbct}
+\caption{Feature-based Cellular Topology (Source : Bidarra \cite{Bidarra2003a})}
+\label{fig:litsurvey:fbct}
+\end{figure}
+
+%%\bigskip
+
+%The proposed research leverages CellDecomp of a feature based CAD model and generates FBCT.
+\deleted{In one of the widely used CellDecomp method, called Concave Edge Partitioning (CEP), CAD model is partitioned at the concave edges with the partitioning tool as the extended faces incident at the concave edge. In Figure \ref{fig_fbcdfig} the concave edge is shown as big dot, whereas the dotted lines represent the partitioning tools. This method is also known Convex Partitioning as the resultant model contains only the convex cells.}
+
+Cellular Topology (CT) is the solid modeling data structure having cells as the fundamental building block. Cells do not overlap volumetrically but touch each other only at surface boundaries. In Feature-based cellular topology (FBCT) cells have owner features. FBCT model has not yet been used widely, especially in commercial systems. Some of the relevant works in academic research are reviewed below. \deleted{In FBCT environment, feature operations such as creation, editing, deleting, are formulated in terms of cells with appropriate feature owners.}
+\todo{Review comment: Give example of CT modeling operations. [DELETED THE LINE ITSELF. MAY NOT NEED TO ADD THESE DETAILS]}
+
+Bidarra~\cite{Bidarra1993, Bidarra1997, BidarraKrakerBronsvoort1998} proposed feature based cellular topology to improve over the shortcomings of B-prep, such as complex boundary evaluation after any modeling operation. He built a FBCT system called $SPIFF$ in which features were assigned to cells of ACIS CT model. The system provided flexibility to choose specific cells for evaluating boundary for specific applications.
+
+ %%\bigskip
+ 
+\begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.85\linewidth,valign=t]{../Common/images/multiview.pdf}
+\caption{Application Perspective Based Viewing of a Model (Source: Van~\cite{Van2000})}
+\label{fig:litsurvey:multiview}
+\end{figure}
+
+%%\bigskip
+
+Kraker \cite{Kraker1998} presented feature operations in cellular model for multi-view architecture. This architecture was used to selectively present cells as per need of client application. \added{For example, a design can see both additive and subtractive features, whereas manufacturing view of the same model can see only subtractive features. Figure~\ref{fig:litsurvey:multiview} shows these two views with an example. Use of positive and negative features is different in both the views, even though the model is same.}
+
+
+
+%Although FBCT provided flexibility in modeling, the model would progressively become complex as number of features increased.
+
+%Treek \cite{Treeck}, in altogether different domain of arcitecture, used cellular model for CAE analysis. He
+%Quite a few attempts to compute the midsurface using cellular decomposition are found in the literature \cite{Chong2004, Cao2009,Cao2011,Woo2013}.
+%
+% Below is the summary of the relevant Cellular Decomposition approaches:
+% 
+%\csvreader[longtable=|p{0.17\linewidth}|p{0.11\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.17\linewidth}|p{0.17\linewidth}|,
+%    table head=\toprule \bfseries Author & \bfseries Input& \bfseries  Method & \bfseries  Approach& \bfseries  Advantages& \bfseries  Limitations \\ \midrule \endhead,% \bottomrule \endfoot,
+%  late after last line=\\\bottomrule,
+%  before reading={\catcode`\#=12},after reading={\catcode`\#=6},    
+%    late after line=\\\hline]%
+%{../DocsSources/litsurvey_celldecomp.csv}{Author=\Author, Input=\Input, Method=\Method, Approach=\Approach, Advantages=\Advantages ,Limitations=\Limitations}%
+%{\Author  & \Input&  \Method &\Approach & \Advantages & \Limitations}%
+%
+%Cellular decomposition, in the context of the current research, is the division of a feature based CAD model into non-volumetrically overlapping, but surface-overlapping sub-solids (called ``cells'').  
+% 
+%\csvreader[longtable=|p{0.17\linewidth}|p{0.11\linewidth}|p{0.2\linewidth}|p{0.2\linewidth}|p{0.17\linewidth}|p{0.17\linewidth}|,
+%    table head=\toprule \bfseries Author & \bfseries Input& \bfseries  Method & \bfseries  Approach& \bfseries  Advantages& \bfseries  Limitations \\ \midrule \endhead,% \bottomrule \endfoot,
+%  late after last line=\\\bottomrule,
+%  before reading={\catcode`\#=12},after reading={\catcode`\#=6},    
+%    late after line=\\\hline]%
+%{../DocsSources/litsurvey_featurecells.csv}{Author=\Author, Input=\Input, Method=\Method, Approach=\Approach, Advantages=\Advantages ,Limitations=\Limitations}%
+%{\Author  & \Input&  \Method &\Approach & \Advantages & \Limitations}%
+
+\deleted{As the feature-based algorithms are not yet very prevalent, the feature based cellular topology data structures has shown limited usage in the practical CAD applications so far.}
+\todo{Review comment: Summarize and comment. [ADDED BELOW]}
+\added{Review of the past approaches show their wide applicability for the processes like machining, meshing, etc.  There are a large number of approaches developed to cater to various domains. The present research suitably leverages one of the feature-based cellular decomposition approach, a combination of Woo~\cite{Woo2002, Woo2003, Woo2003a, Woo2006, Woo2009} and Bidarra~\cite{Bidarra1993, Bidarra1997, BidarraKrakerBronsvoort1998} approaches. As the readily usable implementation of such combination is not available, a manual cellular decomposition approach was taken up, based on the methodology suggested in the said approaches.}
+%% Assigning appropriate owner features and maintaining validity during feature operations becomes increasingly challenging with increase in the complexity of the model. All these aspects have resulted in limited usage of FBCT in feature based CAD approaches.}
+Following section elaborates the approach taken in the present research.
+
+\subsection{Proposed Feature-based Cellular Decomposition Approach}\label{sec:fbcd:proposal}
+
+The primary objective of this module is to present an approach taken for decomposing a generalized feature based CAD model. Following steps elaborate the approach:
+%The present research proposes using  FBCT created by feature-based Cellular Decomposition (FBCD) of $\mathcal{ABEL}$ feature based CAD model. 
+%Primary steps used in FBCD are:
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Feature separation}: A feature-based CAD model is built by Boolean of new features with the existing. Booleans are of ``Unite'', ``Subtract'', ``Intersect'' and ``New Body' types. \deleted{As the input model is defeatured before, the input model now primarily has only ``Unite'' type of booleans between features.} In this step, the ``Unite'' boolean type set between two features is removed and instead ``New Body'' type applied, thereby separating the tool bodies of the features.
+
+%%\bigskip
+
+
+  \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.75\linewidth,valign=t]{../Common/images/newbody_bw.pdf}
+\caption{Separation of Feature Tool Bodies}
+\label{fig:litsurvey:newbody}
+\end{figure}
+
+%%\bigskip
+
+
+Figure~\ref{fig:litsurvey:newbody}a shows a model with two features $f_1$ and $f_2$ with ``Union'' type of boolean between them. Once the boolean type is changed, the tool-bodies of features get isolated, even though they are placed at the same location. Figure~\ref{fig:litsurvey:newbody}b shows that there is no connection left between them anymore.  Although Figure \ref{fig:litsurvey:newbody}c  depicts feature tool bodies in exploded view.% In reality, the features are at the same place as they were in Figure~\ref{fig:litsurvey:newbody}a.
+
+ Thus, at this stage, all feature tool bodies are separated, however, spatially they may still overlap each other.
+\todo{Review comment: Say adding in place of boolean. [NOT DONE AS BOOLEAN DOES NOT MEAN ADDING]}
+\item \textbf{Concave edge partitioning (CEP)}:  Even after separating the feature tool bodies, there could be volumetric overlaps as seen in Figure~\ref{fig:litsurvey:newbody}b. In such cases, at this step, overlapping feature volumes are split at the concave edges, by a technique known as Concave edge partitioning (CEP) or Convex Partitioning (CP). It is a well established technique~\cite{Woo2002, Woo2003, Woo2003a, Woo2006, Woo2009}, where faces incident at a concave edge, are extended and used as cutting geometries to split the model.
+
+%  \begin{figure}[!h]
+%\centering     %%% not \center
+%\includegraphics[width=0.75\linewidth,valign=t]{../Common/images/cep}
+%\caption{Traditional Concave Edge Partitioning (Source : Woo \cite{Woo2003a})}
+%\label{fig:litsurvey:cep}
+%\end{figure}
+
+\todo{Review comment: Use simple figures to explain. [DONE]}
+
+%%\bigskip
+
+
+  \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.75\linewidth,valign=t]{../Common/images/newcep_bw.pdf}
+\caption{Concave Edge Partitioning}
+\label{fig:litsurvey:newcep}
+\end{figure}
+
+%%\bigskip
+
+
+Figure \ref{fig:litsurvey:newcep}a shows the the original input model. Decomposition is done at the concave edge by extending faces incident at it, as cutting geometries. Figure \ref{fig:litsurvey:newcep}b shows the cutting geometries (cutting planes in 3D). If the ``Union'' has been changed to `'New Body'' already, as mentioned in the previous step, large extensions need not be done. The existing faces of the separated tool bodies themselves act as cutting geometries.  Figure \ref{fig:litsurvey:newcep}c  shows decomposed cells in an exploded view. In the proposed work, the face extensions are not done infinitely (or going beyond the model's bounding box) but are restricted within the influence zone decided by the two interacting features. This enhancement avoids generation of a large number of redundant cells.
+\end{itemize}
+
+In some cases, the ``L'' shaped model as seen in Figure \ref{fig:litsurvey:newcep}a, may get created, not by booleaning two features $f_1$ and $f_2$ but as a single feature, say $f_3$, with ``L'' shaped profile. In such cases, CEP is not applied to the concave edge in $f_3$. As shown in the next stages, $f_3$ computes its own midsurface patch by computing midcurve of the profile and then extruding it.% This reduces computationally intensive cellular decomposition operations.
+
+\todo{Review comment: So far you have not claimed that FBCD is your approach. [FBCD IS NOT FULLY MINE. SO SPECIFIED THAT CEP IS LEVERAGED BUT REST IS MINE]}
+
+Out of the overall FBCD approach, the actual decomposition step (convex partitioning or CEP) has been leveraged from existing approaches, whereas the rest,i.e. feature assignment, localized partitioning, etc. are contributions of the present research work. Figure \ref{fig:midsurfcelljoin:beforecd} shows an example of CAD model of a sheet metal bracket and Figure \ref{fig:midsurfcelljoin:cd} is the output of FBCD, with each cell-bodies shown in different colors. 
+
+%%\bigskip
+
+
+\begin{figure}[!h]
+\centering     %%% not \center
+\subfloat[Input Model]{\label{fig:midsurfcelljoin:beforecd}\includegraphics[width=0.45\linewidth,valign=t]{../Common/images/DecompBracketInput_2}}
+\subfloat[Feature Based Partitioning]{\label{fig:midsurfcelljoin:cd}\includegraphics[width=0.38\linewidth,valign=t]{../Common/images/DecompositionBracketOutputPart_2}}\qquad
+\caption{Feature-based Cellular Decomposition}
+\label{fig:midsurfcelljoin:fbcd}
+\end{figure}
+
+%%\bigskip
+
+
+
+ Salient features of the proposed FBCD compared to the traditional cellular decomposition approaches are:
+
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Traditional cellular decomposition works on the B-rep solid model with techniques such as Convex partitioning (CEP), whereas FBCD, as proposed here, works on the feature based CAD model.
+\item Cells in FBCD are assigned with the owner feature, but not so in the traditional cellular decomposition. Owner feature information is useful to certain algorithms like Hexahedral meshing~\cite{Wu2014} and also to the present research work for computing midsurface patches. \todo{Review comment: Ok, but how it is beneficial. [ADDED]}
+\item In FBCD, the partitioning is not by simply extending all faces beyond the model and using them as cutting tools, rather it resorts to localized partitioning between two interacting features. This makes partitioning effect only in the local zone of interaction, thereby avoiding generation of large number of redundant cells\deleted{\cite{Woo2003a}}.
+\end{itemize}
+ 
+The outcome of FBCD is the feature-based cellular topology which is used in the present research to compute the midsurface. 
+
+\subsection{Formation of Feature-based Cellular Topology}\label{sec:midsurfcelljoin:fbct}
+
+FBCT represents a feature based CAD model as a connected set of cells with owner features. Two cells do not overlap volumetrically. Any two adjacent cells are separated by fully overlapping cell-faces.
+
+\begin{figure}[!h]
+\centering     %%% not \center
+\subfloat[Original Model]{\label{fig:midsurfcelljoin:Lcells}\includegraphics[width=0.3\linewidth,valign=t]{../Common/images/InventorLCells.pdf}} \hfill
+\subfloat[Schematic Model]{\label{fig:midsurfcelljoin:twofeat}\includegraphics[width=0.22\linewidth,valign=t]{../Common/images/FeatureInteractionMergedPart_1.pdf}} \hfill
+\subfloat[FBCT]{\label{fig:midsurfcelljoin:featinteract}\includegraphics[width=0.21\linewidth,valign=t]{../Common/images//FeatureInteractionMergedCells_1.pdf}}
+\caption{Feature-based Cellular Topology}
+\label{fig:midsurfcelljoin:fbcd}
+\end{figure}
+
+\todo{Review comment: Separate the figure. [MOVED SHEET METAL MODEL BEFORE IN FBCD]}
+
+Figure \ref{fig:midsurfcelljoin:Lcells} shows a representative case, schematically as Figure \ref{fig:midsurfcelljoin:twofeat}, where two features $f_1$ and $f_2$ are interacting. 
+\deleted{Interaction can have full or partial volumetric or surface overlaps.} 
+\todo{Review comment: I suggest figure showing partial, full, no overlap. [DELETED THE AMBIGUOUS LINE. FBCD RESULTS ONLY IN FULL OVERLAPS. SO NO FIGURE NEEDED]}	
+Figure \ref{fig:midsurfcelljoin:featinteract} shows that FBCD decomposes model having features $f_1$ and $f_2$ in such a way that a common cell, with owners $f''_1f''_2$, is formed. Remaining portion of $f_1$ and $f_2$ are termed as $f'_1$ and $f'_2$ respectively.  Overlapping faces are denoted as $O_1$ and $O_2$, where $O$ denotes ``Overlap'' and $_1$ and $_2$ are the ids of instances. 
+\todo{Review comment:  Drop this. [DONE]}
+\deleted{Thus, now, the cells do not overlap volumetrically [$O_{i,j}^3 = 0$] (meaning, Overlap between cells $_i$ and $_j$ which is of dimensions $^3$, meaning, volumetric), but may overlap at faces [$O_{i,j}^2$] (meaning, Overlap between cells $_i$ and $_j$ which is of dimensions $^2$, meaning surface-wise) fully and not partially, denoted as [ $C_i \cap C_j = 0| O_{i,j}^2$] (meaning, Intersection $\cap$ of cells $C_i$ and $C_j$ is either nothing or full-surface, but not partial).}
+
+In the present research work as the FBCT is generated by decomposing $\mathcal{ABLE}$ features, the owner features of the cells are the $\mathcal{ABLE}$ features, i.e. Loft equivalents. Thus FBCD essentially decomposes the Loft feature tool bodies.
+
+During each decomposition of the original Loft feature's tool body, its corresponding Loft parameters get split. Loft has two parameters, a $profile$ and a $guide-curve$. Decomposition can happen across any or both of these. Remaining parameter ranges are stored in the Loft features for each respective cells.
+
+%%\bigskip
+
+
+  \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.75\linewidth,valign=t]{../Common/images/loftbeforecdsweep}
+\caption{Loft Feature Partitioning}
+\label{fig:midsurfcelljoin:loftbeforecdsweep}
+\end{figure}
+
+%%\bigskip
+
+
+%%
+%%
+%%\begin{figure}[!h]
+%%\centering     %%% not \center
+%%\subfloat[Original Part]{\label{fig:midsurfcelljoin:loftbeforecd}\includegraphics[width=0.3\linewidth,valign=t]{../Common/images/loftbeforecd}}
+%%\subfloat[Feature Partitioning]{\label{fig:midsurfcelljoin:loftcd}\includegraphics[width=0.33\linewidth,valign=t]{../Common/images/loftcd}}\qquad
+%%\subfloat[Features Separation]{\label{fig:midsurfcelljoin:loftseparate}\includegraphics[width=0.3\linewidth,valign=t]{../Common/images/loftseparate}} \qquad
+%%\caption{ Loft Splitting and parameter adjustments}
+%%\label{fig:midsurfcelljoin:loftfbcd}
+%%\end{figure}
+
+\todo{Review comment: change figure to flange like. [NOT DONE, AS TANGENT CONTINUOUS SHAPES ARE NOT CUT BY FBCD BUT ONLY THOSE HAVING CONCAVE EDGES]}
+
+Figure \ref{fig:midsurfcelljoin:loftbeforecdsweep}a shows a single Loft feature getting decomposed and is represented by profile $p$ and guide curve $g$. In this particular case cutting is happening on the guide curve $g$. Figure \ref{fig:midsurfcelljoin:loftbeforecdsweep}b shows the cutting geometry used to decompose. Figure \ref{fig:midsurfcelljoin:loftbeforecdsweep}c shows the outcome of FBCD, i.e. two cells, with profiles $p_1$ and $p_2$ along with the guide curves $g$ cut into two $g_1$ and $g_2$, respectively.  For both the cells, profile $p$ is same as before but the parameter ranges of $g$ are different, e.g the first cell has $p, g_{0,0.3}$, whereas the second cell has $p, g_{0.3,1}$. Similar cutting can happen across $profile$ as well, where the guide-curve ($g$), may remain uncut.
+
+%Following are the observations of FBCD of the Loft feature volumes:
+%\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+%\item All cells are of Loft type (profiles as thick blue line, guide as red line) (Figure \ref{fig:midsurfcelljoin:loftbeforecdsweep}).
+%\item The Splitting plane, creates the Interface  (Figure \ref{fig:midsurfcelljoin:loftbeforecdsweep}).
+%\item Interface has two adjacent sides. It removes existing midsurface patches and creates new shapes connecting midsurfaces from interface-faces (Figure \ref{fig:midsurfcelljoin:loftseparate}).
+%\item It can store Loft parameter range on each of its side. Left side ($p, d_{0,0.3}$) and Right side ($p, d_{0.3,1}$). Similar splitting can happen for Profile as well, where guide-curve ($d$), remains constant. Both cells are owned by the same Loft.
+%\end{itemize}
+
+Following subsection elaborates process of populating a graph of the FBCT cells.
+
+\subsection{Formation of Feature-based Cellular Graph}
+
+FBCT has, say $n$ cells, each assigned with a Loft owner-feature. A cell adjacency graph [CAG, $G(n,e)$] is formed with $n$ nodes, each pointing to and representing a cell. Figure \ref{fig:midsurfcelljoin:featgraph} shows the CAG of simple cells-configuration of a ``L'' shaped part. Node $n_1$ corresponds to a cell, with owning feature $f'_1$, whereas node $n_3$ corresponds to the cell with owning feature $f'_2$. The common cell owned by $ f''_1f''_2$ is represented by node $n_2$. Note that the terms ``node'' and ``cell'' are used synonymously hereafter, unless specified otherwise. Each boundary face between two nodes is represented by an edge ($e$). Edge $e_{12}$ corresponds to the overlapping face $O_1$, where as  edge $e_{23}$ corresponds to the overlapping face $O_2$. 
+
+%%\bigskip
+
+\begin{figure}[!h]
+\centering 
+\begin{minipage}[h]{0.3\linewidth} 
+\includegraphics[width=\linewidth]{../Common/images/FeatureInteractionGraph.pdf}
+\end{minipage} \hfill
+\begin{minipage}[h]{0.22\linewidth} 
+\centering \includegraphics[width=\linewidth]{../Common/images/CellDecompExample.pdf}
+\end{minipage}\hfill
+\begin{minipage}[h]{0.38\linewidth} 
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item $n_1 = sCell_1= f'_1$
+\item $n_2 = iCell_1 = f''_1f''_2$
+\item $n_3 = sCell_2 = f'_2$
+\item $e_{12} = O_1$
+\item $e_{23}= O_2$
+\end{itemize}
+\end{minipage}
+\caption{Feature-based Cellular Graph}
+\label{fig:midsurfcelljoin:featgraph}
+\end{figure}
+
+%%\bigskip
+
+%Each node in CAG represents a cell from FBCT with owning-feature(s) assigned to each of them. \deleted{A cell body has three dimensions, the two sides of the aligned bounding box of the sketch and the length of the guide curve (say, $d_1,d_2,d_3$). FbCD results in $n$ cell-bodies with owning-feature(s) assigned to each of them.} A cell adjacency graph [CAG, $G(n,e)$] is formed with the $n$ nodes, each representing a cell-body. For each face-overlap between two nodes, an edge ($e$), having two nodes ($n$) attached on either end, is created in the CAG
+
+Following section elaborates classification of the cells, which helps in delegating specific tasks to each in the proposed approach of computation of the midsurface.
+
+\subsection{Classification of Cells} \label{sec:midsurfcelljoin:classfication}
+
+Based on the expectations from midsurface shown in Figure~\ref{fig:introduction:midsurfaceexptations} in Chapter~\ref{ch:Survey}, it can be seen that, the model can be conceptually divided into two portions with different functionalities, viz midsurface patches generating portions and midsurface patch joining portions. When this observation is mapped to CAG shown in Figure~\ref{fig:midsurfcelljoin:featgraph}, it is clear that nodes $n_1, n_2$ are patch generating nodes and $n_2$ is a patch joining node. Thus, nodes are classified as $patch$ nodes and $junction$ nodes respectively. This classification is done based on the graph topology and characteristics of the owner feature parameters of the cells, these nodes point to.
+
+ \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.3\linewidth,valign=t]{../Common/images/InventorCell.pdf}
+\caption{Cell with Dimensions}
+\label{fig:litsurvey:celldim}
+\end{figure}
+
+Cells are classified as solid cells ($sCell$s, pointed by $patch$ nodes) and interface cells ($iCell$s, pointed by $junction$ nodes). Figure~\ref{fig:litsurvey:celldim} shows a cell with dimensions. Its classification rules are as follows:
+
+%%\bigskip
+
+
+
+
+%%\bigskip
+
+
+\begin{mydef}
+\label{def:midsurfcelljoin:scell}
+Solid cell ($sCell$) is a cell-body with only one of its dimensions ($d_1$) less than the threshold-factor ($t$) times any of the other two dimensions ($d_2, d_3$), denoted as  $d_1 < t \times d_2 \quad \&  \quad d_1 < t \times d_3$. %node representing a Thin cell-body and with 0/1 incident edge.% any adjacent node with owning-feature as ``Loft'' and is not an $iCell$.
+\end{mydef}
+\begin{mydef}
+\label{def:midsurfcelljoin:icell}
+Interface cell ($iCell$) is a cell-body with minimum two dimensions ($d_1,d_2$) less than the threshold-factor ($t$) times of the maximum dimensions ($d_3$), denoted as  $d_1 < t \times d_3 \quad \&  \quad d_2 < t  \times d_3$. %node with 2/more incident edges. %and has respective overlapping faces ($O_1,O_2$) adjacent to each other.
+\end{mydef}
+
+
+In Figure \ref{fig:midsurfcelljoin:featgraph}, nodes $n_1$ and $n_3$ point to cells which are solid cells ($sCell$), whereas node $n_2$ points to cell which is interface cell ($iCell$).  
+
+The fundamental rule of midsurface computation is stated by Def.~\ref{def:midsurfcelljoin:midsurfrule} as:
+
+\begin{mydef}
+\label{def:midsurfcelljoin:midsurfrule}
+$sCell$ computes the midsurface patches, whereas the  $iCell$ connects all the midsurface patches incident on them
+\end{mydef}			
+
+Advantage of the CAG representation is that, it is easier to classify nodes based on cell characteristics and delegate specific computational work to each using generic rules. \deleted{Thus, the proposed research does not need to enumerate specific heuristic rules used for specific connection types} Another advantage is that, as the problem space has been decomposed into manageable sub-problems\deleted{, thereby complexity of the original problem becomes irrelevant. However large or complex the input CAD model may be,  decomposed cells can be handled, one by one, deterministically}. 
+
+Following sections elaborate the work delegated as per Def.~\ref{def:midsurfcelljoin:midsurfrule} to the classified cells.
+
+\section{Generating Midsurface Patches from Solid Cells}
+\label{sec:midsurfcelljoin:scell}
+
+This section presents an algorithm for computing a midsurface patch from a solid cell ($sCell$). The patch is generated based on the profile $p$ and the guide curve $g$  of the owner loft feature of the $sCell$. Depending on the aspect ratio of the $sCell$, midsurface patch computation varies. Two method are available, namely Midcurve based and Offset based. Midcurve based method is suitable wither the profile is ``thin'' and has a long guide curve, whereas the offset method is suitable where guide is shorter compared to the profile. Thus the input $sCell$ is first classified and the accordingly midsurface patch computation method is chosen. Thus, the $sCell$ is classified into long guide, short guide and equal guide.
+
+%%\bigskip
+
+  \begin{figure}[!h]
+\centering     %%% not \center
+\includegraphics[width=0.75\linewidth,valign=t]{../Common/images/typesofscell_1.pdf}
+\caption{Types of $sCell$s}
+\label{fig:midsurfcelljoin:typesofscell}
+\end{figure}
+
+%%\bigskip
+
+Figure~\ref{fig:midsurfcelljoin:typesofscell}a shows an Extrude feature (a Loft equivalent) having a profile and a guide curve where guide is far shorter than the size of the profile. This case is called as ``Short Guide''. Profile, being a 2D entity, its comparison with 1D guide curve can not be done directly. So, perimeter of the profile with some scaling factor, is compared with the length of the guide. This size comparison determines the `thinness' of the $sCell$.  As mentioned in Section \ref{sec:survey:intro}, though the criterion for ``thinness'' depends on the domain, $thinness = 2$ is considered for the present research. Figure~\ref{fig:midsurfcelljoin:typesofscell}b shows a similar Extrude but which is built by extruding smaller profile along longer guide direction. This case is called as ``Long guide''. Figure~\ref{fig:midsurfcelljoin:typesofscell}c shows case of Extrudes whose profile and guide sizes are similar. These cases are called as ``Equal Guide'' and the cells as ``thick cells''.
+
+% \added{Comparison is done between $sketch_{size}$ and $guide_{size}$. Symbol $\ll$ suggests that length of the sketch has to be far less than length of the guide, for the {\bf $\mathcal{L}$} to get qualified for ``Thin Sketch'' (elaborated below) method of computing midsurface. $sketch$ being a 2D entity, its size (i.e. area) can not be compared directly with the size (i.e. length) of the $guide$. So, the present research takes summation of sketch curve lengths as the parameter denoting $sketch_{size}$, whereas $\ll$ is taken as factor of 2, meaning, $sketch_{size}$ has to at-least 2 times less that the $guide_{size}$.}
+
+Based on the above mentioned type of $sCell$s,  different midsurface patch generation approaches are used, as described below: 
+
+\begin{figure}[h]
+\centering \includegraphics[scale=0.62]{../Common/images//MidsurfSmallProfile_3.pdf} 
+\caption{Long Guide $sCell$}
+\label{figure_MidsurfSmallProfile_2}
+\end{figure}
+
+
+
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+
+\item {\bf Long Guide $sCell$}: {\em Midcurve} is extracted from the {\em profile} and swept along the {\em guide} to generate the midsurface patch.
+
+%%\bigskip
+
+
+%%\bigskip
+
+Figure~\ref{figure_MidsurfSmallProfile_2} shows a solid cell having a profile, a guide, a midcurve computed and the midsurface patch generated. Details of computation of the midcurve are presented in the next section.
+
+\item {\bf Short Guide $sCell$} : The {\em profile} face itself is {\em offseted} along half {\em guide} length. {\em Midcurve} is not computed  in this case.  
+
+\item {\bf Equal Guide $sCell$}:  This is a thick cell and thus midsurface patch is not generated for it. During midsurface patch joining phase, relevant thick cells may participate as patch joining cells.
+
+\end{itemize}
+
+\todo{Review comment: I suggest first explain the simple part ie.e generating midsurface by simply offsetting the faces...[ADDED DETAILED EXPLANATION]}
+
+Algorithm~\ref{alg:midsurfcelljoin:MidsurfsCell} describes the midsurface patch generation process in a pseudo-code. 
+
+\bigskip
+
+
+		\begin{algorithm}[H]
+		\caption{sCell Midsurface Patch Computation}
+		\label{alg:midsurfcelljoin:MidsurfsCell}
+		\begin{algorithmic}[1]
+			\REQUIRE $sCell$
+			%\ENSURE $size(sCell \rightarrow owning-feature(s)) = 1$
+			\STATE $f = sCell \rightarrow owning\_feature()$
+			\STATE $p = f \rightarrow get\_profile()$
+			\STATE $g = f \rightarrow get\_guide()$
+			%\STATE $is\_thin\_profile = \sqrt{Area(profile)} < threshold \times length(guide)$ 
+			\IF{$is\_long\_guide(p,g) == true$}
+				\STATE $m^1 = p\rightarrow compute\_midcurve()$
+				\STATE $m^2 = sweep(m^1 ,g)$
+			\ELSIF{$is\_short\_guide(p,g) == true$}
+				\STATE $m^2 = offset(p ,g/2)$
+			\ENDIF
+		\end{algorithmic}
+	\end{algorithm}
+
+\bigskip
+
+
+
+
+%%\bigskip
+
+Steps for the same are elaborated below:
+
+\begin{enumerate}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Owner feature is queried from the input $sCell$. From the owner feature, which is a Loft-equivalent, its profile and guide are extracted (Algorithm~\ref{alg:midsurfcelljoin:MidsurfsCell} lines: 1-3).
+\item Based on the relative size of profile with respect to guide, the $sCell$ is checked if it is Long-guide or a Short-guide cell.
+\item If it is a Long-guide case, then midsurface patch is computed by ``midcurve' method.
+\item Midcurve from the profile is computed and it is swept along the guide to create a midsurface patch (Algorithm~\ref{alg:midsurfcelljoin:MidsurfsCell} lines: 5-6).
+\item If the cell is of Short-guide type then ``offset'' method is used.
+\item The profile face is offseted at half the distance of the guide to compute the midsurface patch (Algorithm~\ref{alg:midsurfcelljoin:MidsurfsCell} line: 8).
+\end{enumerate}
+
+	
+Figure \ref{fig:midsurfcelljoin:scells} shows the outcome of this midsurface patch generation module with a sample ``L'' shaped model. FBCD decomposed it into 3 cells, out of which 2 are $sCell$s. The first picture shows schematic diagram of the two $sCell$s having midsurface patches generated in each of them. The cell in between is an $iCell$, so it is not handled in this module. The second picture shows the same scenario as a 3D view, showing the two midsurface patches.
+
+	\begin{figure}[!h]
+	\centering     %%% not \center
+	\subfloat[Patches, 2D view]{\label{fig_patches2d}\includegraphics[width=0.3\linewidth]{../Common/images/MidsurfPatches_2.pdf}} \quad
+	\subfloat[Patches, 3D view]{\label{fig_patches3d}\includegraphics[width=0.3\linewidth]{../Common/images/sCellMidsurfs3d}}
+	\caption{Midsurface Patches } %%%%%%%% ADD (\{citeYogeshIITG2014}) LATER
+	\label{fig:midsurfcelljoin:scells}
+	\end{figure}
+
+Once done, all the $sCell$s are filled with the midsurface patches and are ready to get connected in $iCell$s, which is eleborated in Section \ref{sec:midsurfcelljoin:icell}.
+
+Following section describes the proposed approach of generating midcurve from Loft feature's profile, needed in case of ``Long Guide'' $sCell$ case.
+
+\subsection{Generation of Midcurves from Profile} \label{sec:midcurve}
+\input{../DocsSources/IntroductionLitSurvey_Midcurves_thesis}
+\input{../DocsSources/Body_Midcurves_thesis}
+%\input{../DocsSources/Conclusion_Midcurves_thesis}
+	
+Midcurve computed by the proposed approach is used to compute midsurface patches for ``Long Guide'' $sCell$ cases. After all the midsurface patches are computed for the $sCell$s, they are joined in the $iCell$s, as described in details in the following section.
+
+\section{Connecting Midsurface Patches in Interface Cells}
+\label{sec:midsurfcelljoin:icell}
+
+\todo{Review comment: First state where you are wrt high level work flow, what you have achieved so far and what is remaining. [DONE]}
+
+This section continues after the midsurface patch generation approach mentioned in Section~\ref{sec:midsurfcelljoin:scell}. So, at this stage, midsurface patches are ready at all the $sCell$s. Now this section presents  the proposed approach for joining them in interface cells ($iCell$s).
+
+$iCell$s have been delegated with the task to connect the midsurface patches incident on them, either by extending the midsurface-patches from the adjacent $sCell$s, or by generating new patches, so that joining of midsurface patches happens at common edges.  
+
+Each $iCell$ is connected with adjacent cells via edges.  Each edge has two nodes connected at ends. The one in which connections are going to be made is called the current node, the $iCell$ it points to is termed as ``self''. The other node of the edge is called as ``adjacent node''.  ``Self'' is always an $iCell$'' but the``adjacent node'' can be either a $sCell$ or an $iCell$.  
+
+%%\bigskip
+
+\def\myresolvecellcolumnwidth{0.3}
+	\begin{figure}[!h]
+	\centering     %%% not \center
+	\subfloat[Expected adjustments]{\label{fig:midsurfcelljoin:icells}\includegraphics[width=0.285\linewidth,valign=t]{../Common/images/MidsurfJoining_2.pdf}} \quad
+	\subfloat[$sCell-iCell$ Interaction]{\label{fig:midsurfcelljoin:sextensions}\includegraphics[width=0.31\linewidth,valign=t]{../Common/images/sCellExtension_1.pdf}} \quad
+	\subfloat[$iCell-iCell$ Interaction]{\label{fig:midsurfcelljoin:iextensions}\includegraphics[width=\myresolvecellcolumnwidth\linewidth,valign=t]{../Common/images/iCellExtension_1.pdf}}	
+	\caption{Resolving of Overlap in $iCell$}
+	\label{fig:midsurfcelljoin:resolveiCell}
+	\end{figure}
+	
+%%\bigskip
+
+\todo{Review comment: First give high level concept of the algorithm then take schematic well labeled diagram to explain it. [DONE]}
+
+If the ``adjacent node'' is a $sCell$, then the interaction is of $iCell-sCell$ type and if the ``adjacent node'' is an $iCell$, then the interaction is of $iCell-iCell$ type.
+
+Figure~\ref{fig:midsurfcelljoin:resolveiCell} shows working of both types of interactions viz. $iCell-sCell$ and $iCell-iCell$. Figure~\ref{fig:midsurfcelljoin:resolveiCell}a shows the input state of the model. It has two $sCell$s with ready midsurface patches. The expectation is that the patches will extend inside the $iCell$ to join at the common edge. An intersection curve ($m^1$) is computed between the overlapping face ($O_{1,2}$) and the midsurface ($m^2$). 
+This curve acts as midcurve for the extension into the $iCell$. 
+\todo{Review comment: Mention that this midcurve is found by using one of the strategies explained before. [ACTUALLY ITS AN INTERSECTION CURVE AND NOT MIDCURVE. WE DON'T COMPUTE IT. IT JUST ACTS AS MIDCURVE]}
+\deleted{In case, where all the three cells are geometrically flat and relatively big, then all are marked as  $sCell$s (not $iCell$s) and have no extensions.} 
+The extensions are shown by dotted line and the common edge is shown as the point of intersection of the extensions. 
+
+Figure~\ref{fig:midsurfcelljoin:resolveiCell}b shows the working of $iCell-sCell$ interaction. Midsurface patch from a $sCell(n_1)$ needs to be extended to a common location, say, centroid of the $iCell(n_2)$, where $n_1,n_2$ denotes the corresponding cellular graph nodes. 
+
+Figure~\ref{fig:midsurfcelljoin:resolveiCell}c shows the working of $iCell-iCell$ interaction. Midsurface patch from a $sCell(n_1)$ needs to be extended to a common location, say, centroid of the $iCell(n_2)$. Similar extension has to be computed from the $iCell$s pairing with the other $sCell$. Centroids of both the $iCell$s need to be connected with a new patch.
+
+%%\bigskip
+
+	\begin{figure}[!h]
+	\centering     %%% not \center
+	\subfloat[Before Resolving]{\label{fig_overlapscell}\includegraphics[width=0.28\linewidth]{../Common/images/sCellMidsurfs3dOverlap_zoom_label}}\quad
+	\subfloat[After Resolving]{\label{fig_overlapicell}\includegraphics[width=0.28\linewidth]{../Common/images/iCellMidsurfs3dOverlap_zoom_label}}
+	\caption{$iCell$ Resolving in Overlap Case} %%%%%%%% ADD (\{citeYogeshIITG2014}) LATER
+	\label{fig_icellsovrelap}
+	\end{figure}
+	
+%%\bigskip
+
+\todo{Review comment: After this provide all the configurations of iCells and how they are solved.[ICELL INTERACTIONS ARE OF ONLY TWO TYPES WHICH ARE EXPLAINED HEERE. VARIOUS SHAPES ARE EVALUATED BELOW]}
+
+Figure~\ref{fig_icellsovrelap} shows the $iCell-iCell$ interaction in 3D. Figure~\ref{fig_overlapscell} shows the state before joining of the patches $m1,m2$ whereas  Figure~\ref{fig_overlapicell} shows state of the model with connected midsurface patches.
+
+
+Thus, all the $iCell$s join the midsurface patches to form a well-connected midsurface.
+
+
+Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} shows this proposed approach in a pseudo-code form.
+
+%%\bigskip
+	
+	\begin{algorithm}[H]
+		\caption{$iCell$ Midsurface Patch Interaction Resolution}
+		\label{alg:midsurfcelljoin:MidsurfiCell}
+		\begin{algorithmic}[1]
+			\REQUIRE $iCell$
+			\WHILE{$size(iCell \rightarrow edges) > 0$}
+				\STATE $e_i = iCell \rightarrow edge$
+				\STATE $n_s = iCell $	
+				\STATE $n_o = e_i \rightarrow get\_adjacent\_node(n_s) $			
+				\IF{$n_o \rightarrow type == sCell$}
+					\STATE $m_o = n_o \rightarrow query\_midsurface()$
+					\STATE $O_f = e_i \rightarrow overlapping\_face()$
+					\STATE $m^1 = surf\_surf\_intersection(O_f, m_o)$
+					\STATE $m^2 = extrude(m^1, n_o \rightarrow centroid)$
+				\ELSIF{$n_o \rightarrow type == iCell$}
+					\STATE $c^1_1= get\_curve\_at\_centroid(n_s)$
+					\STATE $c^1_2 = get\_curve\_at\_centroid(n_o)$
+					\STATE $m^2 = create\_patch(c^1_1, c^1_2)$
+					\ENDIF
+			\ENDWHILE
+		\end{algorithmic}
+	\end{algorithm}
+
+%%\bigskip
+
+Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} describes the midsurface patch joining process in a pseudo-code form. Steps for the same are elaborated below:
+
+\begin{enumerate}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Input $iCell$ is typically joined by one or more $sCell$s, via edges. Such incident edges are iterated one by one (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: loop between 1 to 15).
+\item Graph node at the other end of the edge is queried. Based on the type of the cell it points to further process is executed (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: 2-4).
+\item If the cell pointed by the other node is of type $sCell$ then this interaction becomes $iCell-sCell$ type and further steps are stated below (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: 5-9).
+\item Midsurface patch from the other $sCell$ is queried. Here one option is extend this patch up-to centroid of the input $iCell$ and another option is to create a patch from the midsurface up-to centroid of the input $iCell$. As extension API needed for extension are not available, the later option is chosen in the present research work (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} line: 6).
+\item Intersection between the midsurface patch and the face between $iCell-sCell$ is computed and then extruded up-to the centroid of the input $iCell$ (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: 7-9).
+\item If the cell pointed by the other node is of $iCell$ then this interaction becomes $iCell-iCell$ type and further steps are stated below (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: 11-13).
+\item A new patch is created between centroids of both the $iCell$s (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} lines: 11-13).
+\end{enumerate}
+
+%Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} starts with the input as an $iCell$. Edges incident on the $iCell$ are iterated (Algorithm~\ref{alg:midsurfcelljoin:MidsurfiCell} line: 1/15 loop). The current edge ($e_i$) and the node corresponding to $iCell$ (called $n_s$, where $_s$ is for ``self'') are extracted. The other node pointed by $e$ is called as $n_o$, where $_o$ stands for ``other''. Condition block in lines 5-9 is for $iCell-sCell$ interaction whereas lines 10-13 is for $iCell-iCell$ interaction. Extensions can either be done by extending existing midsurface patch or by creating a new patch by extrude. The second choice is used, as shown in lines 6-9. Lines 11-13 show creation of new patch joining existing extensions from both the patches up-to centroids.
+
+Once all interactions are resolved in $iCell$s, the result is a well-connected midsurface. 
+
+Table ~\ref{tbl:midsurfcelljoin:fbcm} shows various cases, with their respective CAD model, Cellular Decomposition (FBCD), Cellular adjacency graph (CAG) and midsurface outputs.
+
+\todo{Review comment: You need to add one more column to show the surfaces are joined in iCells. [THERE ARE ONLY TWO CASES FOR CONNECTION, WHICH ARE EXPLAINED BEFORE. ADDING A COLUMN MAY NOT HELP I GUESS. WILL ACTUALLY MAKE OTHER FIGURES SMALLER, ILLEGIBLE]}
+	
+%%\bigskip
+
+
+\newcommand \myColWidthFactora {0.22}
+\begin{center}
+\captionof{table}{Midsurfaces Generated from Feature-based Cellular Models}\label{tbl:midsurfcelljoin:fbcm}
+%\resizebox{0.8\linewidth}{!}{
+%\begin{longtable}[!htb]{@{}p{0.22\linewidth} p{0.22\linewidth}  p{0.22\linewidth}  p{0.22\linewidth} @{}} \toprule
+\begin{longtable}[!htb]{@{}p{\myColWidthFactora\linewidth} p{\myColWidthFactora\linewidth}  p{\myColWidthFactora\linewidth}  p{\myColWidthFactora\linewidth} @{}} \toprule
+{\bf Model} & {\bf FBCD}  & {\bf CAG} & {\bf Midsurface} \\ \midrule  
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularL}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularL}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphL.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularL}} 
+\\ \midrule
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularT}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularT}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphT.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularT}} 
+\\ \midrule
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularCurvedY}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularCurvedY}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphY.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularCurvedY}} 
+\\ \midrule
+
+\adjustbox{valign=c}{\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularCurvedTri}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/CellularCurvedTri}}  &
+\adjustbox{valign=c}{\includegraphics[width=0.8\linewidth]{../Common/images/CellGraphTri.pdf}} &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/midsCellularCurvedTri}} 
+\\ \midrule
+
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularPlus}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularPlus}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphPlus.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularPlus}} 
+\\ \midrule
+
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularDraftPlus}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularDraftPlus}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphPlus.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularDraftPlus}} 
+\\ \midrule
+
+
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularOverlap}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularOverlap}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphOverlap.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularOverlap}} 
+\\ \midrule
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularZU}}  &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularZU}}  &
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphZU.pdf}} &  
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularZU}} 
+\\ % \midrule
+
+%\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/nonCellularBracket}}  &  
+%\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellularBracket}}  &
+%\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/CellGraphBracket.pdf}} &  
+%\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/midsCellularBracket}} 
+%\\ %\midrule
+\bottomrule
+\end{longtable}
+%}
+\end{center}
+
+
+%%\bigskip
+
+
+\section{Re-application of Dormant Features}
+
+Midsurface generated is not yet final at this stage. As elaborated in Section \ref{sec:defeaturing:phase11}, during defeaturing, negative features were temporarily removed even though they were relevant. The intent was to simplify and to make midsurface computation simpler. These removed features, called Dormant features, are reinstated back on the midsurface here. Cached dormant feature tool bodies are pierced into the midsurface\deleted{ to restore the temporarily-suppressed  negative features}.
+
+
+%%\bigskip
+
+
+	\def\mymidsdormcolumnwidth{0.38}
+	\begin{figure}[!h]
+	\centering     %%% not \center
+%	\subfloat[Original Part]{\label{fig:midsurfcelljoin:origpart}\includegraphics[width=\mymidsdormcolumnwidth\linewidth,valign=t]{../Common/images/DefeatBracketPhase_I_1}} \\
+	\subfloat[Dormant Features Tool-Bodies Piercing]{\label{fig:midsurfcelljoin:midsdorm}\includegraphics[width=\mymidsdormcolumnwidth\linewidth,valign=t]{../Common/images/MidsurfDormantBodies_2}} \qquad
+	\subfloat[Final Output]{\label{fig:midsurfcelljoin:finalmids}\includegraphics[width=\mymidsdormcolumnwidth\linewidth,valign=t]{../Common/images/MidsurfAfterDormant}}	
+	\caption{Re-application of Dormant Features to Generated Midsurface}
+	\label{fig:midsurfcelljoin:midsdorm}
+	\end{figure}
+
+%%\bigskip
+
+
+%\section{Example}
+
+ Figure \ref{fig:midsurfcelljoin:midsdorm}a shows the tool-bodies being reapplied on the midsurface, whereas Figure \ref{fig:midsurfcelljoin:midsdorm}b shows the output final midsurface.
+
+\todo{Review comment: Mention everything starting from decomposed part... [DONE]}
+
+\section{Conclusions}
+
+This chapter presented proposed approach for computing midsurface from defeatured and generalized CAD model as input. It decomposed the model into cells having owner features. It populated a graph with the cells and classified them into midsurface patch generating cells and midsurface patch joining cells. Midsurface patches were generated either by offsetting profile face or by sweeping the midcurve of profile of the Loft feature, along its guide. Midcurve was computed by first decomposing the input profile, then computing midcurve for each sub-polygon and then connecting them. Midsurface patches were connected in midsurface patch joining cells to form a well-connected midsurface. At the end, dormant feature tool bodies were applied to re-apply the temporarily removed negative features.
+
+It can be noted that the proposed approach, implemented in \mysystemname, has addressed the problems present in traditional approaches viz. computation of midsurface patches and joining them. \deleted{It has leveraged feature based simplification (defeaturing), generalization and decomposition to make the whole process of computing midsurface generic and adaptable for a wide variety of models.}
+
+The next chapter presents proposed topological validation method for assessing the quality of output midsurface.
+
+%\section{Validation of Midsurface}
+%\input{../DocsSources/IntroductionLitSurvey_TopoVal_thesis}
+%\input{../DocsSources/Body_TopoVal_thesis}
+%\input{../DocsSources/Conclusion_TopoVal_thesis}
+

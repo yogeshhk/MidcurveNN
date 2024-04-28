@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg5386"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="SimpleHole1.svg">
+  <defs
+     id="defs5388" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.784121"
+     inkscape:cx="27.282526"
+     inkscape:cy="39.661026"
+     inkscape:current-layer="g5438"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="707"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:snap-grids="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5394" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5391">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <g
+       id="g5438"
+       transform="matrix(0.95001031,0,0,1,0.3551895,-14)">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.02597284000000010px;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:0.39215687"
+         d="m 3.836599,48 46.315289,0 c 0,0 13.684063,-8 13.684063,-8 l -46.315289,0 z"
+         id="path6002"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:0.81649661;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path10312"
+         sodipodi:cx="32.5"
+         sodipodi:cy="30.5"
+         sodipodi:rx="5.5"
+         sodipodi:ry="1.5"
+         d="m 38,30.5 a 5.5,1.5 0 1 1 -11,0 5.5,1.5 0 1 1 11,0 z"
+         transform="matrix(1.5789303,0,0,1,-18.253962,13.40598)" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+\documentclass{../Common/singlecol-new}
+
+\usepackage[square,sort,comma,numbers]{natbib}
+\usepackage{stfloats}
+\usepackage{mathrsfs}
+\def\newblock{\hskip .11em plus .33em minus .07em}
+
+%%%%%%%%%% my packages %%%%%%%%%%%%%%%
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{booktabs}
+\usepackage{html}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{longtable}
+
+%\usepackage[disable]{todonotes} % To remove in-line review comments, use 'disable'
+%\usepackage[colorinlistoftodos,textsize=normalsize,textwidth=1\marginparwidth]{todonotes} % To add in-line review comments
+
+%
+%\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+%\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+%\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+%
+%
+%\renewcommand{\arraystretch}{1.5}
+%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%
+
+
+\theoremstyle{TH}{
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{corrolary}[lemma]{Corrolary}
+\newtheorem{conjecture}[lemma]{Conjecture}
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{stheorem}[lemma]{Wrong Theorem}
+%\newtheorem{algorithm}{Algorithm}
+}
+
+\theoremstyle{THrm}{
+\newtheorem{definition}{Definition}[section]
+\newtheorem{question}{Question}[section]
+\newtheorem{remark}{Remark}
+\newtheorem{scheme}{Scheme}
+}
+
+\theoremstyle{THhit}{
+\newtheorem{case}{Case}[section]
+}
+
+\makeatletter
+\def\theequation{\arabic{equation}}
+
+\JOURNALNAME{\TEN{\it Int. J. Computer Aided Engineering and Technology,, 
+Vol. \theVOL, No. \theISSUE, \thePUBYEAR\hfill\thepage}}%
+
+\def\BottomCatch{%
+\vskip -10pt
+\thispagestyle{empty}%
+\begin{table}[b]%
+\NINE\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcr@{}}%
+\\[-12pt]
+Copyright \copyright\ 2014 Inderscience Enterprises Ltd. & &%
+\end{tabular*}%
+\vskip -30pt%
+%%\vskip -35pt%
+\end{table}%
+}
+\makeatother

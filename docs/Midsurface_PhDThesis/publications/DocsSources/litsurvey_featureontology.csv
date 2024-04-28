@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+ Middleditch \cite{Middleditch1997},Cellular CAD model,Feature Definition with Cells,Proposed structure; construction sequence and point-set; ,Separated issues of solid modeling; feature modeling and constraints,
+Tessier \cite{Tessier2011} \cite{Tessier2013},Feature based CAD model,Rule based mapping,Mapping from source feature Brep data to shared feature types (Figure \ref{fig:litsurvey:Tessier}) mainly for feature validation,No need of source feature classes but just instance file.,Better matching needed beyond Brep in case of no match
+Gino Brunetti \cite{Brunetti2005},Feature based CAD model,Shape Reasoning,Layered model from Geometry; topology; upto Assembly features,Facilitates feature interop,Limited formulation and application

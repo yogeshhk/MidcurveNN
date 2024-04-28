@@ -1,0 +1,34 @@
+
+\section{Related Work}	
+
+Theoretical biologist, Harry Blum \citep{Harry1967} did some pioneering work in the field of skeletonization, with the medial axis of the shape. 
+
+Survey papers, such as \citep{Attali2004}, \citep{Lam1992} and \citep{Yogesh2010} have enumerated various approaches used in the skeleton creation. 
+
+Decomposition of planar shapes  into regular (non-intersecting) and singular (intersecting) regions and its application to skeletonization has also been widely researched \citep{Rocha99}.
+
+\added[remark={ But it would be worthwhile to see how the mid-line
+from this method compares to those produced using MAT. The medial lines created using MAT will always lie along the true centerline i.e. load path in an engineering sense.  Have the authors looked at work done by Mohsen Rezayat in the field of midline extraction using the "face-pairing" approach and it's pros and cons compared. The ideas being proposed here and the ones by Rezayat are different, but would produce identical results when applied to engineering cross-sections.}]{Ramanathan \citep{Ramanathan2004} pointed out the difference between MAT and the midcurve.  MAT does not truly reflect the local topology of the shape due to additional branches at the corners, but a midcurve does to a large extent.} 
+
+Rocha \citep{Rocha98, Rocha99} used both decomposition and skeletonization for character recognition in images. From the results presented, it appears that junctions such as L and T were far from being well-connected.  
+
+Keil's algorithm \citep{Keil94} finds all possible ways to remove reflexity  of  these  vertices,  and  then  takes  the  one  that  requires  fewest diagonals. 
+
+Lien et. al. \citep{Lien2004} decomposed polygons 'approximately' based on iterative removal of the most significant non-convex feature. 
+
+Some of the other methods of polygon decomposition are based on use of:
+\begin{itemize}[noitemsep,topsep=1pt,parsep=1pt,partopsep=1pt]
+\item Curvature to identify limbs-necks
+\item Axial Shape Graph
+\item Events occurring during computation of Straight Skeleton
+\item Delaunay triangulation
+\end{itemize}
+
+Many of these methods need quite a bit of pre and post processing to take care of boundary noise \citep{Lien2004}. 
+
+Zou et. al.\citep{Zou2001} partitioned a shape by Delaunay triangulation, identified regular and singular regions and then created skeletons.
+
+A formal definition of midcurve is not available \citep{Ramanathan2004}. For restricted scenarios, such as, given two curves, a midcurve can be defined as a curve equidistant from the given curves \citep{Elber1999}.
+
+Following paper improves upon polygon decomposition algorithm by Bayazit \citep{Bayazit}, and then uses it's output for midcurve creation.
+

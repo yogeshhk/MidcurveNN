@@ -1,0 +1,18 @@
+\section{Conclusions and Future work}
+
+Computation of midsurface is one of the most popular and important idealization techniques for CAE analysis of  thin-walled models. Study of the existing techniques revealed critical insights into the problems of the  midsurface results (gaps, overlaps, lack of isomorphism, etc.), such as failures in the face-pair detection and interactions.  All the sub-processes used in this work leverage feature-information effectively, thereby introducing a new way of \textbf{FSAD} (Feature-based, Simplification, Abstraction, Decomposition)  methodology to CAD algorithms.
+
+The superiority of the proposed approach is the manner in which it has abstracted both the sub-problems. Following are the salient contributions of this approach with respect to past ones:
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Simplification}: Domain specific taxonomies can be introduced for defeaturing to suit particular applications. The generic Remnant feature approach is far more accurate than full-feature-parameters, for detection of suppressible features.
+\item \textbf{Abstraction}: Instead of devising algorithms of plethora of feature shapes, a singular Loft-based-feature-transformation is far more effective as well as maintainable. Any new introduction of a domain specific feature, just needs one-time transformation rule, the rest of the midsurface algorithm works without any changes.
+\item \textbf{Decomposition}: Divide-and-conquer methodology, reduces the complexity of the problem. Cells, in this case, the loft primitives, are easy to create midsurface patches of and the graph structure of the cells gives accurate information needed to address midsurface connectivity issues.
+\end{itemize}
+
+Although individual functionalities such as defeaturing, abstraction and decomposition processes may show certain shortcomings, but overall, the proposed approach seems to work well and is able to compute a well-connected midsurface in a robust, definitive and generic manner, with minimal failures.  
+
+In future, the proposed system can be expanded to include more sheet metal cad features and extended to domains such as Injection Molding features.
+
+
+
+

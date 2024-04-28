@@ -1,0 +1,7 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Rezayat \cite{Rezayat1996},Brep,Face Pairing,Face pairing; Midsurface patches; Adjacency Graph; Extend and trim,No branches,Complex Face pairing
+Sungchan Kim \cite{Kim2005},Brep,Face Pairing,Defeaturing; Face pair method,Usage of Face pairing on feature-basis,Connection details missing
+Sheen \cite{Sheen2005}  \cite{Sheen2008}   \cite{Sheen2010},Features,Defeaturing; Face pairing,Feature based model simplification; Face pairing,Better simplification,Co-planar;  T and L type only
+Hanmin Lee \cite{Lee2007},Brep,Face Pairing,"Face pairing; Midsurface patches; Adjacency Graph;
+Extend and trim",Edges decide the extension rule for correct topological boundary,Complex Face pairing
+Aimin \cite{Aimin2013},Features,Defeaturing; Face pairing,Defeaturing; Face pair method,Defeaturing parameters  collected upfront,Connection details missing

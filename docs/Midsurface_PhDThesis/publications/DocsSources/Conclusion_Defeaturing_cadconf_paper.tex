@@ -1,0 +1,41 @@
+
+\section{Conclusion}
+
+Most of the defeaturing algorithms are based on the mesh/solid (Brep) as input. With the availability of feature information in the feature based CAD models, it has become possible to leverage it for defeaturing purpose effectively. This work proposes two novel algorithms for defeaturing sheet metal CAD models that can be conveniently used for downstream application of generating a well-connected midsurface. With the first algorithm, each candidate sheet metal feature is suppressed based its sheet metal characteristics. The second algorithm leverages the size of the remnant volumes for deciding the suppressibility. Advantages of feature based parametric modeling can be combined with the proposed approach for automatic defeaturing and simplification of the model. Comparison with other defeaturing methods is presented in Tab. \ref{tab:defeat_test}.
+%------------------------------------------------------------------------------------
+\begin{table}[h!]
+  \centering
+  \resizebox{0.9\linewidth}{!}{ 
+\begin{tabular}[htp]{@{} p{0.12\linewidth} p{0.2\linewidth} p{0.2\linewidth} p{0.22\linewidth} p{0.22\linewidth}@{}}
+\toprule
+& \textbf{Size \cite{Russ2012}} &	\textbf{Wrap \cite{Kim2005}} &	\textbf{Reorder \cite{Lee2005}} & \textbf{Smarf}\\
+\midrule
+Input & Features	& Brep	& Features	& Features\\
+\midrule
+Method & Find Feature size, compare with threshold, suppress.&
+Wrap-around. Negative volumes are removed. &
+Features converted to volumetric +ve, -ve and reordered.&
+Sheet metal features and Remnant face logic.\\
+\midrule
+Disadvantages & Limited to FEM as BC and Load path features are not suppressed. &
+Concave edge filling creates odd shapes. Principal shape is lost. &
+Due to merging in Cellular model, update capability is lost forever. &
+Context dependent.\\	
+\bottomrule
+\end{tabular}
+}
+ \caption{Comparison with Other Simplification Methods}
+  \label{tab:defeat_test}
+\end{table}
+
+
+Uniqueness of the {\bf Smarf} approach in comparison with few other relevant approaches \cite{Kannan2009,SangHunLee2005,Russ2012}:
+	\begin{itemize}
+	[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+	\item Suppressibility rules specific to the domain such as sheet metal feature-based design. 
+	\item Suppressibility rules based on the remnant and not full feature/part volume.
+	\item No blind suppression of all the negative features or filling-up of the concave volumes.
+\end{itemize}
+\bigskip
+Practical example shown in section 4 demonstrates the efficacy of the proposed approach. It is evident that, even after substantial defeaturing the gross shape computed retains the features essential for computation of a well-connected midsurface.
+%\vspace{-2em}

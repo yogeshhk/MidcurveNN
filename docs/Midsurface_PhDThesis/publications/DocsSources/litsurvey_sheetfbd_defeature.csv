@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Joshi Datta  \cite{Joshi2003},Free-from surfaces,Size,Sheet metal feature regognition then suppression,,Limited to only holes fillets and bosses
+Liu et al. \cite{Liu2004},Sheet metal feature based CAD model,FR,Classification into Primitives (independent); Add-ons; Connectors and Composites.,,
+Sunil \cite{Sunil2008},Free-from surfaces,FR,Recognized and classified into face-based (holes; dimple; and beads); edge-based features (flange; ridge)  and transitive features (bend),,

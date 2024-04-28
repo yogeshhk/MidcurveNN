@@ -1,0 +1,91 @@
+\chapter{Conclusions and Recommendations}
+
+	\section{Conclusions}
+
+	A major problem in CAD/CAM is to device appropriate representations for
+	modeling product information in a computer. Feature-based design offers a
+	tool for mapping a designer's abstraction into a representational form
+	that is suitable for manufacturing and other downstream applications.
+
+	In the research work presented herein, we were able to successfully
+	develop and implement a feature-based design system for generalized
+	orthohedral components.
+
+	A data representation scheme was developed for modeling three
+	dimensional solid components with orthohedral external shape and a wide
+	variety of internal shapes. 
+	The geometry and topology are explicitly represented.
+
+	The feature library is extendable and customized to suit the needs of 
+	any given application. This extendability is also exploited to provide 
+	support for free-form 
+	surfaces ( extruded B-Spline ) through the mechanism of encapsulation.
+	This capability offers flexibility in enriching the feature set and
+	supporting customized features.
+
+
+    The family of features currently supported includes :
+        \begin{itemize}
+        \item
+        Constructive Block
+        \item
+        Subtractive Block
+        \item
+        Constructive Cylinder
+        \item
+        Subtractive Cylinder
+        \item
+        Constructive Wedge
+        \item
+        Subtractive Wedge
+        \item
+        Constructive swept B-Spline surface
+        \end{itemize}
+
+
+	Operations such as {\em Create}, {\em Edit}, {\em Display}, {\em Save} and
+	{\em Retrieve} are also supported.
+
+	The architecture of the prototype system is {\em open}, providing the
+	infrastructure for additional development to enhance its functionality and 
+	modeling capabilities.
+
+	Feature-based design systems are generally lacking in
+    dimensioning and tolerancing support. The present work develops and
+    implements a robust dimensioning and tolerancing model with the capability
+	to  create, modify and validate part dimensioning schemes.
+
+
+	C++ is used to implement the proposed feature-based design concepts
+	using the object-oriented methodology. 
+	The user-interface is developed in the X-Windows Motif toolkit, while the
+	graphics display is done using PHIGS.
+	The user-interface and application classes are separated as much as
+	possible, thereby providing the capability to change the user interface
+	with minimal modifications in the object classes themselves.
+
+
+    \section{Recommendations}
+
+	The FBD prototype developed can be used to model components with
+	orthohedral, cylindrical or prismatic geometry, with limited support
+	for free-form surfaces. This limitation can be reduced by adding new
+	geometric features to the available set of geometric features. The
+	mechanism of encapsulation could be used to model much wider classes of
+	geometric shapes and topological links.
+
+	Since the prototype FBD system supports both design and manufacturing 
+	features, it could be extended to generate process planning data.
+
+	The D \& T facility that is provided has limited support for tolerance 
+	analysis. Useful work could be done in this area to provide the capability 
+	for tolerance synthesis and validation. The user interface for the D \& T 
+	portion of the software has a lot of room for improvement.
+
+	In the present prototype FBD package, the features are not written
+	in internationally recognized formats. This capability would allow
+	other applications such as finite element analysis or NC code generation
+	to use the current solid modeling system for modeling the components.
+	Thus, support for international standards such as PDES/STEP and industry
+	standards like DXF will greatly improve the usability of the software.
+

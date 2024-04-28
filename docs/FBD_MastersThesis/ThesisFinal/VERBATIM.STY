@@ -1,0 +1,66 @@
+%Path: maverick.ksu.ksu.edu!zaphod.mps.ohio-state.edu!think!husc6!m2c!umvlsi!umaecs!hgschulz
+%From: hgschulz@ecs.umass.edu
+%Newsgroups: comp.text.tex
+%Subject: New verbatimfiles.sty
+%Message-ID: <9806.264c1f47@ecs.umass.edu>
+%Date: 12 May 90 14:35:50 GMT
+%Lines: 57
+%
+%Below is a new and improved (or so I hope) version of 'verbatimfiles.sty'
+%which allows the inclusion of verbatim text files (program listing). Compared
+%to the original, verbatimlisting numbers lines in any desired increment.
+%E.g. \verbatimlisting[5]{foo.c} labels lines 5, 10, 15 etc. only. Also,
+%line numbers are now in footnotesize italics. It should be obvious where
+%to change that. If someone tells me how, I will submit this to the clarkson
+%archive.
+%
+%Henning Schulzrinne  HGSCHULZ@CS.UMASS.EDU
+%U. of Massachusetts 
+%----------------------------- cut here -----------------------------
+% Here is a version of Adrian's VERBATIM.STY, for inputting whole files
+% verbatim, which is "more LaTeX-like" in that it uses the actual LaTeX 
+% macros which set up the `verbatim' environment.
+%
+% As a matter  of interest, it is much nicer for TeX if you input large
+% quantities of "verbatim material" from an "external file" rather than by use 
+% of the `verbatim' environment (i.e. putting the material in the main input 
+% file. This is because this environment, in common with most (but not all)
+% other "verbatim macros", makes the whole of the "vebatim material" a macro
+% argument and therefore eats up TeTeX's internal memory.
+%
+% Chris Rowley
+%
+
+% ---              V E R B A T I M F I L E S . S T Y
+%
+% --- This LaTeX style-file defines two user-callable macros:
+% ---     \verbatimfile{<filename>}    for verbatim inclusion of a file
+% ---     \verbatimlisting[n]{<filename>} for verbatim inclusion
+%                                         with line numbers every nth line
+%
+% --- The macros are based on those distributed with Sunil Podar's
+% --- `EPIC.STY' macro package, attributed to Tim Morgan,
+% --- modified to keep internal macros internal by Adrian F. Clark,
+% --- alien@uk.ac.essex.ese
+% --- ---and further latexification by Chris Rowley,
+% --- ca_rowley@uk.ac.open.acs.vax.
+% --- optional argument for numbering multiples of [N] by H. Schulzrinne
+%     hgschulz@cs.umass.edu
+%
+% --- Note that the precise layout of line breaks in this file is important!
+%
+
+\def\verbatimfile#1{\begingroup
+                    \@verbatim \frenchspacing \@vobeyspaces
+                    \input#1 \endgroup
+}
+
+\newcounter{lineno}\newcounter{Lineno}
+\def\verbatimlisting{\@ifnextchar[{\@verbatimlisting}{\@verbatimlisting[5]}}
+\def\@verbatimlisting[#1]#2{\setcounter{lineno}{0}\setcounter{Lineno}{0}%
+  \begingroup \@verbatim \frenchspacing \@vobeyspaces \parindent=20pt
+  \everypar{\stepcounter{lineno}\stepcounter{Lineno}\ifnum\value{Lineno}=#1
+    \setcounter{Lineno}{0}\llap{\footnotesize\it\thelineno\ \ }\fi}\input#2
+  \endgroup
+}
+

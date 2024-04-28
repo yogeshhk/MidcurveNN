@@ -1,0 +1,93 @@
+##
+EXEC=  cad
+##
+CC = g++
+## DEFINES
+##
+##
+##	-g = Debugging info
+##	-O = Optimize (cannot have -g then)
+CFLAGS= -g -I/opt/SUNWits/Graphics-sw/sunphigs-3.0/include -I/usr/openwin/include
+##
+##
+##	Libraries
+##	X11	X11 graphics library
+##
+##
+LIBS= -g -L/opt/SUNWits/Graphics-sw/sunphigs-3.0/lib -L/opt/SUNWits/Graphics-sw/xgl-3.0/lib -L/usr/openwin/lib -lXext -lX11 -lXm -lsocket -lgen -lnsl -lXt -llphigs -lphigs -lxgl -lm
+##
+##
+##
+OBJECTS=        main_window.o                   \
+                application.o                   \
+                file_driver.o                   \
+                mode_driver.o                   \
+                create_driver.o                 \
+                edit_driver.o                   \
+                addblk_driver.o                 \
+                display_driver.o                 \
+                dimension_driver.o                 \
+                addcyl_driver.o                 \
+                addwedge_driver.o                 \
+                data_entry_callbacks.o          \
+                cyl_data_callbacks.o            \
+                wedge_data_callbacks.o            \
+                xdata_callbacks.o               \
+                ydata_callbacks.o               \
+                zdata_callbacks.o               \
+                topo_selection_callbacks.o      \
+                geom_edit_callbacks.o           \
+                topo_data_assignments.o         \
+                topo_data_resolve.o             \
+                graphics_phigs.o                \
+                editing.o                       \
+                resolving.o                     \
+                arc.o                           \
+                dimarc.o                           \
+                strongcomparc.o                           \
+                block.o                         \
+                blockUpdate.o                   \
+                cylinder.o                      \
+                prismatic.o                      \
+                wedge.o                      \
+                subblock.o                      \
+                subcylinder.o                   \
+                component.o                     \
+				compdimension.o						\
+                compfile.o                      \
+                compfile2.o                     \
+                face.o                          \
+                polygon.o			\
+                graph.o                         \
+                dimensiongraph.o                         \
+                componentgraph.o                         \
+                length.o                        \
+                lengthlist.o                    \
+                node.o                          \
+                dimnode.o                          \
+                strongcompnode.o                          \
+                topolink.o                      \
+                plane.o                         \
+                dimprimitive.o                         \
+                vertex.o                        \
+                vector.o                        \
+                queue.o                         \
+                cycle.o                         \
+                cycleEditing.o 			\
+                strongcomp.o  			\
+                linklist.o  			\
+                utility_functions.o
+ 
+##		
+##	Command to compile and link objects together
+##
+$(EXEC):	$(OBJECTS)
+	$(CC) -g -o $(EXEC) $(OBJECTS) $(LIBS) 
+##
+##
+##
+clean :
+	rm -f $(OBJECTS) $(EXEC)
+##  end of make file
+##	end of make file
+##

@@ -1,0 +1,430 @@
+\pagenumbering{arabic} \setcounter{page}{1}
+\chapter{Introduction}
+
+    The integration of computer-aided design (CAD) and computer-aided 
+	manufacturing (CAM) requires a large amount of information transfer
+    between the design and manufacturing functions. 
+	Compatibility of the information
+    representation scheme in both domains is still a key issue in integration.
+    The ease with which data transfer takes place influences
+	productivity and cost effectiveness of the product. As yet, there does not
+	exist a single scheme that fully supports a seamlessly integrated 
+	environment for CAD/CAM activities.
+
+        Presently available CAD data models can provide unique and 
+	unambiguous geometric representation of a part; however, they can
+    only provide information about the nominal size of the part, and 
+	generally are unsuitable for complete product definition.
+	From the viewpoint of designers and computer-aided manufacturing (CAM) 
+	applications, conventional CAD systems are still not convenient to 
+	use ~\cite{Sheu}. The product models stored in CAD databases can support only
+	limited technological information.
+	
+
+	Feature based design offers a tool for mapping the designer's abstraction
+	into a representational form.
+
+	\section{Background}
+
+    \subsection{Solid Modeling }
+
+	A solid modeler is the central element in many contemporary computer-aided 
+	design systems. CAD has come a long way since its inception in 1963
+    by Sutherland~\cite{Suther}. 
+	The main motivation was to automate the process of design
+    as much as possible and thus reduce human intervention. This brings
+	about accuracy and consistency. Early methods in CAD were limited
+    to drafting capabilities. 2D wireframe representation of solid objects,
+    which was common then, was lacking in volumetric information and true
+    representation of solidness. Two methods of solid representation,
+	Boundary Representation (B-rep) and Constructive Solid Geometry (CSG),
+	became dominant approaches and remain so to a large extent.
+
+
+    {\em B-rep } is based on Adjacency Topology.
+    A solid object is represented by a collection of external and
+    internal (cavity) shells. Each shell is a closed volumetric region and
+    is divided into lower level topological entities in the following 
+	hierarchical fashion : faces$\rightarrow$loops$\rightarrow$ edges
+	$\rightarrow$ vertices~\cite{Bing}.  This decomposition yields
+    a graph structure. The topological entities are associated with
+    corresponding geometric entities: surfaces, curves, and points. Since
+    geometric entities are defined parametrically, the dimensions of the solid
+    are not represented explicitly in the model. Also, since topological
+    decomposition is done at the global level for an object, there is no
+    association between shape features, such as holes and slots, and their
+    constituting topological entities, such as faces and edges.
+
+
+    In {\em CSG}, the solid is built with the help of standard solid primitives
+ 	by boolean operators, viz., union, difference and intersection.
+    The solid is represented by a tree with the solid primitives as leaves and
+    boolean operators as internal nodes. Difficulties arise when the part 
+	becomes complicated. Features that do not belong to the primitive
+	set must be constructed by several primitives and operators; therefore,
+	they are not uniquely represented. Further, because CSG
+	is an {\em unevaluated} scheme, attaching dimensional and tolerance 
+	information to low level entities is impossible unless the whole CSG tree
+	is evaluated. Current CAD systems are
+    mismatched in their level of abstraction with downstream application
+	~\cite{Sheu}.
+    A purely geometric solid modeler does not recognize a part in terms of its
+    application. For example {\em a thread}, in a solid model, will be
+    characterized by its length, radius, and pitch. In
+    feature based design, these geometric parameters would be supplemented by
+    higher level information such as thread form, material, surface
+    characteristics, manufacturing methods, process
+    planning rules, etc. This makes the product definition more
+    complete.
+
+    It is clear that solid modelers cannot be used to drive applications
+    such as process planning or manufacturability evaluation because some
+    of the information needed by these tasks is totally absent from the
+    solid model database~\cite{ShahMa}.
+
+    It may therefore be concluded that feature-based design is a necessary
+    tool for product definition and for integration of design and
+    manufacturing.
+
+	\section{Feature Based Modeling Techniques}
+
+    Much of the initial work on features was motivated by a desire to
+    device methods to extract part geometry from geometrical modelers so that
+    process plans, Group Technology (GT) codes, and Numerical Control
+    (NC) programs could be generated. Thus,
+    the manufacturing view of features is that features represent shapes and
+    technological attributes associated with manufacturing operations and tools.
+
+
+    Many approaches exist for creating feature models in a geometric modeling 
+	context. To provide a framework for comparison, it is convenient to 
+	classify these methods into three broad groups.
+
+	\begin{enumerate}
+
+    \item 
+	{\em Interactive feature definition} :  The geometric model is created 
+		first, 
+		and then features are defined by the user by picking the entities on an 
+		image of the part. Dimension and tolerance study for CAM-I~\cite{john}
+		is based on this approach.
+
+    \item 
+    {\em Automatic feature recognition} : In this approach also a geometric 
+		model is created
+		first; then a computer program processes the database to discover 
+		and extract features automatically.
+
+    \item 
+    {\em Design by features} : The part geometry is defined directly in terms of
+		features and  geometric models are created from features. Three 
+		sub-categories of the {\it design by features} approach are discussed 
+		below :
+
+		\begin{enumerate}
+
+    	\item 
+			{\em Feature databases un-associated with solid models} :
+        	The user inputs feature information textually using a customized 
+			syntax.
+			When the processes are selected to create a process plan, the 
+			reasoning process can be driven by high level parameters, such as 
+			feature type, generic parameter values, tolerances, and attributes.
+ 			The availability of a solid model may not be necessary.
+
+    	\item 
+			{\em Destructive modeling with features } :
+        	A part model is created by boolean subtraction of features from the
+			base stock model .
+
+    	\item 
+        	{\em Synthesis by features} : 
+			This approach allows the user to design by adding or 
+			subtracting features without a starting base stock. The features 
+			stored in the libraries may be applications oriented. This is the
+			approach used in the ASU feature testbed~\cite{ShahMa}, which
+			consists of two shells, one for part design and the other for 
+			mapping and applications. The shells contain mechanisms
+			for defining generic features in design.This allows user 
+			organizations to customize the system, avoiding the difficulty of 
+			working with a hard coded set of features.
+
+			\end{enumerate}
+
+	\end{enumerate}
+
+    \subsection{Feature Based Design}
+
+    Features are regarded as groupings of geometrical and topological
+    entities that need to be referenced together.With the advent of the {\em
+    design by feature} approach, the definition now seems to be much broader :
+    {\it features are the elements used in generating, analyzing, or
+    evaluating designs}~\cite{Shah91}.
+
+    The main goal is to make product definition as complete as possible. For
+    example,  a {\em step} not only implies a cylindrical geometry
+    characterized by diameter and length, but it can also associated
+    with a turning process, tolerances, surface finishes and process planning
+    sequences which
+    are unique to a {\em step}. As another example, consider a shaft and a pin.
+    Both are geometrically similar i.e. cylindrical. But in the domain of
+    feature based design they could carry completely different information. The
+	type of fits recommended for the shaft are likely to be different from
+	those for the pin. They may also differ in size range and manufacturing /
+	heat-treatment processes. In short, they are different features, even though
+	they may share similar geometry.
+
+    Features such as holes and slots provide a convenient language for
+    specifying mechanical parts, and facilitate automatic process
+    planning and other downstream activities in the life cycle of machinable
+    products~\cite{Requi89}. This is direct result of the fact that
+    features are application oriented rather than being based purely on 
+	geometry.
+
+
+
+    \section{Object oriented implementation}
+
+    Object oriented implementation is now common in feature based modeling.
+    The reason behind this is that there exists a natural mapping between the
+    object-oriented methodology and feature based design.
+
+    Object oriented programming is a technique for programming that is based 
+	on the following principles~\cite{Strou} :
+
+        \begin{enumerate}
+
+        \item
+        {\em Data hiding} refers to the concept that our only access to the
+        data in the object (or {\it class} in C++ terminology)
+        is through ``methods'' defined in those classes. This ``information
+        hiding'', when used to maximum effect has several benefits including 
+        reliability, understandability, and (in some cases) efficiency.
+        \item
+        {\em Inheritance} is the creation of a new class as an extension or
+        specialization of an existing class. It allows the conceptual
+        relationship between different classes to be made explicit.
+        \item
+        {\em Polymorphism} allows us to send identical messages to different
+        objects and have each object respond appropriately.
+        \item
+        {\em Dynamic binding} is binding of the specific code as late as 
+		possible, i.e. at
+        run time. When the {\it display } method is called for an object, the
+        class of the object is determined first. Then, the actual function to
+        be executed for the method is determined by looking up the method name
+        and class identifier in the method table.
+
+        \end{enumerate}
+
+
+	The parameters that characterize the feature correspond to the data members
+	in the class definition and the methods that are devised specifically for
+	that feature correspond to the class member functions.
+    The clustering of feature specific knowledge within each feature object
+    allows the feature to handle and manage changes internally,
+    while the global operations are uniform.
+	For example, a {\em Block} feature can be characterized by {\em length,
+	breadth} and {\em height}. These quantities become data members of 
+	{\em class Block}. If the application needs a volume computation function,
+	say {\em Volume()}, then this function becomes a member function of 
+	{\em class Block} which returns the positive value of the product of its 
+	{\em length, 
+	breadth } and {\em height}. Object oriented implementation also exploits
+    similarities between members of feature families by using property
+    inheritance.
+	For example, if we want a feature corresponding to rectangular pocket, we
+	can define {\em class RectPocket} by inheritance from {\em class Block}. 
+	We may add some
+	data members and member functions or just change the behavior of some member
+	functions. For example, the {\em Volume()} function for this class will 
+	return the negative value of the product of its {\em length, breadth } and 
+	{\em height}.
+	
+	The ability to specify methods along with the data members is very important
+	in feature-based design. Conventional solid modelers
+	do not provide methods related to the shape except for a few simple 
+	geometry-based functions such as volume and area calculations. 
+	Feature-based design
+	needs to provide higher level methods for the features such as process
+	planning, strength calculations, etc.
+
+	Objects are never concerned with the
+    internal operations on other objects, although changes may be requested
+    through the proper protocol. 
+
+	Inheritance is also used heavily to characterize a family of features
+	having similar characteristics. For example, {\em class Cylinder} can
+	have as subclasses {\em class RoundCylinder, EllipticalCylinder,
+	TaperedCylinder}, etc. Every subclass adds specialization to its superclass.
+	It also can add/modify the functionality supported in its superclass.
+	For example, superclass {\em Cylinder} may have only {\em radius} and 
+	{\em height} as data members ; however, the subclass {\em 
+	EllipticalCylinder}
+	may add one more data member to define the minor axis, along with
+	some changes in functions such as {\em Volume} computation. Thus,
+	inheritance captures the inbuilt characteristics of a family of components,
+	making the feature library extendable with minimal efforts.
+
+
+	\section{Literature Review}
+
+    Most of the early work in feature-based design concentrated on 
+	finding procedures and 
+	methodologies to extract feature information from existing 
+	geometric modelers in a form that was suitable for generating process 
+	plans, GT 
+	codes and NC programs. The manufacturing view was the leading influence on 
+	the field~\cite{Gray} until design by features~\cite{Dixon} came into 
+	the picture.
+
+
+    The IMPARD System~\cite{Vaghul} was built around the GeoMod solid 
+	modeler to evaluate designs of a subclass of injection molded parts based on
+	some simple manufacturability criteria such as wall thickness, corner 
+	radius, boss dimension, melt flow length, etc.
+ 
+        Casu et al.~\cite{Casu} proposed a Feature Based design system that
+		uses Euler operators and some macro operators.
+
+
+		Falcidieno et al.~\cite{Falc} formulated a Structure Face Adjacency 
+		Hypergraph (SFAH) that represents a feature based model by 
+		addition of a set of attributes which complete the form feature 
+		information.It also stores information about assembling the 
+		component.
+ 
+
+        Requicha~\cite{Requi89} suggested definitions of machinable features
+		and proposed system architectures for feature based design and 
+		manufacturing.Volumetric features are parametrized solids and 
+		surface features are groups identified in a part made up of faces. 
+		It is based on functional (design) features and CSG. 
+		Operators can be applied to
+		geometry, feature type, tolerance and geometric constraints. 
+		The input is parsed into a feature based representation, which is 
+		converted by an Expander into a CSG tree.
+ 
+
+        Shah~\cite{ShahMa} used a parallel representation in the ASU feature 
+		testbed : 
+		a boundary model and a CSG model with a union and difference operator. 
+		It consists of two shells, one for definition of the part (Feature 
+		modeling shell) and the other for definition of application specific 
+		objects. The FMDS (Feature modeling shell) consists of procedures for 
+		defining generic features, adding features to the library, and using 
+		those features in design. The FMPS (Feature Mapping Shell) extracts 
+		and 
+		reformulates product data as needed by the application. A custom 
+		interpretive language was developed to set up the application's 
+		computation and extraction procedures.
+		The customization is left to organizations using it.
+ 
+
+        Hijazi~\cite{Hijazi} developed a prototype of a functioning feature
+ 		based design system for orthohedral components. The system supported 
+		creation, editing and display functionality and was written in 
+		C++ using 3D GMR graphics routines.
+
+ 
+        Chennapragada~\cite{Venky} extended the capabilities of Hijazi's 
+		model in the area of geometric and topological editing. A mesh 
+		generation capability was developed for component's designed with 
+		constructive orthohedral 
+		primitives. A component's data could be saved in DXF format which could
+		then be read into commercial software such as AutoCAD for further 
+		processing and annotation.
+
+ 
+		Yang~\cite{Yang} developed a similar prototype but with the data
+		represented as a binary tree; this was implemented in the Silver Screen
+		3D CAD/Solid Modeling software package.
+
+
+		Pro/ENGINEER~\cite{ProE} is a successful commercial 
+		package developed using the parametric, feature-based approach.
+		This unique, fully associative suite of mechanical design automation 
+		software includes application-specific products which address the 
+		complete spectrum of product-development activities.
+
+	\section{Research Objectives}
+
+		The current generation of computer-aided design and manufacturing
+		software has made available tools for partial automation of some of the 
+		tasks related to product development and manufacturing.
+		It has not only created islands of automation, it has created 
+		islands of optimization, too~\cite{ShahMa}.
+		It is possible to find widespread deficiencies in the current
+		state of feature-based design.
+
+		Most solid modelers provide good support for geometric
+		modeling, but lack a rich set of topological 
+		features. The interaction between geometry and topology needs to be
+		handled better.
+
+		Most of the current solid modeling systems are of a very generalized 
+		nature and tend to be complex. By limiting oneself to a well defined
+		class of shapes the complexity can be reduced.
+		Care should be taken to ensure that the subset that is supported is 
+		large enough to encompass the majority of anticipated component shapes.
+		The subset that is considered in this thesis is the family of 
+		generalized orthohedral components.
+
+
+		Current feature-based design systems also lack good
+		dimensioning and tolerancing support. The present work develops and
+		implements dimensioning related functionality that allows the user
+		to create, modify and validate the dimensioning scheme for a component.
+
+		The present work also aims to providing a facility to design various
+		components with the available feature set by using different
+		topological features for specifying connectivity relationships between
+		geometric features. 
+
+
+
+		The objectives of the research can be summarized as follows:
+		\begin{enumerate}
+		\item
+		To define a data representation scheme for modeling of three
+		dimensional solid components with generalized orthohedral geometry.
+		This class is broad enough to cover constructive blocks,
+		subtractive blocks and a large family of encapsulated shapes
+		which can be extended to include customized shapes. 
+		The representation scheme supports explicit geometric and 
+		topological specifications.
+
+		\item
+		To provide a mechanism for extendability so that the current work can
+		serve as a foundation for other higher-level applications such as 
+		process planning, automatic NC code generation, finite element 
+		analysis, etc.
+		\item
+		To provide a systematic basis for a dimensioning and tolerancing scheme.
+		
+		\item
+		To provide a mechanism for customizing and expanding the system through
+		the use of encapsulated blocks.
+
+		\item
+		To implement a prototype system to test the above mentioned
+		principles and concepts.
+
+		\end{enumerate}	
+
+
+	\section{Organization of the thesis} 
+
+		Chapter 2 describes the basic structure of the feature based design 
+		approach developed in this thesis.
+		Chapter 3 explains the proposed dimensioning and tolerancing scheme in 
+		detail.
+		Chapter 4 presents the idea of encapsulation and describes the process
+		of extending the feature set with the example of a {\em Wedge}.
+		A B-Spline extruded prism feature is also developed here.
+		Chapter 5 discusses some implementation issues related to the
+		software prototype 
+		development. This discussion includes the object-oriented methodology
+		as well as the graphical user interface (GUI) which was developed using 		Motif and PHIGS.
+		Chapter 6 concludes the thesis with some remarks and recommendations.
+

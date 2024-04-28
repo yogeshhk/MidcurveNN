@@ -1,0 +1,359 @@
+%
+% Font setup for ELSE SAMPLE
+%
+% % Complete non-default family switches: BOLD, BOLDI, ITAL
+%
+% Local font configuration goes to the particular book class file
+%
+% GENERIC FONT FAMILIES NAMES
+%   (true font/family names go only here and in \DeclareFontShape!):
+% *  ffrm = srdu* = Dutch
+% *  ffss = srhv* = Helvetica
+% *  fftt = srcrx* = CourierX
+% *  ffth = srduih = Times Roman TheoremItalic
+% *  ffma = m1dui, m1du = Math Italic => Times
+% *  ffms = m1hvi, m1hvw = Sans-Serif Math Italic => Helvetica
+% ** ffmb = m2-n101, m2-b101 = Math Symbols
+% ** ffmc = MTEXNC01, MTEXB = Large Symbols
+% ** ffmd = m4-101 = Openface, German, Script
+% ** ffme = m5-n{b}101 = Extra Symbols (modified msam10+msbm10)
+%
+% NOTE: Fonts/families marked by "*" SHOULD be customized by the user.
+% NOTE: Fonts/families marked by "**" MUST NOT be customized by the user.
+%
+\def\fileversion{0.1}
+\def\filedate{2001/03/10}
+%
+\ProvidesPackage{mmsupe}[\filedate\space\fileversion\space
+  Font setup for Dutch]
+
+\ProcessOptions
+
+\RequirePackage{\clsdir/srly1enc}
+%
+\renewcommand{\rmdefault}{ffrm}%
+\renewcommand{\sfdefault}{ffss}%
+\renewcommand{\ttdefault}{fftt}%
+\def\bfdefault{b}%
+%%%\RequirePackage{srmm2b}% <-- still under development (bold symbols)
+%
+\def\encodingdefault{LY1}\fontencoding{LY1}\selectfont
+\def\operator@encoding{LY1}
+%
+\DeclareFontEncoding{LM1}{}{}
+\DeclareFontEncoding{LM2}{}{}
+\DeclareFontEncoding{MY3}{}{}% as in MathTime
+%
+\DeclareFontSubstitution{LM1}{dfl}{p}{q}
+\DeclareFontSubstitution{LM2}{dfl}{p}{q}
+\DeclareFontSubstitution{MY3}{dfl}{p}{q}
+\DeclareFontSubstitution{U}{dfl}{p}{q}
+%
+%% THIS FONT MUST BE HERE!!! It is for special purposes and needs low-level
+%% TeX character coding
+%\DeclareSymbolFont{extraa}{U}{extra}{m}{n}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareSymbolFont{operators}{LY1}{ffrm}{m}{n}%    redeclare!
+\DeclareSymbolFont{letters}{LM1}{ffma}{m}{it}%     redeclare!
+\DeclareSymbolFont{symbols}{LM2}{ffmb}{m}{n}%      redeclare!
+\DeclareSymbolFont{largesymbols}{MY3}{ffmc}{m}{n}% redeclare!
+\DeclareSymbolFont{boperators}{LY1}{ffrm}{b}{n}%   mathfam "boperators" LY1
+\DeclareSymbolFont{bletters}{LM1}{ffma}{b}{it}%    mathfam "bletters" LM1b
+\DeclareSymbolFont{bsymbols}{LM2}{ffmb}{b}{n}%     mathfam "bsymbols" LM2b
+\DeclareSymbolFont{bbbcal}{U}{ffmd}{m}{n}%        mathfam "bbbcal"   LM4
+\DeclareSymbolFont{symii}{U}{ffme}{m}{n}%         mathfam "symii"    LM5n
+% The math family bfsymii should be loaded by \usepackage{srmm5bn} from the
+%   key-file on user-level if such bold extra symbols are really necessary!
+
+\DeclareMathAlphabet{\mathbi}{LY1}{ffrm}{b}{it}% bold italic
+
+\RequirePackage[greeknls,greeknuu,greekbls,greekbuu]{\clsdir/srmm1-01}
+\RequirePackage{\clsdir/srmm3d4,\clsdir/srmm5nn,\clsdir/srsym1}
+%%\RequirePackage{srmm4,srmm5nn,srsym1,srbfsym1}%% <-- will be!
+
+\DeclareSymbolFontAlphabet{\mathrm}{operators}%%%{LY1}{ffrm}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbf}{boperators}%%%{LY1}{ffrm}{b}{n}
+
+% bold math version = "bold" (here not needed -- just basics)
+\SetSymbolFont{operators}   {bold}{LY1}{ffrm}{b}{n}%  adjust math family
+\SetSymbolFont{letters}     {bold}{LM1}{ffma}{b}{it}% adjust math family
+\SetSymbolFont{symbols}     {bold}{LM2}{ffmb}{b}{n}%  adjust math family
+
+% sans-serif math version = "msans"
+\DeclareMathVersion{msans}
+%
+\SetSymbolFont{operators}   {msans}{LY1}{ffss}{m}{n}%    adjust math family
+\SetSymbolFont{letters}     {msans}{LM1}{ffms}{m}{it}%   adjust math family
+\SetSymbolFont{symbols}     {msans}{LM2}{ffmb}{m}{sc}% <-- STRANGE BUT OK!
+\SetSymbolFont{boperators}  {msans}{LY1}{ffss}{m}{n}%   adjust math family
+\SetSymbolFont{bletters}    {msans}{LM1}{ffms}{m}{it}%   adjust math family
+
+% bold sans-serif math version = "msansb"
+\DeclareMathVersion{msansb}
+%
+\SetSymbolFont{operators}   {msansb}{LY1}{ffss}{b}{n}%    adjust math family
+\SetSymbolFont{letters}     {msansb}{LM1}{ffms}{b}{it}%   adjust math family
+\SetSymbolFont{symbols}     {msansb}{LM2}{ffmb}{m}{sc}% <-- STRANGE BUT OK!
+\SetSymbolFont{boperators}  {msansb}{LY1}{ffss}{b}{n}%   adjust math family
+\SetSymbolFont{bletters}    {msansb}{LM1}{ffms}{b}{it}%   adjust math family
+
+\renewcommand\unboldmath{\@nomath\unboldmath\mathversion{normal}}
+\renewcommand\boldmath{\@nomath\boldmath\mathversion{bold}}
+%
+%
+\newcommand\unmsansmath{\@nomath\msansbmath\mathversion{normal}}
+\newcommand\msansmath{\@nomath\msansmath\mathversion{msans}}
+%
+%
+\newcommand\unmsansbmath{\@nomath\msansbmath\mathversion{normal}}
+\newcommand\msansbmath{\@nomath\msansbmath\mathversion{msansb}}
+
+\def\MSANS{\msansmath}%
+\def\MSANSB{\msansbmath}%
+
+% math alphabets for regular roman ("normal")
+\SetMathAlphabet{\mathit}{normal}{LY1}{ffrm}{m}{it}% redeclared
+\SetMathAlphabet{\mathtt}{normal}{LY1}{fftt}{m}{n}%  redeclared
+%
+% Additional math alphabets for bold roman ("bold")
+\SetMathAlphabet{\mathrm}{bold}{LY1}{ffrm}{b}{n}
+\SetMathAlphabet{\mathit}{bold}{LY1}{ffrm}{b}{it}
+%
+% math alphabets for sans-serif ("msans")
+\SetMathAlphabet{\mathrm}{msans}{LY1}{ffss}{m}{n}
+\SetMathAlphabet{\mathit}{msans}{LY1}{ffss}{m}{it}
+\SetMathAlphabet{\mathbf}{msans}{LY1}{ffss}{b}{n}
+\SetMathAlphabet{\mathbi}{msans}{LY1}{ffss}{b}{it}
+\SetMathAlphabet{\mathtt}{msans}{LY1}{fftt}{m}{n}
+%
+% math alphabets for sans-serif bold ("msansb")
+\SetMathAlphabet{\mathrm}{msansb}{LY1}{ffss}{b}{n}
+\SetMathAlphabet{\mathit}{msansb}{LY1}{ffss}{b}{it}
+\SetMathAlphabet{\mathbf}{msansb}{LY1}{ffss}{b}{n}
+\SetMathAlphabet{\mathbi}{msansb}{LY1}{ffss}{b}{it}
+\SetMathAlphabet{\mathtt}{msansb}{LY1}{fftt}{b}{n}
+%
+
+% Defaults for undeclared math sizes - to be used only exceptionally
+\def\defaultscriptratio{.65}%%%{.76}
+\def\defaultscriptscriptratio{.5}%%%{.6}
+%
+% TTI version of math sizes (add more if necessary)
+\def\TTIMathSizes{%
+ \DeclareMathSizes{6.0}{6.0}{5.0}{5.0}%
+ \DeclareMathSizes{7.0}{7.0}{5.0}{5.0}%
+ \DeclareMathSizes{8.0}{8.0}{5.5}{5.0}%
+ \DeclareMathSizes{9.0}{9.0}{6.0}{5.0}%
+ \DeclareMathSizes{10.0}{10.0}{6.5}{5.0}%
+ \DeclareMathSizes{11.0}{11.0}{7.0}{6.0}%
+% \DeclareMathSizes{12.0}{12.0}{8.0}{6.0}%
+% \DeclareMathSizes{16.0}{16.0}{10.0}{8.0}%
+ \DeclareMathSizes{24.0}{24.0}{16.0}{12.0}%
+}
+%
+%%%\AtEndOfPackage{\TTIMathSizes}
+\TTIMathSizes
+%
+%
+\def\@fnsymbol#1{\ensuremath{\ifcase#1\or *\or \dagger\or \ddagger\or
+   \mathsection\or \mathparagraph\or \|\or **\or \dagger\dagger
+   \or \ddagger\ddagger \else\@ctrerr\fi}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Begin font loading
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ffrm = \rmdefault
+\DeclareFontFamily{LY1}{ffrm}{}%
+\DeclareFontShape{LY1}{ffrm}{m}{n}{<->qp3tir}{}%
+\DeclareFontShape{LY1}{ffrm}{m}{it}{<->qptii}{}%
+\DeclareFontShape{LY1}{ffrm}{b}{n}{<->qp3tib}{}%
+\DeclareFontShape{LY1}{ffrm}{b}{it}{<->qp3tiw}{}%
+\DeclareFontShape{LY1}{ffrm}{m}{sc}{<->qptirsc}{}%
+\DeclareFontShape{LY1}{ffrm}{b}{sc}{<->qptibsc}{}%
+%
+\DeclareFontFamily{LY1}{ffth}{}%
+\DeclareFontShape{LY1}{ffth}{m}{it}{<->qptiih}{}% theorem italic
+%
+%%% ffss = \sfdefault
+\DeclareFontFamily{LY1}{ffss}{}%
+\DeclareFontShape{LY1}{ffss}{m}{n}{<->ARIAL}{}%
+\DeclareFontShape{LY1}{ffss}{m}{it}{<->ARIALI}{}%
+\DeclareFontShape{LY1}{ffss}{m}{sc}{<->JMUVRSC}{}%
+\DeclareFontShape{LY1}{ffss}{b}{n}{<->ARIALBD}{}%
+\DeclareFontShape{LY1}{ffss}{b}{it}{<->JMUVW}{}%
+\DeclareFontShape{LY1}{ffss}{b}{sc}{<->JMUVBSC}{}%
+%\DeclareFontFamily{LY1}{ffss}{}%
+%\DeclareFontShape{LY1}{ffss}{m}{n}{<->unvr55w}{}%
+%\DeclareFontShape{LY1}{ffss}{m}{it}{<->unvr56w}{}%
+%\DeclareFontShape{LY1}{ffss}{m}{sc}{<->qpgnrsc}{}%
+%\DeclareFontShape{LY1}{ffss}{b}{n}{<->unvr65w}{}%
+%\DeclareFontShape{LY1}{ffss}{b}{it}{<->unbi}{}%
+%\DeclareFontShape{LY1}{ffss}{b}{sc}{<->qpgnbsc}{}%
+%
+%%% fftt = \ttdefault = jmcrx* (Courier Extended)
+\DeclareFontFamily{LY1}{fftt}{}%
+\DeclareFontShape{LY1}{fftt}{m}{n}{<->jmcrxr}
+  {\hyphenchar\font=-1}%
+\DeclareFontShape{LY1}{fftt}{m}{it}{<->jmcrxi}
+  {\hyphenchar\font=-1}%
+\DeclareFontShape{LY1}{fftt}{b}{n}{<->jmcrxb}
+  {\hyphenchar\font=-1}%
+\DeclareFontShape{LY1}{fftt}{b}{it}{<->jmcrxw}
+  {\hyphenchar\font=-1}%
+%%% ffma = serif fonts for LM1 encoding
+\DeclareFontFamily{LM1}{ffma}{}%
+\DeclareFontShape{LM1}{ffma}{m}{it}{<->r1-tii}{\skewchar\font=45}%
+\DeclareFontShape{LM1}{ffma}{b}{it}{<->r1-tiw}{\skewchar\font=45}%
+%
+%%% ffmb = serif fonts for LM2 encoding
+\DeclareFontFamily{LM2}{ffmb}{}%
+\DeclareFontShape{LM2}{ffmb}{m}{n}{<->m2-n101}{\skewchar\font=48}%
+\DeclareFontShape{LM2}{ffmb}{b}{n}{<->m2-b101}{\skewchar\font=48}%
+\DeclareFontShape{LM2}{ffmb}{m}{sc}{<->m2-b101}{\skewchar\font=48}%
+%
+%%% ffmc = serif fonts for MY3 encoding (old MTEXNC01 and MTEXB)
+\DeclareFontFamily{MY3}{ffmc}{}%
+\DeclareFontShape{MY3}{ffmc}{m}{n}{<->MTEXNC01}{}%
+\DeclareFontShape{MY3}{ffmc}{b}{n}{<->MTEXB}{}%
+%
+%%% ffms = sans-serif fonts for LM1 encoding
+\DeclareFontFamily{LM1}{ffms}{}%
+\DeclareFontShape{LM1}{ffms}{m}{it}{<->m1hvi}{\skewchar\font=45}%
+\DeclareFontShape{LM1}{ffms}{b}{it}{<->m1hvw}{\skewchar\font=45}%
+%
+%%% ffmd = font for LM4 encoding ("101" for smaller fonts, "201" for bigger)
+\DeclareFontFamily{U}{ffmd}{}
+\DeclareFontShape{U}{ffmd}{m}{n}{<->msbm10}{\skewchar\font=64}
+%
+%%% ffme = font for LM5 encoding (m5-n101=normal;
+%%%   m5-b101=bold (load only if necessary!))
+\DeclareFontFamily{U}{ffme}{}
+\DeclareFontShape{U}{ffme}{m}{n}{<-> m5-n101}{}
+%%%\DeclareFontShape{U}{ffme}{b}{n}{<-> m5-b101}{}
+%
+%%% dfl = default (bullets) font - for font-debugging
+%%%\DeclareFontFamily{LY1}{dfl}{}% declared earlier
+\DeclareFontShape{LY1}{dfl}{p}{q}{<-> default1}{}
+%
+\DeclareFontFamily{LM1}{dfl}{}
+\DeclareFontShape{LM1}{dfl}{p}{q}{<-> default1}{}
+%
+\DeclareFontFamily{LM2}{dfl}{}
+\DeclareFontShape{LM2}{dfl}{p}{q}{<-> default1}{}
+%
+\DeclareFontFamily{U}{dfl}{}
+\DeclareFontShape{U}{dfl}{p}{q}{<-> default1}{}
+%
+\DeclareFontFamily{MY3}{dfl}{}
+\DeclareFontShape{MY3}{dfl}{p}{q}{<-> default1}{}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End font loading
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\DeclareOldFontCommand{\RMrm}{\rmfamily\mdseries\upshape}{\mathrm}
+\DeclareOldFontCommand{\RMit}{\rmfamily\mdseries\itshape}{\mathit}
+\DeclareOldFontCommand{\RMbf}{\rmfamily\bfseries\upshape}{\mathbf}
+\DeclareOldFontCommand{\RMbi}{\rmfamily\bfseries\itshape}{\mathbi}
+\DeclareOldFontCommand{\RMsf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\RMsfi}{\normalfont\sffamily\itshape}{\mathsfi}
+\DeclareOldFontCommand{\RMtt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\RMsc}{\normalfont\scshape}{\@nomath\sc}
+\DeclareOldFontCommand{\RMbsc}{\rmfamily\bfseries\scshape}{\@nomath\bsc}
+%
+\def\thit{\usefont{LY1}{ffth}{m}{it}}
+%
+   \let\rm=\RMrm
+   \let\it=\RMit
+   \let\bf=\RMbf
+   \let\bi=\RMbi
+   \let\sf=\RMsf
+   \let\sfi=\RMsfi
+   \let\tt=\RMtt
+   \let\sc=\RMsc
+   \let\bsc=\RMbsc
+%
+\DeclareOldFontCommand{\BFrm}{\rmfamily\bfseries\upshape}{\mathrm}
+\DeclareOldFontCommand{\BFit}{\rmfamily\bfseries\itshape}{\mathit}
+\DeclareOldFontCommand{\BFbf}{\rmfamily\bfseries\upshape}{\mathbf}
+\DeclareOldFontCommand{\BFbi}{\rmfamily\bfseries\itshape}{\mathbi}
+\DeclareOldFontCommand{\BFsf}{\sffamily\bfseries}{\mathsf}
+\DeclareOldFontCommand{\BFsfi}{\sffamily\bfseries\itshape}{\mathsfi}
+\DeclareOldFontCommand{\BFtt}{\ttfamily\bfseries}{\mathtt}
+\DeclareOldFontCommand{\BFsc}{\rmfamily\bfseries\scshape}{\@nomath\sc}
+\DeclareOldFontCommand{\BFbsc}{\rmfamily\bfseries\scshape}{\@nomath\bsc}
+%
+%
+\DeclareOldFontCommand{\SFrm}{\sffamily\mdseries\upshape}{\mathrm}
+\DeclareOldFontCommand{\SFit}{\sffamily\mdseries\itshape}{\mathit}
+\DeclareOldFontCommand{\SFbf}{\sffamily\bfseries\upshape}{\mathbf}
+\DeclareOldFontCommand{\SFbi}{\sffamily\bfseries\itshape}{\mathbi}
+\DeclareOldFontCommand{\SFsc}{\sffamily\mdseries\scshape}{\@nomath\sc}
+\DeclareOldFontCommand{\SFbsc}{\sffamily\bfseries\scshape}{\@nomath\bsc}
+%
+\DeclareRobustCommand\ROMAN{%
+  \unboldmath
+   \let\rm=\RMrm
+   \let\it=\RMit
+   \let\bf=\RMbf
+   \let\bi=\RMbi
+   \let\sf=\RMsf
+   \let\sfi=\RMsfi
+   \let\tt=\RMtt
+   \let\sc=\RMsc
+   \let\bsc=\RMbsc
+  \rmfamily\mdseries\upshape\selectfont}
+\ROMAN % <--- DEFAULT STYLE
+%
+\DeclareRobustCommand\BOLD{%
+  \boldmath
+   \let\rm=\BFrm
+   \let\it=\BFit
+   \let\bf=\BFbf
+   \let\bi=\BFbi
+   \let\sf=\BFsf
+   \let\sfi=\BFsfi
+   \let\tt=\BFtt
+   \let\sc=\BFsc
+   \let\bsc=\BFbsc
+  \rmfamily\bfseries\upshape\selectfont}
+%
+\DeclareRobustCommand\SANS{%
+  \mathversion{msans}%
+  \let\rm=\SFrm
+  \let\it=\SFit
+  \let\bf=\SFbf
+  \let\bi=\SFbi
+  \let\sf=\BFsf
+  \let\sfi=\BFsfi
+  \let\tt=\BFtt
+  \let\sc=\SFbsc
+  \let\bsc=\SFbsc
+  \sffamily\mdseries\upshape\selectfont}
+
+%
+\DeclareRobustCommand\SANSB{%
+  \mathversion{msansb}%
+  \let\rm=\SFbf
+  \let\it=\SFbi
+  \let\bf=\SFbf
+  \let\bi=\SFbi
+  \let\sf=\BFsf
+  \let\sfi=\BFsfi
+  \let\tt=\BFtt
+  \let\sc=\SFbsc
+  \let\bsc=\SFbsc
+  \sffamily\bfseries\upshape\selectfont}
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Font additions and modifications start here:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\AtBeginDocument{\def\cal#1{\csname cal@#1\endcsname}}
+\AtBeginDocument{\def\Cal#1{\csname cal@#1\endcsname}}
+
+\endinput
+%%
+%% End of file `mmelse.sty'.

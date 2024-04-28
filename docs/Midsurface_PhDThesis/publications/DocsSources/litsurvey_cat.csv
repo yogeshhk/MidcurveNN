@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Prasad \cite{Prasad2007},2D 3D shapes,CDT,Mesh the shape; join midpoints of the triangles,Any shape can be the input,Dependence on triangulation;  gaps at the end
+Quadros \cite{Quadros2000}  \cite{QuadrosRoshanOwenBrewerShimada2004} \cite{QuadrosShimadaOwen2004} \cite{Quadros2008} \cite{QuadrosRoshanOwenBrewerShimada2004} ,Brep,CDT,Constrained meshing; cellular midsurface,Handling Complex parts,Triangulation problems
+Nolan \cite{Nolan2014} \cite{Nolan2015},Brep; Decomposition,Mesh,Cellular idealization,Mixed models idealization,Insufficient constraint types

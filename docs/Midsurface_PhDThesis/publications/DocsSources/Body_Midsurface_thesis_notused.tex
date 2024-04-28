@@ -1,0 +1,86 @@
+\section{Midsurface using features}
+
+In the proposed approach, (as listed in Algorithm \ref{alg2}) Midsurface is generated at individual feature level. At each feature step, as shapes are relatively simpler than the final shape, creation of Midsurface becomes relatively straight-forward. For a typical work-flow, here are some of the steps/rules that are applied:
+
+\begin{enumerate}
+\item Sketches of the profile based features are extracted first. The mid-curves are then created in the sketch profile itself. If information regarding Sketch sub-commands like 'Sketch-Offset', 'Circle', 'Rectangle', are available, they can be leveraged to create standard mid-curves. If such information is not available, slender portions need to be identified using MAT and then post-processed MAT curves can be used as mid-curves.
+\item In operations like 'Extrude', 'Revolve', 'Sweep', a profile is swept to create a tool body which then gets boolean-ed with the base part. The mid-curves get swept similarly during feature creation. Along with the tool body thus formed Midsurface-patches are boolean-ed as well. Midsurface gets built as part is getting built. 
+\item One can apply de-featuring rules at each stage as well, as demonstrated in the last step of Table ~\ref{DryRun}. Here small Holes are ignored in the Midsurface output. 
+
+\item {\bf Proposed Algorithm}
+
+	\begin{enumerate}
+	
+	\item Traverse the Feature tree one by one
+	\item For each feature, decide its contribution to the Midsurface model
+	
+	\begin{enumerate}
+	\item {\bf 2D Profiles }
+		\begin{enumerate}
+		\item Use internal Sketch commands information, like Offset-Curve, Mirror, Fillet to arrive at the Mid-curves profile
+		\item If such command's information is not available then try other approaches like MAT, Parametric Equation, and Chordal Axis Transform etc.
+		\end{enumerate}
+	\item {\bf Primitives}: For positive primitive shapes (protrusions or stand-alones) create a pre-defined Midsurface
+	\item {\bf Sweep based Features (Extrude Sweep Revolve Loft)}: For positive primitive shapes (protrusions or stand-alones) sweep Mid-Curves profile similar that of the parent feature.
+	\item {\bf Boolean (External)}: Extend and Trim the Midsurfaces coming from Base part and Tool bodies.
+	\item {\bf Tweak}: Features like Fillet, Chamfer, ignore if small as part of the de-featuring process.
+	\item {\bf Shell}: Use half the Shell distance and offset the same faces as in the parent feature to arrive at the Midsurface.
+	\item Intersect Midsurface with the feature faces to make sure that it lies inside the feature volume.
+	\item Assign the Thickness values on the Midsurface with pre-defined grid spacing.
+
+	\end{enumerate}
+	\item Check for validity of the Midsurface output, especially for gaps and overlapping surfaces and correct the problems.
+
+	\end{enumerate}
+\end{enumerate}
+
+\begin{algorithm}
+
+	\caption{Midsurface creation on per feature basis }
+
+	\label{alg2}
+
+	\begin{algorithmic}
+
+		\REQUIRE A CAD model (preferably de-featured) with access to the feature tree
+
+		\WHILE{End of tree has  not reached}
+
+			\STATE Get the current feature.
+
+			\IF {feature type is Sketch}
+				\STATE  If information regarding Sketch sub-commands like 'Sketch-Offset', 'Circle', 'Rectangle', are available, they can be leveraged to create standard mid-curves. 
+				\STATE If such information is not available, slender portions need to be identified using MAT and then post-processed MAT curves can be used as mid-curves.
+			\ENDIF
+
+			\IF {feature type is Primitives}
+				\STATE  For positive primitive shapes (protrusions or stand-alones) create a predefined Midsurface
+			\ENDIF
+
+			\IF {feature type is  Sweep based Features (Extrude Sweep Revolve Loft)}
+				\STATE For positive primitive shapes (protrusions or stand-alones) sweep Mid-Curves profile similar that of the parent feature.
+			\ENDIF
+
+			\IF {feature type is Boolean (External)}
+				\STATE Extend and Trim the Midsurface coming from Base part and Tool bodies.
+			\ENDIF
+
+			\IF {feature type is Tweak}
+				\STATE Features like Fillet, Chamfer, ignore if small as part of the de-featuring process.
+			\ENDIF
+
+			\IF {feature type is Shell}
+				\STATE  Use half the Shell distance and offset the same faces as in the parent feature to arrive at the Midsurface.
+			\ENDIF
+
+			\STATE Intersect Midsurface with the feature faces to make sure that it lies inside the feature volume.
+
+			\STATE Assign the Thickness values on the Midsurface with predefined grid spacing.
+
+		\ENDWHILE
+		\STATE Midsurface gets built as part gets developed feature by feature.
+		\STATE Check for validity of the Midsurface output, especially for gaps and overlapping surfaces and correct the problems
+
+	\end{algorithmic}
+
+\end{algorithm}

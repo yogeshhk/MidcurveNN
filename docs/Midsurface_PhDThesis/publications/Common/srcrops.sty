@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is SRCROPS.STY, cropmarks style [2001-08-10]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%begin_CROPMARKS
+%
+% This MUST be set to move the reference corner to the UL (upper left)
+% corner of the paper:
+%
+% \hoffset=-1in
+% \voffset=-1in
+%
+% 6 parameters explained below (and numbered in [ ])
+% must be set for each job:
+%
+% Now come the LaTeX's adjustments to the margins:
+%
+% \oddsidemargin=  % [1] inner margin / gutter
+% \evensidemargin= % [2] outside margin
+% \topmargin=      % [3] \rhsink = \topmargin + \headheight (=12pt here)
+% \headheight=     % [4] VERY IMPORTANT! (see above)
+%
+% NOTE: \rhsink will not be introduced (as it used to be) to save
+% a dimen register but the relation \rhsink = \topmargin + \headheight
+% is what we have in mind.
+%
+% Other numbers to supply are:
+%
+% \trimwidth=      % [5]
+% \trimheight=     % [6]
+%
+% (depends on the paper size). Values in "bp" go to
+% DP configuration in DVIPSONE
+%
+% Optional values (governing only the size and distance of cropmarks) are:
+% \markwidth, \marklength, and \markdistance
+\newdimen\markwidth
+\newdimen\blth
+\newdimen\marklength
+\newdimen\markdistance
+\newdimen\trimwidth
+\newdimen\trimheight
+\newdimen\auxaaa
+\newdimen\auxbbb
+\newdimen\auxccc
+\newdimen\auxddd
+
+%%%%%%%%%%%%%%%%%%% Numbers supplied down here!
+\markwidth=.5pt %0.4 truept % Thickness of the mark line
+\blth=0.2pt
+\marklength=20 truept % Length of the mark line
+\markdistance=3 truept % Distance of the real corner to the beg. of the mark
+%%% \trimwidth=\textwidth+\oddsidemargin+\evensidemargin
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\auxaaa\marklength\advance\auxaaa\markdistance
+\def\oddevenswitch{\ifodd\c@page \auxbbb=\oddsidemargin
+ \else\auxbbb=\evensidemargin\fi}%
+
+%%% First reset all page position parameters depending on the job:
+% \PagePositionCropYes - should be just for testing
+% \PagePositionCropNo  - should be the default behavior
+% \PagePositionBoxYes  - gives the page box for testing
+
+\def\PagePositionCropYes#1#2#3#4#5#6#7#8{%
+  \oddsidemargin=#1%  % [3] inner margin / gutter
+  \evensidemargin=#2% % [4] outside margin
+  \topmargin=#3%      % [5] \rhsink = \topmargin + \headheight (=12pt here)
+  \headheight=#4%     % [6] VERY IMPORTANT! (see above)
+  \trimwidth=#5%      % [7]
+  \trimheight=#6%     % [8]
+  \hoffset=#7%        % = -1in to move the area in the upper left corner
+  \voffset=#8%        % = -1in to move the area in the upper left corner
+%%%
+ \def\CROPMARKS{\oddevenswitch
+ \hbox to0pt{\kern-\auxbbb
+   \vbox to0bp{\kern-\topmargin\kern-\headheight
+   \hbox to\trimwidth{%
+     \koo{-\auxaaa}{-\markwidth}{\VRHDW{\markwidth}{0pt}{\marklength}}%
+     \koo{-\markwidth}{-\auxaaa}{\VRHDW{0pt}{\marklength}{\markwidth}}%
+     \hfill
+     \koo{\markdistance}{-\markwidth}{\VRHDW{\markwidth}{0pt}{\marklength}}%
+     \koo{0pt}{-\auxaaa}{\VRHDW{0pt}{\marklength}{\markwidth}}}%
+   \nointerlineskip\vskip\trimheight
+   \nointerlineskip
+   \hbox to\trimwidth{%
+     \koo{-\auxaaa}{0pt}{\VRHDW{0pt}{\markwidth}{\marklength}}%
+     \koo{-\markwidth}{\markdistance}{\VRHDW{0pt}{\marklength}{\markwidth}}%
+     \hfill
+     \koo{\markdistance}{0pt}{\VRHDW{0pt}{\markwidth}{\marklength}}%
+     \koo{0pt}{\markdistance}{\VRHDW{0pt}{\marklength}{\markwidth}}}%
+   \vss}\hss}}%
+}%
+
+\def\PagePositionCropNo#1#2#3#4#5#6#7#8{%
+  \oddsidemargin=#1%  % [3] inner margin / gutter
+  \evensidemargin=#2% % [4] outside margin
+  \topmargin=#3%      % [5] \rhsink = \topmargin + \headheight (=12pt here)
+  \headheight=#4%     % [6] VERY IMPORTANT! (see above)
+  \trimwidth=#5%      % [7]
+  \trimheight=#6%     % [8]
+  \hoffset=#7%        % = -1in to move the area in the upper left corner
+  \voffset=#8%        % = -1in to move the area in the upper left corner
+%%%
+\def\CROPMARKS{}%
+}%
+
+\def\PagePositionBoxYes#1#2#3#4#5#6#7#8{%
+  \oddsidemargin=#1%  % [3] inner margin / gutter
+  \evensidemargin=#2% % [4] outside margin
+  \topmargin=#3%      % [5] \rhsink = \topmargin + \headheight (=12pt here)
+  \headheight=#4%     % [6] VERY IMPORTANT! (see above)
+  \trimwidth=#5%      % [7]
+  \trimheight=#6%     % [8]
+  \hoffset=#7%        % = -1in to move the area in the upper left corner
+  \voffset=#8%        % = -1in to move the area in the upper left corner
+%%%
+ \def\CROPMARKS{\oddevenswitch
+ \hbox to0pt{\kern-\auxbbb
+   \vbox to0bp{\kern-\topmargin\kern-\headheight
+   \hbox to\trimwidth{%
+     \auxccc=\trimwidth \advance\auxccc by 2\blth
+     \auxddd=\trimheight \advance\auxddd by 2\blth
+     \koo{-\blth}{0pt}{\zeroLL{\VRHDW{\blth}{0pt}{\auxccc}}}%
+     \koo{-\blth}{-\blth}{\zeroUL{\VRHDW{\auxddd}{0pt}{\blth}}}%
+     \koo{\trimwidth}{-\blth}{\zeroUL{\VRHDW{\auxddd}{0pt}{\blth}}}%
+     \koo{-\blth}{\trimheight}{\zeroUL{\VRHDW{\blth}{0pt}{\auxccc}}}\hss}%
+   \vss}\hss}}%
+}%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%end_CROPMARKS
+
+% Example:
+%
+% \PagePositionCropNo
+% {72.27pt}  % = \oddsidemargin = left margin on odd pages
+% {64.586pt} % = \evensidemargin = left margin on even pages
+% {40pt}     % = \topmargin
+% {12pt}     % = \headheight (\headheight + \topskip = \rhsink)
+% {6.875in}  % = \trimwidth
+% {10in}     % = \trimheight
+% {-1in}     % = \hoffset
+% {-1in}     % = \voffset
+
+\endinput
+

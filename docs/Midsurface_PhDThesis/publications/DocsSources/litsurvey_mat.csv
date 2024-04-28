@@ -1,0 +1,6 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Harry Blum \cite{Harry1967},Curves,MAT,Grass Fire,Any input shape,Branches
+Ramanathan \cite{Ramanathan2004},Curves,Midcurve,Removed erroneous MAT branches,No branches,Limited shapes
+Robinson \cite{Robinson2006}  \cite{Robinson2007},Brep; Sketch,MAT,Rolling Ball,Thinness detection,Post processing
+Stanley \cite{Stanley2010},Curves,MAT,Voronoi Diagram,Any input shape,Braches
+Automex \cite{Automex},Brep,Scale Axis Transform,Scaled Spehers to remove branches,No perturbations,Incorrect Fragments

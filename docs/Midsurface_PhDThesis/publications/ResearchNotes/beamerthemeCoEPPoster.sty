@@ -1,0 +1,218 @@
+\ProvidesPackage{beamerthemeCoEPPoster} 
+
+\mode<presentation>
+\usepackage{tikz}		% for drawing the nice rounded boxes
+\usetikzlibrary{arrows,backgrounds}
+
+\RequirePackage{lmodern}
+\RequirePackage{textcomp}
+\RequirePackage{amsmath,amssymb}
+\usefonttheme{professionalfonts}
+\newcommand{\makeruleinbox}{{\usebeamercolor[bg]{block alerted title}\centering\hspace*{-0.7cm}\rule{\inboxrule}{0.5cm}}}
+\usepackage{ragged2e}
+
+% define some length variables that are used by the template
+\newlength{\inboxwd}
+\newlength{\iinboxwd}
+\newlength{\inboxrule}
+\makeatletter
+\makeatother
+
+%==============================================================================
+% Define colors
+%==============================================================================
+\definecolor{coeppurple}{RGB}{ 81, 40, 136}%blue {0,36,106}
+\definecolor{coepgray}{RGB}{94,96,98}
+\definecolor{backgray}{HTML}{dcdcdc}
+\definecolor{myred}{HTML}{CD192A}
+
+%==============================================================================
+% Set colors for the blocks, header bars, etc
+%==============================================================================
+% set colors for alerted text
+\setbeamercolor{alerted text}{fg=coeppurple} 
+
+% set colors for alerted blocks (blocks with frame)
+\setbeamercolor{block alerted title}{fg=white,bg=coeppurple}
+\setbeamercolor{block alerted body}{fg=black,bg=coeppurple!10}
+
+% header
+\setbeamercolor{footline}{fg=black, bg=coepgray}
+\setbeamerfont{footline}{size=\large,series=\tt}
+\setbeamercolor{separation line}{bg=coeppurple}
+
+\setbeamercolor{headline}{bg=coeppurple}
+\setbeamercolor{title in headline}{fg=white}
+\setbeamercolor{author in headline}{fg=white}
+\setbeamercolor{institute in headline}{fg=white}
+
+\setbeamercolor{author in head/foot}{fg=white, bg=coeppurple} % fooder
+\setbeamercolor{title in head/foot}{fg=white, bg=coeppurple}
+
+% Background
+\setbeamercolor*{normal text}{fg=black, bg=white} % background
+\setbeamercolor*{block body}{fg=black, bg=white}
+\setbeamercolor*{block title}{bg=white,fg=coeppurple} % block header bar
+\setbeamerfont{block title}{size=\Large,series=\bf}
+\setbeamercolor{upper separation line head}{fg=black}
+
+\setbeamercolor*{example body}{fg=black,bg=white}
+\setbeamercolor*{example text}{fg=white,bg=coepgray}
+\setbeamercolor*{example title}{bg=white,fg=coepgray}
+
+
+%\setbeamercolor{example text}{fg=taorange}
+\setbeamercolor{structure}{fg=blue}
+
+% set colors for itemize/enumerate
+\setbeamercolor{item}{fg=coeppurple}
+\setbeamercolor{item projected}{fg=coepgray,bg=coepgray}
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{navigation symbols}{}  % no navigation on a poster
+
+%==============================================================================
+% Normal Block
+%==============================================================================
+
+\setbeamertemplate{block begin}
+{
+  \par\vskip\medskipamount
+  \begin{beamercolorbox}[colsep*=.5ex,dp={2ex},center]{block title}
+    \vskip-0.25cm
+    \usebeamerfont{block title}\large\insertblocktitle
+    \begin{flushleft}
+    \vskip-1cm
+    \begin{tikzpicture}[remember picture,overlay]
+      \shade [inner color=coepgray,outer color=white]
+      (0,0) rectangle (\textwidth,0.3cm);
+    \end{tikzpicture}
+    \end{flushleft}
+  \end{beamercolorbox}
+  {\parskip0pt\par}
+  \ifbeamercolorempty[bg]{block title}
+  {}
+  {\ifbeamercolorempty[bg]{block body}{}{\nointerlineskip\vskip-0.5pt}}
+  \usebeamerfont{block body}
+  \vskip-0.5cm
+  \begin{beamercolorbox}[colsep*=.5ex,vmode]{block body}
+  \justifying
+}
+
+\setbeamertemplate{block end}
+{
+  \end{beamercolorbox}
+  \vskip\smallskipamount
+}
+
+%==============================================================================
+% Alert block definition (with frame)
+%==============================================================================
+\setbeamertemplate{block alerted begin}
+{
+  \par\vskip\medskipamount
+  \begin{beamercolorbox}[sep=0ex,rounded=true,center,dp={2ex}]{block alerted title}
+    \vskip0.01cm
+    \usebeamerfont{block title}\large\insertblocktitle
+  \end{beamercolorbox}
+  {\parskip0pt\par}
+  \usebeamerfont{block body}
+  \vskip-0.8cm
+  \begin{beamercolorbox}[sep=.5cm, rounded=true,center]{block alerted title}
+  \setlength{\inboxwd}{\linewidth}
+  \addtolength{\inboxwd}{-1cm}
+  \begin{beamercolorbox}[rounded=true,wd={\inboxwd},center]{block alerted body}
+  \setlength{\iinboxwd}{\inboxwd}
+  \setlength{\inboxrule}{\inboxwd}
+  \addtolength{\iinboxwd}{-0.5cm}
+  \addtolength{\inboxrule}{0.5cm}
+  \begin{center}
+  \begin{minipage}{\iinboxwd}
+  \justifying
+}
+
+\setbeamertemplate{block alerted end}
+{
+  \end{minipage}
+  \end{center}
+  \end{beamercolorbox}
+  \end{beamercolorbox}
+  \vskip\smallskipamount
+}
+
+
+%==============================================================================
+% Header
+%==============================================================================
+\setbeamertemplate{headline}{  
+  \leavevmode
+
+  \begin{beamercolorbox}[wd=\paperwidth]{headline}
+    \begin{columns}%[T]
+      \begin{column}{1\paperwidth}
+        \vskip2cm
+        \centering
+        \usebeamercolor{title in headline}{\color{fg}\Huge{\textbf{\inserttitle}}\\[1ex]}
+        \usebeamercolor{author in headline}{\color{fg}\Large{\insertauthor}\\[1ex]}
+        \usebeamercolor{institute in headline}{\color{fg}\Large{\insertinstitute}\\[2ex]}     
+      \end{column}
+%      \begin{column}{.25\paperwidth}
+%        \vskip8ex
+%        \begin{center}
+%          \includegraphics[width=.5\linewidth]{logos/coepLogoTrans}
+%        \end{center}
+%        \vskip2ex
+%      \end{column}
+    \end{columns}
+    \vskip4ex
+  \end{beamercolorbox}
+
+  \begin{beamercolorbox}[wd=\paperwidth]{lower separation line head}
+    \rule{0pt}{3pt}
+  \end{beamercolorbox}
+}
+
+\setbeamertemplate{footline}{
+
+       \begin{flushright}
+\includegraphics[width=1.5in]{../Common/images/coep_logo}~~~
+      \end{flushright}
+
+
+  \begin{beamercolorbox}[wd=\paperwidth]{upper separation line foot}
+    \rule{0pt}{3pt}
+  \end{beamercolorbox}
+
+ 
+  \leavevmode%
+  \begin{beamercolorbox}[ht=4ex,leftskip=1em,rightskip=1em]{author in head/foot}%
+    \texttt{\conference} 
+    \hfill
+    \texttt{\yourEmail}
+    \vskip1ex
+  \end{beamercolorbox}
+  \vskip0pt%
+  \begin{beamercolorbox}[wd=\paperwidth]{lower separation line foot}
+    \rule{0pt}{3pt}
+  \end{beamercolorbox}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Display a grid to help align images ... and it looks nice with this color scheme
+%\beamertemplategridbackground[1cm]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mode<all>
+
+% adapt height of imtemize rectangles
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{itemize item}{\raisebox{0.12ex}{$\blacktriangleright$}\hskip0.1em}
+\setbeamertemplate{itemize subitem}{\raisebox{0.12ex}{$\triangleright$}\hskip0.1em}
+% or define your own template using \defbeamertemplate{itemize item}, see beameruserguide.pdf
+
+% equal font sizes for all levels
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
+

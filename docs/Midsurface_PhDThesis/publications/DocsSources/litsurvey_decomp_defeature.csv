@@ -1,0 +1,5 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Jae Yeol Lee \cite{JaeLee2004},FCAD,Decomposition; Size,Decomposition; reorder by volume; suppress by size,Efficient LoD,Loss of history 
+Sang Hun Lee  \cite{SangHunLee2005} \cite{Lee2009} \cite{Lee2005},FCAD,Decomposition; Reordering,Reorder features;   Cellular model for performance.,Adjustable LoD LoA,Cannot update model
+Yoonhwan Woo \cite{Woo2009},Brep,Decomposition; Feature recognition; Size,Recognizes and suppresses negative features,Independent of the modelling history; ,Limited to simple shapes
+Byung Chul Kim \cite{Kim2014},Brep,Decomposition; Feature recognition; Size,FR by  Cell/Wrap/Split/feature decomposition,Wide applicability,FR difficulties

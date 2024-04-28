@@ -1,0 +1,37 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Harry Blum \cite{Harry1967},Curves,MAT,"Fire propagation; rolling ball algorithm.
+",Foundation paper of MAT. MAT is definitive and invertible,Branches in MAT
+Aichholzer \cite{Aichholzer1991}\cite{Aichholzer2006},Curves,Straight Skeleton,based on thinning; Composed of pieces of angular bisectors which partition the interior ,Origin of Straight Skeleton,"Works only on polygons, branches"
+Dabke \cite{Dabke1994},Features,Pre Defined,Global Idealization (DESIDE-X) for defeaturing.  Element Idealization (ADVANTAGE) looks at Analysis features (Geom + Loads + Constraints). ,Initial use of features for CAD-CAE migration,Very basic shape/feature recognition
+Chang \cite{Chang95},Curves,Sweeping Midcurves,Uses Sweepline algo to determine edge pairs; calculates midlines empirically; considers many intersection types like T; X etc.,,
+Donaghy \cite{Donaghy1996},Brep,MAT,Error Estimation,,
+Rezayat \cite{Rezayat1996},Brep,MA,"Face pairing by ray casting
+Midsurface patch creation
+Extend and trim",Foundation paper of MA; No branches of MAT,Face pairing is complicated
+Fischer \cite{Elber1999},Features,Parametric,Midcurves is generated for forming sample points at mid of the parent curves. ,By converting 3D problem to 2D complexity is reduced,Not generic at all. No details of midsegment calculations. 
+Belaziz \cite{BelazizBourasBrun2000},Brep,Pre Defined,Decomposition for sub-shapes/features. Interactive feature editor to simplify model and also to decide Idealization for each feature. ,Feature-based tool. The mixed-dimensional model is obtained by idealizing each feature.,Does not state explicitly about midsurface.
+Chong \cite{Chong2004},Brep,Concave Edge Partitioning,"Splits part into primitives, then midsurface by edge-pair detection and collapsing",Caters to mixed dimensional modelling,Heuristic-Hardcoded; Midsurface patches may not join
+Ramanathan \cite{Ramanathan2004},Curves,MAT,Modified MAT method (called 'Midcurves') tries to remove erroneous branches,Branches free MAT,Limited set of geometries
+Sungchan Kim \cite{Kim2005},Brep,MA,"Defeatured part first, then detects face-pairs to compute midsurface patches",Usage of Face pairing on feature-basis,Patches are mentioned to be sewed together but no details on How.
+Stolt \cite{Stolt2005} \cite{Stolt2006a},Features,Pre Defined; Lofting Midcurves,"Features for idealization. Midcurves of sections lofted together.
+Sub-parts can have ready Midsurface directly from company's database. Mentions ignoring fillets as Global idealization; ",Even though compute power has increased with idealization more  iterations at early stage.  ,"2.5D Midsurface creation.
+Limitation: thk is not assigned "
+Hamdi \cite{Hamdi2005} \cite{Hamdi2007} \cite{Hamdi2009} \cite{Hamdi2010}  \cite{Hamdi2012} \cite{Hamdi2012a},Features,Pre Defined,Needs features to remove small details based on predefined rule (say; not at BCs). Talks about very basic primitive idealization of parallelepipeds; cylinder and wedge. Nothing about interactions.,,
+Robinson \cite{Robinson2006}  \cite{Robinson2007},Brep; Features,MAT,,,
+Sheen \cite{Sheen2005}  \cite{Sheen2008}   \cite{Sheen2010},Features,MA; Deflection,Uses feature information of simplification and MA approach for dimension reduction. Wary about 'parent-child' relations; Co-planar; T and L type joining. ,features from Tree and their usage in model simplification. Primitive extend-and-trim. ,Cannot understand how its better than Rezayat's/I-Deas Midsurface. 
+Hanmin \cite{Lee2007},Brep,MA,Almost like Rezayat's approach. Nothing feature based. ,,
+Sang Hun Lee \cite{Lee2005} \cite{Lee2009} \cite{SangHunLee2005},Features,MAT; Pre Defined,Master model caches all LODs and LOAs. Uses Non-manifold modeller. Feature based details removal. cellular topology. Each primitive features includes abstractions.,,
+Kageura \cite{Kageura2009},Brep,Decomposition,Midsurface is extracted for partitioned sub volumes and then integrated,Use of adjacency graph to bring genericness to the logic,Appears to be working on simple academic shapes
+Cao \cite{Cao2009} \cite{Cao2011},Brep,MA,Decomposition; Protrusion detection; Midcurves of sketches using polygon decomposition for midsurface,Better CAD-FEA integration; Works on Swept features recognized,No details on joining midsurface patches; Only additive swept features
+ Stanley \cite{Stanley2010},Curves,MAT,Uses MAT curves for 2D profile (got from Suresh Krishnan's code; but it also has branches)  and then revolves it. Mostly deals with Axisymmetric shapes. ,,MAT has branches and removing them is not trivial
+Petrovic \cite{Petrovic2010},Mesh,MAT,Thickness measurement of scanned sheet metal point cloud.,,
+Bag \cite{Bag2011},Voxel,MAT,"e proposed a medial axis based thinning strategy used for performing skeletonization of printed and handwritten character images. In this method; we have used shape characteristics of
+text to get skeleton of nearly same as the true character shape. Tries to find pixel-pairs",,Tries to detect close midsegments by distance and not by topology
+Smit \cite{Smit2009} \cite{Smit2011},Features,Pre Defined,Talks about multiple feature-based views of a master-design feature view. Concurrent update of other views; say Manufacturing; Analysis would be done as part is getting built in Design. Clearly states gap that final geometry is analysed rather than using information available in features.,"Talks about One-Side-Not-OK.
+Per feature abstraction.
+ Has stated mapping between design (BLOCK) and analysis (Midsurface sheet-plate) feature.  Has worked on very basic primitives","Clearly states limitation that  much of research is yet to be done; use of symmetry; various features; various abstractions is not yet handled. 
+Algorithms to join ('adjustments') has not been stated."
+Aimin \cite{Aimin2013},Features,MA,Feature based model simplification. ,Defeaturing parameters are collected upfront,No details on how midsurface are connected
+Yoonhwan Woo \cite{Woo2013},Brep,Decomposition; MA,decomposition on Brep into maximal (no concave edges) volumes which are simpler; get individual midsurface; then compose/extend/trim,Detailed study of face pairing; invalidity etc.,No details on how midsurface are connected
+Boussuge \cite{Boussuge2012} \cite{Boussuge2013} \cite{Boussuge2013a},Brep,Decomposition; MAT,Given Brep tries to build construction history by maximal decomposition. Recognition of Extrudes. Then idealized.,History tree independent,Too basic recognition. Only Union connections. Only Extrudes. Parallel and Orthogonal connections only.
+Automex \cite{Automex},Brep,Scale Axis Transform,Shape is packed with spheres;  which are scaled to remove branches,Takes care of the purturbations and smoothens them out,May generate surface fragments with incorrect topologies

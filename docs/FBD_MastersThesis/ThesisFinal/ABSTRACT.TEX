@@ -1,0 +1,52 @@
+\thispagestyle{empty}
+\begin{center}
+{\huge \bf {Abstract}}
+\end{center}
+
+\vspace{0.2in}
+
+    Increased demands on productivity in manufacturing have lead to increased
+	automation of design and manufacturing processes.
+    Automating CAD and CAM independently does not necessarily provide the 
+	``best'' solution for the overall product realization process.
+	Computer integration of both these activities is the potential solution.
+
+    This thesis proposes a feature-based design approach for three
+    dimensional block structured components with generalized orthohedral
+	geometry. 
+	The component is viewed as a collection of blocks connected by 
+	topological links. The geometry and topology are explicitly defined.
+	The geometry of the feature consists of an external shape and an internal
+	shape, while the topology is modeled using a graph. The basic external 
+	shape of each block in a component is a rectangular parallelopiped which
+	fixes overall size and location of the block.
+	Using the idea of encapsulation, families of blocks with different internal 	shapes can be developed; all these internal shapes are assumed to be
+	encapsulated in a block with rectangular external shape. The simple 
+	nature
+	of the external shapes makes it easier to define operations like create, 
+	addition/deletion of blocks, topological connectivity specifications, etc.
+	The internal shape provides the necessary information for geometry specific
+	operations such as display, volume computation, etc.
+
+    The feature library consists of constructive as well as subtractive 
+	features. The modeling of free-form surfaces using the
+	idea of encapsulation is proposed and an extruded B-Spline 
+	surface is developed and implemented as an example.
+
+
+	An editing method has been developed to maintain topological consistency 
+	during geometrical modifications of the component and to propagate
+	the editing changes with minimum user intervention.
+
+
+	Dimensioning and tolerancing support is provided using a graph
+	representation. Capabilities
+	such as automatic creation of a dimensioning scheme, change of datum,
+	detection of over-dimensioning and under-dimensioning, etc are provided.
+
+    C++ is used to obtain an object-oriented implementation of the feature-
+	based design concepts developed in this work.
+    The user-interface is developed in X-Windows/Motif toolkit while the
+    graphics display is done using PHIGS.
+
+

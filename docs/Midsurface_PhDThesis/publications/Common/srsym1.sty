@@ -1,0 +1,271 @@
+%%
+%% This is file `srsym1.sty',
+%% Copyright 2003, Ragu
+%% v. 0.1 2000/10/15 (symbols in LM2, delimiters, various symbols)
+%% Based on files fontmath.ltx + mathtime.sty
+%%
+\ProvidesPackage{srsym1}
+ [2000/10/15 v0.1 %
+  symbols in LM2 delimiters various symbols]
+%
+%
+%
+\DeclareMathSymbol{!}{\mathclose}{symbols}{"57}
+\DeclareMathSymbol{+}{\mathbin}{symbols}{67}% was 02B
+\DeclareMathSymbol{=}{\mathrel}{symbols}{68}% was 03D
+%
+%%%\DeclareMathSymbol{,}{\mathpunct}{letters}{"3B}%-redef-in-M1
+\DeclareMathSymbol{-}{\mathbin}{symbols}{"83}%%% moved from {"00}
+%
+%%%\DeclareMathSymbol{.}{\mathbin}{letters}{"3A}%-redef-in-M1
+%%%\DeclareMathSymbol{:}{\mathrel}{operators}{"3A}%-redef-in-M1
+%%%\DeclareMathSymbol{;}{\mathpunct}{operators}{"3B}%-redef-in-M1
+\DeclareMathSymbol{?}{\mathclose}{operators}{"3F}
+%
+\mathcode`\ ="8000 % \space
+\mathcode`\'="8000 % ^\prime
+\mathcode`\_="8000 % \_
+%
+%%% (,),[,],\lbrace,\rbrace -- dealt with in M1 (symbol + delimiter)
+\DeclareMathSymbol{\ldbracket}{\mathopen}{symbols}{"95}% new
+\DeclareMathSymbol{\rdbracket}{\mathclose}{symbols}{"96}% new
+%%% <,>,/,\star,\smile,\frown (symbols) in M1
+%
+% langle and rangle -- give \langle and \rangle.
+% < and > in math gives ONLY "less than" and "greater than" symbols.
+% The following setup, commented out, will not be used
+% (though it appears in official LaTeX)
+%%%\DeclareMathDelimiter{<}{\mathopen}{symbols}{"68}{largesymbols}{"0A}%%
+%%%\DeclareMathDelimiter{>}{\mathclose}{symbols}{"69}{largesymbols}{"0B}%%
+%\DeclareMathDelimiter{<}{\mathopen}{symbols}{"93}{largesymbols}{"0A}%-larger
+%\DeclareMathDelimiter{>}{\mathclose}{symbols}{"94}{largesymbols}{"0B}%-larger
+%
+%%%\DeclareMathDelimiter{|}{\mathord}{symbols}{"6A}{largesymbols}{"0C}
+\DeclareMathDelimiter{|}{\mathord}{symbols}{"97}{largesymbols}{"0C}% larger
+%
+%%%\DeclareMathSymbol{\infty}{\mathord}{symbols}{"31}
+\DeclareMathSymbol{\infty}{\mathord}{symbols}{"88}% smaller
+%
+%%%\DeclareMathSymbol{\prime}{\mathord}{symbols}{"30}% will be changed
+\DeclareMathSymbol{\emptyset}{\mathord}{symbols}{"3B}
+%
+\let\varnothing\@undefined % To undo the char from M4
+\DeclareMathSymbol{\varnothing}{\mathord}{symbols}{"99}
+%
+%%%\DeclareMathSymbol{\nabla}{\mathord}{symbols}{"72}%-redef-in-M1
+%%% \flat,\natural,\sharp - in M1
+%
+\DeclareMathSymbol{\spadesuit}{\mathord}{symbols}{"81}%-moved from "7F
+\DeclareMathSymbol{\triangleleft}{\mathbin}{symbols}{71}  % was 12F
+\DeclareMathSymbol{\triangleright}{\mathbin}{symbols}{70} % was 12E
+%
+%%%\DeclareMathSymbol{\comp}{\mathbin}{symbols}{66}       % new?
+\DeclareMathSymbol{\comp}{\mathbin}{symbols}{"A0}% thicker
+%
+\DeclareMathSymbol{\setdif}{\mathbin}{symbols}{88}     % new
+\DeclareMathSymbol{\cupprod}{\mathbin}{symbols}{89}    % new
+\DeclareMathSymbol{\capprod}{\mathbin}{symbols}{90}    % new
+%
+\let\Relbar\@undefined
+\DeclareMathSymbol{\Relbar}{\mathrel}{symbols}{72}     % was a macro
+%
+\DeclareMathSymbol{\otimes}{\mathbin}{symbols}{"86}%-moved from "0A
+\DeclareMathSymbol{\ominus}{\mathbin}{symbols}{"85}%-moved from "09
+%
+%%%\DeclareMathSymbol{\circ}{\mathbin}{symbols}{"0E}
+\DeclareMathSymbol{\circ}{\mathbin}{symbols}{"9E}% thicker
+%
+\DeclareMathSymbol{\bigcirc}{\mathbin}{symbols}{"87}%-moved from "0D
+%
+%%%\DeclareMathSymbol{\cdot}{\mathbin}{symbols}{"01}
+\DeclareMathSymbol{\cdott}{\mathbin}{symbols}{"9A}%-thicker
+\DeclareMathSymbol{\cdottt}{\mathbin}{symbols}{"9B}%-thicker
+\DeclareMathSymbol{\cdotttt}{\mathbin}{symbols}{"9C}%-thicker
+\DeclareMathSymbol{\cdottttt}{\mathbin}{symbols}{"9D}%-thicker
+%
+%%%\DeclareMathSymbol{\parallel}{\mathrel}{symbols}{"6B}
+\DeclareMathSymbol{\parallel}{\mathrel}{symbols}{"98}% larger
+%
+%%%\DeclareMathSymbol{\mid}{\mathrel}{symbols}{"6A}
+\DeclareMathSymbol{\mid}{\mathrel}{symbols}{"97}% larger
+%
+%%%\DeclareMathSymbol{\leftarrow}{\mathrel}{symbols}{"20}
+\DeclareMathSymbol{\leftarrow}{\mathrel}{symbols}{"84}%-moved from "20
+%
+%%%\DeclareMathSymbol{\bullet}{\mathbin}{symbols}{"0F}
+\DeclareMathSymbol{\bulletsss}{\mathbin}{symbols}{"A1}%-smaller
+\DeclareMathSymbol{\bulletss}{\mathbin}{symbols}{"A2}%-smaller
+\DeclareMathSymbol{\bullets}{\mathbin}{symbols}{"A3}%-smaller
+\DeclareMathSymbol{\bulletb}{\mathbin}{symbols}{"A4}%-larger
+\DeclareMathSymbol{\bulletbb}{\mathbin}{symbols}{"A5}%-larger
+\DeclareMathSymbol{\bulletbbb}{\mathbin}{symbols}{"A6}%-larger
+%
+\let\hookrightarrow\@undefined
+\let\hookleftarrow\@undefined
+\DeclareMathSymbol{\hookrightarrow}{\mathrel}{symbols}{"FA}%-new as one symbol
+\DeclareMathSymbol{\hookleftarrow}{\mathrel}{symbols}{"F9}%-new as one symbol
+%
+%%% \hbar,\angle now from M5
+%%% \leftharpoonup,\leftharpoondown,\rightharpoonup,\rightharpoondown in M1
+%%% \doteq - should be made one symbol! Now stays as construct!
+%%% \lhook,\rhook in M1
+%
+\let\cong\@undefined
+\DeclareMathSymbol{\cong}{\mathrel}{symbols}{"FB}%-new as one symbol
+\let\notin\@undefined
+\DeclareMathSymbol{\notin}{\mathrel}{symbols}{"79}%-new as one symbol
+\let\notni\@undefined
+\DeclareMathSymbol{\notni}{\mathrel}{symbols}{"7B}%-new as one symbol
+\let\bowtie\@undefined
+\DeclareMathSymbol{\bowtie}{\mathrel}{symbols}{"C0}%-new as one symbol
+%
+%%% \models=\vDash in M5 (now)
+%%% \ldotp,\colon (\mathpunct) in M5
+%
+%-per MathTime:
+\newcommand\hb@xmdot{\hbox{$\m@th.$}}
+\def\vdots{\vbox{\baselineskip4\p@ \lineskiplimit\z@
+  \kern6\p@\hb@xmdot\hb@xmdot\hb@xmdot}}
+\def\ddots{\mathinner{\mkern1mu\raise7\p@\vbox{\kern7\p@
+  \hb@xmdot}\mkern2mu
+  \raise4\p@\hb@xmdot\mkern2mu\raise\p@\hb@xmdot\mkern1mu}}
+%
+%
+%
+\DeclareMathAccent{\mathring}{\mathalpha}{operators}{"17}
+\DeclareMathAccent{\vec}{\mathord}{symbols}{"45}% was "179
+\DeclareMathAccent{\vecc}{\mathord}{symbols}{"AD}% new, larger
+\DeclareMathAccent{\veccc}{\mathord}{symbols}{"AE}% new, larger
+\DeclareMathAccent{\vecccc}{\mathord}{symbols}{"AF}% new, larger
+\DeclareMathAccent{\grave}{\mathord}{symbols}{74}
+\DeclareMathAccent{\acute}{\mathord}{symbols}{75}
+\DeclareMathAccent{\check}{\mathord}{symbols}{76}
+\DeclareMathAccent{\breve}{\mathord}{symbols}{77}
+\DeclareMathAccent{\bar}{\mathord}{symbols}{78}
+\DeclareMathAccent{\barr}{\mathord}{symbols}{"B0}% new, larger
+\DeclareMathAccent{\barrr}{\mathord}{symbols}{"B1}% new, larger
+\DeclareMathAccent{\hat}{\mathord}{symbols}{79}
+\DeclareMathAccent{\hatt}{\mathord}{symbols}{"B9}% new, larger
+\DeclareMathAccent{\hattt}{\mathord}{symbols}{"BA}% new, larger
+\DeclareMathAccent{\hatttt}{\mathord}{symbols}{"BB}% new, larger
+\DeclareMathAccent{\dot}{\mathord}{symbols}{80}
+\DeclareMathAccent{\ddot}{\mathord}{symbols}{82}
+\DeclareMathAccent{\dotn}{\mathord}{symbols}{"B2}
+\DeclareMathAccent{\ddotn}{\mathord}{symbols}{"B3}
+\DeclareMathAccent{\dddotn}{\mathord}{symbols}{"B4}
+\DeclareMathAccent{\ddddotn}{\mathord}{symbols}{"B5}
+\DeclareMathAccent{\tilde}{\mathord}{symbols}{81}
+\DeclareMathAccent{\tildee}{\mathord}{symbols}{"B6}% new, larger
+\DeclareMathAccent{\tildeee}{\mathord}{symbols}{"B7}% new, larger
+\DeclareMathAccent{\tildeeee}{\mathord}{symbols}{"B8}% new, larger
+\DeclareMathAccent{\widebar}{\mathord}{symbols}{83} % new
+%
+%
+%
+%%%\DeclareMathDelimiter{\Vert}{\mathord}{symbols}{"6B}{largesymbols}{"0D}
+\DeclareMathDelimiter{\Vert}{\mathord}{symbols}{"98}{largesymbols}{"0D}
+\let\|=\Vert
+%
+%%%\DeclareMathDelimiter{\vert}{\mathord}{symbols}{"6A}{largesymbols}{"0C}
+\DeclareMathDelimiter{\vert}{\mathord}{symbols}{"97}{largesymbols}{"0C}
+%
+%%%\DeclareMathDelimiter{\langle}{\mathopen}{symbols}{"68}{largesymbols}{"0A}
+%%%\DeclareMathDelimiter{\rangle}{\mathclose}{symbols}{"69}{largesymbols}{"0B}
+\DeclareMathDelimiter{\langle}{\mathopen}{symbols}{"93}{largesymbols}{"0A}
+\DeclareMathDelimiter{\rangle}{\mathclose}{symbols}{"94}{largesymbols}{"0B}
+%
+%%%\DeclareMathDelimiter{\rceil}{\mathclose}{symbols}{"65}{largesymbols}{"07}
+%%%\DeclareMathDelimiter{\lceil}{\mathopen}{symbols}{"64}{largesymbols}{"06}
+%%%\DeclareMathDelimiter{\rfloor}{\mathclose}{symbols}{"63}{largesymbols}{"05}
+%%%\DeclareMathDelimiter{\lfloor}{\mathopen}{symbols}{"62}{largesymbols}{"04}
+\DeclareMathDelimiter{\lfloor}{\mathopen}{symbols}{"8F}{largesymbols}{"04}
+\DeclareMathDelimiter{\rfloor}{\mathclose}{symbols}{"90}{largesymbols}{"05}
+\DeclareMathDelimiter{\lceil}{\mathopen}{symbols}{"91}{largesymbols}{"06}
+\DeclareMathDelimiter{\rceil}{\mathclose}{symbols}{"92}{largesymbols}{"07}
+%
+%%%\DeclareMathSymbol{\ddagger}{\mathbin}{symbols}{"7A}
+%%%\DeclareMathSymbol{\dagger}{\mathbin}{symbols}{"79}
+%%%\DeclareMathSymbol{\mathparagraph}{\mathord}{symbols}{"7B}
+%%%\DeclareMathSymbol{\mathsection}{\mathord}{symbols}{"78}
+%%% \dagger,\ddagger,\mathsection,\mathparagraph - now in M1
+%
+\DeclareMathSymbol{\mathdollar}{\mathord}{operators}{"24}
+\DeclareMathSymbol{\mathsterling}{\mathord}{operators}{"A3}% in LY1
+\let\mathunderscore\@undefined
+\DeclareMathSymbol{\mathunderscore}{\mathord}{operators}{"5F}% in LY1
+%
+%
+%
+%\def\big#1{{\hbox{$\left#1\vbox to8.5\p@{}\right.\n@space$}}}
+%\def\Big#1{{\hbox{$\left#1\vbox to11.5\p@{}\right.\n@space$}}}
+%\def\bigg#1{{\hbox{$\left#1\vbox to14.5\p@{}\right.\n@space$}}}
+%\def\Bigg#1{{\hbox{$\left#1\vbox to17.5\p@{}\right.\n@space$}}}
+%
+%%% New definitions of scalable "big"'s!
+\def\big#1{{\hbox{$\left#1\vbox to 0.85em{}\right.\n@space$}}}
+\def\Big#1{{\hbox{$\left#1\vbox to 1.15em{}\right.\n@space$}}}
+\def\bigg#1{{\hbox{$\left#1\vbox to 1.45em{}\right.\n@space$}}}
+\def\Bigg#1{{\hbox{$\left#1\vbox to 1.75em{}\right.\n@space$}}}
+\def\Biggg#1{{\hbox{$\left#1\vbox to 2.05em{}\right.\n@space$}}}
+\def\Bigggg#1{{\hbox{$\left#1\vbox to 2.35em{}\right.\n@space$}}}
+\def\Biggggg#1{{\hbox{$\left#1\vbox to 2.65em{}\right.\n@space$}}}
+%
+%%% With "s" it is an ordinary symbol (spacing!)
+\def\bigs{\mathord\big}
+\def\Bigs{\mathord\Big}
+\def\biggs{\matord\bigg}
+\def\Biggs{\mathord\Bigg}
+%
+\def\Bigggs{\mathord\Biggg}
+\def\Biggggs{\mathord\Bigggg}
+\def\Bigggggs{\mathord\Biggggg}
+%
+\def\Bigggl{\mathopen\Biggg}
+\def\Biggggl{\mathopen\Bigggg}
+\def\Bigggggl{\mathopen\Biggggg}
+%
+\def\Bigggr{\mathclose\Biggg}
+\def\Biggggr{\mathclose\Bigggg}
+\def\Bigggggr{\mathclose\Biggggg}
+%
+\def\Bigggm{\mathrel\Biggg}
+\def\Biggggm{\mathrel\Bigggg}
+\def\Bigggggm{\mathrel\Biggggg}
+%
+\jot=6pt %% originally only 3pt
+%
+\def\RegularMathSpacing{%
+  \thinmuskip=3mu
+  \medmuskip=4mu plus 2mu minus 4mu
+  \thickmuskip=5mu plus 5mu}%
+\def\PSMathSpacing{%
+  \thinmuskip=2.5mu
+  \medmuskip=2.5mu plus 1mu minus 1mu
+  \thickmuskip=4mu plus 1.5mu minus 1mu}%
+\def\MyMathSpacing#1#2#3#4#5#6#7{%
+  \thinmuskip=#1mu
+  \medmuskip=#2mu plus #3mu minus #4mu
+  \thickmuskip=#5mu plus #6mu minus #7mu}%
+% \MyMathSpacing{3}{4}{2}{4}{5}{5}{0} % <-- \RegularMathSpacing
+% \MyMathSpacing{2.5}{2.5}{1}{1}{4}{1.5}{1} % <-- \PSMathSpacing
+\PSMathSpacing
+%%
+%% End of file `fontmath.ltx'.
+%% ------------------------------
+%% After mathtime.sty
+%%
+%% This is the default; to change edit the current math style
+\def\@fnsymbol#1{\ensuremath{\ifcase#1\or *\or \dagger\or \ddagger\or
+   \mathsection\or \mathparagraph\or \|\or **\or \dagger\dagger
+   \or \ddagger\ddagger \else\@ctrerr\fi}}
+%
+%%% Defaults for undeclared encoding:
+\DeclareTextAccent{\t}{LM2}{65}
+\DeclareTextCommand{\textcircled}{LM2}[1]{{%
+   \ooalign{\hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr\char135}}}
+%%
+%% End of mathtime.sty
+%%
+\endinput
+%%
+%% End of file `srsym1.sty'.

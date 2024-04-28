@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Lipson \cite{Lipson},Sheet Metal Brep,Topological Invariant,topological invariant for sheet metal features,Validating correctness of sheet metal parts,Insufficient for non manifolds
+Helen Lockett \cite{Lockett2005} \cite{Lockett2005a} \cite{Lockett2008},Midsurface,Topology Prediction,Proximity groups adjusted by an angle criterion.,Feature recognition using midsurface,Geometry used in topological validation
+Sang Hun Lee \cite{Lee2009a},Brep,Topology extended,Sheet model is offsetted to thicken,Combined sheet and solid modelling,Detailed transformations missing

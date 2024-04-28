@@ -1,0 +1,4 @@
+Author,Input,Method,Approach,Advantages,Limitations
+Awanish Kumar \cite{Kumar2004},SMFCAD,Topology,Feature by non manifold topology,Simpler feature definitions,Limited range
+Liu et al. \cite{Liu2004},SMFCAD,Rule-based,Primitives; Add-ons; Connectors and Composites.,Easy to follow,Not very strict; formal
+Wang Dawei \cite{Dawei2012},SMFCAD,Semantic-based,Relative positions,Similarity assessment definitive,Compute intensive

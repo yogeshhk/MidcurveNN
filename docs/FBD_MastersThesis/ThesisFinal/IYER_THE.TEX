@@ -1,0 +1,58 @@
+
+%================================================================
+% root file for thesis
+%----------------------------------------------------------------
+
+\documentstyle[psfig,verbfile,12pt]{ksthesis}
+\setlength{\textheight}{8.5in}
+
+%-------- tex files to be included
+\include{mytitle}
+
+%-------- user macros
+%% Macro to lower a table heading by half a line
+\newcommand{\Lower}[1]{\smash{\lower 1.5ex \hbox{#1}}}
+\newcommand{\PE}[3]{\put({#1},{#2}){\oval(20,20)}
+                    \put({#1},{#2}){\makebox(0,0){#3}} }
+\newcommand{\ul}{\underline}
+
+%-------- title page info
+\author{M.Sureshkumar Iyer}
+\bsdegree{B.E., Regional Engineering College,India, 1994}
+\title{}
+
+%-------- files to be included this run
+%\includeonly{chapter1,chapter4,chapter6}
+%\includeonly{chapter3}
+
+%================================================================
+% ALL FILES IN THESIS
+%----------------------------------------------------------------
+\setlength{\textheight}{8.5in}
+\begin{document}
+    \titlep
+\include{abstract}
+
+\pagenumbering{roman}
+\addcontentsline{toc}{chapter}{Table of Contents}
+\tableofcontents
+\listoffigures
+\listoftables
+\include{ack}
+
+\pagebreak
+\pagenumbering{arabic}
+    \include{chapter1}
+    \include{chapter2}
+    \include{chapter3}
+    \include{chapter4}
+    \include{chapter5}
+    \include{chapter6}
+    \include{biblio}
+
+\appendix
+    \include{appndixa}
+    \include{appndixb}
+
+\end{document}
+

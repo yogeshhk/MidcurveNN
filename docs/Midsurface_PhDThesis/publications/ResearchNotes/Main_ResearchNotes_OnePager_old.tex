@@ -1,0 +1,125 @@
+\input{../Common/template_article_colored_orig} % One pager
+%\input{../Common/template_article_colored}
+\usepackage{titling} % Allows custom title configuration
+\newcommand{\HorRule}{\color{DarkGoldenrod} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
+\pretitle{\vspace{-70pt} \begin{flushleft} \HorRule \fontsize{20}{20} \usefont{OT1}{phv}{b}{n} \color{DarkRed} \selectfont} % Horizontal rule before the title
+
+\title{Computing Midsurface} % Your article title
+
+\posttitle{\par\end{flushleft}\vskip 0.25em} % Whitespace under the title
+\preauthor{\begin{flushleft}\large \lineskip 0.5em \usefont{OT1}{phv}{b}{sl} \color{DarkRed}} % Author font configuration
+\author{Yogesh Kulkarni\\} % Your name
+\postauthor{\footnotesize \usefont{OT1}{phv}{m}{sl} \color{Black} % Configuration for the institution name
+PhD student, College of Engineering Pune, India % Your institution
+\par\end{flushleft}\HorRule} % Horizontal rule after the title
+
+\date{} % Add a date here if you would like one to appear underneath the title block
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+
+
+\section{Introduction}
+At early stages of design, CAD parts are often \textbf{idealized} before analyzing them in CAE, to save on compute time and resources. Thin-walled parts are idealized to \textbf{Midsurface}, a surface running through the part, midway of the thickness.
+\vskip 2mm
+\includegraphics[width=0.7\linewidth]{../Common/images/MidsurfSmallProfile.pdf}
+\vskip -3mm
+
+Getting a connected Midsurface, {\em representing} the overall shape of the part, with no gaps and overlaps, is still a challenging problem, due to complexity of the shapes. 
+
+Typical approaches to compute Midsurface, in academics and commercial are: 
+
+\vspace{1em}
+
+\includegraphics[width=0.7\linewidth]{../Common/images/MedialMethodsOnly.pdf}
+
+MAT suffers from extraneous branches and MA suffers from complexity in finding the face pairs. CAT and Thinning leave gaps at ends.
+
+These approaches work on the final shape (Boundary representation - Brep) and thus find challenging to compute in case of complex surfaces, interactions etc. If this final shape is decomposed into smaller-simpler shapes, it would be easier and more deterministic to compute the Midsurface. Such decomposition is readily available in form of the \textbf{feature tree}.
+
+\vspace{1em}
+
+%\includegraphics[width=0.7\linewidth]{../Common/images/USB_buildup}
+
+\section{Proposed Approach}
+Many commercial CAD applications provide {\em Design-by-Features} approach. Part is built using features one-by-one in time-line order, almost in a Constructive-Solid-Geometry (CSG) like tree way. Leaves represent  Primitives/Tool-Bodies and internal nodes represent booleans. At each level of the tree, starting from first feature, shapes are simpler than the final shape. Boolean type is known. So computing Midsurface of the Tool-bodies and their boolean to the Midsurface-shape built till that level, is a more advantageous than detecting/computing Midsurface in the final shape. So, the proposed idea is:
+
+\begin{itemize}[noitemsep,nolistsep]
+		\item Concurrently build mid-surfaces per feature
+		\item At each feature, shapes are relatively simple, 
+		\item Compute extensions at the interface nodes
+\end{itemize}
+
+\includegraphics[width=0.9\linewidth]{../Common/images/ExtendTrim}
+\vspace{-1em}
+		
+\section{Overall System Architecture}		
+\centering \includegraphics[height=0.6\linewidth]{../Common/images/SystemArchitectureNoColor.pdf}
+
+%\section{Midsurface Computation}
+%
+%Most of the volume features can be abstracted to ``Sweep'' representation having a profile and a guide curve. For such shapes, computing Midsurface patch:
+%
+%\begin{tabular}{@{}p{0.3\linewidth}|p{0.3\linewidth}|p{0.3\linewidth}@{}}
+%\textbf{Shape}  & \textbf{Thin Profile} & \textbf{Thick Profile} \\ 
+%\raisebox{-.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/ThickThinProfilePart}} & 
+%\raisebox{-.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/ThinProfileMidsurf}} & 
+%\raisebox{-.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/ThickProfileMidsurf}} \\ 
+%\end{tabular}
+%
+%In case of Thin profile, problem reduces to computing midcurve:
+%
+%\begin{tabular}{@{}p{0.3\linewidth}p{0.3\linewidth}p{0.3\linewidth}@{}}
+%\textbf{2D Shape} & \textbf{Partitioning} & {Midcurve} \\
+%\raisebox{-0.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/Crosss}}			&
+%\raisebox{-0.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/Crossp}}			&
+%\raisebox{-0.9\height}{\includegraphics[width=0.9\linewidth]{../Common/images/Crossmc}}\\
+%\end{tabular}
+
+
+%\section{Divide-and-Rule : 3D}
+%		\begin{center}
+%		\begin{tabular}[h]{@{}p{0.4\linewidth} p{0.4\linewidth} @{}} 
+%		
+%			\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularBracket}  &  
+%			\includegraphics[width=0.8\linewidth]{../Common/images/CellularBracket}  \\
+%			
+%			\includegraphics[width=0.8\linewidth]{../Common/images/CellGraphBracket.pdf} &  
+%			\includegraphics[width=0.8\linewidth]{../Common/images/midsCellularBracket} 	\\ 
+%			
+%		\end{tabular}	
+%		\end{center}
+\vspace{-1em}
+
+		
+\section{Novelty}
+
+\begin{itemize}[noitemsep,nolistsep]
+
+	\item Sheet Metal features Taxonomy for De-featuring
+	\item Remnant feature volumes for suppressibility
+	\item Midcurves using improved 2D Decomposition
+	\item Sweep based feature abstraction
+	\item Features for computation of Midsurface patches
+	\item Cells for connection logic for patches
+	
+\end{itemize} 
+		
+
+%\section{Midsurface}
+\section{Papers Published/*Selected}
+
+\begin{itemize}[noitemsep,nolistsep]
+
+	\item \textbf{Intl Conf, CoEP, 2013}: Feature Midsurface
+	\item \textbf{Intl Conf, IITM, 2013}:  Model Simplification
+	\item \textbf{Intl Conf, IITG, 2014}:  Feature Abstraction
+	\item \textbf{Intl Jrnl, IJCAET, 2017*}: Midcurves
+	\item \textbf{Intl Jrnl/Conf, London, 2015}: De-featuring
+\end{itemize} 
+%\bibliographystyle{plain}
+%\bibliography{../Common/Bibliography}
+\end{document}
