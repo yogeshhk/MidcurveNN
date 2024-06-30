@@ -1,5 +1,34 @@
 # Notes on Midcurve NN
 	
+	
+## LLM Prompt based approach
+
+Here is the prompt I propose to test any new LLM that gets available to check how good it is in predicting midcurve. Use `src\utils\prepare_plots.py` for plotting the output.
+
+```
+You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline profile. Input 2D polygonal profile is defined by set of connected lines with the format as: ...
+
+Below are some example transformations, specified as pairs of 'input' and the corresponding 'output'. After learning from these examples, predict the 'output' of the last 'input' specified.
+Do not write code or explain the logic but just give the list of lines with point coordinates as specified for the 'output' format. 
+
+input:{"Points": [[22.5, 22.5], [45.0, 22.5], [45.0, 135.0], [157.5, 135.0], [157.5, 157.5], [22.5, 157.5]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]], "Segments": [[0, 1, 2, 3, 4, 5]]}"
+output: {"Points": [[33.75, 22.5], [33.75, 146.25], [157.5, 146.25]], "Lines": [[0, 1], [1, 2]], "Segments": [[0, 1]]}
+
+input: {"Points": [[0.0, 125.0], [125.0, 125.0], [125.0, 100.0], [75.0, 100.0], [75.0, 0.0], [50.0, 0.0], [50.0, 100.0], [0.0, 100.0]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0]], "Segments": [[0, 1, 2, 3, 4, 5, 6, 7]]}
+output: {"Points": [[62.5, 0.0], [62.5, 112.5], [125.0, 112.5], [0.0, 112.5]], "Lines": [[0, 1], [1, 2], [3, 1]], "Segments": [[0], [1], [2]]}
+
+input: {"Points": [[-4.77, 24.54], [5.05, 26.45], [1.23, 46.08], [6.14, 47.04], [9.95, 27.4], [19.77, 29.31], [20.72, 24.4], [10.91, 22.49], [14.72, 2.86], [9.82, 1.91], [6.0, 21.54], [-3.82, 19.63]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10], [10, 11], [11, 0]], "Segments": [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]}
+output: {"Points": [[12.27, 2.39], [7.98, 24.47], [3.68, 46.56], [-4.29, 22.09], [20.25, 26.86]], "Lines": [[0, 1], [4, 1], [2, 1], [3, 1]], "Segments": [[0], [1], [2], [3]]}
+
+input:{"Points": [[1.47, 6.92], [5.66, 9.64], [-2.51, 22.22], [-6.7, 19.5]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 0]], "Segments": [[0, 1, 2, 3]]}
+output:
+```
+
+Compare the output with 'gold' result given below and let us know how much they differ:
+```
+gold: {"Points": [[3.57, 8.28], [-4.6, 20.86]], "Lines": [[0, 1]], "Segments": [[0]]}
+````
+
 ## A wider research domain: CAD with Deep Learning
 
 Vectorization is a must for preparing input for Machine/Deep Learning
