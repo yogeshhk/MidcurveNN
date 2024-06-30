@@ -3,14 +3,14 @@ Midcurve by Neural Networks
 
 MidcurveNN is a project aimed at solving the challenging problem of finding the midcurve of a 2D closed shape using neural networks. The primary goal is to transform a closed polygon, represented by a set of points or connected lines, into another set of points or connected lines, allowing for the possibility of open or branched polygons in the output. To run the project, follow the provided instructions in the "Instructions to Run" section.
 
-
-
 ![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/publications/Midcurve_LaTeX/images/midcurvenn_simpleencoderdecoder.jpg)
 
 
 - *Goal*: Given a 2D closed shape (closed polygon), find its midcurve (polyline, closed or open).
 - *Input*: Set of points or set of connected lines, non-intersecting, simple, convex, closed polygon.
 - *Output*: Another set of points or set of connected lines, open/branched polygons possible.
+
+If you are interested in working/contributing to this project voluntarily, do have a look at the [issues](https://github.com/yogeshhk/MidcurveNN/issues)
 
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
@@ -69,9 +69,13 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- Build Image-Segmentation like Encoder-Decoder network, given Graph Convolution Layers from DGL in place of usual Image-based 2D convolution layer, in the usual pytorch encoder-decoder model.
 		- Generate variety of input-output polyline pairs, by using geometric transformations (and not image transformations as done in Phase I).
 		- See if Variational Graph Auto-Encoders https://github.com/dmlc/dgl/tree/master/examples/pytorch/vgae can help.
+	- Phase III: Using Large Language Models (LLMs)
+		- With representation of Profile and Midcurve in form of text, json-brep, so that LLMs can be leveraged
+		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
 - Phase I has been implemented in a simplistic manner. 
-- Phase II is trying to look for a good representation to store geometry/graph/network as text so that NLP (Natural Language Techniques) can be applied. [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys many such representations and benchmarks them, but none of them looked appropriate for geometry. So, here we leverage a geometry representation similar to that found in 3D B-rep (Boundary representation), but in 2D. It can be shown as:
+- Phase II is trying to look for a good representation to store geometry/graph/network as text so that NLP (Natural Language Techniques) can be applied. [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys many such representations and benchmarks them, but none of them looked appropriate for geometry. Need to wait till such graph 2 graph networks are available.
+- Phase III : We leverage a geometry representation similar to that found in 3D B-rep (Boundary representation), but in 2D. It can be shown as:
 ```
 {
 	'ShapeName': 'I',
@@ -112,6 +116,7 @@ For a wider discussion on Use of Deep Learning in CAD (Computer-aided Design), r
 - CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
 - Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve. An [extended abstract](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/MidcurveLLM/MidcurveLLM_content.md) on the same topic.
+- Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
 
 ## Citations
 - [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)
