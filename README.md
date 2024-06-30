@@ -5,7 +5,7 @@ MidcurveNN is a project aimed at solving the challenging problem of finding the 
 
 
 
-![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/Midcurve_LaTeX/images/midcurvenn_simpleencoderdecoder.jpg)
+![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/publications/Midcurve_LaTeX/images/midcurvenn_simpleencoderdecoder.jpg)
 
 
 - *Goal*: Given a 2D closed shape (closed polygon), find its midcurve (polyline, closed or open).
