@@ -38,6 +38,21 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Midcurve : Graph 2 Graph}
+
+	\begin{itemize}
+	\item {\bf Input}: Graph of Input profile with vertices at nodes and lines/curves as edges
+	\item {\bf Output}: another Graph of Output profile with vertices at nodes and lines/curves as edges, open/branched polygons possible
+	\item Both, input and output shapes have different topologies (number of nodes and edges are different) but geometry also, nodes and edges have different positions and shapes. So its network 2 network problem.
+	\item Exiting Graph algorithms like node prediction and link prediction are not useful here as, there, topology of input and output is more or less similar.
+	\item Graph to Graph translation does not seem to evolved enough to do the expected transformation.
+	\end{itemize}
+	
+Any ideas?
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Midcurve == Dimension Reduction}
 
 	\begin{itemize}
