@@ -1,3 +1,9 @@
+import os
+import sys
+
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
+
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
 from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
