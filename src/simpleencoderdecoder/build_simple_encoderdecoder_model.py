@@ -1,16 +1,17 @@
 import os
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+import tensorflow as tf
 
 from tensorflow.keras import regularizers
-from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Dropout
 from tensorflow.keras.models import Model, load_model, save_model
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.optimizers import Adam
 
 import numpy as np
 import sys
 import random
+from pathlib import Path
 
 sys.path.append('..')
 from utils.utils import get_training_data
@@ -24,105 +25,111 @@ class simple_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 10000
         self.epochs = 200
-        self.batch_size = 5
-        self.autoencoder_model_pkl = os.path.join("models", "autoencoder_model")  # "models/autoencoder_model.pkl"
-        self.encoder_model_pkl = os.path.join("models", "encoder_model")  # "models/encoder_model.pkl"
-        self.decoder_model_pkl = os.path.join("models", "decoder_model")  # "models/decoder_model.pkl"
+        self.batch_size = 32  
+        self.models_dir = Path("models")
+        self.models_dir.mkdir(exist_ok=True)
+        
+        self.autoencoder_model_pkl = self.models_dir / "autoencoder_model"
+        self.encoder_model_pkl = self.models_dir / "encoder_model"
+        self.decoder_model_pkl = self.models_dir / "decoder_model"
 
     def process_images(self, grayobjs):
-        flat_objs = [x.reshape(self.input_dim) for x in grayobjs]
-        pngs_objs = np.array(flat_objs)
-        return pngs_objs
+        return np.array([x.reshape(self.input_dim) for x in grayobjs])
 
     def train(self,
               profile_pngs_gray_objs,
               midcurve_pngs_gray_objs,
               retrain_model=False):
 
-        if not os.path.exists(self.autoencoder_model_pkl) or retrain_model:
-            # this is our input placeholder
+        if not self.autoencoder_model_pkl.exists() or retrain_model:
             input_img = Input(shape=(self.input_dim,))
 
-            # "encoded" is the encoded representation of the input
-            encoded = Dense(self.encoding_dim, activation='relu', activity_regularizer=regularizers.l1(10e-5))(
-                input_img)
-            # "decoded" is the lossy reconstruction of the input
-            decoded = Dense(self.input_dim, activation='sigmoid')(encoded)
+            encoded = Dense(self.encoding_dim, 
+                          activation='relu',
+                          kernel_initializer='he_normal',
+                          activity_regularizer=regularizers.l1(1e-5))(input_img)
+            encoded = BatchNormalization()(encoded)
+            encoded = Dropout(0.2)(encoded)
 
-            # Model 1: Full AutoEncoder, includes both encoder single dense layer and decoder single dense layer. 
-            # This model maps an input to its reconstruction
+            decoded = Dense(self.input_dim,
+                          activation='sigmoid',
+                          kernel_initializer='glorot_normal')(encoded)
+
             self.autoencoder = Model(input_img, decoded)
-
-            # Model 2: a separate encoder model: -------------------
-            # this model maps an input to its encoded representation
             self.encoder = Model(input_img, encoded)
-
-            # Model 3: a separate encoder model: -------------------
-            # create a placeholder for an encoded (32-dimensional) input
+            
             encoded_input = Input(shape=(self.encoding_dim,))
-            # retrieve the last layer of the autoencoder model
             decoder_layer = self.autoencoder.layers[-1]
-            # create the decoder model
             self.decoder = Model(encoded_input, decoder_layer(encoded_input))
 
-            # Compilation of Autoencoder (only)
-            self.autoencoder.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+            optimizer = Adam(learning_rate=0.001)
+            self.autoencoder.compile(
+                optimizer=optimizer,
+                loss='binary_crossentropy',
+                metrics=['accuracy', 'mae']
+            )
 
-            #             # Training
-            #             profile_pngs_flat_objs = [x.reshape(self.input_dim) for x in profile_pngs_gray_objs]
-            #             midcurve_pngs_flat_objs = [x.reshape(self.input_dim) for x in midcurve_pngs_gray_objs]
-            #
-            #             profile_pngs_objs = np.array(profile_pngs_flat_objs)
-            #             midcurve_pngs_objs= np.array(midcurve_pngs_flat_objs)
-            #
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs)
             midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs)
 
-            #             train_size = int(len(profile_pngs_objs)*0.7)
-            #             self.x_train = profile_pngs_objs[:train_size]
-            #             self.y_train = midcurve_pngs_objs[:train_size]
-            #             self.x_test = profile_pngs_objs[train_size:]
-            #             self.y_test = midcurve_pngs_objs[train_size:]
-            #             self.autoencoder.fit(self.x_train, self.y_train,
-            #                         epochs=self.epochs,
-            #                         batch_size=5,
-            #                         shuffle=True,
-            #                         validation_data=(self.x_test, self.y_test))
+            callbacks = [
+                EarlyStopping(
+                    monitor='val_loss',
+                    mode='min',
+                    verbose=1,
+                    patience=50,
+                    restore_best_weights=True
+                ),
+                ModelCheckpoint(
+                    filepath=str(self.autoencoder_model_pkl),
+                    monitor='val_loss',
+                    save_best_only=True,
+                    verbose=1
+                )
+            ]
 
-            es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
-            self.autoencoder.fit(self.x, self.y,
-                                 epochs=self.epochs,
-                                 batch_size=self.batch_size,
-                                 validation_split=0.3,
-                                 callbacks=[es],
-                                 shuffle=True)
-            # Save models
-            save_model(self.autoencoder,
-                       self.autoencoder_model_pkl)  # self.autoencoder.save(self.autoencoder_model_pkl)
-            save_model(self.encoder, self.encoder_model_pkl)  # self.encoder.save(self.encoder_model_pkl)
-            save_model(self.decoder, self.decoder_model_pkl)  # self.decoder.save(self.decoder_model_pkl)
+            
+            self.autoencoder.fit(
+                self.x, self.y,
+                epochs=self.epochs,
+                batch_size=self.batch_size,
+                validation_split=0.3,
+                callbacks=callbacks,
+                shuffle=True,
+                verbose=1
+            )
+
+            self.autoencoder.save(self.autoencoder_model_pkl, save_format='tf')
+            self.encoder.save(self.encoder_model_pkl, save_format='tf')
+            self.decoder.save(self.decoder_model_pkl, save_format='tf')
         else:
-            # Save models
             self.autoencoder = load_model(self.autoencoder_model_pkl)
             self.encoder = load_model(self.encoder_model_pkl)
             self.decoder = load_model(self.decoder_model_pkl)
 
     def predict(self, test_profile_images):
         png_profile_images = self.process_images(test_profile_images)
-        encoded_imgs = self.encoder.predict(png_profile_images)
-        decoded_imgs = self.decoder.predict(encoded_imgs)
+        encoded_imgs = self.encoder.predict(png_profile_images, batch_size=self.batch_size)
+        decoded_imgs = self.decoder.predict(encoded_imgs, batch_size=self.batch_size)
         return test_profile_images, decoded_imgs
 
 
 if __name__ == "__main__":
+    tf.keras.mixed_precision.set_global_policy('mixed_float16')
+    
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    
     profile_gray_objs, midcurve_gray_objs = get_training_data()
     test_gray_images = random.sample(profile_gray_objs, 5)
 
-    profile_gray_objs = np.asarray(profile_gray_objs) / 255.
-    midcurve_gray_objs = np.asarray(midcurve_gray_objs) / 255.
-    test_gray_images = np.asarray(test_gray_images) / 255.
+    profile_gray_objs = np.asarray(profile_gray_objs, dtype=np.float32) / 255.
+    midcurve_gray_objs = np.asarray(midcurve_gray_objs, dtype=np.float32) / 255.
+    test_gray_images = np.asarray(test_gray_images, dtype=np.float32) / 255.
 
     endec = simple_encoderdecoder()
     endec.train(profile_gray_objs, midcurve_gray_objs)
