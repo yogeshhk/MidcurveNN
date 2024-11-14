@@ -1,11 +1,18 @@
+import sys
+import os
+
+# Add the project root directory to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
+
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense, Add, BatchNormalization
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTranspose, ZeroPadding2D
 from tensorflow.keras import backend as K
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from utils.metric_utils import MetricsHistory, print_best_metrics
 import numpy as np
-import os
 import random
 import sys
 from config import MODELS_FOLDER
@@ -88,7 +95,7 @@ class cnn_encoderdecoder:
             self.cnn_autoencoder.compile(
                 optimizer='adam', 
                 loss='binary_crossentropy',
-                metrics=['accuracy']
+                metrics=['accuracy', 'mae']
             )
             
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs,self.input_shape)
@@ -96,6 +103,7 @@ class cnn_encoderdecoder:
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
             
+            metrics_history = MetricsHistory()
             callbacks = [
                 EarlyStopping(
                     monitor='loss',
@@ -107,10 +115,11 @@ class cnn_encoderdecoder:
                     factor=0.5,
                     patience=5,
                     min_lr=1e-6
-                )
+                ),
+                metrics_history
             ]
             
-            self.cnn_autoencoder.fit(
+            history = self.cnn_autoencoder.fit(
                 self.x, self.y,
                 epochs=self.epochs,
                 batch_size=self.batch_size,
@@ -121,9 +130,12 @@ class cnn_encoderdecoder:
                             
             print("saving model at {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder.save(self.cnn_autoencoder_model_pkl)
+            print_best_metrics(metrics_history.history)
         else:
             print("loading model from {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder = load_model(self.cnn_autoencoder_model_pkl)
+            
+        print_best_metrics(metrics_history.history, "CNN Encoder-Decoder")
     
     def predict(self, test_profile_images, expand_dims=True):
         if expand_dims:
