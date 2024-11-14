@@ -1,31 +1,18 @@
-import os
-
-import tensorflow as tf
-
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Dropout
 from tensorflow.keras.models import Model, load_model, save_model
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
-
+from utils.metric_utils import MetricsHistory, print_best_metrics
 import numpy as np
-import sys
-import random
 from pathlib import Path
-
-sys.path.append('..')
-from utils.utils import get_training_data
-from utils.utils import plot_results
-
-np.set_printoptions(threshold=sys.maxsize)
-
 
 class simple_encoderdecoder:
     def __init__(self):
         self.encoding_dim = 100
         self.input_dim = 10000
-        self.epochs = 200
-        self.batch_size = 32  
+        self.epochs = 100
+        self.batch_size = 16 
         self.models_dir = Path("models")
         self.models_dir.mkdir(exist_ok=True)
         
@@ -72,6 +59,7 @@ class simple_encoderdecoder:
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs)
             midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs)
 
+            metrics_history = MetricsHistory()
             callbacks = [
                 EarlyStopping(
                     monitor='val_loss',
@@ -82,16 +70,17 @@ class simple_encoderdecoder:
                 ),
                 ModelCheckpoint(
                     filepath=str(self.autoencoder_model_pkl),
-                    monitor='val_loss',
+                    monitor='val_loss', 
                     save_best_only=True,
                     verbose=1
-                )
+                ),
+                metrics_history
             ]
 
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
             
-            self.autoencoder.fit(
+            history = self.autoencoder.fit(
                 self.x, self.y,
                 epochs=self.epochs,
                 batch_size=self.batch_size,
@@ -104,10 +93,13 @@ class simple_encoderdecoder:
             self.autoencoder.save(self.autoencoder_model_pkl, save_format='tf')
             self.encoder.save(self.encoder_model_pkl, save_format='tf')
             self.decoder.save(self.decoder_model_pkl, save_format='tf')
+            print_best_metrics(metrics_history.history)
         else:
             self.autoencoder = load_model(self.autoencoder_model_pkl)
             self.encoder = load_model(self.encoder_model_pkl)
             self.decoder = load_model(self.decoder_model_pkl)
+            
+        print_best_metrics(metrics_history.history, "Simple Encoder-Decoder")
 
     def predict(self, test_profile_images):
         png_profile_images = self.process_images(test_profile_images)
