@@ -1,6 +1,10 @@
-https://medium.com/technology-hits/does-chatgpt-understand-geometry-f92022c40eb9
---
+# Midcurve By Few Shots
 
+Trying if any LLM can do Midcurve computation with few shots prompting
+
+
+## Prompt
+```
 You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline profile. 
 Input 2D polygonal profile is defined by set of connected lines with the format as:
 input : [line_1, line_2, line_3,....] where lines are defined by two points, where each point is defined by x and y coordinates. So
@@ -22,7 +26,7 @@ output: [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0
 
 input:[((0, 25.0), (25.0,25.0)),((25.0,25.0),(25.0,20.0)), ((25.0,20.0),(15.0, 20.0)), ((15.0, 20.0),(15.0,0)), ((15.0,0),(10.0,0)), ((10.0,0),(10.0,20.0)), ((10.0,20.0),(0,20.0)), ((0,20.0),(0, 25.0))]
 output:
+```
+Use plot_lines(test_lines, 'red') in [code]("D:\Yogesh\GitHub\MidcurveNN\src\utils\prepare_plots.py") for plotting
 
---
-
-Use plot_lines(test_lines, 'red') in "D:\Yogesh\GitHub\MidcurveNN\src\utils\prepare_plots.py" for plotting
+[Ref](https://medium.com/technology-hits/does-chatgpt-understand-geometry-f92022c40eb9)

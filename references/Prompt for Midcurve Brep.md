@@ -1,6 +1,10 @@
-https://medium.com/technology-hits/does-chatgpt-understand-geometry-f92022c40eb9
---
+# Midcurve By Few Shots
 
+Trying if any LLM can do Midcurve computation with few shots prompting
+
+
+## Prompt
+```
 You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline profile. 
 Input 2D polygonal profile is defined by Boundary Representation (Brep) format as:
 
@@ -77,10 +81,11 @@ Shape for prediction:
  'Midcurve_brep': <to predict>
 }
 
---
+```
 
 
---
+##  Response should be
+```
 Answers are:
 [[-8.12, -3.91], [-11.95, -31.14], [-39.18, -27.31]]
 
@@ -110,3 +115,6 @@ Claude Sonet Sept 19 2024
 Use plot_lines(test_lines, 'red') in "D:\Yogesh\GitHub\MidcurveNN\src\utils\prepare_plots.py" for plotting
 Plus_trans "[[-30.0, -5 "[[-17.5, -3 "{\"Points\"{\"Points\": [[-17.5, -30.0], [-17.5, -7.5], [-17.5, 15.0], [-30.0, -7.5], [-5.0, -7.5]], \"Lines\": [[0, 1], [4, 1], [2, 1], [3, 1]], \"Segments\": [[0],
 Plus_trans "[[-30.0, -5 "[[-17.5, -3 "{\"Points\" "{\"Points\": [[-17.5, -30.0], [-17.5, -7.5], [-17.5, 15.0], [-30.0, -7.5], [-5.0, -7.5]], \"Lines\": [[0, 1], [4, 1], [2, 1], [3,
+
+```
+[Ref](https://medium.com/technology-hits/does-chatgpt-understand-geometry-f92022c40eb9)
