@@ -3,8 +3,8 @@ import matplotlib
 import numpy as np
 import json
 import os
-from config import JSON_FOLDER
-
+# from config import JSON_FOLDER
+JSON_FOLDER = "."
 matplotlib.use('TKAgg')
 
 
@@ -107,6 +107,63 @@ def plot_lines(lines, color='black'):
         y = a[:, 1].T
         plt.plot(x, y, c=color)
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_list_of_lines(list_of_lines, names, color='black', figsize=(15, 5)):
+    """
+    Plot each geometrical figure in its own subplot with a given name as title.
+    
+    Parameters:
+    -----------
+    list_of_lines : list
+        List where each element is a set of lines comprising a geometrical figure.
+        Each figure is a list of line coordinates where each line is a tuple of points.
+    names : list
+        List of names for each figure (used as subplot titles).
+    color : str or list, optional
+        Color to use for plotting lines. Can be a single color for all figures
+        or a list of colors (one per figure). Default: 'black'.
+    figsize : tuple, optional
+        Figure size (width, height) in inches (default: (15, 5)).
+    """
+    # Check if list_of_lines and names have the same length
+    if len(list_of_lines) != len(names):
+        raise ValueError("The lengths of 'list_of_lines' and 'names' must be the same.")
+    
+    # Handle colors
+    if isinstance(color, str):
+        colors = [color] * len(list_of_lines)
+    elif len(color) >= len(list_of_lines):
+        colors = color
+    else:
+        colors = color * (len(list_of_lines) // len(color) + 1)
+        colors = colors[:len(list_of_lines)]
+    
+    # Create subplots
+    fig, axes = plt.subplots(1, len(list_of_lines), figsize=figsize)
+    
+    # Handle case where there's only one figure
+    if len(list_of_lines) == 1:
+        axes = [axes]
+    
+    # Plot each figure in its own subplot
+    for i, (lines, name, line_color) in enumerate(zip(list_of_lines, names, colors)):
+        for line in lines:
+            a = np.asarray(line)
+            x = a[:, 0].T
+            y = a[:, 1].T
+            axes[i].plot(x, y, c=line_color)
+        
+        axes[i].set_title(name)
+        axes[i].axis('equal')
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    return fig, axes
+
+
 
 if __name__ == "__main__":
     chatgpt_lines = [((2.5, 0), (2.5, 22.5)), ((2.5, 22.5), (2.5, 45.0)), ((2.5, 22.5), (25.0, 22.5)),
@@ -120,8 +177,18 @@ if __name__ == "__main__":
                     ((12.5, 22.5), (25.0, 22.5))]
     gemini_pro_lines = [((12.5,0), (12.5, 22.5)), ((12.5, 22.5),(12.5,45.0)), ((12.5, 22.5), (0,22.5))]
 
-    test_lines =  [((10.0, 0.0), (10.0, 45.0)),  ((10.0, 45.0), (15.0, 45.0)), ((15.0, 45.0), (15.0, 0.0))]
-    plot_lines(test_lines, 'red')
-    plt.axis('equal')
+    profile =  [((-5.65, -4.26), (-10.6, -3.56), (-14.08, -28.32), (-38.83, -24.84), (-39.53, -29.79), (-9.82, -33.96), (-5.65, -4.26))]
+    actual_midcurve = [((-8.12, -3.91), (-11.95, -31.14), (-39.18, -27.31))]
+    predicted_midcurve = [((-8.13, -3.91), (-18.31, -31.51), (-26.46, -26.58))]
+    
+    
+    list_of_lines = [profile, actual_midcurve, predicted_midcurve]
+    figure_names = ["profile", "actual_midcurve", "predicted_midcurve"]
+    
+    fig, axes = plot_list_of_lines(list_of_lines, figure_names, color=['red', 'blue','green'])
     plt.show()
-    # plot_jsons()
+        
+    # plot_lines(test_lines, 'red')
+    # plt.axis('equal')
+    # plt.show()
+    # # plot_jsons()

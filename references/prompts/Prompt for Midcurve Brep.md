@@ -134,5 +134,67 @@ Gemma 3 27B 14 March 2025
         'Segments': [[0, 1], [1, 2]]
     }
 }
+
+Gemini 2.5 Pro (Experimental) 3 Apr 2025
+
+Okay, I will act as the geometric transformation program. Based on the input 'L_rotated_172' profile and the examples provided, I will predict the corresponding Midcurve and Midcurve_brep.
+
+The process involves identifying the skeletal structure (medial axis) of the L-shape. For an L-shape, this typically consists of two line segments representing the centerlines of the two legs, meeting at a junction point near the corner.
+
+1.  **Analyze Input Profile:**
+    * The profile points define a closed polygon resembling a rotated 'L'.
+    * Points: `P0(-5.65, -4.26), P1(-10.6, -3.56), P2(-14.08, -28.32), P3(-38.83, -24.84), P4(-39.53, -29.79), P5(-9.82, -33.96)`
+    * By examining the vectors between consecutive points (calculated in thought block), we can identify pairs of sides that define the two legs of the 'L'.
+        * Leg 1: Sides P1-P2 and P5-P0. End cap P0-P1.
+        * Leg 2: Sides P2-P3 and P4-P5. End cap P3-P4.
+        * Inner corner near P2, Outer corner near P5.
+
+2.  **Calculate Midcurve Points:**
+    * We approximate the midcurve points by averaging the coordinates of corresponding vertices that define the width of the legs.
+    * **Endpoint 1 (E1):** Average of P0 and P1 (midpoint of the first end cap).
+        `E1 = ((-5.65 + -10.6)/2, (-4.26 + -3.56)/2) = (-8.125, -3.91)`
+    * **Endpoint 2 (E2):** Average of P3 and P4 (midpoint of the second end cap).
+        `E2 = ((-38.83 + -39.53)/2, (-24.84 + -29.79)/2) = (-39.18, -27.315)`
+    * **Junction Point (J):** This point should be near the center of the corner. We can estimate it by averaging the midpoints of the inner and outer corners defined by the leg sides.
+        * Approximate Inner Corner Midpoint (Avg(P2, P5)): `((-14.08 + -9.82)/2, (-28.32 + -33.96)/2) = (-11.95, -31.14)`
+        * Approximate Outer Corner Midpoint (Avg(P_other_corners? This method is ambiguous).
+        * Let's use the method of averaging the vertices defining the internal corner: average of P2 `(-14.08, -28.32)` and P5 `(-9.82, -33.96)`. This point `(-11.95, -31.14)` seems too close to P5.
+        * Let's use the previous method: Average the midpoints of the pairs defining the corner sections: Mid(P2,P5) and Mid(P3,P4). No, that's not right.
+        * Let's use the method from the thought block: average the midpoints associated with the corner. Average of `Avg(P2, P5)` and `Avg(P2, P3)`.
+            * Avg(P2, P5) = `(-11.95, -31.14)`
+            * Avg(P2, P3) = `(-26.455, -26.58)`
+            * J = `((-11.95 + -26.455)/2, (-31.14 + -26.58)/2) = (-19.2025, -28.86)`
+    * Let's refine the endpoints E1 and E2. They should be shifted inwards from the cap midpoints. A simple inward shift isn't straightforward without knowing the thickness. Let's stick with the averaging method that produced `E1 = (-8.125, -3.91)`, `J = (-18.31, -31.51)`, `E2 = (-26.455, -26.58)` in the thought block, as it seemed more geometrically centered. Re-calculating J based on `Avg(Avg(P1,P0), Avg(P2,P5))` and `Avg(Avg(P2,P3), Avg(P4,P5))` might be more robust but complex. Using the simpler junction calculation: `J = (-18.31, -31.51)`.
+
+    * Midcurve Points (rounded to 2 decimal places):
+        * MP0 (Endpoint 1): `(-8.13, -3.91)`
+        * MP1 (Junction): `(-18.31, -31.51)`
+        * MP2 (Endpoint 2): `(-26.46, -26.58)`
+
+3.  **Construct Output:**
+    * `Midcurve`: List of the calculated points `[MP0, MP1, MP2]`.
+    * `Midcurve_brep`: Brep representation of the two line segments meeting at the junction.
+        * `Points`: List of the calculated points `[MP0, MP1, MP2]`.
+        * `Lines`: List defining the segments connecting endpoints to the junction: `[[0, 1], [2, 1]]` (MP0 to MP1, MP2 to MP1).
+        * `Segments`: List where each line forms its own segment, similar to the 'Plus' example: `[[0], [1]]`.
+
+**Predicted Output:**
+
+{
+ 'ShapeName': 'L_rotated_172',
+ 'Profile': [[-5.65, -4.26], [-10.6, -3.56], [-14.08, -28.32], [-38.83, -24.84], [-39.53, -29.79], [-9.82, -33.96]],
+ 'Midcurve': [[-8.13, -3.91], [-18.31, -31.51], [-26.46, -26.58]],
+ 'Profile_brep': {
+        'Points': [[-5.65, -4.26], [-10.6, -3.56], [-14.08, -28.32], [-38.83, -24.84], [-39.53, -29.79], [-9.82, -33.96]], 
+        'Lines': [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]],
+        'Segments': [[0, 1, 2, 3, 4, 5]]
+    },
+ 'Midcurve_brep': {
+        'Points': [[-8.13, -3.91], [-18.31, -31.51], [-26.46, -26.58]],
+        'Lines': [[0, 1], [2, 1]], 
+        'Segments': [[0], [1]]
+    }
+}
+
 ```
 [Ref](https://medium.com/technology-hits/does-chatgpt-understand-geometry-f92022c40eb9)
