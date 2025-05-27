@@ -111,15 +111,54 @@
 \date{}
 \newcommand{\code}[1]{\par\vskip0pt plus 1filll \footnotesize Code:~\itshape#1}
 
+% \setbeamertemplate{footline}{%
+  % \leavevmode%
+  % \hbox{\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm ,rightskip=.15cm plus1fill]{title in head/foot}%
+    % \usebeamerfont{title in head/foot}\insertsubtitle
+  % \end{beamercolorbox}%
+  % \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.15cm plus1fil]{title in head/foot}%
+    % \usebeamerfont{title in head/foot}\hfill\insertframenumber\,/\,\inserttotalframenumber
+  % \end{beamercolorbox}}%
+  % \vskip0pt%
+% }
+
+
+% Custom title page template to show author below title
+\setbeamertemplate{title page}{
+  \vbox{}
+  \vfill
+  \begingroup
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.25em%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%     
+    \end{beamercolorbox}%
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=8pt,center]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center]{institute}
+      \usebeamerfont{institute}\insertinstitute
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=8pt,center]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}\vskip0.5em
+    {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \endgroup
+  \vfill
+}
+
 \setbeamertemplate{footline}{%
   \leavevmode%
   \hbox{\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm ,rightskip=.15cm plus1fill]{title in head/foot}%
-    \usebeamerfont{title in head/foot}\inserttitle
+    \usebeamerfont{title in head/foot}\insertsubtitle
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.15cm plus1fil]{title in head/foot}%
     \usebeamerfont{title in head/foot}\hfill\insertframenumber\,/\,\inserttotalframenumber
   \end{beamercolorbox}}%
   \vskip0pt%
 }
-
-
