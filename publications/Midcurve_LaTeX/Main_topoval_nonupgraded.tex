@@ -1,0 +1,671 @@
+\section{abstract}
+During the initial stages of iterative design process, a quick CAE (Computer-aided Engineering) analysis of the CAD (Computer-aided Design) models is needed. To reduce the computational resources and time needed for such analysis, the models are often simplified by removing the irrelevant details and are abstracted by reducing the dimension, wherever appropriate. Thin-walled parts, such as sheet metal parts are often abstracted to a set of surfaces lying midway, called midsurface. The midsurface is expected to mimic the shape of the original solid, both geometrically and topologically. Widely-used methods of accessing the quality of the midsurface are geometric. Hausdorff distance from the midsurface its original solid is computed to find the gaps and medial-ness. Accuracy of such methods depends on the sampling as well as on the complexity of the surface representation, making them computationally intensive and error-prone.
+
+This paper provides a topological method for verification, which is computationally simple and robust. A novel topological transformation relationship has been derived between a sheet metal part (solid) to its midsurface (surface), in both directions (solid-to-surface and surface-to-solid) which can be used to compare the predicted vs actual entities. Simple as well as practical shapes have been tested to prove the efficacy of the newly-derived formulation.
+
+\section{Introduction}
+
+Midsurface is an abstracted representation of a thin-walled solid, used mainly for creating shell elements in the CAE meshing process. It can also be used as a shape-signature in shape matching/retrieval. It is expected to express the contiguous flow of the solid's shape  \cite{Rezayat1996}. So, to be truly effective, the midsurface needs to mimic the original solid, in both, geometrical and topological sense. Geometrically, the shape of the midsurface should be such that it lies in the middle (at half the thickness) of the solid. Topologically, the connectivity between the midsurface patches should be similar to that of their corresponding sub-shapes in the original solid. 
+
+There are a large number of methods to compute the midsurface. They work on different input types of the original solid, such as, faceted mesh, Boundary Representation (Brep) solids, feature-based CAD models, etc. Quality of the output midsurface depends on the shape-characteristics of the original thin-walled solid.
+
+\subsection{Thin-walled Solids}
+Many thin-walled solids are from the sheet metal domain. These are unique in both, geometrical and topological sense. They are characterized by:
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,leftmargin=*]
+\item \textbf{Constant thickness}: Sheet metal parts are made up of constant thickness blank roll.
+\item \textbf{Absences}: There are no blind holes but only through holes, if any. 
+\item \textbf{Degeneracy}: There are no degenerate capping thickness faces (like ``Wedge'').
+\item \textbf{Cavities}: There are no embedded volumes or cavities (``bubbles'').
+\end{itemize}
+
+Quality of the output midsurface depends on the complexity of the original solid. The topological validation method for the midsurface developed in this work has been devised for solids exhibiting sheet metal shape characteristics. Such thin-walled solids, with constant thickness, pose lesser problems in the computation of the midsurface as well as in the validation of the midsurface, than the ones with variable thicknesses. Although the validation method mentioned in this work is derived for constant thickness solids, it can be extended to thin-walled parts with variable thickness as well, e.g., injection-molded plastic parts having drafts. Shape with or without draft angle are topologically the same, so the formulation developed in this work applies equivalently.
+
+Many of the commercial sheet metal CAD modelers represent the thin-walled shape using a data-structure called Boundary Representation (Brep). Section 2 provides the characteristics of Brep and its classification into manifold and non-manifold representations. In this work, the term 'manifold' refers to an object which is bound, closed and homeomorphic to a topological sphere (also known as 2-manifold), whereas 'non-manifold' object does not have such restrictions of closure and completeness. This work uses 'non-manifold' mainly for surfaces, unless stated otherwise.
+
+
+\subsection{Midsurface Computation}
+
+Midsurface computation has been a widely-researched topic and there are many methods such as Medial Axis Transform, Chordal Axis Transform, and Midsurface Abstraction, etc.  \cite{Thakur2009}. Out of these, very few are based on the explicit shape transformation operators. 
+
+Sheen et. al \cite{Sheen2008} used the deflation process to compute midsurface from a solid. Their algorithm did not change the topology but just reduced the capping entities to zero size. The problem with such an approach could be that the degenerated topology would be potentially detrimental to the downstream modeling operations.
+
+Lee \cite{Lee2009a} proposed topological operators to transform a sheet of solid topology into a thin-walled solid by face geometry replacement. However, this method could pose difficulty in representing the adjacency relationships.
+
+Even after extensive research in the academic domain and wide availability in commercial implementations, midsurface quality is still a concern. It suffers from errors like gaps, overlaps, missing surfaces, etc. Validating the output midsurface is a critical step in assessing the quality, after which corrective actions can be taken.
+
+\subsection{Midsurface Validation}
+
+To verify the quality of the midsurface, the following methods are used:
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Manual}: Manual inspection for errors such as missing surfaces, connection gaps, overlaps, etc. One needs to ensure that the midsurface lies midway and is continuous throughout, especially at the connections and steps. This method is obviously tedious, time-consuming and error-prone.
+\item \textbf{Inspection Tools}: Tools provided in the CAD-CAE packages can detect gaps and overlaps but they can not detect the correctness of the midsurface at critical locations, such as connections and steps, where expectations could be  subjective.
+\item \textbf{Geometric Tools}: Hausdorff distance from the midsurface to its original solid is computed. Accuracy of such methods depend on the sampling as well as on the complexity of the surface representation, making them computationally intensive and error-prone. 
+\item \textbf{Topological Validation}: This involves comparison of the number of predicated topological entities with the actual ones, and if there is a mismatch, the  problem is detected. Here, the geometry of the shape, is ignored. It has an advantage over geometric validation since computationally intensive distance calculations are not performed. 
+\end{itemize}
+
+This work proposes a novel method for the topological validation of midsurface of thin-walled solids.
+
+\subsection{Topological Validation}  
+Topological validation proposed in this work proposes two transformations with which the quality of a midsurface can be assessed. First, solid-to-surface, where, the dimension-reduction transformation equations are applied to the thin-walled solid to predict the topological entities of the corresponding midsurface and then compared with the actual topological entities of the output midsurface. In the second approach, surface-to-solid, dimension-addition transformation equations are applied to the output midsurface to predict the topological entities of the corresponding thin-walled solid, and then compared with the actual topological entities of the thin-walled solid.
+
+The validation method presented in this work cannot be used in isolation from geometry. As the midsurface is applicable only for the thin-walled solids, it is not computed and validated using this method for thick solids. But such differentiation of the solid-shape, being thick or thin, is 'geometrical' and not 'topological', which this method itself cannot detect. So, the work presented below should be used only for the known thin-walled solids for which midsurface are computable.
+
+Use of topology for assessing the quality of midsurface is not widespread and there are very few such attempts reported in the literature.
+
+
+Lipson \cite{Lipson} stated that a topological invariant for all the sheet metal parts and thin-walled objects can be used as a necessary condition for topological validity and reasoning .  
+
+Lockett and Guenov \cite{Lockett2008} used both geometric and topological variants for checking the validity of the midsurface. For geometric validation, they used the Hausdorff distance between a midsurface and its corresponding principal faces (pairs). For topological validation, they used proximity groups adjusted by an angle criterion. The main limitation of their approach appears that the geometric criteria (closest distance proximity or angle between faces) are used in the topological validations, which, ideally, should not be the case.
+
+Apart from CAE, skeletal structures such as midsurface are used in CAD model comparison solutions such as shape-based retrieval, similarity assessment and difference identification  \cite{Antoine2014}. Skeletal graph matching is one of the prominent techniques \cite{Iyer2005} for similarity assessment. A topologically valid midsurface represents sub-shape connectivities better and thus acts as more effective shape-signature in the model comparison.
+
+The work presented here, provides with transformation relations and a topological variant, based purely on the combinatorial topology for determining the validity of a midsurface computed from a sheet metal part.
+
+\section{Preliminaries}\label{sec_preliminaries}
+\subsection{Boundary Representation (Brep)}
+
+Brep is composed of two parts: topology and geometry. Topological elements are shells, faces, edges, vertices, etc. They are mentioned in the descending order of the topological dimensionality:
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item {\em shell (s)}  is a connected set of {\em faces}
+\item {\em face (f)} is a bounded portion of a {\em surface} (geometry)
+\item {\em loop (l)} is a circuit of {\em edges} bounding a {\em face}
+\item {\em half-edges (he)} are used to create a {\em loop}.
+\item {\em edge (e)} is a bounded portion of a {\em curve} (geometry)
+\item {\em vertex (v)} lies at a {\em point} (geometry). 
+\end{itemize}
+
+Validity of the Brep model is checked using the Euler-Poincar\'e equation.
+
+\subsubsection{Euler-Poincar\'e Equation}
+Euler's equation for polyhedral solids is: $$v - e + f = 2$$ where, $v$, $e$, and $f$ represent the number of vertices, edges and faces respectively. It was discovered by Leonhard Euler in 1752 and was later generalized by Lhuilier \cite{Krishnamurti2002} as follows: $$v - e + f = 2 - 2g$$ where, $g$ represents genus, the number of holes $h$ or handles ($g$ and $h$ are considered interchangeable in this paper). Later on, Schläfli and Poincar\'e also generalized the formula to the higher dimensional n-polytopes. 
+
+The Euler characteristic ($\chi$) for combinatorial cell complexes or polyhedral solids is defined as below:
+
+\begin{equation}
+\sum_{i=0 }^D(-1)^{i} N_{i}= \sum_{i=0}^D(-1)^{i} \beta_{i} = \chi 
+\label{eqn_betti}
+\end{equation}
+For dimensions upto 3 ($i=3$), equation (\ref{eqn_betti}) simplifies to:
+\begin{equation}
+N_{0}-N_{1}+N_{2}= \beta_{0} -\beta_{1} + \beta_{2}
+\label{eqn_betti3}
+\end{equation}
+
+where, $N$s are topological entities of the dimension $0,1$ and $2$ respectively and $\beta$s are the Betti numbers. $\beta_{0}$, $\beta_{1}$ and $\beta_{2}$ correspond to  the number of connected components, holes and cavities, respectively \cite{Sequin}. 
+
+Two homeomorphic topological spaces will have the same Euler characteristic and Betti numbers.
+
+Most of the CAD models are made up of solids (manifolds), since they are considered to be complete and  having their own volumes. A manifold-solid model  can only represent one closed volume minus its internal structure. It cannot represent  heterogeneous possibilities such as wires (curves),  sheets (surfaces),  and  solids (volumes) together, which although, are not possible in the real world, but are possible during the intermediate stages of design \cite{Yamaguchi1995}. A non-manifold model is a generic modeling framework which encompasses all these items in a single framework \cite{Lee2001}.
+
+The Euler characteristic ($\chi$) in terms of Betti numbers, provides a generic invariant for a shape of any dimension. Manifestation of the Betti numbers in different dimensions is different. So, when a thin-walled solid is transformed into its corresponding midsurface, the interpretation of the Betti numbers changes from the manifold domain to the non-manifold domain.
+
+\subsubsection{Manifold-Solids}
+The Euler Poincar\'e equation for manifold-solids is:
+%\vspace{-2mm}
+\begin{equation}
+v - e + (f - r) = 2 (s - h)
+\label{eqn_manifold}
+\end{equation}
+
+Its equivalence with equation (\ref{eqn_betti3}) is as follows:
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}]
+\item $N_{0} = v $ : number of vertices
+\item $N_{1} = e $ : number of edges
+\item $N_{2} = (f - r)$ : number of faces ($f$) - additional {\em artifact} edges corresponding to inner loops ($r$)
+\item $\beta_{0} = s$ : number of components or disjoint parts ($shells$)
+\item $\beta_{1} = 2h$ : number of independent closed curves drawn without splitting. Twice the genus $g$ or $h$. For Torus, there are two such circles and one genus-hole. ($2h$)
+\item $\beta_{2} = s$ : number of space regions created by connected surfaces. For an open surface $\beta_{0} = 1$ and $\beta_{2}=0$ whereas for closed surface,  $\beta_{2}$ is equal to $\beta_{0}$,  which is equal to $s$.
+\end{itemize}
+
+\subsubsection{Non-manifold-Surfaces}
+Solids found in the real world have the property that on any point on the boundary, a small enough sphere at that location is split into two pieces, one inside and one outside the object. Non-manifolds do not obey this rule \cite{Krishnamurti2002}. Weiler (\cite{Weiler1986}) can be attributed for the first significant contribution in defining the non-manifold data structure, called {\em Radial Edge Structure}. Core to this data structure lies the radial cycle, which is an ordered list of faces around an edge. Similar to manifold, equation for non-manifold topology \cite{Yamaguchi2002} is: 
+
+\begin{equation}
+v - e + (f - r) = s - h
+\label{eqn_nonmanifold}
+\end{equation}
+
+Its equivalence with equation (\ref{eqn_betti3}) is as follows:
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}]
+\item $N_{0} = v$ : number of vertices
+\item $N_{1} = e$ : number of edges
+\item $N_{2} = (f - r)$ : number of faces ($f$) -  inner loops ($r$)
+\item $\beta_{0} = s$ : number of components or disjoint parts ($shells$)
+\item $\beta_{1} = h$ : number of independent closed curves drawn without splitting. Inner holes ( $g$ or $h$). 
+\item $\beta_{2} = 0$ : number of space regions created by connected surfaces are not present; so it is $0$.
+\end{itemize}
+
+\subsection{Cellular Decomposition}
+Cellular topology is one of the prominent representations in solid modeling.  The  fundamental unit is called $Cell$, which has dimensionality $0/1/2/3$ and can have adjacency to its neighbor denoted as $Cell_{dimension,adjacency}$. Actual size and the shape of the cells can vary based on the underlying geometry (Table \ref{tbl_celldecompexample}). 
+
+
+\begin{minipage}{0.9\linewidth}
+%\begin{minipage}{0.9\textwidth} %should be full length even in case of two column
+%\resizebox{0.9\linewidth}{!}{
+\begin{center}
+\begin{tabular}[h]{@{}p{0.22\linewidth} p{0.22\linewidth}  | p{0.22\linewidth}  p{0.22\linewidth} @{}} \toprule
+{\bf Original Part} & {\bf Cellular Model}  & {\bf Original Part} & {\bf Cellular Model} \\ \midrule  
+
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularL}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/CellularL}}  &
+
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularT}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/CellularT}} 
+\\ \midrule
+
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularOverlap}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/CellularOverlap}}  &
+
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/nonCellularZU}}  &  
+\adjustbox{valign=t}{\includegraphics[width=0.8\linewidth]{../Common/images/CellularZU}} 
+\\ %\midrule
+
+\bottomrule
+\end{tabular}
+\captionof{table}{Decomposition of shapes into Cells}
+\label{tbl_celldecompexample}
+\end{center}
+%}
+\end{minipage}
+
+
+\subsubsection{Cellular Entities}
+Cellular Decomposition is a process by which a shape (called ``Original solid'') is split in to multiple sub-shapes (called ``Cells'').   According to Chen et al. \cite{Chen2006}, a cellular model includes topologies of various dimensions. 
+$$\mathbb{M} = 
+(\cup_{i=1}^{q} C_i^0 ) \cup 
+(\cup_{j=1}^{r} C_j^1 ) \cup  
+(\cup_{k=1}^{s} C_k^2 ) \cup 
+(\cup_{l=1}^{t} C_l^3 ) $$ where  $C_i^0$ are $0$-dimensional vertices,  $C_j^1$ are $1$-dimensional edges,  $C_k^2$ are $2$-dimensional faces and  $C_l^3$ are $3$-dimensional solids. The cells have the following properties: 
+	\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+	\item \textbf{Boundary}: Except $C_i^0$ cells, all cells are bound by cells with a dimension lower by 1.
+	\item \textbf{Overlap}: No cells overlap.
+	$C_i^a \cap C_j^b = \phi, ( 0 \leq a, b \leq 3, (a = b) \wedge ( i \neq j ))$
+	\item \textbf{Nature}: Either  additive  or  subtractive.
+	\end{itemize}
+
+Cells can be of following types:
+
+\begin{tabular}[h]{@{}p{0.1\linewidth} p{0.1\linewidth} p{0.4\linewidth} p{0.4\linewidth}@{}} \toprule
+
+$Cell_{3,*}$  & 
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/SimplePlate1.pdf}} &
+3D cells (solids), topologically similar to a simple plate &
+ $faces=6 \newline edges=12 \newline vertices =8$ \\
+ 
+ $Cell_{2,*}$ &
+ \adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/SimplePlane1.pdf}} &
+  2D cells, topologically similar to a planar surface  &
+   $faces=1 \newline edges=4 \newline vertices =4$ \\
+   
+$Cell_{1,*}$ &
+ \adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/SimpleLine1.pdf}} &
+1D cells, topologically equivalent to a line &
+ $edges=1  \newline vertices =2$ \\
+ 
+ $Cell_{3,h}$ &
+  \adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/SimpleHole1.pdf}} &
+  Hole is assumed to be cylindrical through-all (true for sheet metal parts) &
+   $edges=1  \newline vertices =1$ \\ \bottomrule
+
+ \end{tabular}
+
+\subsubsection{Classification of Cells}
+When the original solid is decomposed into distinguishable cells, new interface boundaries are introduced. Newly-created intersecting volumes or touching boundaries are called interface-cells, which can be either 3D (solids) or 2D (faces) respectively. 
+
+\begin{itemize}[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item Two shapes touching each other with an area-overlap, is called 2d-Interface.
+\item Two shapes touching each other with a volume-overlap, is called 3d-Interface.
+\end{itemize}
+	
+If two bodies spatially overlap then they are split to form the 3D interface  (Fig. ~\ref{fig:3dinterface})  cell. In case of 2D Interface (Fig. ~\ref{fig:2dinterface}), adjoining faces of the overlapping face are extended \cite{Woo2002} and used as a  cutting tool to create the intersecting volume, the 3D Interface (Fig. ~\ref{fig:3dinterface}) cell.
+
+%\begin{tabular}[htp]{@{} p{0.4\linewidth} p{0.05\linewidth}  p{0.4\linewidth}@{}} 
+%
+%\adjustbox{valign=t}{
+\begin{minipage}[t]{\linewidth}
+\centering \includegraphics[width=0.4\linewidth]{..//Common/images/Interface2d_1.pdf}
+%\caption{Caption1}
+\captionof{figure}{2D Interface}
+\label{fig:2dinterface}
+\end{minipage}
+%}
+%
+%&  &
+%
+%\adjustbox{valign=t}{
+\begin{minipage}[t]{\linewidth}
+\centering \includegraphics[width=0.4\linewidth]{..//Common/images/Interface3d_1.pdf}
+%\caption{Caption1}
+\captionof{figure}{3D Interface}
+\label{fig:3dinterface}
+\end{minipage}
+%} \\
+%
+%\end{tabular}
+
+
+\vspace{1mm}
+
+%\begin{tabular}[htp]{@{} p{0.3\linewidth} p{0.05\linewidth}  p{0.55\linewidth}@{}} 
+Prefix $s$ is applied if the $Cell$ is from the original solid, $i$ if it is of a newly-introduced interface type,(Fig.~\ref{fig_celldecompexample}) and $m$ for midsurface cells.
+
+%&&
+
+%\adjustbox{valign=t}{
+\begin{minipage}[t]{\linewidth}
+\centering 
+\includegraphics[width=0.6\linewidth]{../Common/images/CellDecompExample}
+%\vspace{\abovecaptionskip}
+\captionof{figure}{Decomposition \& classification\cite{Treeck}}
+\label{fig_celldecompexample}
+\end{minipage}
+%}		
+%\\
+%\end{tabular}
+
+
+\section{Topological Validation of Midsurface}
+
+Topological validation can be performed using two methods:
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Solid-to-Surface}: Find the relationship between the topological entities of a thin-solid and its corresponding Midsurface. Check whether the \replaced[remark={Review B:  On page 8 ``Predicated'' should be ``Predicted''}]{predicted}{predicated} Midsurface entities validate the non-manifold equation (\ref{eqn_nonmanifold}).
+\item  \textbf{Surface-to-Solid}: Predict the topological entities of a possible thin-walled solid that could be generated by thickening of the given Midsurface.  These predicted entities can be validated against the entities of the original thin-solid as well as with the manifold equation (\ref{eqn_manifold}).
+\end{itemize}
+
+%\subsection{Usefulness of Topological Validation}
+Following are the ways in which some of the midsurface errors can be detected using the predicted entities:
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+\item \textbf{Missing Surfaces}: Missing surfaces result in lesser number of edges and vertices
+\item \textbf{Missing Connections}: Gaps result in lesser radial edges and vertices 
+\end{itemize}
+
+
+% ************* OLD FAILED ATTEMPT ********************************
+%In the Thin wall manifold solid faces are classified as as $f_p$ (Principal-Main faces) and $f_t$ (Thickness or capping faces). Edges are classified as $e_p$ (Principal-Main edges) and $e_t$ (along thickness or capping edges). Vertices are classified as $v_t$ (thickness vertex) when they are connected to at-least one $e_t$ and $v_p$ (principal or radial vertex), when they are connected to only $e_p$s.
+%
+%\subsubsection{Steps: Topological dimension reduction}
+%\begin{itemize}
+%[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,leftmargin=*]
+%\item Given a manifold solid, half of the $f_p$s are retained in the corresponding midsurface. Thickness faces $f_t$s and edges $e_t$s are gone. 
+%%\item {\em Genuses} are the holes and the {\em rings} in the midsurface
+%\item Half of the thickness vertices $v_t$s will remain in the midsurface. But the difficulty comes in predicting vertices at the junctions (corresponding to $v_p$s). Additional information about radial group of  $v_p$s is not directly available in the solid model (unless loop traversal detects cycles). 
+%\item For example, in case of {\em \bf L} shape, half the $v_p$s are present in the midsurface as radial vertices, but in case of {\em \bf T} shape thats not true. So the procedure which is valid for  junctions up to degree two, is not so for the higher degree junctions. Examples below demonstrate this.
+%\item Expand the Solid equation (\ref{eqn_manifold}) to include newly defined faces, edges: $ (v_p + v_t) - (e_p  + e_t) + (f_p  + f_t) = 2 (s - g) + r$
+%\item For midsurface of this Solid, number of topological entities are changed as follows:
+%	\begin{itemize}
+%	[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}, leftmargin=*]
+%	\item $v_{nm} = (v_p + v_t)/2$
+% 	\item $e_{nm} = e_p/2$
+%  	\item $e_t  = f_t  = r = 0$
+%  	\item $f_{nm} = f_p/2$
+%  	\end{itemize}
+%\item Validate if the non-manifold equation $v_{nm} - e+{nm} + f_{nm} == (s_{nm} - g_{nm}) $ is honored.
+%\end{itemize}
+%
+%\subsubsection{Examples}
+%\begin{itemize}
+%[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,leftmargin=*]
+%\item For Simple plate:
+%	\begin{itemize}
+%	[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}, leftmargin=*]
+%%	\item \textcolor{blue}{``picture of the plate''}
+%	\item $f_p =2,f_t=4,e_p=8,e_t=4,v_t=8,v_p=0,s=1,g=0$
+% 	\item $v_{nm} = (v_t + v_p)/2 = 8 /2 = 4$
+%  	\item $e_{nm} = e_p/2 = 8/2 = 4$
+%  	\item $f_{nm} = f_p/2 = 2/2 = 1$
+%  	\item $s_{nm} = 1, g_{nm} = 0$
+%  	\item $v_{nm} - e_{nm} + f_{nm} = 4 - 4 +1 = 1 = (s_{nm} - g_{nm})$.
+%  	\item \textbf{Result}: \textcolor{green}{Valid}
+%  	\end{itemize}
+%
+%\item For 'L' shaped plate:
+%	\begin{itemize}
+%	[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}, leftmargin=*]
+%%	\item \textcolor{blue}{``picture of L''}
+%	\item $f_p =4,f_t=4,e_p=14,e_t=4,v_t=8,v_p=4,s=1,g=0$
+% 	\item $v_{nm} = (v_t + v_p)/2 = (8+4) /2 = 6$
+%  	\item $e_{nm} = e_p/2 = 14/2 = 7$
+%  	\item $f_{nm} = f_p/2 = 4/2 = 2$
+%  	\item $s_{nm} = 1, g_{nm} = 0$
+%  	\item $v_{nm} - e_{nm} + f_{nm} = 6 - 7 + 2= 1 = (s_{nm} - g_{nm})$.
+%  	\item \textbf{Result}: \textcolor{green}{Valid}
+%  	\end{itemize}
+%  	
+%  	\item For 'T' shaped plate: 
+%	\begin{itemize}
+%	[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label={}, leftmargin=*]
+%%	\item \textcolor{blue}{``picture of T''}
+%	\item $f_p =5,f_t=5,e_p=20,e_t=6,v_t=12,v_p=4,s=1,g=0$
+% 	\item $v_{nm} = (v_t + v_p)/2 = (12+4) /2 = 8$
+%  	\item $e_{nm} = e_p/2 = 20/2 = 10$
+%  	\item \textcolor{red}{$f_{nm} = f_p/2 = 5/2 = 2.5$}
+%  	\item $s_{nm} = 1, g_{nm} = 0$
+%  	\item $v_{nm} - e_{nm} + f_{nm} = 6 - 7 + 2= 1 = (s_{nm} - g_{nm})$.
+%  	\item \textbf{Result}: \textcolor{red}{Invalid}
+%  	\end{itemize}
+%
+%\end{itemize}
+%
+%\textbf{Conclusion}: Manifold equation of Thin Solid cannot be simplistically converted to non-manifold equation of its midsurface. Thus this direction of validation has limitations. Following section examines if the other direction of validation is possible or not.
+
+
+\subsection{Sheet Metal Solid to Midsurface Transformation}
+Given a thin-walled sheet metal solid, below is an approach to propose the dimension-reduction-transformation equations for predicting the topological entities of its corresponding midsurface. The given original solid is first decomposed into sub-volumes, called as ``Cells''  \added[remark={Review C: Minor revision: In section 2.1.2 Examples, adding figures of decomposed cells from solids would be helpful for readers to understand the method clearly. Especially, configuration of sCells of Y- and rounded L-shape solid is hard to understand 
+in a text form. }]{(Tabel~\ref{tbl_celldecompexample})} and then the dimension-reduction-transformation is derived.% Topology generated by the volumetric decomposition is called {\em Cellular Topology}. 
+
+
+Many commercial as well as academic methods are available for cellular-volumetric decomposition \cite{Woo2002, Chong2004, Cao2011,  Boussuge2013, Kim2014}. \added[remark={ Review B: In section 2.1 please expand the explanation of the cellular-volumetric decomposition method used and the result obtained for 
+the case study part. In the context of sheet metal parts is it 
+possible to obtain a cell with dimensionality 0 or 1? }]{
+Woo (maximal cells \cite{Woo2003}), Boussuge (Extrusion decomposition \cite{Boussuge2013a}), Wu (Sweep Decomposition \cite{Wu2014}), Woo (Protrusion decomposition \cite{Woo2014}), etc. are some of the known cellular decomposition methods used for feature recognition (FR).} 
+
+\added[remark={ Review B: The paper could be improved by providing a more detailed explanation of the cellular decomposition method and highlighting its limitations (for example cellular decomposition can be computationally expensive 
+and may not produce a ``clean'' result). How does this impact the 
+application of the presented method? }]{Cellular decomposition starts facing problems as the complexity of the original solid increases. The method becomes very slow as the number of cells increases \cite{Woo2003}. If the cutting faces are extended infinitely and intersected with the whole solid then they generate a large number of unnecessary cells. If the splits are not clean, it may generate degenerate entities such as edges and vertices. The topological validation method presented here assumes `clean' cellular decomposition and if it is not so, then the validation results could be unpredictable.}
+
+
+%\begin{center}\includegraphics[width=0.6\linewidth]{../Common/images/VolDecomp.pdf}\end{center}
+%\vspace{-0.8cm}
+%\begin{center}\includegraphics[width=0.6\linewidth]{../Common/images/VolDecomp1.pdf}\end{center}
+%\vspace{-1.2cm}
+
+\subsubsection{Steps: Topological Dimension Reduction}
+Topological transformation of solid (3D cells) to its corresponding midsurface (2D cells) is as follows:
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt]
+
+	\item  $sCell_{3,n}$:	Solid cell with $n$ touching sides transforms into midsurface cell   $mCell_{2,n}$, a surface having $n$ empty edges. Its topological entities are denoted as:
+\begin{equation}
+f=1;
+e=4-n;
+v=4-2n
+\label{eqn_cellularna}
+\end{equation} 
+
+	\item   $sCell_{3,h}$ : Negative solid  cell representing a through hole transforms into midsurface cell  $mCell_{2,h}$, a hole in the surface. Its topological entities are denoted as:
+\begin{equation}
+e=1; v=1
+\label{eqn_cellularah}
+\end{equation} 
+
+	\item $iCell_{3,n}$ :	Interface solid cell with $n$ adjacent touching sides transforms into midsurface cell  $mCell_{1,n}$, a radial edge with $n$ leaves. Its topological entities are denoted as:
+
+\begin{equation}
+e=1;
+v=2
+\label{eqn_cellulara}
+\end{equation}
+
+	\item  $iCell_{2,2}$ :	Interface face cell touched from both sides  transforms into midsurface cell  $mCell_{1,2}$, a radial edge with 2 leaves. Its topological entities are denoted as:
+\begin{equation}
+e=1;
+v=2
+\label{eqn_cellularaf}
+\end{equation}
+
+
+\end{itemize}
+
+%(Eqn   \ref{eqn_cellulara}, \ref{eqn_cellularaf}, \ref{eqn_cellularna}, \ref{eqn_cellularah} )
+
+\subsubsection{Examples}
+Table \ref{table_simpleshapes1} lists various basic shapes and their dimension-reduction-transformations into the corresponding midsurface
+It is evident that the predicted midsurface entities of these simple shapes match with the actual ones, thus the derived formulation works for these simple shapes. 
+
+\begin{minipage}{0.92\linewidth}
+\begin{center}
+
+\begin{tabular}[h]{@{}p{0.1\linewidth} p{0.1\linewidth} | p{0.15\linewidth} |  p{0.15\linewidth} | p{0.35\linewidth}@{}} \toprule
+{\bf Solid} & {\bf mSurf}  & {\bf sCells} & {\bf mCells}  & {\bf Predicted mSurf Entities} \\ \midrule  
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/SimplePlate1.pdf}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/SimplePlane1.pdf}} &  
+$sCell_{3,0}$ & $ mCell_{2,0}$ & 
+$ 1f+(4-0)e+(4- 2\times 0)v \newline = 1f+4e+4v$
+\\ %\midrule
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/LPlate1.pdf}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/LPlane1.pdf}} &  
+
+$2 \times sCell_{3,1} \newline + iCell_{3,2}$ & $2 \times mCell_{2,1} \newline + mCell_{1,2}$  & 
+$ 2 \times (1f + (4-1)e+(4-2\times 1)v ) \newline + (1e + 2v) \newline = 2f+7e+6v$ 
+\\ %\midrule
+
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/TPlate1.pdf}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/TPlane1.pdf}} &  
+
+$3 \times sCell_{3,1} + iCell_{3,3}$   &  $3 \times mCell_{2,1}  + mCell_{1,3}$  & 
+$3 \times (1f+(4-1)e+ (4-2\times 1)v)  + (1e+2v)  = 3f+10e+8v$ 
+\\ %\midrule
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/YwithHole1.pdf}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/YwithHolem1.pdf}} &  
+
+$3 \times sCell_{3,1}  + iCell_{3,3}  + sCell_{3,h}$   &  
+$3 \times mCell_{2,1}  + mCell_{1,3}  + mCell_{2,h}$  & 
+$3 \times (1f+(4-1)e+ (4-2\times 1)v)  + (1e+2v)  + (1e+1v)  = 3f+11e+9v$
+\\ %\midrule
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/LwithRound1.pdf}}  &  
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/LwithRoundm1.pdf}} &  
+
+$2 \times sCell_{3,1}  + 2 \times  iCell_{2,2}  + sCell_{3,2}$   &  
+$2 \times mCell_{2,1}  + 2 \times mCell_{1,2}  + mCell_{2,2}$  & 
+$2 \times (1f+(4-1)e+ (4-2\times 1)v)  + 2 \times (1e+2v)  + (1f+(4-2)e+ (4-2\times 2)v)  = 3f+10e+8v$
+\\ 
+
+\bottomrule
+\end{tabular}
+\captionof{table}{Dimension-reduction-transformations.}
+\label{table_simpleshapes1}
+\end{center}
+
+\end{minipage}
+
+ Following is the verification for a relatively-complex practical shape. 
+
+\begin{tabular}[htp]{@{}p{0.48\linewidth}  p{0.48\linewidth}@{}} \toprule
+{\centering  \bf Solid} & { \centering  \bf Cellular Classification} \\ \midrule
+\includegraphics[width=\linewidth]{../Common/images/SimpleBracketshaded.pdf} &
+\includegraphics[width=\linewidth]{../Common/images/SimpleBracket.pdf}\\ \bottomrule
+\end{tabular}
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,leftmargin=*]
+	\item \textbf {Solid cells}: \newline  $5 \times sCell_{3,h} + 3 \times sCell_{3,1} + 13 \times sCell_{3,2} + 14 \times iCell_{2,2} $
+	\item \textbf {Transformed Midsurface Cells}: \newline $5 \times mCell_{2,h} + 3 \times mCell_{2,1} + 13 \times mCell_{2,2} + 14 \times mCell_{1,2}$
+	\item \textbf {Predicted midsurface Entities are}:  \newline $5(1e+1v) + 3 (1f+3e+2v) + 13 (1f+2e+0v) + 14(1e+2v) = 
+16f + 54e + 39v$
+\end{itemize}
+
+
+The derived formulation (Eqn   \ref{eqn_cellulara}, \ref{eqn_cellularaf}, \ref{eqn_cellularna}, \ref{eqn_cellularah} ) predicts correct topological entities for the midsurface. These, when substituted in the non-manifold equation (Eqn \ref{eqn_nonmanifold}) also prove to be valid. With $s=1, r=5, h=5$, the equation matches both sides:
+$ 39 - 54 + (16 -5) = 1 (1-5)$
+
+
+\subsection{Midsurface to Sheet Metal Solid Transformation}
+In this approach, given a midsurface, topological entities  of its corresponding sheet metal solid are predicted. These predicted entities are verified to check if they validate manifold equation (Eqn \ref{eqn_manifold}). Topological entities of midsurface contains far richer (classifiable) topological information than its corresponding solid model. For example, midsurface of ``T'' shaped solid, which can be represented as Figure \ref{fig_nonmanifold} has following classified entities:
+
+
+
+\begin{itemize} 
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label=\textbullet]\label{list_topos}
+\item Faces ($f$): Bound by two face-uses $f_u$.
+
+\item Sharp Vertex ($v_s$): Connected to two edges of the same face
+\item Sharp Edge ($e_s$): Connected to two sharp vertices
+
+\item Radial Vertex ($v_{r}$): Connected edges of different faces
+\item Degree ($n_{r}$) at the radial edge is the number of faces attached to it 
+\item Cross Radial Edge ($e_{r}$): Connected between two radial vertices and connects two different faces
+\item Side-Radial  Edge ($e_{rr}$): Connected between two radial vertices and is of same face
+\item Sharp-Radial Edge ($e_{sr}$): Between sharp and radial vertex
+\item Internal Edge ($e_i$): Part of the inner loop
+\item Internal Vertex ($v_i$):Connected to the internal edge
+\item Internal Loop ($r_i$) : Characterized by internal edges and vertices
+\end{itemize}
+
+\begin{minipage}[t]{\linewidth}
+\centering 
+\includegraphics[width=\linewidth]{../Common/images/NonManifoldT1.pdf}
+\vspace{2mm}
+\captionof{figure}{Non-Manifold topological entities}
+\label{fig_nonmanifold}
+\end{minipage}
+
+
+\subsubsection{Steps: Topological Dimension Addition}
+Sheet Metal solid can be imagined to be thickened midsurface \cite{SHLee2001}. The topological entities of the generated solid are calculated as per following steps: %via relations in the Table \ref{table_TopoVal}.
+
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,leftmargin=*]
+\item Face-uses become principal faces. 
+ 
+\item Sharp vertices create capping edges.
+
+\item Apart from edge-use loop corresponding to face-use, a new loop is proposed for side-capping faces. The loop is formed between two sharp vertices ($v_s$) using  more than one sharp  ($e_{sr}$) or side radial ($e_{rr}$) edges but not using the cross radial edge ($e_r$). Such independent paths creating individual side faces are called $l_p$.
+\item Loop between two sharp vertices. This gives rise to a singular capping face  (Fig.~\ref{fig:loopstofaces} a).
+\item Loop between three branched sharp vertices. This gives rise to a combined capping face (Fig.~\ref{fig:loopstofaces}  b).
+\item Loop between two sharp vertices with multiple radial vertices in between them. This gives rise to a combined capping face (Fig.~\ref{fig:loopstofaces}  c).
+\end{itemize}
+	
+
+\begin{minipage}[t]{\linewidth}
+\centering 
+\includegraphics[width=0.45\linewidth]{../Common/images/NonManifoldLoopsToFaces1.pdf}
+
+\captionof{figure}{Loops to Faces}
+\label{fig:loopstofaces}
+\end{minipage}
+
+
+
+Topological entities in the thickened solid are predicted as follows:% (Summary in Table \ref{table_TopoVal}):
+\begin{itemize}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label=\textbullet]
+\item Manifold-Vertices  ($v_m$) = Double the sharp and internal vertices (one up  and  one below) + vertices for junctions of which are denoted by the summation of  number of radial vertices times their corresponding degrees
+\begin{equation}
+v_m = 2 (v_s + v_i) + \sum n_{r} v_{r} \label{eqn_vm}
+\end{equation}
+\item \textbf{Manifold-Edges ($e_m$)}= two times sharp, sharp-radial and internal edges (offset up and down) + degree times radial edges for offsets at junctions + sharp vertices for vertical-capping edges + internal vertices for vertical seam edges
+\begin{equation}
+e_m = 2 (e_s + e_{sr} + + e_{rr} + e_i) + \sum n_r e_r  + v_s + v_i\label{eqn_em}
+\end{equation}
+\item \textbf{Manifold-Faces ($f_m$)} = Double the faces (offset up and down) + sharp edges for capping faces + paths to have one combined face + internal edges for capping internal faces
+\begin{equation}
+f_m = 2f + e_s + l_p + e_i \label{eqn_fm}
+\end{equation}
+\item \textbf{Manifold-Shells ($s_m$)} = Remains the same
+\item \textbf{Manifold-Rings ($r_m$)} = Two times the internal rings
+\begin{equation}
+r_m = 2r_i\label{eqn_rm}
+\end{equation}
+\item \textbf{Manifold-Genus ($h_m$)} = Internal ring as it becomes a hole
+\begin{equation}
+h_m = r_i\label{eqn_hm}
+\end{equation}
+
+\end{itemize}
+\subsubsection{Procedure to Validate Midsurface}
+\begin{enumerate}
+\item Count topological entities of the midsurface as per the classification suggested : \\$f, e_s , e_{sr} , e_{rr}, e_r , e_i, v_s , v_r , v_i, s , h , r$ (more details in Section \ref{list_topos}) .
+\item Predict topological entities of the corresponding thin-walled solid using equations ( \ref{eqn_vm}, \ref{eqn_em}, \ref{eqn_fm}, \ref{eqn_rm}, \ref{eqn_hm}).
+	\begin{enumerate}
+%		\item Predicted solid-faces: $f_m \\= 2f+e_s+e_{sr}/n_{r} +e_i $
+		\item Predicted solid-faces: $f_m \newline = 2f+e_s+ l_p +e_i $
+		\item Predicted solid-edges: $e_m \newline = 2(e_s+e_{sr}+e_{rr}+e_i )+ \sum n_{r} e_{r}+v_s+v_i $
+		\item Predicted solid-vertices: $v_m \newline= 2v_s+ \sum n_{r} v_r+2v_i$
+		\item Predicted solid-shells-holes: \newline$s_m =s = 1, h_m = r_i  = 0, r_m = 2r_i = 0$
+		\item Non-manifold equation of the left side  $\chi_{nml} \newline= v-e+f $
+		\item Non-manifold equation of the  right side  $\chi_{nmr} \newline=s-h+r$
+		\item Manifold equation of the  left side  $\chi_{ml} \newline= v_m-e_m+f_m $
+		\item Manifold equation of the  right side  $\chi_{mr}\newline=2(s_m-h_m )+r_m$
+%		\item Sheet metal midsurface characteristic $\chi_{smm} \\=
+%		e_s+e_i+(2-n_{r} ) e_{r}+e_{sr}/n_{r} =v_s+(2-n_{r} ) v_{r}+v_i$
+	\end{enumerate}
+\item Verify that the topological entities of the midsurface satisfy the non-manifold equation (Equation \ref{eqn_nonmanifold}), by deducing that the left ($\chi_{nml}$) and right  ($\chi_{nmr}$) hand side of the equation matches.
+\item Verify that the predicted topological entities of the  thin-walled solid satisfy the manifold equation (Equation \ref{eqn_manifold}), by deducing that the left ($\chi_{ml}$) and right  ($\chi_{mr}$) hand side of the equation match; thus proving that the transformation equations are valid. 
+%Same validity can be shown using just the $\chi_{smm}$ characteristic, as below.
+%\item Verify that  $\chi_{smm}$ characteristic equation (Equation \ref{eqn_nonmanifolddiff}) matches. 
+\end{enumerate}
+
+
+
+\subsubsection{Examples}
+Table \ref{table_simpleshapes2} displays the validation of midsurface using proposed dimension-addition-transformation equations. It is evident that the derived formulation works for simple shapes. 
+
+\begin{minipage}{0.65\linewidth}
+\begin{center}
+
+\begin{tabular}[t]{@{} p{0.08\linewidth}  
+p{0.02\linewidth}  p{0.02\linewidth}  p{0.02\linewidth}   p{0.02\linewidth}  p{0.02\linewidth}  p{0.02\linewidth}     p{0.02\linewidth}  p{0.02\linewidth}  p{0.02\linewidth} p{0.02\linewidth}  p{0.02\linewidth}  p{0.02\linewidth}  p{0.02\linewidth}   p{0.02\linewidth} @{}} \toprule
+{\bf m} & 
+{\bf $f$}  		& {\bf $l_p$ } 	& {\bf $e_s$ }  	& {\bf $e_{sr}$} & {\bf $e_r$}  & 
+{\bf $e_{rr}$} 	& {\bf $e_i$ } 	& {\bf $v_s$ } 	& {\bf $v_r$}  	&  {\bf $v_i$}  & 
+{\bf $f_{m}$} 	& {\bf $e_m$ } 	& {\bf $v_m$ } 	& {\bf $\chi_{m*}$ } \\ \midrule 
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/SimplePlane1.pdf}}  &  
+1 & 0 & 4 & 0 & 0 & 0 & 0  & 4 & 0 & 0 & 6 & 12 & 8 & 2 \\ 
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/LPlane1.pdf}}  &  
+2 & 2 & 2 & 4 & 1 & 0 & 0  & 4 & 2 & 0 & 8 & 18 & 12 & 2 \\ 
+
+
+\adjustbox{valign=t}{\includegraphics[width=\linewidth]{../Common/images/TPlane1.pdf}}  &  
+3 & 2 & 3 & 6 & 1 & 0 & 0  & 6 & 2 & 0 & 11 & 27 & 18 & 2 \\ 
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/YwithHolem1.pdf}}  &  
+3 & 2 & 3 & 6 & 1 & 0 & 1  & 6 & 2 & 1 & 12  &  30  & 20  & 2 \\ 
+
+\adjustbox{valign=c}{\includegraphics[width=\linewidth]{../Common/images/LwithRoundm1.pdf}}  &  
+3 & 2 & 2 & 4 & 2 & 2 & 0  & 4 & 4 & 0 & 10  & 24  & 16  & 2 \\  
+\bottomrule
+\end{tabular}
+
+\captionof{table}{validation of midsurface}
+\label{table_simpleshapes2}
+\end{center}
+\end{minipage}
+
+\vspace{1mm}
+
+Following is the verification for a relatively-complex practical shape.
+
+\begin{tabular}[htp]{@{}p{0.48\linewidth}  p{0.48\linewidth}@{}} \toprule
+{\bf Midsurface} & {\bf Edge Classification} \\ \midrule
+\includegraphics[width=\linewidth]{../Common/images/SimpleBracketMidsurfshaded.pdf} &
+\includegraphics[width=\linewidth]{../Common/images/SimpleBracketMidsurf.pdf}\\ \bottomrule
+\end{tabular}
+
+\begin{enumerate}
+[noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt,label=\textbullet]
+\item \textbf{Midsurface entities}: \\$f = 15, e_s = 3, e_{sr} = 10, e_r = 14, e_{rr} = 19, l_p = 9 ,e_i=5,v_s = 8,v_r =24, v_i= 5, s=1,h=5,r=5$
+\item \textbf{Predicted solid-faces}: \\$f_m = 2f+e_s+ l_p +e_i $\\$= 2 \times 15 + 3 + 9 + 5 = 47$
+\item \textbf{Predicted solid-edges}: \\ $e_m = 2(e_s+e_{sr}+e_{rr}+e_i )+ \sum n_{r} e_{r}+v_s+v_i $\\$= 2(3+10+19 + 5)+ (2\times 12 + 4 \times 2)+8+5 = 119$
+\item \textbf{Predicted solid-vertices}: \\$v_m = 2(v_s+ v_i) + \sum n_{r} v_r$\\$=2\times (8 + 5)  + 2 \times 24=74$
+\item \textbf{Predicted solid-shells-holes}: \\$s_m =s = 1, h_m = r_i  = 5, r_m = 2r_i = 10$
+\item \textbf{Non-manifold equation of the left side}:  $\chi_{nml} $\\$= v-e+f $\\$= 32-46+15 = 1$
+\item \textbf{Non-manifold equation of the  right side}:  $\chi_{nmr}$\\$=s-h+r$\\$=1-5+5 = 1$
+\item \textbf{Manifold equation of the  left side}:  $\chi_{ml} $\\$= v_m-e_m+f_m $\\$=74-119+47= 2$
+\item \textbf{Manifold equation of the  right side}:  $\chi_{mr}$\\$=2(s_m-h_m )+r_m$\\$= 2(1-5)+10 = 2$
+%\item Sheet metal midsurface characteristic $\chi_{smm}$\\$=
+%e_s+e_i+(2-n_{r} ) e_{r}+e_{sr}/n_{r} $\\$=v_s+(2-n_{r} ) v_{r}+v_i$\\$ 4+0+0+0=4+0+0= 4$
+%\item \textbf{Result}: \textcolor{green}{Matches}
+\end{enumerate}
+It can be observed that the predicted solid entities validate the manifold equation ($\chi_{ml} = \chi_{mr} = 2$). Validation can also be performed by comparing the  topological entities of the thin-walled solid with the predicted ones.
+
+
+\section{Conclusion}
+This work proposes a new way of topological validation of the midsurface, computed from sheet metal parts. Validation attempts are performed from both the directions, solid to its midsurface and midsurface to its corresponding solid. The examples show that the newly-derived formulation works not only for simple shapes but also for the relatively-complex practical part.
