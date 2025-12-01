@@ -1,10 +1,32 @@
-torch
-transformers
-peft
-bitsandbytes
-trl
-pandas
-scipy
-matplotlib
-datasets
-accelerate
+# Core dependencies
+torch>=2.0.0
+transformers>=4.36.0
+peft>=0.7.0
+trl>=0.7.0
+bitsandbytes>=0.41.0
+accelerate>=0.25.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# API server
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.0.0
+
+# Optional but recommended
+wandb>=0.16.0  # For experiment tracking
+datasets>=2.14.0  # For data handling
+sentencepiece>=0.1.99  # For some tokenizers
+protobuf>=3.20.0  # For model compatibility
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
