@@ -12,10 +12,14 @@ class Config:
         "mistralai/Mistral-7B-Instruct-v0.2"
     ]
     
+    import os
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(BASE_DIR, "data")
+    
     # Data Settings
-    TRAIN_FILE = "midcurve_llm_train.csv"
-    VAL_FILE = "midcurve_llm_val.csv"
-    TEST_FILE = "midcurve_llm_test.csv"
+    TRAIN_FILE = os.path.join(data_dir, "midcurve_llm_train.csv")
+    VAL_FILE = os.path.join(data_dir, "midcurve_llm_val.csv")
+    TEST_FILE = os.path.join(data_dir, "midcurve_llm_test.csv")
     
     # Data format (csv or jsonl)
     DATA_FORMAT = "csv"  # or "jsonl" for better format
