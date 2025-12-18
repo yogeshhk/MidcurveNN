@@ -1,4 +1,5 @@
 import torch
+import argparse
 from transformers import (
     AutoTokenizer, 
     AutoModelForCausalLM, 
@@ -8,9 +9,9 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model
 from trl import SFTTrainer
-from config_enhanced import Config
+from config import Config
 from dataset_loader import MidcurveDataset
-from metrics_enhanced import GeometricMetrics
+from metrics import GeometricMetrics
 import numpy as np
 import pandas as pd
 from typing import Dict
@@ -106,7 +107,22 @@ def setup_wandb():
 
 def train():
     """Enhanced training function with all improvements"""
-    
+    parser = argparse.ArgumentParser(description="MidcurveLLM Fine-tuning")
+    parser.add_argument("--model_path", type=str, help="Path to local model or HuggingFace model ID")
+    parser.add_argument("--smoke_test", action="store_true", help="Run a quick smoke test (1 epoch, few steps)")
+    args = parser.parse_args()
+
+    if args.model_path:
+        print(f"Overriding MODEL_ID with: {args.model_path}")
+        Config.MODEL_ID = args.model_path
+        
+    if args.smoke_test:
+        print("SMOKE TEST MODE ENABLED: Reducing epochs and steps.")
+        Config.NUM_EPOCHS = 1
+        Config.MAX_SEQ_LENGTH = 128
+        Config.LOG_STEPS = 1
+
+
     # Set seed for reproducibility
     torch.manual_seed(Config.SEED)
     np.random.seed(Config.SEED)
