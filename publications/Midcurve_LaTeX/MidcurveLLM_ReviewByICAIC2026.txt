@@ -1,0 +1,91 @@
+======= Review 1 =======
+
+> *** Relevance: How well does the content fit the conference scope? Is this paper handling an important theme in this area?
+Average (3)
+
+> *** Completeness: Does this paper describe the problem clearly? Are the results of this paper reproducible via experiments (implementations, proofs)? How well is the result analysis done with the previous works? How clear is the paper's conclusion for the problem tackled?
+Marginal (2)
+
+> *** Originality: Does this paper include any novel approaches or new applications that have never been tried?
+Average (3)
+
+> *** Related Works: Does this paper reflect the state-of-art references?
+Good (4)
+
+> *** Presentation: Are the title, abstract, and keywords appropriate? How proper is the organization and description method of this paper?
+Average (3)
+
+> *** Recommendation: Please provide your overall recommendation on the acceptance of the paper. (Final acceptance decisions will also consider literal responses to the questions below.)
+Reject (1)
+
+> *** Comments to authors: Please provide detailed comments to the authors.
+
+The paper addresses an interesting topic, and the survey of prior work as well as the problem definition is clearly presented.
+However, the overall contribution remains at an early conceptual stage, and the level of completeness is insufficient.
+Key areas for improvement include:
+1. The experimental section is limited, and quantitative evaluation is lacking. 
+2. There is insufficient implementation and validation to demonstrate that the proposed method works in practice. 
+3. Several presentation issues need to be corrected, such as figure caption errors, reference errors, and placeholders (e.g., “??”).
+Overall, the direction of the work is promising, but the current version lacks the experimental evidence and methodological completeness required for acceptance. We hope the authors will further strengthen the work through additional experiments and refinements.
+
+> *** Timeliness: Does this paper address a timely issue?
+Good (4)
+
+======= Review 2 =======
+
+> *** Relevance: How well does the content fit the conference scope? Is this paper handling an important theme in this area?
+Good (4)
+
+> *** Completeness: Does this paper describe the problem clearly? Are the results of this paper reproducible via experiments (implementations, proofs)? How well is the result analysis done with the previous works? How clear is the paper's conclusion for the problem tackled?
+Average (3)
+
+> *** Originality: Does this paper include any novel approaches or new applications that have never been tried?
+Marginal (2)
+
+> *** Related Works: Does this paper reflect the state-of-art references?
+Average (3)
+
+> *** Presentation: Are the title, abstract, and keywords appropriate? How proper is the organization and description method of this paper?
+Marginal (2)
+
+> *** Recommendation: Please provide your overall recommendation on the acceptance of the paper. (Final acceptance decisions will also consider literal responses to the questions below.)
+Neutral (2)
+
+> *** Comments to authors: Please provide detailed comments to the authors.
+
+The format of the paper is incomplete.
+I can't even check the references.
+
+> *** Timeliness: Does this paper address a timely issue?
+Good (4)
+
+======= Review 3 =======
+
+> *** Relevance: How well does the content fit the conference scope? Is this paper handling an important theme in this area?
+Marginal (2)
+
+> *** Completeness: Does this paper describe the problem clearly? Are the results of this paper reproducible via experiments (implementations, proofs)? How well is the result analysis done with the previous works? How clear is the paper's conclusion for the problem tackled?
+Average (3)
+
+> *** Originality: Does this paper include any novel approaches or new applications that have never been tried?
+Average (3)
+
+> *** Related Works: Does this paper reflect the state-of-art references?
+Average (3)
+
+> *** Presentation: Are the title, abstract, and keywords appropriate? How proper is the organization and description method of this paper?
+Marginal (2)
+
+> *** Recommendation: Please provide your overall recommendation on the acceptance of the paper. (Final acceptance decisions will also consider literal responses to the questions below.)
+Neutral (2)
+
+> *** Comments to authors: Please provide detailed comments to the authors.
+
+This paper investigates the feasibility of using Large Language Models (LLMs) for geometric dimension reduction, specifically computing midcurves (1D representations) from 2D planar shapes. The author frames midcurve extraction as a graph summarization / text-to-text transformation problem, drawing analogies with machine translation and document summarization. Preliminary experiments using prompt-based LLM inference and fine-tuning CodeT5 are presented: GPT-4 performs reasonably on simple shapes, while most models fail on more complex topologies. The paper concludes that LLM-based approaches are promising but require further research.
+
+While the idea of using LLMs is novel, the paper does not yet introduce a concrete algorithmic or architectural contribution. Most of the work remains exploratory or speculative. It is merely using LLM to solve the midcurve computation problem. Prompt-based experiments are interesting, but they are not a reliable scientific evaluation methodology.
+
+Numerous missing citations (“[?]”), figures (“Fig. ??”), and placeholders reduce readability.
+
+> *** Timeliness: Does this paper address a timely issue?
+Poor (1)
