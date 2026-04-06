@@ -9,7 +9,7 @@ from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
 from denoiserencoderdecoder.build_denoiser_encoderdecoder_model import denoiser_encoderdecoder
 from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
-from random import random
+import random
 
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data()

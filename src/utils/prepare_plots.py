@@ -1,28 +1,22 @@
 import matplotlib.pyplot as plt
-import matplotlib
 import numpy as np
 import json
 import os
 # from config import JSON_FOLDER
 JSON_FOLDER = "."
-matplotlib.use('TKAgg')
 
 
-def plot_results(original_imgs, computed_imgs):
-    n = len(original_imgs)  # 10 # how many digits we will display
+def plot_results(original_imgs, computed_imgs, size=(100, 100)):
+    n = len(original_imgs)
     plt.figure(figsize=(20, 4))
     for i in range(n):
-        # display original
         ax = plt.subplot(2, n, i + 1)
-        plt.imshow(original_imgs[i].reshape(100, 100), cmap='gray_r')
-        #         plt.gray()
+        plt.imshow(original_imgs[i].reshape(size[0], size[1]), cmap='gray_r')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
-        # display reconstruction
         ax = plt.subplot(2, n, i + 1 + n)
-        plt.imshow(computed_imgs[i].reshape(100, 100), cmap='gray_r')
-        #         plt.gray()
+        plt.imshow(computed_imgs[i].reshape(size[0], size[1]), cmap='gray_r')
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
     plt.show()
@@ -106,9 +100,6 @@ def plot_lines(lines, color='black'):
         x = a[:, 0].T
         y = a[:, 1].T
         plt.plot(x, y, c=color)
-
-import numpy as np
-import matplotlib.pyplot as plt
 
 def plot_list_of_lines(list_of_lines, names, color='black', figsize=(15, 5)):
     """

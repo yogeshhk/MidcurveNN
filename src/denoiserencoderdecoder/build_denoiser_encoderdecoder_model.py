@@ -92,9 +92,8 @@ class denoiser_encoderdecoder:
 
     def predict(self, test_noisy_images):
         png_profile_images = self.process_images(test_noisy_images)
-        encoded_imgs = self.denoiser_autoencoder.predict(png_profile_images)
-        decoded_imgs = self.denoiser_autoencoder.predict(encoded_imgs)
-        return test_noisy_images, decoded_imgs
+        denoised_imgs = self.denoiser_autoencoder.predict(png_profile_images)
+        return test_noisy_images, denoised_imgs
 
 
 if __name__ == "__main__":

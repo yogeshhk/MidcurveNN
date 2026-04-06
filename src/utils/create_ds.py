@@ -13,7 +13,10 @@ IMAGE_SHAPE = (256, 256)
 BG_COLOR = (255, 255, 255)  # (0,0,0)
 FG_COLOR = (0, 0, 0)  # (255,255,255)
 dtype = 'uint8'
-BASE_DIR = 'D:/dev/midcurve/MidcurveNN/reorg/'
+# Resolve paths relative to this file so the script works on any machine.
+# Output images go to <repo>/src/data/new/v2/
+import os as _os
+BASE_DIR = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), '')
 
 
 def draw_polygon(image, points, color, thickness):

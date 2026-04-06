@@ -52,6 +52,12 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
         else:
             gen_model.load_weights(weight_path + 'weights.h5')
             print("\nWeights Loaded")
+        # Recompile after loading so train_on_batch is available
+        loss_fns = {'bce': binary_crossentropy, 'mae': mean_absolute_error,
+                    'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
+                    'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED)}
+        gen_model.compile(loss=[loss_fns[STAGE1_LOSS], loss_fns[STAGE1_LOSS]],
+                          optimizer=Adam(decay=0.0001), loss_weights=[1E1, 1])
 
     for num_epochs in range(1 + load_at, epochs + load_at + 1):
         loss = []  # Save loss for each epoch separately
@@ -91,6 +97,12 @@ def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_
         else:
             generator_stage2.load_weights(weight_path + 'weights.h5')
             print("\nWeights Loaded")
+        # Recompile after loading so train_on_batch is available
+        loss_fns = {'bce': binary_crossentropy, 'mae': mean_absolute_error,
+                    'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
+                    'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED)}
+        generator_stage2.compile(loss=[loss_fns[STAGE2_LOSS], loss_fns[STAGE2_LOSS]],
+                                 optimizer=Adam(decay=0.0001), loss_weights=[1E1, 1])
 
     for num_epochs in range(1 + load_at, epochs + load_at + 1):
         loss = []  # Save loss for each epoch separately

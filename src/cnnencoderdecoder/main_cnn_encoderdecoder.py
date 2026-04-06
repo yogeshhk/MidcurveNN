@@ -6,8 +6,8 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
 
-from utils.utils import get_training_data
-from utils.utils import plot_results
+from utils.prepare_data import get_training_data
+from utils.prepare_plots import plot_results
 
 from cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
 

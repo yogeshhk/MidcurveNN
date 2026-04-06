@@ -92,8 +92,10 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
 
 if __name__ == "__main__":
     generators = init()
-    generators[0].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage1', '5_gen_epochs.h5'))
-    generators[1].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage2', '2_gen_epochs.h5'))
+    # Load the latest saved weights. train.py saves to 'weights.h5' by default (save_all=False).
+    # If you trained with save_all=True, change 'weights.h5' to e.g. '5_epochs_gen.h5'.
+    generators[0].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage1', 'weights.h5'))
+    generators[1].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage2', 'weights.h5'))
     
     generate_test_results(generators[0], generators[1], os.path.join(BASE_DIR, 'data', 'test'), None)
     

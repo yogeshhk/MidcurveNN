@@ -413,8 +413,6 @@ def generate_sequences(sequences_filepath=SEQUENCES_FILEPATH, recreate_data=Fals
                     profile_dict['Rotated_Profile_' + str(i + 1)] = rotate_sequence(profile_dict['Profile'], theta)
                     profile_dict['Rotated_Midcurve_' + str(i + 1)] = rotate_sequence(profile_dict['Midcurve'], theta)
 
-                plot_profile_dict(profile_dict)
-
             json.dump(profiles_dict_list, fout)
 
     return profiles_dict_list

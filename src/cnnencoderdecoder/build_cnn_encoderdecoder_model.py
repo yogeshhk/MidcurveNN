@@ -130,12 +130,10 @@ class cnn_encoderdecoder:
                             
             print("saving model at {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder.save(self.cnn_autoencoder_model_pkl)
-            print_best_metrics(metrics_history.history)
+            print_best_metrics(metrics_history.history, "CNN Encoder-Decoder")
         else:
             print("loading model from {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder = load_model(self.cnn_autoencoder_model_pkl)
-            
-        print_best_metrics(metrics_history.history, "CNN Encoder-Decoder")
     
     def predict(self, test_profile_images, expand_dims=True):
         if expand_dims:

@@ -231,7 +231,10 @@ def model_training():
     compare_batches(fix_X, fk, "input image", "prediction", fix_y, "ground truth")
 
     img_list = []
-    Disc_losses = Gen_losses = Gen_GAN_losses = Gen_L1_losses = []
+    Disc_losses = []
+    Gen_losses = []
+    Gen_GAN_losses = []
+    Gen_L1_losses = []
 
     iter_per_plot = 50
     epochs = 5

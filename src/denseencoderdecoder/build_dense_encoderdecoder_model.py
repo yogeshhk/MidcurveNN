@@ -1,13 +1,19 @@
 import os
+import sys
+import random
+
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
+
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 from utils.metric_utils import MetricsHistory, print_best_metrics
+from utils.prepare_data import get_training_data
+from utils.prepare_plots import plot_results
 import numpy as np
-import sys
-import random
 
 class dense_encoderdecoder:
     def __init__(self):
@@ -78,13 +84,11 @@ class dense_encoderdecoder:
             self.autoencoder.save(self.autoencoder_model_pkl)
             self.encoder.save(self.encoder_model_pkl)
             self.decoder.save(self.decoder_model_pkl)
-            print_best_metrics(metrics_history.history)
+            print_best_metrics(metrics_history.history, "Dense Encoder-Decoder")
         else:
             self.autoencoder = load_model(self.autoencoder_model_pkl)
             self.encoder = load_model(self.encoder_model_pkl)
             self.decoder = load_model(self.decoder_model_pkl)
-            
-        print_best_metrics(metrics_history.history, "Dense Encoder-Decoder")
 
     def predict(self, test_profile_images):
         png_profile_images = self.process_images(test_profile_images)
