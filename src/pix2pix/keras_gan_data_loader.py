@@ -3,14 +3,9 @@ import os
 from glob import glob
 import numpy as np
 import imageio
-from config import *
 
-# from src.config import BASE_DIR
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
-
-#datasetpath = "D:/Yogesh/Projects/Learning/DataScience/Datasets/pix2pix/"
-
-#BASE_DIR = 'D:/dev/MidcurveNN/'
 
 class DataLoader():
     def __init__(self, dataset_name, img_res=(256, 256)):
@@ -27,8 +22,7 @@ class DataLoader():
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
-        path = glob(os.path.join(BASE_DIR, 'data', 'pix2pix', data_type, '*'))
-        #path = glob(PATH + '%s/*' % (data_type))
+        path = glob(os.path.join(DATA_DIR, data_type, '*'))
         batch_images = np.random.choice(path, size=batch_size)
 
         imgs_A = []
@@ -63,9 +57,7 @@ class DataLoader():
 
     def load_batch(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "val"
-        path = glob(os.path.join(BASE_DIR, 'data', 'pix2pix', data_type, '*'))
-        #path = glob('data/%s/datasets/%s/%s/*' % (self.dataset_name, self.dataset_name, data_type))
-        #path = glob(PATH + '%s/*' % (data_type))
+        path = glob(os.path.join(DATA_DIR, data_type, '*'))
         self.n_batches = int(len(path) / batch_size)
 
         for i in range(self.n_batches-1):

@@ -25,10 +25,11 @@ manual_seed = 1028
 random.seed(manual_seed)
 torch.manual_seed(manual_seed)
 
-log_path = os.path.join("./logs")  # Enter the log saving directory here
+_HERE = os.path.dirname(os.path.abspath(__file__))
+log_path = os.path.join(_HERE, "logs")
 modelName = "pix2pix_pytorch"
-data_path_Train = os.path.dirname('../data/pix2pix/train')  # Enter the train folder directory
-data_path_Test = os.path.dirname('../data/pix2pix/test')  # Enter the test folder directory
+data_path_Train = os.path.join(_HERE, 'data', 'train')
+data_path_Test = os.path.join(_HERE, 'data', 'test')
 
 batch_size = 4
 num_workers = 2

@@ -12,8 +12,10 @@ from denseencoderdecoder.build_dense_encoderdecoder_model import dense_encoderde
 import random
 import numpy as np
 
+DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'data')
+
 if __name__ == "__main__":
-    profile_gray_objs, midcurve_gray_objs = get_training_data()
+    profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
     test_gray_images = random.sample(profile_gray_objs,5)
 
     profile_gray_objs = np.asarray(profile_gray_objs)/255.

@@ -3,7 +3,9 @@
     Takes raw data from "data/raw/*" files for both, profile shape (shape.dat) and midcurve shape (shape.mid)
     Generates raster image files from svg (simple vector graphics)
     Multiple variations are populated using image transformations.
-    These images become input for further modeling (stored in "data/input/*")
+    Each approach's images are stored in its own data/ subfolder:
+      src/<approach>/data/  (e.g. simpleencoderdecoder/data/, unet/data/, pix2pix/data/)
+    Only raw .dat/.mid files remain in src/data/raw/.
 """
 from tensorflow.keras.preprocessing.image import img_to_array, load_img, array_to_img
 from random import shuffle
@@ -13,9 +15,18 @@ import numpy as np
 import os
 import shutil
 import sys
-from config import *
 
-from config import INPUT_DATA_FOLDER, RAW_DATA_FOLDER
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import RAW_DATA_FOLDER
+
+# src/ directory (parent of utils/)
+SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _approach_data_dir(approach):
+    """Return the data directory for a given approach subfolder."""
+    return os.path.join(SRC_DIR, approach, 'data')
+
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -48,7 +59,11 @@ def combine_images(imga, imgb):
 #         x_offset += im.size[0]    
 #     return new_im
 
-def generate_pix2pix_dataset(inputdatafolder=INPUT_DATA_FOLDER, pix2pixdatafolder=PIX2PIX_DATA_FOLDER):
+def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
+    if inputdatafolder is None:
+        inputdatafolder = _approach_data_dir('simpleencoderdecoder')
+    if pix2pixdatafolder is None:
+        pix2pixdatafolder = _approach_data_dir('pix2pix')
     profile_pngs, midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(256, 256))) for f in profile_pngs]
@@ -88,7 +103,7 @@ def generate_pix2pix_dataset(inputdatafolder=INPUT_DATA_FOLDER, pix2pixdatafolde
     for i, arr in enumerate(val_combo_files):
         img = PIL.Image.fromarray(arr.astype('uint8'))
         img = PIL.ImageOps.invert(img)
-        filename = os.path.join(pix2pixdatafolder, "val" + str(i) + ".jpg")
+        filename = os.path.join(pix2pixdatafolder, "val", str(i) + ".jpg")
         img.save(filename)
 
     for i, arr in enumerate(test_combo_files):
@@ -100,7 +115,9 @@ def generate_pix2pix_dataset(inputdatafolder=INPUT_DATA_FOLDER, pix2pixdatafolde
     return train_combo_files, val_combo_files, test_combo_files
 
 
-def get_training_data(datafolder=INPUT_DATA_FOLDER, size=(100, 100)):
+def get_training_data(datafolder=None, size=(100, 100)):
+    if datafolder is None:
+        raise ValueError("datafolder must be provided explicitly")
     profile_pngs, midcurve_pngs = read_input_image_pairs(datafolder)
 
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size)) for f in profile_pngs]
@@ -159,7 +176,7 @@ def read_dat_files(datafolder=RAW_DATA_FOLDER):
 import drawsvg as draw
 
 
-def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, imgsize=100, isOpenClose=True):
+def create_image_file(fieldname, profile_dict, datafolder, imgsize=100, isOpenClose=True):
     d = draw.Drawing(imgsize, imgsize, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:
@@ -173,7 +190,7 @@ def create_image_file(fieldname, profile_dict, datafolder=INPUT_DATA_FOLDER, img
     d.savePng(os.path.join(datafolder, shape + '_' + fieldname + '.png'))
 
 
-def get_original_png_files(datafolder=INPUT_DATA_FOLDER):
+def get_original_png_files(datafolder):
     pngfilenames = []
     for file in os.listdir(datafolder):
         fullpath = os.path.join(datafolder, file)
@@ -225,7 +242,7 @@ def translate_images(pngfilenames, dx=1, dy=1):
         translate.save(newfilename)
 
 
-def read_input_image_pairs(datafolder=INPUT_DATA_FOLDER):
+def read_input_image_pairs(datafolder):
     profile_pngs = []
     midcurve_pngs = []
     for file in os.listdir(datafolder):
@@ -242,7 +259,7 @@ def read_input_image_pairs(datafolder=INPUT_DATA_FOLDER):
     return profile_pngs, midcurve_pngs
 
 
-def generate_images(datafolder=INPUT_DATA_FOLDER):
+def generate_images(datafolder):
     if not os.path.exists(datafolder):
         os.makedirs(datafolder)
     else:
@@ -387,10 +404,12 @@ def plot_profile_dict(profile_dict):
 import json
 
 
-def generate_sequences(sequences_filepath=SEQUENCES_FILEPATH, recreate_data=False):
+def generate_sequences(sequences_filepath=None, recreate_data=False):
+    if sequences_filepath is None:
+        sequences_filepath = os.path.join(RAW_DATA_FOLDER, 'sequences.json')
     profiles_dict_list = []
     if not os.path.exists(sequences_filepath) or recreate_data:
-        with open(SEQUENCES_FILEPATH, 'w') as fout:
+        with open(sequences_filepath, 'w') as fout:
             print("transformed sequence csv file not present, generating...")
             profiles_dict_list = read_dat_files()
 
@@ -419,8 +438,23 @@ def generate_sequences(sequences_filepath=SEQUENCES_FILEPATH, recreate_data=Fals
 
 
 if __name__ == "__main__":
-    # generate_images()
-    # profile_pngs,midcurve_pngs = read_input_image_pairs()
-    # generate_pix2pix_dataset()
+    # Generate 100x100 PNG pairs for encoder-decoder approaches
+    for approach in ['simpleencoderdecoder', 'cnnencoderdecoder',
+                     'denseencoderdecoder', 'denoiserencoderdecoder']:
+        print(f"Generating images for {approach}...")
+        generate_images(_approach_data_dir(approach))
+
+    # Generate pix2pix-format data (concatenated JPGs, split into train/val/test)
+    # Reads PNG pairs from simpleencoderdecoder (same source for all pix2pix-style approaches)
+    input_dir = _approach_data_dir('simpleencoderdecoder')
+    for approach in ['pix2pix', 'img2img']:
+        print(f"Generating pix2pix dataset for {approach}...")
+        generate_pix2pix_dataset(
+            inputdatafolder=input_dir,
+            pix2pixdatafolder=_approach_data_dir(approach)
+        )
+
+    # Generate sequence JSON for LLM/GNN approaches (written to raw data folder)
+    print("Generating sequences JSON...")
     sequences = generate_sequences(recreate_data=True)
-    print(sequences)
+    print(f"Generated {len(sequences)} sequences.")

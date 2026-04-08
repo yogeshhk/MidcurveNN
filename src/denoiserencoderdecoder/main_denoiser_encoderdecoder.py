@@ -11,8 +11,10 @@ from denoiserencoderdecoder.build_denoiser_encoderdecoder_model import denoiser_
 from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
 import random
 
+DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'data')
+
 if __name__ == "__main__":
-    profile_gray_objs, midcurve_gray_objs = get_training_data()
+    profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
     endec = simple_encoderdecoder()
     endec.train(profile_gray_objs, midcurve_gray_objs)
     original_profile_images, noisy_predicted_midcurve_images = endec.predict(profile_gray_objs)
