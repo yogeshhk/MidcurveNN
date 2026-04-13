@@ -8,7 +8,14 @@
       "Bash(git add:*)",
       "Bash(git rm:*)",
       "Bash(rm -rf src/kaggle)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(python -m pytest geometry_based/graph_transformer/test_graph_transformer.py -v --tb=short)",
+      "Bash(python -c \"import torch_geometric; print\\('pyg ok'\\)\")",
+      "Bash(python -c \"import torch; print\\(torch.__version__\\)\")",
+      "Bash(python -c \"import tensorflow as tf; print\\('tf', tf.__version__\\)\")",
+      "Bash(python -c \"import torch; print\\('torch', torch.__version__\\)\")",
+      "Bash(python:*)",
+      "Bash(tee image_based/simpleencoderdecoder/results/test_results.txt)"
     ]
   }
 }
