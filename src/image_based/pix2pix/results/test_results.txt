@@ -1,0 +1,11 @@
+test_01_data_dir_exists (__main__.TestPix2PixData) ... ok
+test_02_train_subdir (__main__.TestPix2PixData) ... ok
+test_03_model_created (__main__.TestPix2PixModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_04_data_loader_import (__main__.TestPix2PixModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_05_generator_output_shape (__main__.TestPix2PixModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_discriminator_output_shape (__main__.TestPix2PixModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK (skipped=4)

@@ -1,0 +1,11 @@
+test_01_torch_available (__main__.TestImg2Img) ... ok
+test_02_generator_import (__main__.TestImg2Img) ... skipped "Could not import Gen: No module named 'torchvision'"
+test_03_generator_forward_pass (__main__.TestImg2Img) ... skipped "Import failed: No module named 'torchvision'"
+test_04_discriminator_forward_pass (__main__.TestImg2Img) ... skipped "Import failed: No module named 'torchvision'"
+test_05_data_folder_exists (__main__.TestImg2Img) ... ok
+test_06_logs_folder_exists (__main__.TestImg2Img) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.707s
+
+OK (skipped=3)

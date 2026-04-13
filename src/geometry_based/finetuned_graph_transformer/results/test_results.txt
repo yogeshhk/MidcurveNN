@@ -1,0 +1,7 @@
+skipped 'torch_geometric not installed'
+skipped 'torch_geometric not installed'
+
+----------------------------------------------------------------------
+Ran 0 tests in 0.001s
+
+OK (skipped=2)

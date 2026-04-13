@@ -1,0 +1,13 @@
+test_01_data_folder_exists (__main__.TestDenoiserData) ... ok
+test_02_png_pairs_present (__main__.TestDenoiserData) ... ok
+test_03_denoiser_instantiation (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_04_simple_instantiation (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_05_simple_predict_shape (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_denoiser_predict_shape (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_07_two_stage_pipeline (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_08_output_range (__main__.TestDenoiserModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+OK (skipped=6)

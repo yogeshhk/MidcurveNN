@@ -1,0 +1,13 @@
+test_01_data_folder_exists (__main__.TestSimpleEncoderDecoderData) ... ok
+test_02_profile_pngs_present (__main__.TestSimpleEncoderDecoderData) ... ok
+test_03_midcurve_pngs_present (__main__.TestSimpleEncoderDecoderData) ... ok
+test_04_model_instantiation (__main__.TestSimpleEncoderDecoderModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_05_model_has_keras_model (__main__.TestSimpleEncoderDecoderModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_predict_returns_tuple (__main__.TestSimpleEncoderDecoderModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_07_output_shape_matches_input (__main__.TestSimpleEncoderDecoderModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_08_output_range (__main__.TestSimpleEncoderDecoderModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+OK (skipped=5)

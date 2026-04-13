@@ -7,12 +7,20 @@
       src/<approach>/data/  (e.g. simpleencoderdecoder/data/, unet/data/, pix2pix/data/)
     Only raw .dat/.mid files remain in src/data/raw/.
 """
-from tensorflow.keras.preprocessing.image import img_to_array, load_img, array_to_img
 from random import shuffle
 import PIL
 import PIL.ImageOps
 import numpy as np
 import os
+
+# TensorFlow is only needed for image rasterization (generate_images / get_training_data).
+# Import lazily so that geometry/text tests can import this module without TF installed.
+try:
+    from tensorflow.keras.preprocessing.image import img_to_array, load_img, array_to_img
+    _TF_AVAILABLE = True
+except ImportError:
+    _TF_AVAILABLE = False
+    img_to_array = load_img = array_to_img = None
 import shutil
 import sys
 
@@ -116,6 +124,9 @@ def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
 
 
 def get_training_data(datafolder=None, size=(100, 100)):
+    if not _TF_AVAILABLE:
+        raise ImportError("TensorFlow is required for get_training_data(). "
+                          "Install it or use a geometry/text-based approach.")
     if datafolder is None:
         raise ValueError("datafolder must be provided explicitly")
     profile_pngs, midcurve_pngs = read_input_image_pairs(datafolder)
@@ -173,10 +184,17 @@ def read_dat_files(datafolder=RAW_DATA_FOLDER):
     return profiles_dict_list
 
 
-import drawsvg as draw
+try:
+    import drawsvg as draw
+    _DRAWSVG_AVAILABLE = True
+except ImportError:
+    draw = None
+    _DRAWSVG_AVAILABLE = False
 
 
 def create_image_file(fieldname, profile_dict, datafolder, imgsize=100, isOpenClose=True):
+    if not _DRAWSVG_AVAILABLE:
+        raise ImportError("drawsvg is required for image creation. Install it with: pip install drawsvg")
     d = draw.Drawing(imgsize, imgsize, origin='center')
     profilepoints = []
     for tpl in profile_dict[fieldname]:

@@ -23,7 +23,8 @@ import sys
 import unittest
 import torch
 
-_SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# geometry_based/testing/ → geometry_based/ → src/
+_SRC = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, _SRC)
 
 _RAW_DATA = os.path.join(_SRC, 'data', 'raw')

@@ -1,0 +1,12 @@
+test_01_data_folder_exists (__main__.TestCNNData) ... ok
+test_02_png_pairs_present (__main__.TestCNNData) ... ok
+test_03_model_instantiation (__main__.TestCNNModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_04_input_shape_is_128 (__main__.TestCNNModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_05_predict_returns_tuple (__main__.TestCNNModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_output_spatial_shape_matches (__main__.TestCNNModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_07_output_range (__main__.TestCNNModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK (skipped=5)

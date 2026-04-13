@@ -21,9 +21,17 @@ import sys
 import unittest
 import numpy as np
 
-_SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# image_based/testing/ → image_based/ → src/
+_SRC = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, _SRC)
 sys.path.insert(0, os.path.join(_SRC, 'image_based'))
+
+_TF_AVAILABLE = False
+try:
+    import tensorflow  # noqa
+    _TF_AVAILABLE = True
+except ImportError:
+    pass
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -83,6 +91,7 @@ class TestDataFolders(unittest.TestCase):
 # Model build / forward-pass tests
 # ---------------------------------------------------------------------------
 
+@unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")
 class TestSimpleEncoderDecoder(unittest.TestCase):
 
     def setUp(self):
@@ -98,6 +107,7 @@ class TestSimpleEncoderDecoder(unittest.TestCase):
         self.assertEqual(inp.shape, out.shape)
 
 
+@unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")
 class TestCNNEncoderDecoder(unittest.TestCase):
 
     def setUp(self):
@@ -114,6 +124,7 @@ class TestCNNEncoderDecoder(unittest.TestCase):
         self.assertEqual(inp.shape[1:3], out.shape[1:3])
 
 
+@unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")
 class TestDenseEncoderDecoder(unittest.TestCase):
 
     def setUp(self):
@@ -129,6 +140,7 @@ class TestDenseEncoderDecoder(unittest.TestCase):
         self.assertEqual(inp.shape, out.shape)
 
 
+@unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")
 class TestDenoiserEncoderDecoder(unittest.TestCase):
 
     def setUp(self):
@@ -144,6 +156,7 @@ class TestDenoiserEncoderDecoder(unittest.TestCase):
         self.assertEqual(inp.shape, out.shape)
 
 
+@unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")
 class TestUNetImport(unittest.TestCase):
 
     def test_unet_import(self):

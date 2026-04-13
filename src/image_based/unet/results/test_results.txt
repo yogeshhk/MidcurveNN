@@ -1,0 +1,17 @@
+test_01_data_folder_exists (__main__.TestUNetData) ... ok
+test_02_weights_stage1_dir (__main__.TestUNetData) ... ok
+test_03_weights_stage2_dir (__main__.TestUNetData) ... ok
+test_04_results_dir (__main__.TestUNetData) ... ok
+test_05_stage1_builds (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_stage2_builds (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_07_stage1_two_outputs (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_08_stage1_input_shape (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_09_coordconv_importable (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_10_coord_layers_shape (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_11_weighted_loss_callable (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_12_datagenerator_importable (__main__.TestUNetModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.001s
+
+OK (skipped=8)

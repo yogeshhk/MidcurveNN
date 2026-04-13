@@ -1,0 +1,12 @@
+test_01_data_folder_exists (__main__.TestDenseData) ... ok
+test_02_png_pairs_present (__main__.TestDenseData) ... ok
+test_03_model_instantiation (__main__.TestDenseModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_04_input_is_flat_10000 (__main__.TestDenseModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_05_predict_returns_pair (__main__.TestDenseModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_06_output_shape_matches_input (__main__.TestDenseModel) ... skipped 'TensorFlow not installed — skipping model tests'
+test_07_output_in_range (__main__.TestDenseModel) ... skipped 'TensorFlow not installed — skipping model tests'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK (skipped=5)
