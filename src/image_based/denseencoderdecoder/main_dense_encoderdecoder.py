@@ -2,8 +2,9 @@ import os
 import sys
 
 # Add the project root directory to Python path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(project_root)
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # image_based/
 
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results

@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # image_based/
 from pix2pix.keras_gan_pix2pix import Pix2Pix
 
 if __name__ == "__main__":

@@ -23,9 +23,9 @@ from config import RAW_DATA_FOLDER
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def _approach_data_dir(approach):
-    """Return the data directory for a given approach subfolder."""
-    return os.path.join(SRC_DIR, approach, 'data')
+def _approach_data_dir(approach, type_folder='image_based'):
+    """Return the data directory for a given approach subfolder under its type folder."""
+    return os.path.join(SRC_DIR, type_folder, approach, 'data')
 
 
 np.set_printoptions(threshold=sys.maxsize)
@@ -61,9 +61,9 @@ def combine_images(imga, imgb):
 
 def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
     if inputdatafolder is None:
-        inputdatafolder = _approach_data_dir('simpleencoderdecoder')
+        inputdatafolder = _approach_data_dir('simpleencoderdecoder', 'image_based')
     if pix2pixdatafolder is None:
-        pix2pixdatafolder = _approach_data_dir('pix2pix')
+        pix2pixdatafolder = _approach_data_dir('pix2pix', 'image_based')
     profile_pngs, midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(256, 256))) for f in profile_pngs]
@@ -438,23 +438,25 @@ def generate_sequences(sequences_filepath=None, recreate_data=False):
 
 
 if __name__ == "__main__":
-    # Generate 100x100 PNG pairs for encoder-decoder approaches
+    # Generate 100x100 PNG pairs for encoder-decoder approaches (all image_based)
     for approach in ['simpleencoderdecoder', 'cnnencoderdecoder',
                      'denseencoderdecoder', 'denoiserencoderdecoder']:
         print(f"Generating images for {approach}...")
-        generate_images(_approach_data_dir(approach))
+        generate_images(_approach_data_dir(approach, 'image_based'))
 
     # Generate pix2pix-format data (concatenated JPGs, split into train/val/test)
-    # Reads PNG pairs from simpleencoderdecoder (same source for all pix2pix-style approaches)
-    input_dir = _approach_data_dir('simpleencoderdecoder')
+    input_dir = _approach_data_dir('simpleencoderdecoder', 'image_based')
     for approach in ['pix2pix', 'img2img']:
         print(f"Generating pix2pix dataset for {approach}...")
         generate_pix2pix_dataset(
             inputdatafolder=input_dir,
-            pix2pixdatafolder=_approach_data_dir(approach)
+            pix2pixdatafolder=_approach_data_dir(approach, 'image_based')
         )
 
-    # Generate sequence JSON for LLM/GNN approaches (written to raw data folder)
+    # Generate sequence JSON for text-based approaches
+    text_data_dir = os.path.join(SRC_DIR, 'text_based', 'data')
+    os.makedirs(text_data_dir, exist_ok=True)
+    sequences_filepath = os.path.join(text_data_dir, 'sequences.json')
     print("Generating sequences JSON...")
-    sequences = generate_sequences(recreate_data=True)
+    sequences = generate_sequences(sequences_filepath=sequences_filepath, recreate_data=True)
     print(f"Generated {len(sequences)} sequences.")

@@ -4,13 +4,50 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**MidcurveNN** computes the midcurve (medial axis/skeleton) of 2D closed polygons using neural networks. It is a research project with three phases:
+**MidcurveNN** computes the midcurve (medial axis/skeleton) of 2D closed polygons using neural networks. It is a research project with three approach families:
 
-- **Phase I (Implemented)**: Image-to-image transformation — rasterize polygons to 100×100 or 256×256 bitmaps, then apply encoder-decoder networks
-- **Phase II (Stub)**: Graph neural network approach (`src/gnnencoderdecoder/`) — geometric-aware representations, not yet implemented
-- **Phase III (Emerging)**: LLM-based approach using B-rep JSON text representations with Hugging Face transformers
+- **Image-based (Phase I)**: Rasterize polygons to 100×100 or 256×256 bitmaps → encoder-decoder networks
+- **Geometry-based (Phase II)**: Graph neural network approach — exact coordinates, handles branching natively
+- **Text-based (Phase III)**: LLM/seq2seq approach using B-rep JSON text representations (planned)
 
 Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyline (`.mid` file = skeleton points).
+
+## Directory Structure
+
+```
+src/
+├── config.py                    # Global config (IMG_SHAPE, TRAIN_SIZE, loss settings)
+├── environment.yml
+├── data/raw/                    # Raw .dat/.mid coordinate files — shared by ALL approaches
+├── utils/                       # Shared utilities (data prep, plotting, metrics)
+│
+├── image_based/                 # Phase I — raster/bitmap approaches
+│   ├── data/                    # Generated PNG image pairs
+│   ├── simpleencoderdecoder/    # 1 dense hidden layer (baseline)
+│   ├── cnnencoderdecoder/       # 4-level Conv2D encoder-decoder
+│   ├── denseencoderdecoder/     # Fully connected (flattened 10K dims)
+│   ├── denoiserencoderdecoder/  # Denoising autoencoder variant
+│   ├── unet/                    # 8-level UNet with 2-stage training (BEST)
+│   ├── pix2pix/                 # Pix2Pix GAN (Keras)
+│   ├── img2img/                 # Image-to-image (PyTorch)
+│   └── kaggle/                  # Kaggle notebooks / dataset exports
+│
+├── geometry_based/              # Phase II — graph/geometric approaches
+│   ├── data/                    # Graph datasets
+│   ├── graph_transformer/       # Non-auto-regressive Graph Transformer (primary)
+│   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurve data
+│   └── gnnencoderdecoder/       # Legacy GNN stub (reference only)
+│
+├── text_based/                  # Phase III — LLM/sequence approaches (planned)
+│   ├── data/sequences.json      # B-rep JSON sequences generated from raw data
+│   └── README.md                # Approach documentation and roadmap
+│
+└── testing/                     # Cross-approach tests and benchmarks
+    ├── test_image_based.py      # Unit tests for all image-based approaches
+    ├── test_geometry_based.py   # Unit tests for geometry-based approaches
+    ├── test_text_based.py       # Smoke tests for text data pipeline
+    └── benchmark.py             # Comparative benchmark across all approaches
+```
 
 ## Environment Setup
 
@@ -18,9 +55,12 @@ Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyli
 cd src
 conda env create -f environment.yml
 conda activate midcurvenn
+
+# Extra dependency for finetuned_graph_transformer
+pip install transformers>=4.35
 ```
 
-The environment targets Python 3.10 with TensorFlow 2.13 (tensorflow-macos + tensorflow-metal for Mac GPU), PyTorch, Keras, and Hugging Face transformers.
+The environment targets Python 3.10 with TensorFlow 2.13, PyTorch, Keras, and Hugging Face transformers.
 
 ## Common Commands
 
@@ -29,75 +69,117 @@ The environment targets Python 3.10 with TensorFlow 2.13 (tensorflow-macos + ten
 cd src
 python utils/prepare_data.py
 ```
-Reads ASCII coordinate files from `src/data/raw/`, rasterizes via DrawSVG, applies augmentations (rotation 0–350°, translation, mirroring), outputs paired PNG images to `src/data/input/`.
+Reads ASCII coordinate files from `src/data/raw/`, rasterizes via DrawSVG with augmentations
+(rotation 0–350°, translation, mirroring). Outputs:
+- PNG pairs → `src/image_based/<approach>/data/`
+- Sequence JSON → `src/text_based/data/sequences.json`
 
-### Train a model
+### Train — Image-based (Phase I)
 ```bash
-# Most advanced (UNet, 2-stage)
-cd src/unet
+# Best performer (UNet, 2-stage training)
+cd src/image_based/unet
 python train.py
 
 # Simpler baselines (run from src/)
-python simpleencoderdecoder/main_simple_encoderdecoder.py
-python cnnencoderdecoder/main_cnn_encoderdecoder.py
-python denseencoderdecoder/main_dense_encoderdecoder.py
-python denoiserencoderdecoder/main_denoiser_encoderdecoder.py
-python pix2pix/main_pix2pix.py
-python img2img/main_img2img_pytorch.py  # PyTorch variant
+python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
+python image_based/cnnencoderdecoder/main_cnn_encoderdecoder.py
+python image_based/denseencoderdecoder/main_dense_encoderdecoder.py
+python image_based/denoiserencoderdecoder/main_denoiser_encoderdecoder.py
+python image_based/pix2pix/main_pix2pix.py
+python image_based/img2img/main_img2img_pytorch.py
 ```
 
-### Test / infer
+### Train — Geometry-based (Phase II)
 ```bash
-cd src/unet
-python test.py
+# Non-auto-regressive Graph Transformer (trained from scratch)
+cd src/geometry_based/graph_transformer
+python main_graph_transformer.py
+python main_graph_transformer.py --epochs 300 --quick   # smoke test
+
+# Fine-tuned pretrained Graphormer
+cd src/geometry_based/finetuned_graph_transformer
+python train.py
+python train.py --quick --no-pretrained                 # offline / CI
+```
+
+### Test / Infer
+```bash
+# UNet
+cd src/image_based/unet && python test.py
+
+# Graph Transformer
+cd src/geometry_based/graph_transformer && python evaluate.py
+
+# Fine-tuned Graphormer
+cd src/geometry_based/finetuned_graph_transformer && python test.py
+```
+
+### Run tests
+```bash
+cd src
+python -m pytest testing/ -v
+python -m pytest testing/test_image_based.py -v
+python -m pytest testing/test_geometry_based.py -v
+python -m pytest testing/test_text_based.py -v
+```
+
+### Run benchmark
+```bash
+cd src
+python testing/benchmark.py                           # all approaches
+python testing/benchmark.py --approaches geometry     # geometry only
+python testing/benchmark.py --geometry-approach graph_transformer
 ```
 
 ## Code Architecture
 
 ### Configuration
-- `src/config.py` — global config: `IMG_SHAPE` (100×100 vs 256×256), `TRAIN_SIZE`/`TEST_SIZE`, `TWO_STAGE`, `COORD_CONV`, loss functions (`STAGE1/2_LOSS`), weighted BCE betas
-- `src/unet/config.py` — UNet-specific hyperparameters
+- `src/config.py` — global config: `IMG_SHAPE`, `TRAIN_SIZE`/`TEST_SIZE`, `TWO_STAGE`, `COORD_CONV`, loss functions
+- `src/image_based/unet/config.py` — re-exports src/config.py for unet's local imports
 
 ### Data pipeline (`src/utils/`)
-- `prepare_data.py` — reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs with augmentations
-- `create_ds.py` — dataset creation helpers
+- `prepare_data.py` — reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
 - `prepare_plots.py` — visualization: side-by-side profile vs. predicted midcurve
 - `metric_utils.py` — Keras callbacks, best-epoch tracking, training history
 
-### Model architectures (Phase I)
-Each subdirectory follows the same pattern:
-- `build_*_model.py` — defines the Keras/PyTorch model
-- `main_*.py` — loads data, trains, evaluates, plots
+### Path conventions (important for imports)
+All `main_*.py` files under `image_based/` compute `project_root` as **3 levels up** from
+the script (reaching `src/`), and also add `image_based/` to `sys.path` for cross-approach
+imports (e.g. `denoiser` imports from `simpleencoderdecoder`).
 
-| Directory | Architecture |
+Geometry-based scripts auto-resolve `src/data/raw` relative to `__file__`.
+
+### Image-based approaches (`src/image_based/`)
+
+| Directory | Architecture | Image size |
+|---|---|---|
+| `simpleencoderdecoder/` | 1 dense hidden layer (100 units) | 100×100 |
+| `cnnencoderdecoder/` | 4-level Conv2D encoder + Conv2DTranspose decoder | 128×128 |
+| `denseencoderdecoder/` | Fully connected (10,000 dims) | 100×100 |
+| `denoiserencoderdecoder/` | Denoising autoencoder (uses simple as first stage) | 100×100 |
+| `unet/` | 8-level UNet, auxiliary decoder, CoordConv, 2-stage WBCE | 256×256 |
+| `pix2pix/` | Pix2Pix GAN with discriminator (Keras) | 256×256 |
+| `img2img/` | Pix2Pix GAN (PyTorch) | 256×256 |
+
+### Geometry-based approaches (`src/geometry_based/`)
+
+| Directory | Description |
 |---|---|
-| `simpleencoderdecoder/` | 1 dense hidden layer (100 units), baseline |
-| `cnnencoderdecoder/` | 4-level Conv2D encoder + Conv2DTranspose decoder, skip connections |
-| `denseencoderdecoder/` | Fully connected, input flattened to 10,000 dims |
-| `denoiserencoderdecoder/` | Denoising autoencoder variant |
-| `unet/` | 8-level UNet with auxiliary decoder, batch norm, LeakyReLU; best performer |
-| `pix2pix/` | Pix2Pix GAN (Keras) |
-| `img2img/` | PyTorch image-to-image |
+| `graph_transformer/` | Non-auto-regressive Graph Transformer trained from scratch. Input: polygon graph (nodes=corners, features=(x,y)). Output: midcurve coords + adjacency. Loss: Chamfer + BCE. |
+| `finetuned_graph_transformer/` | Pretrained `clefourrier/graphormer-base-pcqm4mv2` (HuggingFace) fine-tuned in two phases: frozen head-only → joint fine-tuning. |
+| `gnnencoderdecoder/` | Legacy stub — not implemented, kept for reference. |
 
 ### Data format
-Raw data in `src/data/raw/`: named shapes (I, L, T, Plus, etc.)
-- `.dat` = profile polygon points (ASCII, one `x y` coordinate per line)
-- `.mid` = midcurve polyline points (same format)
+Raw data in `src/data/raw/`:
+- `.dat` = profile polygon points (ASCII, one `x y` per line, closed polygon)
+- `.mid` = midcurve polyline points (same format, open/branched)
 
-Training data split: 70% train / 30% validation by default. Test set in `src/data/test/`.
-
-### UNet details (`src/unet/`)
-The most developed model. Key files:
-- `unet.py` — architecture with configurable filter counts, coord conv channels
-- `train.py` — two-stage training; stage 1 trains full network, stage 2 fine-tunes with weighted BCE
-- `utils.py` — `CoordConv` layer implementation, custom loss functions
-- `losses/` — weighted BCE and other custom losses
-- `weights/` — saved model checkpoints
-- `results/` — inference output images
+Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdirectory.
 
 ## Research Context
 
-- Phase I limitations: raster approximation loses exact geometry; post-processing needed to extract clean polylines
-- Phase II (`gnnencoderdecoder/`) is scaffold only — `main_gnn_encoderdecoder.py` and `build_gnn_encoderdecoder_model.py` exist but are unfilled
-- Phase III material was moved out of this repo (see commit history)
-- `src/data/sequences.json` — JSON-format dataset used for LLM/sequence-to-sequence experiments
+- **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps
+- **Phase II** (`graph_transformer/`) is the current best approach — handles exact geometry and branching natively
+- **Phase II-b** (`finetuned_graph_transformer/`) adds transfer learning on top of Phase II
+- **Phase III** (`text_based/`) is planned — key challenge: branched midcurves can't be serialized as simple sequences
+- `src/text_based/data/sequences.json` — JSON-format dataset for LLM/seq2seq experiments

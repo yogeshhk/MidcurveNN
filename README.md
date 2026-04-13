@@ -23,13 +23,68 @@ of the License, or any later version.
 -->
 
 
-## Instructions to Run
+## Repository Structure
 
 ```
+src/
+├── config.py                         # Global configuration
+├── data/raw/                         # Raw .dat/.mid coordinate files (shared by all)
+├── utils/                            # Shared data prep, plotting, metrics
+│
+├── image_based/                      # Phase I — raster/bitmap approaches
+│   ├── simpleencoderdecoder/         # Dense baseline
+│   ├── cnnencoderdecoder/            # CNN encoder-decoder
+│   ├── denseencoderdecoder/          # Fully connected
+│   ├── denoiserencoderdecoder/       # Denoising autoencoder
+│   ├── unet/                         # UNet 2-stage (best image model)
+│   ├── pix2pix/                      # Pix2Pix GAN (Keras)
+│   ├── img2img/                      # Pix2Pix (PyTorch)
+│   └── kaggle/                       # Kaggle notebooks
+│
+├── geometry_based/                   # Phase II — graph/geometric approaches
+│   ├── graph_transformer/            # Non-auto-regressive Graph Transformer ← primary
+│   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurves
+│   └── gnnencoderdecoder/            # Legacy GNN stub (reference)
+│
+├── text_based/                       # Phase III — LLM/seq2seq (planned)
+│   └── data/sequences.json           # B-rep JSON sequences
+│
+└── testing/                          # Tests and benchmarks
+    ├── test_image_based.py
+    ├── test_geometry_based.py
+    ├── test_text_based.py
+    └── benchmark.py
+```
+
+## Instructions to Run
+
+```bash
 cd src
 conda env create -f environment.yml
-activate midcurvenn
-python simpleencoderdecoder\main_simple_encoderdecoder.py
+conda activate midcurvenn
+
+# Generate training data for all approaches
+python utils/prepare_data.py
+
+# --- Image-based (Phase I) ---
+python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
+
+# Best image model (UNet)
+cd image_based/unet && python train.py && python test.py
+
+# --- Geometry-based (Phase II) ---
+cd geometry_based/graph_transformer
+python main_graph_transformer.py
+
+# Fine-tune pretrained Graphormer (Phase II-b)
+cd geometry_based/finetuned_graph_transformer
+pip install transformers>=4.35
+python train.py
+
+# --- Tests & Benchmark ---
+cd src
+python -m pytest testing/ -v
+python testing/benchmark.py
 ```
 
 ## Thoughts
@@ -73,9 +128,11 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- With representation of Profile and Midcurve in form of text, json-brep, so that LLMs can be leveraged
 		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
-- Phase I has been implemented in a simplistic manner. 
-- Phase II is trying to look for a good representation to store geometry/graph/network as text so that NLP (Natural Language Techniques) can be applied. [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys many such representations and benchmarks them, but none of them looked appropriate for geometry. Need to wait till such graph 2 graph networks are available.
-- Phase III : We leverage a geometry representation similar to that found in 3D B-rep (Boundary representation), but in 2D. It can be shown as:
+- **Phase I** is fully implemented with 7 encoder-decoder variants. UNet (2-stage, CoordConv, weighted BCE) is the strongest.
+- **Phase II** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`).
+- **Phase III** data pipeline is ready (`text_based/data/sequences.json`); model code is planned.
+
+[Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
 ```
 {
 	'ShapeName': 'I',

@@ -4,5 +4,5 @@
 # when run from the src/unet/ directory.
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # src/
 from config import *  # noqa: F401, F403

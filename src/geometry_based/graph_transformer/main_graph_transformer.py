@@ -206,8 +206,10 @@ def evaluate_and_plot(model, dataset_raw, device, args):
 # ---------------------------------------------------------------------------
 
 def get_args():
+    _src_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    _default_data = os.path.join(_src_dir, "data", "raw")
     p = argparse.ArgumentParser("MidcurveNN Phase II")
-    p.add_argument("--data",       default="data/raw")
+    p.add_argument("--data",       default=_default_data)
     p.add_argument("--epochs",     type=int,   default=200)
     p.add_argument("--batch-size", type=int,   default=16)
     p.add_argument("--lr",         type=float, default=3e-4)
