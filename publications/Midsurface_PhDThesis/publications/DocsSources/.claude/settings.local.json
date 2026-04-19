@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdflatex -interaction=nonstopmode -file-line-error Main_TopoVal_expanded_v1_2026.tex)",
+      "Bash(make.bat)",
+      "Bash(pdflatex -interaction=nonstopmode Main_TopoVal_expanded_v1_2026.tex)",
+      "Bash(bibtex Main_TopoVal_expanded_v1_2026)",
+      "Bash(grep *)",
+      "Bash(python *)"
+    ]
+  }
+}
