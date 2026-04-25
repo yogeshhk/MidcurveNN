@@ -46,8 +46,14 @@ src/
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurves
 │   └── gnnencoderdecoder/            # Legacy GNN stub (reference)
 │
-├── text_based/                       # Phase III — LLM/seq2seq (planned)
-│   └── data/sequences.json           # B-rep JSON sequences
+├── text_based/                       # Phase III — LLM/seq2seq (implemented)
+│   ├── data/brep/                    # 4 base BRep JSON shapes (I, L, T, Plus)
+│   ├── data/csvs/                    # CSV train/test/val splits (993 rows)
+│   ├── utils/                        # BRep data pipeline (generate CSVs, visualize)
+│   ├── finetuning/                   # QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral)
+│   ├── codeT5/                       # CodeT5 notebooks
+│   ├── ludwig/                       # Ludwig framework notebooks
+│   └── prompt/                       # Few-shot prompting + LLM comparison
 │
 └── testing/                          # Tests and benchmarks
     ├── test_image_based.py
@@ -81,9 +87,20 @@ cd geometry_based/finetuned_graph_transformer
 pip install transformers>=4.35
 python train.py
 
+# --- Text-based / LLM (Phase III) ---
+cd text_based/utils
+python create_brep_csvs.py          # regenerate CSV dataset from base shapes
+
+cd ../finetuning
+python data_validator.py            # validate CSV data
+python train.py                     # QLoRA fine-tune Qwen/Gemma/Mistral
+python run_pipeline.py --full       # full pipeline in one command
+python model_server.py --port 8000  # serve via FastAPI
+
 # --- Tests & Benchmark ---
 cd src
 python -m pytest testing/ -v
+python -m pytest text_based/testing/test_text_based.py -v
 python testing/benchmark.py
 ```
 
@@ -130,7 +147,7 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 
 - **Phase I** is fully implemented with 7 encoder-decoder variants. UNet (2-stage, CoordConv, weighted BCE) is the strongest.
 - **Phase II** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`).
-- **Phase III** data pipeline is ready (`text_based/data/sequences.json`); model code is planned.
+- **Phase III** is **implemented** (`text_based/`) — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral 7B), CodeT5 and Ludwig notebooks, few-shot prompt scripts, and a FastAPI inference server. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
 ```

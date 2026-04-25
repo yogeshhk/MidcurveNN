@@ -1,0 +1,148 @@
+You are a geometric transformation program that transforms input 2D polygonal profile to output 1D polyline midcurve. 
+
+Input 2D polygonal profile is defined by set of segments which in turn are a set of connected lines. Each line is defined by two end points. Each point is defined by x y coordinates.
+
+Here is one example of shape "I"
+
+{
+	'ShapeName': 'I',
+	'Profile': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)],
+	'Midcurve': [(7.5, 5.0), (7.5, 20.0)],
+	'Profile_brep': {
+				'Points': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0),(5.0, 20.0)], # list of (x,y) coordinates
+				'Lines': [[0, 1], [1, 2], [2, 3], [3, 0]], # list of point ids (ie index in the Points list)
+                'Segments': [[0, 1, 2, 3]] # list of line ids (ie index in Lines list)
+				},
+	'Midcurve_brep': {
+				'Points': [(7.5, 5.0), (7.5, 20.0)],
+				'Lines': [[0, 1]],
+                'Segments': [[0]]
+				},				
+}
+
+Each Segment is a continuous list of lines. In case of, say `Midcurve-T`, as there is a intersection, we can treat each line in a separate segment. In case of 'Profile O', there will be two segments, one for outer lines and another for inner lines. Each line is list of points. Points is list of coordinates (x,y)
+
+Below are some example transformations, specified as pairs of 'Profile_brep' and the corresponding 'Midcurve_brep'. After learning from these examples, predict the 'Midcurve_brep' of the 'Profile_brep' specified.
+
+Do not write code or explain the logic but just give the list of lines with point coordinates as specified for the 'Midcurve_brep' format.
+
+## examples
+
+{'Midcurve': [(7.5, 5.0), (7.5, 20.0)],
+  'Midcurve_brep': {'Lines': [[0, 1]],
+                    'Points': [(7.5, 5.0), (7.5, 20.0)],
+                    'Segments': [[0]]},
+  'Profile': [(5.0, 5.0), (10.0, 5.0), (10.0, 20.0), (5.0, 20.0)],
+  'Profile_brep': {'Lines': [[0, 1], [1, 2], [2, 3], [3, 0]],
+                   'Points': [(5.0, 5.0),
+                              (10.0, 5.0),
+                              (10.0, 20.0),
+                              (5.0, 20.0)],
+                   'Segments': [[0, 1, 2, 3]]},
+  'ShapeName': 'I'},
+ {'Midcurve': [(7.5, 5.0), (7.5, 32.5), (35.0, 32.5)],
+  'Midcurve_brep': {'Lines': [[0, 1], [1, 2]],
+                    'Points': [(7.5, 5.0), (7.5, 32.5), (35.0, 32.5)],
+                    'Segments': [[0, 1]]},
+  'Profile': [(5.0, 5.0),
+              (10.0, 5.0),
+              (10.0, 30.0),
+              (35.0, 30.0),
+              (35.0, 35.0),
+              (5.0, 35.0)],
+  'Profile_brep': {'Lines': [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]],
+                   'Points': [(5.0, 5.0),
+                              (10.0, 5.0),
+                              (10.0, 30.0),
+                              (35.0, 30.0),
+                              (35.0, 35.0),
+                              (5.0, 35.0)],
+                   'Segments': [[0, 1, 2, 3, 4, 5]]},
+  'ShapeName': 'L'},
+ {'Midcurve': [(12.5, 0.0),
+               (12.5, 22.5),
+               (12.5, 45.0),
+               (0.0, 22.5),
+               (25.0, 22.5)],
+  'Midcurve_brep': {'Lines': [[0, 1], [4, 1], [2, 1], [3, 1]],
+                    'Points': [(12.5, 0.0),
+                               (12.5, 22.5),
+                               (12.5, 45.0),
+                               (0.0, 22.5),
+                               (25.0, 22.5)],
+                    'Segments': [[0], [1], [2], [3]]},
+  'Profile': [(0.0, 25.0),
+              (10.0, 25.0),
+              (10.0, 45.0),
+              (15.0, 45.0),
+              (15.0, 25.0),
+              (25.0, 25.0),
+              (25.0, 20.0),
+              (15.0, 20.0),
+              (15.0, 0.0),
+              (10.0, 0.0),
+              (10.0, 20.0),
+              (0.0, 20.0)],
+  'Profile_brep': {'Lines': [[0, 1],
+                             [1, 2],
+                             [2, 3],
+                             [3, 4],
+                             [4, 5],
+                             [5, 6],
+                             [6, 7],
+                             [7, 8],
+                             [8, 9],
+                             [9, 10],
+                             [10, 11],
+                             [11, 0]],
+                   'Points': [(0.0, 25.0),
+                              (10.0, 25.0),
+                              (10.0, 45.0),
+                              (15.0, 45.0),
+                              (15.0, 25.0),
+                              (25.0, 25.0),
+                              (25.0, 20.0),
+                              (15.0, 20.0),
+                              (15.0, 0.0),
+                              (10.0, 0.0),
+                              (10.0, 20.0),
+                              (0.0, 20.0)],
+                   'Segments': [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]]},
+  'ShapeName': 'Plus'},
+ {'Midcurve': [(12.5, 0.0), (12.5, 22.5), (25.0, 22.5), (0.0, 22.5)],
+  'Midcurve_brep': {'Lines': [[0, 1], [1, 2], [3, 1]],
+                    'Points': [(12.5, 0.0),
+                               (12.5, 22.5),
+                               (25.0, 22.5),
+                               (0.0, 22.5)],
+                    'Segments': [[0], [1], [2]]},
+  'Profile': [(0.0, 25.0),
+              (25.0, 25.0),
+              (25.0, 20.0),
+              (15.0, 20.0),
+              (15.0, 0.0),
+              (10.0, 0.0),
+              (10.0, 20.0),
+              (0.0, 20.0)],
+  'Profile_brep': {'Lines': [[0, 1],
+                             [1, 2],
+                             [2, 3],
+                             [3, 4],
+                             [4, 5],
+                             [5, 6],
+                             [6, 7],
+                             [7, 0]],
+                   'Points': [(0.0, 25.0),
+                              (25.0, 25.0),
+                              (25.0, 20.0),
+                              (15.0, 20.0),
+                              (15.0, 0.0),
+                              (10.0, 0.0),
+                              (10.0, 20.0),
+                              (0.0, 20.0)],
+                   'Segments': [[0, 1, 2, 3, 4, 5, 6, 7]]},
+  'ShapeName': 'T'}
+  
+## Find Midcurve_brep for following Profile_brep
+"Profile_brep": '{"Points": [[12.48, 0.65], [11.31, 23.12], [10.13, 45.59], [-1.18, 22.47], [23.79, 23.78]], "Lines": [[0, 1], [4, 1], [2, 1], [3, 1]], "Segments": [[0], [1], [2], [3]]}'
+

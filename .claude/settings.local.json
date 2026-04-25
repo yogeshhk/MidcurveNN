@@ -15,7 +15,28 @@
       "Bash(python -c \"import tensorflow as tf; print\\('tf', tf.__version__\\)\")",
       "Bash(python -c \"import torch; print\\('torch', torch.__version__\\)\")",
       "Bash(python:*)",
-      "Bash(tee image_based/simpleencoderdecoder/results/test_results.txt)"
+      "Bash(tee image_based/simpleencoderdecoder/results/test_results.txt)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && head -3 \"{}\"')",
+      "Bash(grep -E '\\\\.\\(py|json|csv|md|yml|yaml|cfg|ini|toml|sh|bat|txt\\)$')",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/midcurve_llm.csv\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_train.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/midcurve_llm_train.csv\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_test.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/midcurve_llm_test.csv\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_val.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/midcurve_llm_val.csv\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_train.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_test.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/data/csvs/midcurve_llm_val.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/data/csvs/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/prepare_data.py\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/prepare_data.py\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/prepare_plots.py\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/prepare_plots.py\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/create_brep_jsons.py\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/create_brep_jsons.py\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/create_brep_csvs.py\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/create_brep_csvs.py\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/__init__.py\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/__init__.py\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/backup/orig/\"* \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/backup/orig/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/utils/backup/hub/\"* \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/utils/backup/hub/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/codeT5/Gdrive_Fine_tune_CodeT5_for_midcurve_generation.ipynb\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/codeT5/\")",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/codeT5/Kaggle_Fine_tune_CodeT5_for_midcurve_generation.ipynb\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/codeT5/\")",
+      "Bash(cp D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/__TRACKED_VAR__ D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/)",
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/data/shapes2brep.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/data/\")"
     ]
   }
 }

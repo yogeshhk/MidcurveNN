@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Image-based (Phase I)**: Rasterize polygons to 100×100 or 256×256 bitmaps → encoder-decoder networks
 - **Geometry-based (Phase II)**: Graph neural network approach — exact coordinates, handles branching natively
-- **Text-based (Phase III)**: LLM/seq2seq approach using B-rep JSON text representations (planned)
+- **Text-based (Phase III)**: LLM/seq2seq approach using B-rep JSON text representations (implemented)
 
 Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyline (`.mid` file = skeleton points).
 
@@ -38,9 +38,17 @@ src/
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurve data
 │   └── gnnencoderdecoder/       # Legacy GNN stub (reference only)
 │
-├── text_based/                  # Phase III — LLM/sequence approaches (planned)
-│   ├── data/sequences.json      # B-rep JSON sequences generated from raw data
-│   └── README.md                # Approach documentation and roadmap
+├── text_based/                  # Phase III — LLM/sequence approaches (implemented)
+│   ├── data/
+│   │   ├── sequences.json       # Legacy flat-coord dataset (from src/utils/prepare_data.py)
+│   │   ├── brep/                # 4 base BRep JSON shapes (I, L, T, Plus)
+│   │   └── csvs/                # CSV train/test/val splits (993 rows, 80/10/10)
+│   ├── utils/                   # BRep data pipeline: config, prepare_data, create_brep_csvs, ...
+│   ├── finetuning/              # QLoRA fine-tuning: train, inference, evaluate, metrics, server
+│   ├── codeT5/                  # CodeT5 fine-tuning notebooks (Gdrive + Kaggle)
+│   ├── ludwig/                  # Ludwig framework notebooks + data
+│   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
+│   └── results/                 # Model checkpoints and evaluation outputs (generated)
 │
 └── testing/                     # Cross-approach tests and benchmarks
     ├── test_image_based.py      # Unit tests for all image-based approaches
@@ -58,6 +66,9 @@ conda activate midcurvenn
 
 # Extra dependency for finetuned_graph_transformer
 pip install transformers>=4.35
+
+# Extra dependencies for text_based/finetuning (QLoRA pipeline)
+pip install peft>=0.7.0 trl>=0.7.0 bitsandbytes>=0.41.0 accelerate>=0.25.0 fastapi uvicorn pydantic
 ```
 
 The environment targets Python 3.10 with TensorFlow 2.13, PyTorch, Keras, and Hugging Face transformers.
@@ -102,6 +113,25 @@ python train.py
 python train.py --quick --no-pretrained                 # offline / CI
 ```
 
+### Train — Text-based / LLM (Phase III)
+```bash
+# Regenerate BRep CSV datasets from base shapes
+cd src/text_based/utils
+python create_brep_csvs.py
+
+# Validate CSV data, then fine-tune with QLoRA
+cd src/text_based/finetuning
+python data_validator.py
+python train.py
+python evaluate.py --model_path Midcurve-Qwen-Coder-v1 --visualize
+
+# Full pipeline in one command
+python run_pipeline.py --full
+
+# Serve predictions via FastAPI
+python model_server.py --host 0.0.0.0 --port 8000
+```
+
 ### Test / Infer
 ```bash
 # UNet
@@ -112,6 +142,9 @@ cd src/geometry_based/graph_transformer && python evaluate.py
 
 # Fine-tuned Graphormer
 cd src/geometry_based/finetuned_graph_transformer && python test.py
+
+# LLM inference (after fine-tuning)
+cd src/text_based/finetuning && python inference.py --single
 ```
 
 ### Run tests
@@ -181,5 +214,7 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps
 - **Phase II** (`graph_transformer/`) is the current best approach — handles exact geometry and branching natively
 - **Phase II-b** (`finetuned_graph_transformer/`) adds transfer learning on top of Phase II
-- **Phase III** (`text_based/`) is planned — key challenge: branched midcurves can't be serialized as simple sequences
-- `src/text_based/data/sequences.json` — JSON-format dataset for LLM/seq2seq experiments
+- **Phase III** (`text_based/`) is **implemented** — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral), CodeT5 and Ludwig notebooks, few-shot prompt scripts
+- BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology
+- `text_based/data/brep/` — 4 base BRep JSON shapes; `text_based/data/csvs/` — 993-row train/test/val CSV splits
+- `text_based/finetuning/` — full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)

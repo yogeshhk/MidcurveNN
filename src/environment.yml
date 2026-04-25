@@ -27,9 +27,22 @@ dependencies:
     - torch-geometric
     - keras==2.13.1
     - huggingface-hub
-    - transformers
-    - datasets
+    - transformers>=4.36.0
+    - datasets>=2.14.0
     - drawsvg
     - imageio
     - opencv-python
     - matplotlib
+    - seaborn>=0.12.0
+    - scipy>=1.11.0
+    # text_based/finetuning dependencies
+    - peft>=0.7.0
+    - trl>=0.7.0
+    - bitsandbytes>=0.41.0
+    - accelerate>=0.25.0
+    - sentencepiece>=0.1.99
+    - protobuf>=3.20.0
+    - fastapi>=0.104.0
+    - uvicorn>=0.24.0
+    - pydantic>=2.0.0
+    - wandb>=0.16.0
