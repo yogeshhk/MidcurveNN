@@ -214,6 +214,18 @@ Raw data in `src/data/raw/`:
 
 Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdirectory.
 
+## Known Gotchas
+
+- **`src/utils/prepare_data.py` lazy imports**: TensorFlow and matplotlib are imported lazily (try/except at the top) so that geometry and text tests can import the module without those heavy deps installed. Do not move them to unconditional top-level imports — CI jobs will break.
+
+- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase III `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing — do not remove that guard.
+
+- **Image model `_build()` pattern**: All four image encoder-decoder classes (`simple`, `cnn`, `dense`, `denoiser`) build their Keras sub-models in `_build()` called from `__init__()`, not inside `train()`. This is required for `predict()` to work without training first (e.g. in tests). Do not inline model construction back into `train()`.
+
+- **HuggingFace Graphormer is deprecated**: The `finetuned_graph_transformer` targets `clefourrier/graphormer-base-pcqm4mv2`. Newer `transformers` versions mark this deprecated and the `forward()` API has changed incompatibly. The two forward-pass tests gracefully `skipTest` on `IndexError/RuntimeError/TypeError` — this is intentional.
+
+- **CI image-based job is import/data only**: `.github/workflows/ci.yml` runs the image tests with `-k "not model and not unet_import"` and only installs `numpy pillow pytest` — no TF or matplotlib. Keep visualisation and model tests behind the existing skip guards.
+
 ## Research Context
 
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps

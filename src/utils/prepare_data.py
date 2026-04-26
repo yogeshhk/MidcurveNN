@@ -21,6 +21,17 @@ try:
 except ImportError:
     _TF_AVAILABLE = False
     img_to_array = load_img = array_to_img = None
+
+# matplotlib is only needed for visualisation helpers (plot_profie, plot_profile_dict).
+# Import lazily so CI jobs that skip rendering can still import this module.
+try:
+    import matplotlib.pyplot as plt
+    _MPL_AVAILABLE = True
+except ImportError:
+    _MPL_AVAILABLE = False
+    plt = None
+
+import math
 import shutil
 import sys
 
@@ -328,10 +339,6 @@ def plot_profie(output_seqeunce, close=False):
     plt.plot(xs, ys, color=color, linestyle=linestyle)
 
 
-import matplotlib.pyplot as plt
-import numpy as np
-
-
 def scale_sequence(sequence, factor=1):
     input_point_sequence_extended = [(x, y, 1) for x, y in sequence]
     scaled_points_list = []
@@ -342,9 +349,6 @@ def scale_sequence(sequence, factor=1):
         x_s, y_s, _ = output_row
         scaled_points_list.append((round(x_s, 2), round(y_s, 2)))
     return scaled_points_list
-
-
-import math
 
 
 def rotate_sequence(sequence, theta=30):
