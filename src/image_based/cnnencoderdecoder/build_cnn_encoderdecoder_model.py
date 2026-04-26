@@ -18,108 +18,97 @@ import sys
 from config import MODELS_FOLDER
 
 class cnn_encoderdecoder:
-    def __init__(self,input_shape=(128,128,1)):
+    def __init__(self, input_shape=(128, 128, 1)):
         self.encoding_dim = 100
         self.input_dim = 128
         self.epochs = 100
         self.batch_size = 16
-        self.cnn_autoencoder_model_pkl = os.path.join("models","cnn_autoencoder_model")
+        self.cnn_autoencoder_model_pkl = os.path.join("models", "cnn_autoencoder_model")
         self.input_shape = input_shape
 
-    def process_images(self,grayobjs,shape=(128,128,1)):
-        flat_objs = [x.reshape(shape[0],shape[1],shape[2]) for x in grayobjs]
+        self._build()
+
+    def _build(self):
+        """Build Keras model with random weights (no training data needed)."""
+        input_img = Input(shape=self.input_shape)
+
+        # Level 1: 128x128
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+        x = BatchNormalization()(x)
+        skip1 = x
+
+        # Level 2: 64x64
+        x = Conv2D(64, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        skip2 = x
+
+        # Level 3: 32x32
+        x = Conv2D(128, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        skip3 = x
+
+        # Level 4: 16x16
+        x = Conv2D(256, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+
+        # Decoder
+        x = Conv2DTranspose(128, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Add()([x, skip3])
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+
+        x = Conv2DTranspose(64, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Add()([x, skip2])
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+
+        x = Conv2DTranspose(32, (3, 3), strides=2, activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+        x = Add()([x, skip1])
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+        x = BatchNormalization()(x)
+
+        decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+
+        self.cnn_autoencoder = Model(input_img, decoded)
+        self.cnn_autoencoder.compile(
+            optimizer='adam',
+            loss='binary_crossentropy',
+            metrics=['accuracy', 'mae']
+        )
+
+    def process_images(self, grayobjs, shape=(128, 128, 1)):
+        flat_objs = [x.reshape(shape[0], shape[1], shape[2]) for x in grayobjs]
         pngs_objs = np.array(flat_objs)
         return pngs_objs
 
     def train(self,
-            profile_pngs_gray_objs, 
-            midcurve_pngs_gray_objs,
-            retrain_model=False):
-        
+              profile_pngs_gray_objs,
+              midcurve_pngs_gray_objs,
+              retrain_model=False):
+
         if not os.path.exists(self.cnn_autoencoder_model_pkl) or retrain_model:
-            input_img = Input(shape=self.input_shape)
-
-            # Level 1: 128x128
-            x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
-            x = BatchNormalization()(x)
-            skip1 = x
-
-            # Level 2: 64x64
-            x = Conv2D(64, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            skip2 = x  # 64x64x64
-
-            # Level 3: 32x32
-            x = Conv2D(128, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            skip3 = x  # 32x32x128
-
-            # Level 4: 16x16
-            x = Conv2D(256, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            
-            # Decoder path
-            # Level 3: 32x32
-            x = Conv2DTranspose(128, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Add()([x, skip3])
-            x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-
-            # Level 2: 64x64
-            x = Conv2DTranspose(64, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Add()([x, skip2])
-            x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-
-            # Level 1: 128x128
-            x = Conv2DTranspose(32, (3, 3), strides=2, activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-            x = Add()([x, skip1])
-            x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-            x = BatchNormalization()(x)
-
-            # Final output
-            decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
-            
-            self.cnn_autoencoder = Model(input_img, decoded)
-            self.cnn_autoencoder.summary()
-            
-            self.cnn_autoencoder.compile(
-                optimizer='adam', 
-                loss='binary_crossentropy',
-                metrics=['accuracy', 'mae']
-            )
-            
-            profile_pngs_objs = self.process_images(profile_pngs_gray_objs,self.input_shape)
-            midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs,(128,128,1))                
+            profile_pngs_objs = self.process_images(profile_pngs_gray_objs, self.input_shape)
+            midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs, (128, 128, 1))
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
-            
+
             metrics_history = MetricsHistory()
             callbacks = [
-                EarlyStopping(
-                    monitor='loss',
-                    patience=10,
-                    restore_best_weights=True
-                ),
-                ReduceLROnPlateau(
-                    monitor='loss',
-                    factor=0.5,
-                    patience=5,
-                    min_lr=1e-6
-                ),
+                EarlyStopping(monitor='loss', patience=10, restore_best_weights=True),
+                ReduceLROnPlateau(monitor='loss', factor=0.5, patience=5, min_lr=1e-6),
                 metrics_history
             ]
-            
-            history = self.cnn_autoencoder.fit(
+
+            self.cnn_autoencoder.fit(
                 self.x, self.y,
                 epochs=self.epochs,
                 batch_size=self.batch_size,
@@ -127,7 +116,7 @@ class cnn_encoderdecoder:
                 callbacks=callbacks,
                 validation_split=0.2
             )
-                            
+
             print("saving model at {}".format(self.cnn_autoencoder_model_pkl))
             self.cnn_autoencoder.save(self.cnn_autoencoder_model_pkl)
             print_best_metrics(metrics_history.history, "CNN Encoder-Decoder")

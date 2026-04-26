@@ -1,6 +1,10 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
+[![CI](https://github.com/yogeshhk/MidcurveNN/actions/workflows/ci.yml/badge.svg)](https://github.com/yogeshhk/MidcurveNN/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
+
 MidcurveNN is a project aimed at solving the challenging problem of finding the midcurve of a 2D closed shape using neural networks. The primary goal is to transform a closed polygon, represented by a set of points or connected lines, into another set of points or connected lines, allowing for the possibility of open or branched polygons in the output. To run the project, follow the provided instructions in the "Instructions to Run" section.
 
 ![Midcurve](https://github.com/yogeshhk/MidcurveNN/blob/master/publications/Midcurve_LaTeX/images/midcurvenn_simpleencoderdecoder.jpg)
@@ -55,10 +59,13 @@ src/
 │   ├── ludwig/                       # Ludwig framework notebooks
 │   └── prompt/                       # Few-shot prompting + LLM comparison
 │
-└── testing/                          # Tests and benchmarks
-    ├── test_image_based.py
-    ├── test_geometry_based.py
-    ├── test_text_based.py
+├── image_based/testing/              # Phase I tests
+│   └── test_image_based.py
+├── geometry_based/testing/           # Phase II tests
+│   └── test_geometry_based.py
+├── text_based/testing/               # Phase III tests
+│   └── test_text_based.py
+└── testing/                          # Cross-approach benchmark
     └── benchmark.py
 ```
 
@@ -99,9 +106,11 @@ python model_server.py --port 8000  # serve via FastAPI
 
 # --- Tests & Benchmark ---
 cd src
-python -m pytest testing/ -v
-python -m pytest text_based/testing/test_text_based.py -v
-python testing/benchmark.py
+python -m pytest                                              # all 3 approach suites (via pytest.ini)
+python -m pytest image_based/testing/test_image_based.py -v  # Phase I only
+python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase II only
+python -m pytest text_based/testing/test_text_based.py -v    # Phase III only
+python testing/benchmark.py                                   # cross-approach benchmark
 ```
 
 ## Thoughts

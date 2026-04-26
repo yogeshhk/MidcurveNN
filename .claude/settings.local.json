@@ -36,7 +36,8 @@
       "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/codeT5/Gdrive_Fine_tune_CodeT5_for_midcurve_generation.ipynb\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/codeT5/\")",
       "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/codeT5/Kaggle_Fine_tune_CodeT5_for_midcurve_generation.ipynb\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/codeT5/\")",
       "Bash(cp D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/__TRACKED_VAR__ D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/)",
-      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/data/shapes2brep.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/data/\")"
+      "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/data/shapes2brep.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/data/\")",
+      "Bash(conda run *)"
     ]
   }
 }

@@ -1,18 +1,19 @@
 name: midcurvenn
+# Channels: remove 'apple' (macOS-only). Use pytorch + conda-forge for cross-platform builds.
 channels:
-  - apple
   - pytorch
   - conda-forge
   - defaults
 dependencies:
   - python=3.10.*
   - pytorch
-  - torchvision 
+  - torchvision
   - torchaudio
   - numpy=1.24.*
   - pandas=2.1.*
   - matplotlib-base=3.8.*
   - pillow=10.1.*
+  - scipy>=1.11.0
   - jupyter=1.0.*
   - ipython=8.17.*
   - notebook=7.0.*
@@ -22,19 +23,18 @@ dependencies:
   - setuptools=68.2.*
   - tqdm=4.66.*
   - pip:
-    - tensorflow-macos==2.13.0
-    - tensorflow-metal==1.0.1
-    - torch-geometric
+    # TensorFlow: use 'tensorflow' for Windows/Linux; on Apple Silicon use
+    # 'tensorflow-macos' + 'tensorflow-metal' instead.
+    - tensorflow>=2.13.0
     - keras==2.13.1
+    - torch-geometric
     - huggingface-hub
     - transformers>=4.36.0
     - datasets>=2.14.0
     - drawsvg
     - imageio
     - opencv-python
-    - matplotlib
     - seaborn>=0.12.0
-    - scipy>=1.11.0
     # text_based/finetuning dependencies
     - peft>=0.7.0
     - trl>=0.7.0

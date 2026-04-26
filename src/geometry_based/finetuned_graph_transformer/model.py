@@ -94,27 +94,30 @@ class GraphormerBackbone(nn.Module):
         # via its input_nodes embedding by converting coords to a single int index
         # (a simplification — coords are binned to 256 buckets per axis).
         BINS = 256
-        x_bin = (x_dense.clamp(0, 1) * (BINS - 1)).long()  # (B, N, 2)
-        node_ids = x_bin[..., 0] * BINS + x_bin[..., 1]    # (B, N) flatten to 1D token
+        x_bin = (x_dense.clamp(0, 1) * (BINS - 1)).long()     # (B, N, 2)
+        node_ids = x_bin[..., 0] * BINS + x_bin[..., 1]       # (B, N) flatten to 1D token
+        node_ids = node_ids.unsqueeze(-1)                      # (B, N, 1) — HF Graphormer expects 3D input_nodes
 
         # Spatial pos encoding from adjacency (shortest-path distances)
         # Graphormer's built-in spatial encoder expects attn_bias & spatial_pos.
         # We pass the adjacency as spatial_pos (1 = connected, 0 = not) clamped to int.
         spatial_pos = adj.long()  # (B, N, N)
 
-        # Build attention bias from spatial_pos (shape B, H, N, N) — zeros OK here
-        # since spatial positional encoding inside Graphormer will apply learned bias.
-        attn_bias = torch.zeros(B, self.backbone.config.num_attention_heads,
-                                max_n + 1, max_n + 1,
-                                device=x.device)
+        # attn_bias shape: (B, N+1, N+1) — HF Graphormer adds the head dim internally
+        # via .unsqueeze(1).repeat(1, num_heads, 1, 1), so we must NOT include it here.
+        attn_bias = torch.zeros(B, max_n + 1, max_n + 1, device=x.device)
 
+        # attn_edge_type: per-hop edge type features (B, N, N, num_edge_dist)
+        # We have no multi-type edges, so pass zeros with 1 feature dim.
+        edge_zeros = torch.zeros(B, max_n, max_n, 1, dtype=torch.long, device=x.device)
         outputs = self.backbone(
             input_nodes=node_ids,
-            input_edges=torch.zeros(B, max_n, max_n, 1, dtype=torch.long, device=x.device),
+            input_edges=edge_zeros,
             attn_bias=attn_bias,
             in_degree=adj.sum(-1).long(),
             out_degree=adj.sum(-2).long(),
             spatial_pos=spatial_pos,
+            attn_edge_type=edge_zeros,
             on_the_fly_graph_features=None,
         )
         # outputs.last_hidden_state: (B, max_n+1, hidden)

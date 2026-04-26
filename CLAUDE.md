@@ -50,11 +50,16 @@ src/
 │   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
 │   └── results/                 # Model checkpoints and evaluation outputs (generated)
 │
-└── testing/                     # Cross-approach tests and benchmarks
-    ├── test_image_based.py      # Unit tests for all image-based approaches
-    ├── test_geometry_based.py   # Unit tests for geometry-based approaches
-    ├── test_text_based.py       # Smoke tests for text data pipeline
-    └── benchmark.py             # Comparative benchmark across all approaches
+├── image_based/testing/         # Phase I unit tests
+│   └── test_image_based.py
+├── geometry_based/testing/      # Phase II unit tests
+│   └── test_geometry_based.py
+├── text_based/testing/          # Phase III smoke tests
+│   └── test_text_based.py
+├── testing/                     # Cross-approach benchmark
+│   └── benchmark.py
+├── conftest.py                  # Pytest sys.path setup (auto-loaded by pytest)
+└── pytest.ini                   # Test discovery config: maps `pytest` to all 3 test dirs
 ```
 
 ## Environment Setup
@@ -150,10 +155,10 @@ cd src/text_based/finetuning && python inference.py --single
 ### Run tests
 ```bash
 cd src
-python -m pytest testing/ -v
-python -m pytest testing/test_image_based.py -v
-python -m pytest testing/test_geometry_based.py -v
-python -m pytest testing/test_text_based.py -v
+python -m pytest                                              # all 3 suites (auto-discovered via pytest.ini)
+python -m pytest image_based/testing/test_image_based.py -v  # Phase I
+python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase II
+python -m pytest text_based/testing/test_text_based.py -v    # Phase III
 ```
 
 ### Run benchmark

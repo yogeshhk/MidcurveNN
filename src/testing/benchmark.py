@@ -239,14 +239,54 @@ def benchmark_geometry(approach: str = 'graph_transformer') -> dict:
 
 
 # ===========================================================================
-# Text-based benchmark (Phase III — placeholder)
+# Text-based benchmark (Phase III — data validation)
 # ===========================================================================
 
 def benchmark_text() -> dict:
-    seq_file = os.path.join(_SRC, 'text_based', 'data', 'sequences.json')
-    status = "OK — data ready" if os.path.isfile(seq_file) else "SKIP — sequences.json not found"
-    return {"approach": "text_based (Phase III)", "status": status,
-            "note": "Model not yet implemented — see text_based/README.md"}
+    """
+    Validate the Phase III (LLM / text-based) data pipeline.
+    Checks that all CSV splits exist and reports row counts.
+    Model inference requires a fine-tuned checkpoint and a GPU;
+    run text_based/finetuning/evaluate.py for full evaluation.
+    """
+    csvs_dir = os.path.join(_SRC, 'text_based', 'data', 'csvs')
+    brep_dir = os.path.join(_SRC, 'text_based', 'data', 'brep')
+
+    issues = []
+
+    # Check BRep base shapes
+    for shape in ('I', 'L', 'T', 'Plus'):
+        p = os.path.join(brep_dir, f"{shape}.json")
+        if not os.path.isfile(p):
+            issues.append(f"Missing brep/{shape}.json")
+
+    # Check CSV splits and report row counts
+    csv_counts = {}
+    for fname in ('midcurve_llm.csv', 'midcurve_llm_train.csv',
+                  'midcurve_llm_test.csv', 'midcurve_llm_val.csv'):
+        p = os.path.join(csvs_dir, fname)
+        if not os.path.isfile(p):
+            issues.append(f"Missing csvs/{fname}")
+            continue
+        try:
+            with open(p) as f:
+                rows = sum(1 for _ in f) - 1  # subtract header
+            csv_counts[fname] = rows
+        except Exception as e:
+            issues.append(f"Error reading {fname}: {e}")
+
+    if issues:
+        return {"approach": "text_based (Phase III)",
+                "status": "WARN — " + "; ".join(issues),
+                "csv_counts": csv_counts,
+                "note": "Run: cd src/text_based/utils && python create_brep_csvs.py"}
+
+    note = (f"Data OK: train={csv_counts.get('midcurve_llm_train.csv', '?')} rows, "
+            f"test={csv_counts.get('midcurve_llm_test.csv', '?')} rows, "
+            f"val={csv_counts.get('midcurve_llm_val.csv', '?')} rows. "
+            "For model eval run: cd src/text_based/finetuning && python evaluate.py")
+    return {"approach": "text_based (Phase III)", "status": "OK",
+            "csv_counts": csv_counts, "note": note}
 
 
 # ===========================================================================
@@ -285,9 +325,12 @@ def print_table(results: list):
     # Text-based
     text_results = [r for r in results if r.get('type') == 'text']
     if text_results:
-        print("\n  TEXT-BASED (Phase III)  –  Placeholder")
+        print("\n  TEXT-BASED (Phase III)  –  Data Validation")
         for r in text_results:
             print(f"  {r['approach']}: {r['status']}")
+            counts = r.get('csv_counts', {})
+            if counts:
+                print(f"    CSV rows: " + ", ".join(f"{k}={v}" for k, v in counts.items()))
             if 'note' in r:
                 print(f"    Note: {r['note']}")
 

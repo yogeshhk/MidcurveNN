@@ -292,6 +292,15 @@ class TestUtilsImports(unittest.TestCase):
 
     def test_24_create_brep_csvs_importable(self):
         self._add_utils_path()
+        # When the full test suite runs, src/config.py (UNet config) may be cached
+        # as 'config' from Phase I tests. It lacks the text_based constants
+        # (BREP_FOLDER, SCALE_START, …) so we clear the stale cache entry so
+        # that text_based/utils/config.py (which is at sys.path[0] after
+        # _add_utils_path) is found on the next import.
+        if 'config' in sys.modules and not hasattr(sys.modules['config'], 'BREP_FOLDER'):
+            del sys.modules['config']
+        if 'create_brep_csvs' in sys.modules:
+            del sys.modules['create_brep_csvs']
         try:
             import create_brep_csvs  # noqa: F401
         except ImportError as e:
@@ -335,11 +344,13 @@ class TestFinetuningImports(unittest.TestCase):
             from metrics import GeometricMetrics
         except ImportError as e:
             self.skipTest(f"metrics unavailable: {e}")
-        pred = [[0.0, 0.0], [2.0, 0.0]]
-        true = [[0.0, 0.0], [2.0, 0.5]]
+        # hausdorff_metric expects BRep dicts (or JSON strings) with a "Points" key.
+        pred = {"Points": [[0.0, 0.0], [2.0, 0.0]]}
+        true = {"Points": [[0.0, 0.0], [2.0, 0.5]]}
         dist = GeometricMetrics.hausdorff_metric(pred, true)
         self.assertIsInstance(dist, float)
-        self.assertGreaterEqual(dist, 0.0)
+        self.assertGreater(dist, 0.0, "Hausdorff distance should be > 0 for distinct point sets")
+        self.assertLess(dist, 100.0, "Hausdorff distance should not be the error sentinel 1000.0")
 
 
 if __name__ == '__main__':

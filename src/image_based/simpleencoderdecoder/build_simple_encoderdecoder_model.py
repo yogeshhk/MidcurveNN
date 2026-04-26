@@ -22,13 +22,43 @@ class simple_encoderdecoder:
         self.encoding_dim = 100
         self.input_dim = 10000
         self.epochs = 100
-        self.batch_size = 16 
+        self.batch_size = 16
         self.models_dir = Path("models")
         self.models_dir.mkdir(exist_ok=True)
-        
+
         self.autoencoder_model_pkl = self.models_dir / "autoencoder_model"
         self.encoder_model_pkl = self.models_dir / "encoder_model"
         self.decoder_model_pkl = self.models_dir / "decoder_model"
+
+        self._build()
+
+    def _build(self):
+        """Build Keras sub-models with random weights (no training data needed)."""
+        input_img = Input(shape=(self.input_dim,))
+
+        encoded = Dense(self.encoding_dim,
+                        activation='relu',
+                        kernel_initializer='he_normal',
+                        activity_regularizer=regularizers.l1(1e-5))(input_img)
+        encoded = BatchNormalization()(encoded)
+        encoded = Dropout(0.2)(encoded)
+
+        decoded = Dense(self.input_dim,
+                        activation='sigmoid',
+                        kernel_initializer='glorot_normal')(encoded)
+
+        self.autoencoder = Model(input_img, decoded)
+        self.encoder = Model(input_img, encoded)
+
+        encoded_input = Input(shape=(self.encoding_dim,))
+        decoder_layer = self.autoencoder.layers[-1]
+        self.decoder = Model(encoded_input, decoder_layer(encoded_input))
+
+        self.autoencoder.compile(
+            optimizer=Adam(learning_rate=0.001),
+            loss='binary_crossentropy',
+            metrics=['accuracy', 'mae']
+        )
 
     def process_images(self, grayobjs):
         return np.array([x.reshape(self.input_dim) for x in grayobjs])
@@ -39,33 +69,6 @@ class simple_encoderdecoder:
               retrain_model=False):
 
         if not self.autoencoder_model_pkl.exists() or retrain_model:
-            input_img = Input(shape=(self.input_dim,))
-
-            encoded = Dense(self.encoding_dim, 
-                          activation='relu',
-                          kernel_initializer='he_normal',
-                          activity_regularizer=regularizers.l1(1e-5))(input_img)
-            encoded = BatchNormalization()(encoded)
-            encoded = Dropout(0.2)(encoded)
-
-            decoded = Dense(self.input_dim,
-                          activation='sigmoid',
-                          kernel_initializer='glorot_normal')(encoded)
-
-            self.autoencoder = Model(input_img, decoded)
-            self.encoder = Model(input_img, encoded)
-            
-            encoded_input = Input(shape=(self.encoding_dim,))
-            decoder_layer = self.autoencoder.layers[-1]
-            self.decoder = Model(encoded_input, decoder_layer(encoded_input))
-
-            optimizer = Adam(learning_rate=0.001)
-            self.autoencoder.compile(
-                optimizer=optimizer,
-                loss='binary_crossentropy',
-                metrics=['accuracy', 'mae']
-            )
-
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs)
             midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs)
 
@@ -80,7 +83,7 @@ class simple_encoderdecoder:
                 ),
                 ModelCheckpoint(
                     filepath=str(self.autoencoder_model_pkl),
-                    monitor='val_loss', 
+                    monitor='val_loss',
                     save_best_only=True,
                     verbose=1
                 ),
@@ -89,8 +92,8 @@ class simple_encoderdecoder:
 
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
-            
-            history = self.autoencoder.fit(
+
+            self.autoencoder.fit(
                 self.x, self.y,
                 epochs=self.epochs,
                 batch_size=self.batch_size,
@@ -113,6 +116,7 @@ class simple_encoderdecoder:
         png_profile_images = self.process_images(test_profile_images)
         encoded_imgs = self.encoder.predict(png_profile_images, batch_size=self.batch_size)
         decoded_imgs = self.decoder.predict(encoded_imgs, batch_size=self.batch_size)
+        decoded_imgs = decoded_imgs.reshape(np.asarray(test_profile_images).shape)
         return test_profile_images, decoded_imgs
 
 

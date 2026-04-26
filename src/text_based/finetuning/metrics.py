@@ -26,9 +26,11 @@ class GeometricMetrics:
     @staticmethod
     def chamfer_distance(set_a, set_b):
         """Computes Chamfer Distance between two point clouds."""
+        set_a = np.asarray(set_a, dtype=float)
+        set_b = np.asarray(set_b, dtype=float)
         if len(set_a) == 0 or len(set_b) == 0:
             return float('inf')
-            
+
         dist_matrix = np.linalg.norm(set_a[:, None] - set_b[None, :], axis=2)
         term1 = np.mean(np.min(dist_matrix, axis=1))
         term2 = np.mean(np.min(dist_matrix, axis=0))

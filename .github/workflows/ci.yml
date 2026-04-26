@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test-text-based:
+    name: Text-based tests (no GPU)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install minimal dependencies
+        run: |
+          pip install --upgrade pip
+          pip install numpy pandas scipy pytest
+
+      - name: Run text-based smoke tests
+        working-directory: src
+        run: python -m pytest text_based/testing/test_text_based.py -v
+
+  test-geometry-based:
+    name: Geometry-based tests (CPU)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install PyTorch (CPU) and PyG
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install torch_geometric
+          pip install numpy scipy pytest
+
+      - name: Run geometry-based tests
+        working-directory: src
+        run: python -m pytest geometry_based/testing/test_geometry_based.py -v
+
+  test-image-based:
+    name: Image-based tests (import / data only)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install minimal dependencies
+        run: |
+          pip install --upgrade pip
+          pip install numpy pillow pytest
+
+      - name: Run image-based data/import tests
+        working-directory: src
+        # TF model tests auto-skip when TF is not installed.
+        run: python -m pytest image_based/testing/test_image_based.py -v -k "not model and not unet_import"

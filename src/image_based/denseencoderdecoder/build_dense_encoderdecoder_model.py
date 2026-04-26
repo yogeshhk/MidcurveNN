@@ -25,6 +25,34 @@ class dense_encoderdecoder:
         self.encoder_model_pkl = os.path.join("models", "dense_encoder_model")
         self.decoder_model_pkl = os.path.join("models", "dense_decoder_model")
 
+        self._build()
+
+    def _build(self):
+        """Build Keras sub-models with random weights (no training data needed)."""
+        input_img = Input(shape=(self.input_dim,))
+        encoded = Dense(2048, activation='elu')(input_img)
+        encoded = Dense(1024, activation='elu')(encoded)
+        encoded = Dense(self.encoding_dim, activation='elu')(encoded)
+        decoded = Dense(1024, activation='elu')(encoded)
+        decoded = Dense(2048, activation='elu')(decoded)
+        decoded = Dense(self.input_dim, activation='sigmoid')(decoded)
+
+        self.autoencoder = Model(input_img, decoded)
+        self.encoder = Model(input_img, encoded)
+
+        encoded_input = Input(shape=(self.encoding_dim,))
+        decoder_layers = self.autoencoder.layers[-3:]
+        x = encoded_input
+        for layer in decoder_layers:
+            x = layer(x)
+        self.decoder = Model(encoded_input, x)
+
+        self.autoencoder.compile(
+            optimizer=Adam(learning_rate=0.0001),
+            loss='binary_crossentropy',
+            metrics=['accuracy', 'mae']
+        )
+
     def process_images(self, grayobjs):
         flat_objs = [x.reshape(self.input_dim) for x in grayobjs]
         pngs_objs = np.array(flat_objs)
@@ -35,44 +63,19 @@ class dense_encoderdecoder:
               midcurve_pngs_gray_objs,
               retrain_model=False):
         if not os.path.exists(self.autoencoder_model_pkl) or retrain_model:
-            input_img = Input(shape=(self.input_dim,))
-            encoded = Dense(2048, activation='elu')(input_img)
-            encoded = Dense(1024, activation='elu')(encoded)
-            encoded = Dense(self.encoding_dim, activation='elu')(encoded)
-            decoded = Dense(1024, activation='elu')(encoded)
-            decoded = Dense(2048, activation='elu')(decoded)
-            decoded = Dense(self.input_dim, activation='sigmoid')(decoded)
-            
-            self.autoencoder = Model(input_img, decoded)
-            self.encoder = Model(input_img, encoded)
-            
-            encoded_input = Input(shape=(self.encoding_dim,))
-            decoder_layers = self.autoencoder.layers[-3:]
-            x = encoded_input
-            for layer in decoder_layers:
-                x = layer(x)
-            self.decoder = Model(encoded_input, x)
-
-            optimizer = Adam(learning_rate=0.0001)
-            self.autoencoder.compile(
-                optimizer=optimizer, 
-                loss='binary_crossentropy',
-                metrics=['accuracy', 'mae']
-            )
-
             profile_pngs_objs = self.process_images(profile_pngs_gray_objs)
             midcurve_pngs_objs = self.process_images(midcurve_pngs_gray_objs)
 
             self.x = profile_pngs_objs
             self.y = midcurve_pngs_objs
-            
+
             metrics_history = MetricsHistory()
             callbacks = [
                 EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50),
                 metrics_history
             ]
 
-            history = self.autoencoder.fit(
+            self.autoencoder.fit(
                 self.x, self.y,
                 epochs=self.epochs,
                 batch_size=self.batch_size,
