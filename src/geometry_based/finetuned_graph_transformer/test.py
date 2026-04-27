@@ -1,5 +1,5 @@
 """
-test.py  –  MidcurveNN Phase II-b
+test.py  –  MidcurveNN Phase III-b
 =====================================
 Evaluate a trained fine-tuned Graphormer checkpoint on the full dataset.
 
@@ -32,7 +32,7 @@ from model import MidcurveFinetuned
 
 def get_args():
     _default_data = os.path.join(_SRC, "data", "raw")
-    p = argparse.ArgumentParser("MidcurveNN Phase II-b  –  Test")
+    p = argparse.ArgumentParser("MidcurveNN Phase III-b  –  Test")
     p.add_argument("--data",       default=_default_data)
     p.add_argument("--ckpt",       default="checkpoints/best_model.pt")
     p.add_argument("--results-dir",default="results")

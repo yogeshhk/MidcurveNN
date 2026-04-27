@@ -1,5 +1,5 @@
 """
-train.py  –  MidcurveNN Phase II
+train.py  –  MidcurveNN Phase IIII
 ==================================
 Training loop for the Graph Transformer midcurve model.
 
@@ -206,7 +206,7 @@ def train(args):
 # ---------------------------------------------------------------------------
 
 def get_args():
-    p = argparse.ArgumentParser("MidcurveNN Phase II – Training")
+    p = argparse.ArgumentParser("MidcurveNN Phase III – Training")
     p.add_argument("--data",           default="data/raw")
     p.add_argument("--no-augment",     action="store_true")
     p.add_argument("--epochs",         type=int,   default=200)

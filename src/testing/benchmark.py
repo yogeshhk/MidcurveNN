@@ -10,7 +10,7 @@ Metrics
                  ground-truth midcurve bitmap; SSIM; MSE.
   Geometry-based: Chamfer distance between predicted and ground-truth
                   midcurve point clouds.
-  Text-based   : Placeholder (Phase III not yet implemented).
+  Text-based   : Placeholder (Phase II not yet implemented).
 
 Usage
 -----
@@ -239,12 +239,12 @@ def benchmark_geometry(approach: str = 'graph_transformer') -> dict:
 
 
 # ===========================================================================
-# Text-based benchmark (Phase III — data validation)
+# Text-based benchmark (Phase II — data validation)
 # ===========================================================================
 
 def benchmark_text() -> dict:
     """
-    Validate the Phase III (LLM / text-based) data pipeline.
+    Validate the Phase II (LLM / text-based) data pipeline.
     Checks that all CSV splits exist and reports row counts.
     Model inference requires a fine-tuned checkpoint and a GPU;
     run text_based/finetuning/evaluate.py for full evaluation.
@@ -276,7 +276,7 @@ def benchmark_text() -> dict:
             issues.append(f"Error reading {fname}: {e}")
 
     if issues:
-        return {"approach": "text_based (Phase III)",
+        return {"approach": "text_based (Phase II)",
                 "status": "WARN — " + "; ".join(issues),
                 "csv_counts": csv_counts,
                 "note": "Run: cd src/text_based/utils && python create_brep_csvs.py"}
@@ -285,7 +285,7 @@ def benchmark_text() -> dict:
             f"test={csv_counts.get('midcurve_llm_test.csv', '?')} rows, "
             f"val={csv_counts.get('midcurve_llm_val.csv', '?')} rows. "
             "For model eval run: cd src/text_based/finetuning && python evaluate.py")
-    return {"approach": "text_based (Phase III)", "status": "OK",
+    return {"approach": "text_based (Phase II)", "status": "OK",
             "csv_counts": csv_counts, "note": note}
 
 
@@ -314,7 +314,7 @@ def print_table(results: list):
     # Geometry-based
     geo_results = [r for r in results if r.get('type') == 'geometry']
     if geo_results:
-        print("\n  GEOMETRY-BASED (Phase II)  –  Chamfer Distance")
+        print("\n  GEOMETRY-BASED (Phase III)  –  Chamfer Distance")
         print(f"  {'Approach':<36} {'Status':<30} {'Chamfer':>8}  {'t/shape(s)':>10}")
         print("  " + "-" * 66)
         for r in geo_results:
@@ -325,7 +325,7 @@ def print_table(results: list):
     # Text-based
     text_results = [r for r in results if r.get('type') == 'text']
     if text_results:
-        print("\n  TEXT-BASED (Phase III)  –  Data Validation")
+        print("\n  TEXT-BASED (Phase II)  –  Data Validation")
         for r in text_results:
             print(f"  {r['approach']}: {r['status']}")
             counts = r.get('csv_counts', {})
@@ -391,7 +391,7 @@ def main():
             print(f"  {ap}: {r['status']}")
 
     if 'text' in args.approaches:
-        print("\n[Benchmark] Checking text-based (Phase III) status...")
+        print("\n[Benchmark] Checking text-based (Phase II) status...")
         r = benchmark_text()
         r['type'] = 'text'
         all_results.append(r)

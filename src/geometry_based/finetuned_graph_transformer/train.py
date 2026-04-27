@@ -1,5 +1,5 @@
 """
-train.py  –  MidcurveNN Phase II-b
+train.py  –  MidcurveNN Phase III-b
 =====================================
 Fine-tune a pretrained Graphormer on the midcurve dataset.
 
@@ -29,7 +29,7 @@ from model import MidcurveFinetuned, finetuned_loss
 
 def get_args():
     _default_data = os.path.join(_SRC, "data", "raw")
-    p = argparse.ArgumentParser("MidcurveNN Phase II-b  –  Fine-tuned Graph Transformer")
+    p = argparse.ArgumentParser("MidcurveNN Phase III-b  –  Fine-tuned Graph Transformer")
     p.add_argument("--data",          default=_default_data)
     p.add_argument("--epochs",        type=int,   default=100)
     p.add_argument("--freeze-epochs", type=int,   default=20,

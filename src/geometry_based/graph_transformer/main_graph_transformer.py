@@ -1,5 +1,5 @@
 """
-main_graph_transformer.py  –  MidcurveNN Phase II  (entry point)
+main_graph_transformer.py  –  MidcurveNN Phase IIII  (entry point)
 =================================================================
 End-to-end pipeline:
   1. Load dataset from .dat / .mid files with geometric augmentation
@@ -208,7 +208,7 @@ def evaluate_and_plot(model, dataset_raw, device, args):
 def get_args():
     _src_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     _default_data = os.path.join(_src_dir, "data", "raw")
-    p = argparse.ArgumentParser("MidcurveNN Phase II")
+    p = argparse.ArgumentParser("MidcurveNN Phase III")
     p.add_argument("--data",       default=_default_data)
     p.add_argument("--epochs",     type=int,   default=200)
     p.add_argument("--batch-size", type=int,   default=16)

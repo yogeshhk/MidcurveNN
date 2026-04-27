@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **MidcurveNN** computes the midcurve (medial axis/skeleton) of 2D closed polygons using neural networks. It is a research project with three approach families:
 
 - **Image-based (Phase I)**: Rasterize polygons to 100×100 or 256×256 bitmaps → encoder-decoder networks
-- **Geometry-based (Phase II)**: Graph neural network approach — exact coordinates, handles branching natively
-- **Text-based (Phase III)**: LLM/seq2seq approach using B-rep JSON text representations (implemented)
+- **Geometry-based (Phase III)**: Graph neural network approach — exact coordinates, handles branching natively
+- **Text-based (Phase II)**: LLM/seq2seq approach using B-rep JSON text representations (implemented)
 
 Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyline (`.mid` file = skeleton points).
 
@@ -32,13 +32,13 @@ src/
 │   ├── img2img/                 # Image-to-image (PyTorch)
 │   └── kaggle/                  # Kaggle notebooks / dataset exports
 │
-├── geometry_based/              # Phase II — graph/geometric approaches
+├── geometry_based/              # Phase III — graph/geometric approaches
 │   ├── data/                    # Graph datasets
 │   ├── graph_transformer/       # Non-auto-regressive Graph Transformer (primary)
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurve data
 │   └── gnnencoderdecoder/       # Legacy GNN stub (reference only)
 │
-├── text_based/                  # Phase III — LLM/sequence approaches (implemented)
+├── text_based/                  # Phase II — LLM/sequence approaches (implemented)
 │   ├── data/
 │   │   ├── sequences.json       # Legacy flat-coord dataset (from src/utils/prepare_data.py)
 │   │   ├── brep/                # 4 base BRep JSON shapes (I, L, T, Plus)
@@ -52,9 +52,9 @@ src/
 │
 ├── image_based/testing/         # Phase I unit tests
 │   └── test_image_based.py
-├── geometry_based/testing/      # Phase II unit tests
+├── geometry_based/testing/      # Phase III unit tests
 │   └── test_geometry_based.py
-├── text_based/testing/          # Phase III smoke tests
+├── text_based/testing/          # Phase II smoke tests
 │   └── test_text_based.py
 ├── testing/                     # Cross-approach benchmark
 │   └── benchmark.py
@@ -105,7 +105,7 @@ python image_based/pix2pix/main_pix2pix.py
 python image_based/img2img/main_img2img_pytorch.py
 ```
 
-### Train — Geometry-based (Phase II)
+### Train — Geometry-based (Phase III)
 ```bash
 # Non-auto-regressive Graph Transformer (trained from scratch)
 cd src/geometry_based/graph_transformer
@@ -118,7 +118,7 @@ python train.py
 python train.py --quick --no-pretrained                 # offline / CI
 ```
 
-### Train — Text-based / LLM (Phase III)
+### Train — Text-based / LLM (Phase II)
 ```bash
 # Regenerate BRep CSV datasets from base shapes
 cd src/text_based/utils
@@ -157,8 +157,8 @@ cd src/text_based/finetuning && python inference.py --single
 cd src
 python -m pytest                                              # all 3 suites (auto-discovered via pytest.ini)
 python -m pytest image_based/testing/test_image_based.py -v  # Phase I
-python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase II
-python -m pytest text_based/testing/test_text_based.py -v    # Phase III
+python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase III
+python -m pytest text_based/testing/test_text_based.py -v    # Phase II
 ```
 
 ### Run benchmark
@@ -218,7 +218,7 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 - **`src/utils/prepare_data.py` lazy imports**: TensorFlow and matplotlib are imported lazily (try/except at the top) so that geometry and text tests can import the module without those heavy deps installed. Do not move them to unconditional top-level imports — CI jobs will break.
 
-- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase III `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing — do not remove that guard.
+- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase II `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing — do not remove that guard.
 
 - **Image model `_build()` pattern**: All four image encoder-decoder classes (`simple`, `cnn`, `dense`, `denoiser`) build their Keras sub-models in `_build()` called from `__init__()`, not inside `train()`. This is required for `predict()` to work without training first (e.g. in tests). Do not inline model construction back into `train()`.
 
@@ -229,9 +229,9 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 ## Research Context
 
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps
-- **Phase II** (`graph_transformer/`) is the current best approach — handles exact geometry and branching natively
-- **Phase II-b** (`finetuned_graph_transformer/`) adds transfer learning on top of Phase II
-- **Phase III** (`text_based/`) is **implemented** — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral), CodeT5 and Ludwig notebooks, few-shot prompt scripts
+- **Phase III** (`graph_transformer/`) is the current best approach — handles exact geometry and branching natively
+- **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning on top of Phase III
+- **Phase II** (`text_based/`) is **implemented** — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral), CodeT5 and Ludwig notebooks, few-shot prompt scripts
 - BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology
 - `text_based/data/brep/` — 4 base BRep JSON shapes; `text_based/data/csvs/` — 993-row train/test/val CSV splits
 - `text_based/finetuning/` — full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)

@@ -1,4 +1,4 @@
-# Phase II-b: Fine-tuned Pretrained Graph Transformer
+# Phase III-b: Fine-tuned Pretrained Graph Transformer
 
 ## Overview
 

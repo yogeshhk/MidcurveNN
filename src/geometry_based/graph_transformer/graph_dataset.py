@@ -1,5 +1,5 @@
 """
-graph_dataset.py  –  MidcurveNN Phase II
+graph_dataset.py  –  MidcurveNN Phase IIII
 =========================================
 Loads .dat (profile polygon) and .mid (midcurve polyline) file pairs,
 converts them into PyTorch Geometric Data objects, and augments the
@@ -214,7 +214,7 @@ def augment_pair(profile_pts, midcurve_pts, name):
 
 class MidcurveGraphDataset(Dataset):
     """
-    PyTorch Geometric Dataset for the MidcurveNN Phase II task.
+    PyTorch Geometric Dataset for the MidcurveNN Phase III task.
 
     Parameters
     ----------

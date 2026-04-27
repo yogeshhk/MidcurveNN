@@ -1,0 +1,51 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Three Approaches: Summary}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{1.8cm}p{2.2cm}p{2.0cm}p{2.2cm}@{}}
+\toprule
+ & \textbf{Phase I} & \textbf{Phase II} & \textbf{Phase III} \\
+ & \textbf{Image} & \textbf{Text/LLM} & \textbf{Geometry} \\
+\midrule
+Input type   & Bitmap (100--256px) & BRep JSON text & Graph $(x,y)$ \\
+Output type  & Bitmap             & BRep JSON text & Graph $(x,y)$ \\
+Exact coords & No                 & Yes            & Yes \\
+Branches     & No                 & Yes (BRep)     & Yes (native) \\
+Best model   & UNet               & GPT-4 (prompt) & Graph Transformer \\
+Status       & Fully impl.        & Implemented    & Implemented \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Conclusions}
+	\begin{itemize}
+	\item Midcurve computation is a \textbf{dimension-reduction problem}: 2D $\rightarrow$ 1D, graph-to-graph
+	\item \textbf{Phase I} (image): encoder-decoder with UNet achieves good results; rasterisation trade-off is the key limitation
+	\item \textbf{Phase II} (LLM): text-based BRep representation works; GPT-4 solves simple shapes via few-shot prompting; fine-tuning shows promise but needs more data
+	\item \textbf{Phase III} (geometry): Graph Transformer operates directly on polygon coordinates, handles branches natively, and outputs a clean polyline graph without post-processing
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Next Frontier: Graph-to-Graph Translation}
+
+	\begin{itemize}
+	\item The ultimate formulation is \textbf{graph-to-graph}: profile graph $\Rightarrow$ midcurve graph
+	\item This is a \textbf{graph coarsening / dimension-reduction} problem --- currently underexplored in geometric deep learning
+	\item Promising directions:
+		\begin{itemize}
+		\item Non-auto-regressive Graph Transformers (Phase III, this work)
+		\item Diffusion-based graph generation conditioned on input topology
+		\item Geometric Graph Normalizing Flows
+		\item Integration of LLM structural reasoning (Phase II) with geometric constraints (Phase III)
+		\end{itemize}
+	\item Goal: a model that generalises to \textbf{any 2D thin polygon} --- not just I, L, T, Plus --- and produces an exact, branch-aware midcurve without rasterisation or post-processing
+	\end{itemize}
+
+\begin{center}
+\alert{\Large Graph-to-Graph is the next frontier for MidcurveNN.}
+\end{center}
+\end{frame}

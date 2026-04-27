@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep *)",
+      "Bash(where pdflatex *)",
+      "Bash(pdflatex -interaction=nonstopmode Main_Midcurve_Presentation.tex)",
+      "Bash(mv \"Main_Midcurve_LLM_FineTuning_ExtAbstract_IEEE_claude.tex\"  \"Main_Midcurve_LLM_FineTuning_ExtAbstract_Paper_claude.tex\")",
+      "Bash(mv \"Main_Midcurve_LLM_FineTuning_ExtAbstract_IEEE_gemini.tex\"  \"Main_Midcurve_LLM_FineTuning_ExtAbstract_Paper_gemini.tex\")",
+      "Bash(mv \"Main_Midcurve_LLM_FineTuning_Journal_IEEE_claude.tex\"      \"Main_Midcurve_LLM_FineTuning_Paper_claude.tex\")",
+      "Bash(mv \"Main_Midcurve_LLM_FineTuning_Journal_IEEE_gemini.tex\"      \"Main_Midcurve_LLM_FineTuning_Journal_Paper_gemini.tex\")",
+      "Bash(mv \"Main_TopoVal_updated_Journal.tex\"                          \"Main_TopoVal_updated_Paper.tex\")",
+      "Bash(cmd /c make_all.bat)",
+      "Bash(python -c ' *)",
+      "Bash(python *)",
+      "Bash(pdflatex -interaction=nonstopmode Main_TopoVal_upgraded_Paper.tex)"
+    ]
+  }
+}

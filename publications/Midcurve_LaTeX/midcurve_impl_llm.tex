@@ -176,7 +176,7 @@ Visually here is how results from different LLMs look:
 All of the above have failed. Even latest, the results are:
 \begin{itemize}
 \item \lstinline|llama 7B g4_0 ggml: (8, 17) & (64, 32)|: Wrong.
-\item \lstinline|Bard: [((8.33,5),(8.33, 22.5)), ((8.33, 22.5), (25,22.5)), ((8.33, 22.5), (0,25))]|: Wrong.
+\item \lstinline|Gemini: [((8.33,5),(8.33, 22.5)), ((8.33, 22.5), (25,22.5)), ((8.33, 22.5), (0,25))]|: Wrong.
 \item \lstinline|Hugging Chat: [((12.5, 0), (12.5, 22.5)), ((12.5, 22.5), (25.0, 22.5)), ((25.0, 22.5), (25.0, 25.0))]|: a bit wrong on the last line
 \item \lstinline|GPT-4: [((12.5,0), (12.5,22.5)), ((12.5,22.5),(0,22.5)), ((12.5,22.5),(25.0,22.5))]| just change in sequence of lines, and that's inconsequential, so the answer is correct.
 \end{itemize}	
@@ -270,9 +270,7 @@ trainer.fit(model)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Inferencing}
 
-The output predicted far away from the corresponding ground truth. 
-
-There could be many reasons for the mismatch such as the quality of LLM, training parameters, and above all, need for a far bigger dataset for fine-tuning. But overall, the approach and preliminary results look promising to warrant further investigations.
+The output predicted far away from the corresponding ground truth.
 
 \begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true,label=lst:python]
 input_ids = tokenizer(test_example['Profile_brep'], return_tensors='pt').input_ids
@@ -284,5 +282,81 @@ print("Generated Midcurve:", tokenizer.decode(outputs[0], skip_special_tokens=Tr
 Ground truth: "{\"Points\": [[-8.4, 3.28], [-20.68, -5.33]], \"Lines\": [[0, 1]], \"Segments\": [[0]]}"
 Generated Midcurve: "{\"Points\": [[-8.83, 4.32], [-21.23
 \end{lstlisting}
+\end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{QLoRA Fine-Tuning (Efficient Approach)}
+	\begin{itemize}
+	\item 4-bit quantised base model (Qwen / Gemma / Mistral 7B)
+	\item LoRA adapters on query/value projections --- only $\sim$1\% params trained
+	\item Instruction-formatted BRep JSON dataset (993 rows)
+	\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]
+# QLoRA Fine-tuning (pseudocode)
+base = AutoModelForCausalLM.from_pretrained(
+          "Qwen/Qwen-7B-Chat", load_in_4bit=True)
+
+lora = LoraConfig(r=64, lora_alpha=128,
+          target_modules=["q_proj","v_proj"])
+model = get_peft_model(base, lora)
+
+def fmt(row):  # instruction format
+    return f"Profile: {row['Profile_brep']}\nMidcurve:"
+
+trainer = SFTTrainer(model, train_dataset=dataset,
+              formatting_func=fmt, max_seq_length=512)
+trainer.train()        # saves adapter weights only
+model.save_pretrained("Midcurve-Qwen-Coder-v1")
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: Results Comparison}
+
+\begin{center}
+\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Approach} & \textbf{Model} & \textbf{T shape} & \textbf{Plus shape} \\
+\midrule
+Few-shot Prompt  & GPT-4      & Correct  & Partial \\
+Few-shot Prompt  & Gemini     & Wrong    & Wrong   \\
+Few-shot Prompt  & Llama 7B   & Wrong    & Wrong   \\
+Fine-tune        & CodeT5-sm  & Partial  & Wrong   \\
+Fine-tune QLoRA  & Qwen-7B    & Partial  & Partial \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item[\tiny$\blacktriangleright$] GPT-4 is the only model that solved simple shapes via prompting
+\item[\tiny$\blacktriangleright$] Fine-tuning shows promise but needs a larger dataset
+\item[\tiny$\blacktriangleright$] BRep JSON format successfully encodes branched midcurves
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: Pros and Cons}
+\begin{columns}[t]
+  \begin{column}[T]{0.48\linewidth}
+  \begin{block}{\textcolor{white}{Advantages}}
+    \begin{itemize}
+    \item[\tiny$\blacktriangleright$] Exact coordinates --- no rasterisation loss
+    \item[\tiny$\blacktriangleright$] BRep JSON handles branches natively
+    \item[\tiny$\blacktriangleright$] Leverages vast LLM pretraining knowledge
+    \item[\tiny$\blacktriangleright$] Easy to add new shapes to dataset
+    \end{itemize}
+  \end{block}
+  \end{column}
+  \begin{column}[T]{0.48\linewidth}
+  \begin{alertblock}{\textcolor{white}{Limitations}}
+    \begin{itemize}
+    \item[\tiny$\blacktriangleright$] LLMs lack geometric reasoning (coordinates are ``tokens'')
+    \item[\tiny$\blacktriangleright$] Output validity not guaranteed (needs repair)
+    \item[\tiny$\blacktriangleright$] GPT-4 only --- smaller models fail
+    \item[\tiny$\blacktriangleright$] Fine-tuning requires large GPU and dataset
+    \end{itemize}
+  \end{alertblock}
+  \end{column}
+\end{columns}
 \end{frame}

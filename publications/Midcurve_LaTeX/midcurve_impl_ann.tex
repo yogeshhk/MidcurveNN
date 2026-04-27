@@ -174,18 +174,55 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{What can be done?}
 	\begin{itemize}
-	\item For the noise, use bounding boxes 
-	\item Feedback into error term: differencing with the known output expected 
-	\item Classify single pixel image as the skeleton, and rest as noise. 
-	\end{itemize}	
+	\item For the noise, use bounding boxes
+	\item Feedback into error term: differencing with the known output expected
+	\item Classify single pixel image as the skeleton, and rest as noise.
+	\item Use deeper / skip-connection architectures: UNet, Pix2Pix
+	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{What Next?}
+\begin{frame}[fragile]\frametitle{UNet Architecture}
 	\begin{itemize}
-	\item Add denoiser network after the current one
-	\item More Network Architectures
-	\item Sequence-to-Sequence based approaches, taking closed thin polygon as input and polyline as output
-	\item Extending to 3D, ie Midsurface
-	\end{itemize}	
+	\item 8-level encoder-decoder with \textbf{skip connections}
+	\item CoordConv layers embed spatial position
+	\item 2-stage training: standard BCE $\rightarrow$ weighted BCE (foreground emphasis)
+	\end{itemize}
+\begin{lstlisting}
+# UNet encoder-decoder (pseudocode)
+def unet(x):                          # x: 256x256 profile
+    skips, enc = [], x
+    for filters in [32,64,128,256,256,256,256,256]:
+        enc  = conv_block(enc, filters)
+        skips.append(enc)
+        enc  = MaxPool2D()(enc)
+    dec = conv_block(enc, 256)        # bottleneck
+    for filters, skip in zip([256,...,32], reversed(skips)):
+        dec = UpSampling2D()(dec)
+        dec = conv_block(concat(dec, skip), filters)
+    return Conv2D(1, 1, 'sigmoid')(dec)  # midcurve bitmap
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Pix2Pix GAN Architecture}
+	\begin{itemize}
+	\item Conditional GAN: Generator (UNet) + PatchGAN Discriminator
+	\item Generator minimises $\mathcal{L}_1$ reconstruction + adversarial loss
+	\end{itemize}
+\begin{lstlisting}
+# Pix2Pix (pseudocode)
+generator     = UNet(in=profile_img)  # produces midcurve_img
+discriminator = PatchGAN(in=(profile_img, midcurve_img))
+
+for epoch in range(epochs):
+    fake   = generator(profile_img)
+    d_real = discriminator(profile_img, midcurve_img)
+    d_fake = discriminator(profile_img, fake.detach())
+    d_loss = bce(d_real, 1) + bce(d_fake, 0)
+    g_loss = bce(discriminator(profile_img,fake),1) \
+           + lambda_l1 * L1(fake, midcurve_img)
+    update(discriminator, d_loss)
+    update(generator,     g_loss)
+\end{lstlisting}
 \end{frame}

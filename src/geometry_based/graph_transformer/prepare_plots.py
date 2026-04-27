@@ -1,9 +1,9 @@
 """
 prepare_plots.py  –  MidcurveNN
 ================================
-Visualization utilities for Phase I (image-based) and Phase II (graph-based).
+Visualization utilities for Phase I (image-based) and Phase III (graph-based).
 
-Phase II additions
+Phase III additions
 ------------------
   plot_graph_pair()               – single profile + midcurve graph panel
   plot_graph_dataset_summary()    – grid of all loaded shapes
@@ -262,7 +262,7 @@ def plot_graph_dataset_summary(dataset, max_shapes=12,
     for j in range(n, len(axes)):
         axes[j].set_visible(False)
 
-    plt.suptitle("MidcurveNN Phase II – Dataset Overview", fontsize=14,
+    plt.suptitle("MidcurveNN Phase III – Dataset Overview", fontsize=14,
                  fontweight="bold")
     plt.tight_layout()
     if save_path:
@@ -369,7 +369,7 @@ def plot_graph_prediction(shape_name,
     ax.set_aspect("equal"); ax.grid(alpha=0.25)
     ax.legend(fontsize=8, loc="best")
 
-    plt.suptitle(f"MidcurveNN Phase II – {shape_name}",
+    plt.suptitle(f"MidcurveNN Phase III – {shape_name}",
                  fontsize=13, fontweight="bold")
     plt.tight_layout()
     if save_path:
@@ -416,7 +416,7 @@ def plot_training_curves(log_csv: str, figsize=(13, 4), save_path=None):
     axes[2].set_xlabel("Epoch"); axes[2].set_ylabel("Binary CE")
     axes[2].set_title("Adjacency BCE Loss"); axes[2].legend(); axes[2].grid(alpha=0.3)
 
-    plt.suptitle("MidcurveNN Phase II – Training Curves", fontsize=13,
+    plt.suptitle("MidcurveNN Phase III – Training Curves", fontsize=13,
                  fontweight="bold")
     plt.tight_layout()
     if save_path:
@@ -506,7 +506,7 @@ if __name__ == "__main__":
         color=['red', 'blue', 'green'])
     plt.show()
 
-    # ── Phase II demo (graph-based) ──────────────────────────────────────────
+    # ── Phase III demo (graph-based) ──────────────────────────────────────────
     # Manually build the I-shape graph for demo purposes
     profile_pts = np.array([[5, 5], [10, 5], [10, 20], [5, 20]], dtype=float)
     n = len(profile_pts)

@@ -14,7 +14,7 @@ cd src
 conda env create -f environment.yml
 conda activate midcurvenn
 
-# 3. Install extra deps for text-based (Phase III)
+# 3. Install extra deps for text-based (Phase II)
 pip install peft>=0.7.0 trl>=0.7.0 bitsandbytes>=0.41.0 accelerate>=0.25.0
 
 # 4. Generate training data

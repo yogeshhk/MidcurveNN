@@ -1,4 +1,5 @@
 \documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -6,6 +7,7 @@
 \usepackage{amsthm}
 \usepackage{booktabs}
 \usepackage{array}
+\newtheorem{definition}{Definition}
 
 \begin{document}
 \title{Topological Validation of Mid-Surface Computed from Sheet Metal Parts: Rigorous Mathematical Framework and Enhanced Validation}
@@ -322,30 +324,10 @@ We expect for valid mid-surfaces:
 $\beta_0^{\text{pers}} \approx 1$
 \subsection{Topological Integrity Constraints}
 Recent work (TopoSculpt \cite{Hu2024}) proposes \emph{Topological Integrity Betti (TIB)} constraints:
-L
-TIB
-=
-α
- 
-L
-Betti
-+
-β
- 
-L
-integrity
-,
-L 
-TIB
-​
- =αL 
-Betti
-​
- +βL 
-integrity
-​
- ,
-where $\mathcal{L}{\text{Betti}}$ enforces Betti number matching and $\mathcal{L}{\text{integrity}}$ preserves global topology. These constraints can detect malformed structures that preserve Euler characteristics but violate connectivity. \section{State-of-the-Art Literature Review}
+\[
+\mathcal{L}_{\text{TIB}} = \alpha\,\mathcal{L}_{\text{Betti}} + \beta\,\mathcal{L}_{\text{integrity}},
+\]
+where $\mathcal{L}_{\text{Betti}}$ enforces Betti number matching and $\mathcal{L}_{\text{integrity}}$ preserves global topology. These constraints can detect malformed structures that preserve Euler characteristics but violate connectivity. \section{State-of-the-Art Literature Review}
 \subsection{Post-2015 Developments}
 
 
@@ -401,45 +383,14 @@ Our Method (Enhanced) & 2024 & Cellular+persistent homology & Rigorous, bidirect
 \item \textbf{Ground truth}: Mid-surfaces computed by 3 expert CAD analysts and validated via FEM analysis.
 \end{itemize} \subsection{Evaluation Metrics}
 \textbf{Metric 1: Topological Correctness (Accuracy).}
-Accuracy
-=
-#
-correct predictions
-#
-total cases
-×
-100
-%
-.
-Accuracy= 
-#total cases
-#correct predictions
-​
- ×100%.
+\[
+\text{Accuracy} = \frac{\#\text{correct predictions}}{\#\text{total cases}} \times 100\%.
+\]
 \textbf{Metric 2: Precision/Recall.}
-Precision
-=
-TP
-TP
-+
-FP
-,
-Recall
-=
-TP
-TP
-+
-FN
-.
-Precision= 
-TP+FP
-TP
-​
- ,Recall= 
-TP+FN
-TP
-​
- .
+\[
+\text{Precision} = \frac{\text{TP}}{\text{TP}+\text{FP}},\qquad
+\text{Recall} = \frac{\text{TP}}{\text{TP}+\text{FN}}.
+\]
 \textbf{Metric 3: Computational Complexity.}
 \begin{itemize}
 \item Our method: $O(V + E + F + \text{decomposition})$.
@@ -447,41 +398,16 @@ TP
 \item Persistent homology: $O(n^3)$ worst-case (for $H_1$).
 \end{itemize}
 \textbf{Metric 4: Robustness (Stability).}
-Stability
-=
-1
-−
-std
-(
-β
-i
- across decompositions
-)
-max
-⁡
-(
-β
-i
-)
-.
-Stability=1− 
-max(β 
-i
-​
- )
-std(β 
-i
-​
-  across decompositions)
-​
- .
+\[
+\text{Stability} = 1 - \frac{\operatorname{std}(beta_i \text{ across decompositions})}{\max(beta_i)}.
+\]
 \subsection{Expected Results (Preliminary)}
 Based on theory:
 \begin{itemize}
-\item \textbf{Accuracy}: $>98%$ for clean decompositions (sheet metal domain).
-\item \textbf{Precision/Recall}: $>95%$ for detecting missing surfaces or connections.
+\item \textbf{Accuracy}: $>98\%$ for clean decompositions (sheet metal domain).
+\item \textbf{Precision/Recall}: $>95\%$ for detecting missing surfaces or connections.
 \item \textbf{Speed improvement}: $100$--$1000\times$ faster than Hausdorff-based methods.
-\item \textbf{Robustness}: Stability $>0.95$ across 5% thickness variations.
+\item \textbf{Robustness}: Stability $>0.95$ across 5\% thickness variations.
 \end{itemize} \section{Detailed Examples with Proofs}
 \subsection{Example 1: Simple Box}
 \textbf{Solid}: Single box cell $\text{sCell}_{3,0}$.
@@ -514,37 +440,14 @@ Faces from sCell: $5\times 0 + 3\times 1 + 13\times 1 = 16$.\
 Edges: $5\times 1 + 3\times 3 + 13\times 2 + 14\times 1 = 54$.\
 Vertices: $5\times 1 + 3\times 2 + 13\times 0 + 14\times 2 = 39$.\
 \textbf{Validation}: Using $v - e + (f - r) = s - h$:
-39
-−
-54
-+
-(
-16
-−
-5
-)
-=
-1
-−
-5
-,
-39
-−
-54
-+
-11
-=
-−
-4
-=
-−
-4.
-39−54+(16−5)=1−5,39−54+11=−4=−4.
+\[
+39 - 54 + (16 - 5) = 1 - 5,\qquad 39 - 54 + 11 = -4 = -4.
+\]
 The predicted Euler characteristic matches, and comparison with the actual mid-surface confirms validity. \section{Failure Mode Analysis}
 We identify common failure scenarios:
 \begin{itemize}
 \item \textbf{Scenario 1: Degenerate Decomposition.} Dangling edges or isolated vertices may cause incorrect local connectivity even if $\chi$ matches. \textbf{Detection}: Check for zero-degree vertices. \textbf{Mitigation}: Enforce clean decomposition (Definition 3.1).
-\item \textbf{Scenario 2: Variable Thickness (>20%).} Mid-surface may not lie at half thickness. \textbf{Detection}: Compare solid-to-surface offsets. \textbf{Mitigation}: Use weighted topological analysis or include thickness in validation.
+\item \textbf{Scenario 2: Variable Thickness ($>20\%$).} Mid-surface may not lie at half thickness. \textbf{Detection}: Compare solid-to-surface offsets. \textbf{Mitigation}: Use weighted topological analysis or include thickness in validation.
 \item \textbf{Scenario 3: Non-Cylindrical Holes.} The formula in Case 3 assumes cylindrical holes. \textbf{Detection}: Analyze hole cross-sections. \textbf{Mitigation}: Generalize Eq. (6) via genus per component.
 \item \textbf{Scenario 4: Disconnected Non-Manifold Components.} Multiple shells not connected ($\beta_0>1$). \textbf{Detection}: Check $s=1$. \textbf{Mitigation}: Extend validation to multiple shell cases.
 \end{itemize} \section{Validation Procedure and Implementation Guidelines}
@@ -553,105 +456,11 @@ We identify common failure scenarios:
 \begin{enumerate}
 \item \textbf{Classify Solid Cells:} For each cell in the decomposition, determine its type ($\text{sCell}{3,n}, \text{iCell}{3,n}, \text{iCell}{2,2}, \text{sCell}{3,h}$) and count occurrences.
 \item \textbf{Solid-to-Surface Prediction:} Use Eqs. (5)--(8) to compute predicted mid-surface entities:
-predicted
-f
-=
-∑
-N
-sCell
-3
-,
-n
-,
-predicted
-e
-=
-∑
-N
-sCell
-3
-,
-n
-(
-4
-−
-n
-)
-+
-∑
-N
-iCell
-,
-predicted
-v
-=
-∑
-N
-sCell
-3
-,
-n
-(
-4
-−
-2
-n
-)
-+
-∑
-N
-iCell
-(
-2
-)
-+
-∑
-N
-sCell
-3
-,
-h
-.
-predicted 
-f
-​
- =∑N 
-sCell 
-3,n
-​
- 
-​
- ,predicted 
-e
-​
- =∑N 
-sCell 
-3,n
-​
- 
-​
- (4−n)+∑N 
-iCell
-​
- ,predicted 
-v
-​
- =∑N 
-sCell 
-3,n
-​
- 
-​
- (4−2n)+∑N 
-iCell
-​
- (2)+∑N 
-sCell 
-3,h
-​
- 
-​
- .
+\begin{align*}
+\hat{f} &= \sum_n N_{\mathrm{sCell}_{3,n}}, \
+\hat{e} &= \sum_n N_{\mathrm{sCell}_{3,n}}(4-n) + \sum_n N_{\mathrm{iCell}}, \
+\hat{v} &= \sum_n N_{\mathrm{sCell}_{3,n}}(4-2n) + \sum_n N_{\mathrm{iCell}}(2) + \sum_n N_{\mathrm{sCell}_{3,h}}.
+\end{align*}
 \item \textbf{Classify Actual Mid-Surface:} Count actual faces $f$, edges $e$ (including radial), and vertices $v$ in the mid-surface $M$.
 \item \textbf{Euler Characteristic Validation (Non-Manifold):} Compute $\chi_{\text{predicted}} = v - e + (f - r)$ and compare to expected $s - h$. If mismatch, flag an error.
 \item \textbf{Entity Comparison:} Compute $\Delta f = |\text{predicted}_f - f|$, $\Delta e = |\text{predicted}_e - e|$, $\Delta v = |\text{predicted}_v - v|$. Report any discrepancies.
@@ -660,7 +469,7 @@ sCell
 \end{enumerate} \subsection{Implementation Notes}
 \begin{itemize}
 \item \textbf{Computational complexity}: $O(V + E + F + \text{decomposition time})$. The decomposition dominates; use efficient algorithms (e.g., \cite{Woo2003}, \cite{Boussuge2014}).
-\item \textbf{Tolerance tuning}: Set relative tolerances (e.g., $|\Delta x|/|x|<5%$) based on application needs.
+\item \textbf{Tolerance tuning}: Set relative tolerances (e.g., $|\Delta x|/|x|<5\%$) based on application needs.
 \item \textbf{Persistent homology extension}: For robustness, compute at multiple refinement levels (3--5).
 \end{itemize} \section{Conclusion and Future Work}
 \subsection{Contributions Summary}

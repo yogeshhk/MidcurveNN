@@ -1,11 +1,11 @@
-# MidcurveNN – Phase II: Graph-to-Graph Transformer
+# MidcurveNN – Phase III: Graph-to-Graph Transformer
 ## Technical Documentation
 
 ---
 
 ## 1. Overview
 
-Phase II of MidcurveNN replaces the raster image representation used in Phase I with an explicit **geometric graph** representation. A 2D closed polygon (profile) is modelled as a graph whose nodes carry `(x, y)` coordinates and whose edges connect consecutive polygon corners. The task is to predict the midcurve — a polyline graph (open or branched) — from the profile graph.
+Phase III of MidcurveNN replaces the raster image representation used in Phase I with an explicit **geometric graph** representation. A 2D closed polygon (profile) is modelled as a graph whose nodes carry `(x, y)` coordinates and whose edges connect consecutive polygon corners. The task is to predict the midcurve — a polyline graph (open or branched) — from the profile graph.
 
 This is formulated as a **graph coarsening / dimension-reduction** problem and solved with a **Graph Transformer encoder–decoder** architecture.
 
@@ -20,7 +20,7 @@ Profile Graph (input)         Midcurve Graph (output)
 
 ## 2. Why Graphs?
 
-| Property | Seq2Seq (Phase I approach) | Graph (Phase II) |
+| Property | Seq2Seq (Phase I approach) | Graph (Phase III) |
 |---|---|---|
 | Represents branches (Y, Plus) | ✗ | ✓ |
 | Exact geometry (no rasterisation) | ✗ | ✓ |
@@ -266,7 +266,7 @@ python evaluate.py --ckpt checkpoints/best_model.pt --threshold 0.45
 
 ## 11. Visualisation API (`prepare_plots.py`)
 
-All Phase II functions accept numpy arrays for portability.
+All Phase III functions accept numpy arrays for portability.
 
 ```python
 from prepare_plots import (

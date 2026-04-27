@@ -1,5 +1,5 @@
 """
-evaluate.py  –  MidcurveNN Phase II
+evaluate.py  –  MidcurveNN Phase IIII
 =====================================
 Load a trained checkpoint and run inference on all shapes in the data folder.
 Prints quantitative metrics and saves visualisation figures.
@@ -139,7 +139,7 @@ def plot_prediction(shape_name, x_denorm, profile_edge_index,
     ax.set_aspect("equal"); ax.grid(alpha=0.3)
     ax.legend(fontsize=8, loc="best")
 
-    plt.suptitle(f"MidcurveNN Phase II – {shape_name}", fontsize=13, fontweight="bold")
+    plt.suptitle(f"MidcurveNN Phase III – {shape_name}", fontsize=13, fontweight="bold")
     plt.tight_layout()
 
     if save_path:
@@ -186,7 +186,7 @@ def plot_training_curves(log_csv: str, save_path=None):
     ax2.set_xlabel("Epoch"); ax2.set_ylabel("Chamfer Distance")
     ax2.set_title("Chamfer Distance"); ax2.legend(); ax2.grid(alpha=0.3)
 
-    plt.suptitle("MidcurveNN Phase II – Training Curves", fontweight="bold")
+    plt.suptitle("MidcurveNN Phase III – Training Curves", fontweight="bold")
     plt.tight_layout()
     if save_path:
         plt.savefig(save_path, dpi=150, bbox_inches="tight")
@@ -248,7 +248,7 @@ def evaluate(args):
 
 
 def get_args():
-    p = argparse.ArgumentParser("MidcurveNN Phase II – Evaluation")
+    p = argparse.ArgumentParser("MidcurveNN Phase III – Evaluation")
     p.add_argument("--ckpt",      default="checkpoints/best_model.pt")
     p.add_argument("--data",      default="data/raw")
     p.add_argument("--out-dir",   default="results")

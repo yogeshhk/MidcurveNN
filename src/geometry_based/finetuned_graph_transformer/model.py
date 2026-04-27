@@ -1,5 +1,5 @@
 """
-model.py  –  MidcurveNN Phase II-b
+model.py  –  MidcurveNN Phase III-b
 ====================================
 Fine-tunable Graph Transformer for midcurve prediction.
 

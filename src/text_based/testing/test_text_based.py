@@ -1,7 +1,7 @@
 """
 test_text_based.py  --  MidcurveNN
 =====================================
-Smoke tests for the text-based (Phase III) data pipeline and finetuning modules.
+Smoke tests for the text-based (Phase II) data pipeline and finetuning modules.
 
 Test groups
 -----------

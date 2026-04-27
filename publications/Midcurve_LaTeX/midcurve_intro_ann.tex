@@ -38,55 +38,30 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Midcurve : Graph 2 Graph}
+\begin{frame}[fragile]\frametitle{Midcurve : Graph 2 Graph (The Ideal)}
 
 	\begin{itemize}
-	\item {\bf Input}: Graph of Input profile with vertices at nodes and lines/curves as edges
-	\item {\bf Output}: another Graph of Output profile with vertices at nodes and lines/curves as edges, open/branched polygons possible
-	\item Both, input and output shapes have different topologies (number of nodes and edges are different) but geometry also, nodes and edges have different positions and shapes. So its network 2 network problem.
-	\item Exiting Graph algorithms like node prediction and link prediction are not useful here as, there, topology of input and output is more or less similar.
-	\item Graph to Graph translation does not seem to evolved enough to do the expected transformation.
+	\item {\bf Ideal framing}: Input profile graph $\rightarrow$ Output midcurve graph
+	\item Both graphs have \textbf{different topologies}: different node/edge counts, positions
+	\item Standard node-prediction and link-prediction GNNs assume similar input/output topology --- not suitable here
+	\item Direct graph-to-graph translation requires a coarsening / dimension-reduction formulation
+	\item \alert{Phase III} of this work tackles this directly using a Graph Transformer
 	\end{itemize}
-	
-Any ideas?
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Midcurve == Dimension Reduction}
+\begin{frame}[fragile]\frametitle{Midcurve $==$ Dimension Reduction / Translation}
 
 	\begin{itemize}
-	\item Like PCA (Principal Component Analysis), wish to find Principal curve
-	\item That `represents' the original profile shape
+	\item Like PCA, find the principal curve that \textit{represents} the profile shape
+	\item Left side (input): 2D Sketch Profile; Right side (output): 1D Midcurve
+	\item \textbf{Not} an Auto-Encoder: input and output are \textit{different} shapes
+	\item Variable-length input/output makes padding unsafe in geometry (any value is valid)
 	\end{itemize}
 \begin{center}
-\includegraphics[width=0.6\linewidth,keepaspectratio]{midcurve20}
-\end{center}	
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Midcurve $==$ Translation}
-
-	\begin{itemize}
-	\item Left side (input): 2D Sketch Profile
-	\item Right Side (output): 1D Midcurve
-	\item Sequence 2 Sequence problem
-	\end{itemize}
-\begin{center}
-\includegraphics[width=0.6\linewidth,keepaspectratio]{midcurve20}
-\end{center}	
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Midcurve $!=$ Auto-Encoder Decoder}
-
-	\begin{itemize}
-	\item Its not Auto-Encoder as Input and Output are different
-	\item Its not fixed size i/o as Input and Output sizes are different
-	\end{itemize}
-\begin{center}
-\includegraphics[width=0.6\linewidth,keepaspectratio]{midcurve20}
-\end{center}	
+\includegraphics[width=0.55\linewidth,keepaspectratio]{midcurve20}
+\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

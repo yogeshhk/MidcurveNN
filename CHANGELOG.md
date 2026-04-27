@@ -22,7 +22,7 @@ All notable changes to MidcurveNN are recorded here.
 
 ---
 
-## Phase III — LLM / Text-Based (2024)
+## Phase II — LLM / Text-Based (2024)
 
 - Full QLoRA fine-tuning pipeline: `train.py`, `inference.py`, `evaluate.py`, `metrics.py`.
 - BRep JSON data format: explicit `Points / Lines / Segments` topology to handle branched midcurves.
@@ -32,7 +32,7 @@ All notable changes to MidcurveNN are recorded here.
 - CodeT5 and Ludwig fine-tuning notebooks (Colab/Kaggle).
 - Few-shot prompting comparison across Qwen, Gemma, Mistral.
 
-## Phase II — Geometry-Based (2023)
+## Phase III — Geometry-Based (2023)
 
 - Non-auto-regressive Graph Transformer trained from scratch (`graph_transformer/`).
   - Custom LaplacianPE + TransformerConv + TopKPooling architecture.

@@ -1,4 +1,4 @@
-# Phase III: Text-Based Midcurve Prediction
+# Phase II: Text-Based Midcurve Prediction
 
 ## Overview
 

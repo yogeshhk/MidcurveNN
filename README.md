@@ -45,12 +45,12 @@ src/
 │   ├── img2img/                      # Pix2Pix (PyTorch)
 │   └── kaggle/                       # Kaggle notebooks
 │
-├── geometry_based/                   # Phase II — graph/geometric approaches
+├── geometry_based/                   # Phase III — graph/geometric approaches
 │   ├── graph_transformer/            # Non-auto-regressive Graph Transformer ← primary
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurves
 │   └── gnnencoderdecoder/            # Legacy GNN stub (reference)
 │
-├── text_based/                       # Phase III — LLM/seq2seq (implemented)
+├── text_based/                       # Phase II — LLM/seq2seq (implemented)
 │   ├── data/brep/                    # 4 base BRep JSON shapes (I, L, T, Plus)
 │   ├── data/csvs/                    # CSV train/test/val splits (993 rows)
 │   ├── utils/                        # BRep data pipeline (generate CSVs, visualize)
@@ -61,9 +61,9 @@ src/
 │
 ├── image_based/testing/              # Phase I tests
 │   └── test_image_based.py
-├── geometry_based/testing/           # Phase II tests
+├── geometry_based/testing/           # Phase III tests
 │   └── test_geometry_based.py
-├── text_based/testing/               # Phase III tests
+├── text_based/testing/               # Phase II tests
 │   └── test_text_based.py
 └── testing/                          # Cross-approach benchmark
     └── benchmark.py
@@ -85,16 +85,16 @@ python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
 # Best image model (UNet)
 cd image_based/unet && python train.py && python test.py
 
-# --- Geometry-based (Phase II) ---
+# --- Geometry-based (Phase III) ---
 cd geometry_based/graph_transformer
 python main_graph_transformer.py
 
-# Fine-tune pretrained Graphormer (Phase II-b)
+# Fine-tune pretrained Graphormer (Phase III-b)
 cd geometry_based/finetuned_graph_transformer
 pip install transformers>=4.35
 python train.py
 
-# --- Text-based / LLM (Phase III) ---
+# --- Text-based / LLM (Phase II) ---
 cd text_based/utils
 python create_brep_csvs.py          # regenerate CSV dataset from base shapes
 
@@ -108,8 +108,8 @@ python model_server.py --port 8000  # serve via FastAPI
 cd src
 python -m pytest                                              # all 3 approach suites (via pytest.ini)
 python -m pytest image_based/testing/test_image_based.py -v  # Phase I only
-python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase II only
-python -m pytest text_based/testing/test_text_based.py -v    # Phase III only
+python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase III only
+python -m pytest text_based/testing/test_text_based.py -v    # Phase II only
 python testing/benchmark.py                                   # cross-approach benchmark
 ```
 
@@ -140,23 +140,23 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 ### Dilution to Images
 - Images of geometric shapes address both, representation as well as variable-size issue. Big dilution is that, true geometric shapes are like Vector images, whereas images used here would be of Raster type. Approximation has crept in.
 - Even after modeling, the predicted output needs to be post-processed to bring to geometric form. Challenging again.
-- Thus, this project is divided into two phases:
+- Thus, this project is divided into three phases:
 	- Phase I: Image to Image transformation learning
 		- Img2Img: i/o fixed size 100x100 bitmaps
 		- Populate many by scaling/rotating/translating both io shapes within the fixed size
 		- Use Encoder Decoder like Semantic Segmentation or Pix2Pix of IMages to learn dimension reduction
-	- Phase II: Geometry to Geometry transformation learning
+	- Phase III: Geometry to Geometry transformation learning
 		- Build both, input and output polyline graphs with (x,y) coordinates as node features and edges with node id pairs mentioned. For poly-lines, edges being lines, no need to store geometric intermediate points as features, else for curves, store say, sampled fixed 'n' points.
 		- Build Image-Segmentation like Encoder-Decoder network, given Graph Convolution Layers from DGL in place of usual Image-based 2D convolution layer, in the usual pytorch encoder-decoder model.
 		- Generate variety of input-output polyline pairs, by using geometric transformations (and not image transformations as done in Phase I).
 		- See if Variational Graph Auto-Encoders https://github.com/dmlc/dgl/tree/master/examples/pytorch/vgae can help.
-	- Phase III: Using Large Language Models (LLMs)
+	- Phase II: Using Large Language Models (LLMs)
 		- With representation of Profile and Midcurve in form of text, json-brep, so that LLMs can be leveraged
 		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
 - **Phase I** is fully implemented with 7 encoder-decoder variants. UNet (2-stage, CoordConv, weighted BCE) is the strongest.
-- **Phase II** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`).
-- **Phase III** is **implemented** (`text_based/`) — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral 7B), CodeT5 and Ludwig notebooks, few-shot prompt scripts, and a FastAPI inference server. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
+- **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`).
+- **Phase II** is **implemented** (`text_based/`) — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral 7B), CodeT5 and Ludwig notebooks, few-shot prompt scripts, and a FastAPI inference server. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
 ```

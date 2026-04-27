@@ -1,7 +1,7 @@
 """
 test_geometry_based.py  –  MidcurveNN
 ==========================================
-Unit / smoke tests for geometry-based (Phase II) approaches:
+Unit / smoke tests for geometry-based (Phase III) approaches:
   - graph_transformer  (non-auto-regressive, trained from scratch)
   - finetuned_graph_transformer (pretrained Graphormer fine-tuned)
 

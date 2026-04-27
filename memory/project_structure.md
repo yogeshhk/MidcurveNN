@@ -8,8 +8,8 @@ After a major refactoring (2026-04), MidcurveNN src/ is organized by data type:
 
 - `src/data/raw/` — raw .dat/.mid files, shared by ALL approaches
 - `src/image_based/` — all Phase I raster approaches: simpleencoderdecoder, cnnencoderdecoder, denseencoderdecoder, denoiserencoderdecoder, unet, pix2pix, img2img, kaggle
-- `src/geometry_based/` — Phase II: graph_transformer (non-auto-regressive, from scratch), finetuned_graph_transformer (pretrained Graphormer HuggingFace), gnnencoderdecoder (legacy stub)
-- `src/text_based/` — Phase III placeholder; data/sequences.json for LLM seq2seq
+- `src/geometry_based/` — Phase III: graph_transformer (non-auto-regressive, from scratch), finetuned_graph_transformer (pretrained Graphormer HuggingFace), gnnencoderdecoder (legacy stub)
+- `src/text_based/` — Phase II placeholder; data/sequences.json for LLM seq2seq
 - `src/testing/` — test_image_based.py, test_geometry_based.py, test_text_based.py, benchmark.py
 - `src/utils/` — shared utilities (stays at src level)
 - `src/config.py` — global config (stays at src level)

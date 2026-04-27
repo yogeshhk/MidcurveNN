@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{}
 \begin{center}
-{\Large Micurve using DNN-CNN}
+{\Large Midcurve using DNN-CNN}
 
 {by Prashanth Sreenivasan}
 \end{center}
@@ -12,65 +12,103 @@
 
 	\begin{itemize}
 	\item Gradual dimension reduction
-	\item Multiple dense layers
-	\item ReLU activation
-	\item Symmetric encoder-decoder 
+	\item Multiple dense layers with ReLU activation
+	\item Symmetric encoder-decoder
 	\end{itemize}
 
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{midcurve36}
-\end{center}	
+\begin{lstlisting}
+# Dense Encoder-Decoder (pseudocode)
+x = Input(shape=(10000,))          # 100x100 flattened
+x = Dense(4096, activation='relu')(x)
+x = Dense(1024, activation='relu')(x)
+x = Dense(256,  activation='relu')(x)   # bottleneck
+x = Dense(1024, activation='relu')(x)
+x = Dense(4096, activation='relu')(x)
+out = Dense(10000, activation='sigmoid')(x)
+model.compile(optimizer='adam', loss='binary_crossentropy')
+\end{lstlisting}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Convolutional Network Architecture}
 
 	\begin{itemize}
-	\item 4 convolutional blocks
-	\item Skip connections
-	\item Batch normalization
-	\item Dynamic learning rate 
+	\item 4 convolutional blocks with skip connections
+	\item Batch normalization + dynamic learning rate
 	\end{itemize}
 
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{midcurve37}
-\end{center}	
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Results}
-
-	\begin{itemize}
-	\item Performance Metrics
-	\item Comparative Analysis
-	\end{itemize}
-
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{midcurve38}
-\end{center}	
+\begin{lstlisting}
+# CNN Encoder-Decoder (pseudocode)
+x  = Input(shape=(128, 128, 1))
+# Encoder
+e1 = Conv2D(32, (3,3), activation='relu', padding='same')(x)
+e2 = Conv2D(64, (3,3), activation='relu')(MaxPool2D()(e1))
+e3 = Conv2D(128,(3,3), activation='relu')(MaxPool2D()(e2))
+e4 = Conv2D(256,(3,3), activation='relu')(MaxPool2D()(e3))
+# Decoder (with skip connections)
+d3 = Conv2DTranspose(128,(2,2),strides=2)(e4)
+d3 = BatchNormalization()(concatenate([d3, e3]))
+d2 = Conv2DTranspose(64, (2,2),strides=2)(d3)
+d1 = Conv2DTranspose(32, (2,2),strides=2)(d2)
+out = Conv2D(1, (1,1), activation='sigmoid')(d1)
+\end{lstlisting}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Visual Results}
 
-	\begin{itemize}
-	\item Input shapes
-	\item Generated Midcurves
-	\item Quality comparison
-	\end{itemize}
-
 \begin{center}
 \includegraphics[width=\linewidth,keepaspectratio]{midcurve39}
-\end{center}	
+\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Conclusions}
+\begin{frame}[fragile]\frametitle{Phase I: Results Comparison}
 
-	\begin{itemize}
-	\item CNN architecture performs best
-	\item 10x reduction in loss
-	\item Improved geometric accuracy
-	\end{itemize}
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Algorithm} & \textbf{Input} & \textbf{Loss} & \textbf{IoU} & \textbf{Branches} \\
+\midrule
+Simple AE  & 100$\times$100 & High   & Low  & \texttimes \\
+Dense AE   & 100$\times$100 & Medium & Med  & \texttimes \\
+CNN AE     & 128$\times$128 & Low    & High & \texttimes \\
+UNet       & 256$\times$256 & Lowest & Best & \texttimes \\
+Pix2Pix    & 256$\times$256 & Low    & High & \texttimes \\
+\bottomrule
+\end{tabular}
+\end{center}
 
+\begin{itemize}
+\item[\tiny$\blacktriangleright$] UNet best overall; CNN $\approx$10$\times$ improvement over Dense
+\item[\tiny$\blacktriangleright$] All image models lose exact geometry (rasterisation)
+\item[\tiny$\blacktriangleright$] None can represent branched midcurves (T, Plus) natively
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase I: Pros and Cons}
+\begin{columns}[t]
+  \begin{column}[T]{0.48\linewidth}
+  \begin{block}{\textcolor{white}{Advantages}}
+    \begin{itemize}
+    \item[\tiny$\blacktriangleright$] Fixed-size i/o solves variable-length problem
+    \item[\tiny$\blacktriangleright$] Rich off-the-shelf architectures (UNet, GAN)
+    \item[\tiny$\blacktriangleright$] Easy data augmentation (rotate, translate)
+    \item[\tiny$\blacktriangleright$] Simple training pipeline
+    \end{itemize}
+  \end{block}
+  \end{column}
+  \begin{column}[T]{0.48\linewidth}
+  \begin{alertblock}{\textcolor{white}{Limitations}}
+    \begin{itemize}
+    \item[\tiny$\blacktriangleright$] Rasterisation loses exact geometry
+    \item[\tiny$\blacktriangleright$] Output still a bitmap --- needs post-processing
+    \item[\tiny$\blacktriangleright$] Stray pixels degrade quality
+    \item[\tiny$\blacktriangleright$] Cannot natively handle branches (T, Plus)
+    \end{itemize}
+  \end{alertblock}
+  \end{column}
+\end{columns}
 \end{frame}

@@ -1,6 +1,6 @@
-# gnnencoderdecoder — Phase II (Work in Progress)
+# gnnencoderdecoder — Phase III (Work in Progress)
 
-This folder contains the stub for the Graph Neural Network (GNN) approach to midcurve prediction (Phase II of the MidcurveNN project).
+This folder contains the stub for the Graph Neural Network (GNN) approach to midcurve prediction (Phase III of the MidcurveNN project).
 
 **Status: Non-functional. Do not use or import this code.**
 

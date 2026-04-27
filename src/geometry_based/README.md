@@ -1,4 +1,4 @@
-# Phase II — Geometry-Based Approaches
+# Phase III — Geometry-Based Approaches
 
 This folder contains graph neural network approaches that operate directly on polygon coordinates, avoiding the rasterization approximation of Phase I.
 

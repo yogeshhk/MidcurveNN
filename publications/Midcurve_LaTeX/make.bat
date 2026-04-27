@@ -1,2 +1,5 @@
 @echo off
-for %%i in (Main_Midcurve_LLM_*.tex) do texify -cp %%i
+for %%i in (Main_Midcurve_Presentation*.tex) do (
+    pdflatex -interaction=nonstopmode %%i
+    pdflatex -interaction=nonstopmode %%i
+)

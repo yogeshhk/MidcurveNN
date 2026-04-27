@@ -1,5 +1,5 @@
 """
-graph_transformer.py  –  MidcurveNN Phase II
+graph_transformer.py  –  MidcurveNN Phase III
 =============================================
 Graph Transformer Encoder → TopK Pool Bottleneck → Non-Autoregressive Decoder
 
