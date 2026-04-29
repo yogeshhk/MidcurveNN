@@ -96,7 +96,9 @@ python utils/prepare_data.py
 ```
 Reads ASCII coordinate files from `src/data/raw/`, rasterizes via DrawSVG with augmentations
 (rotation 0–350°, translation, mirroring). Outputs:
-- PNG pairs → `src/image_based/<approach>/data/`
+- PNG pairs → `src/image_based/data/image-pairs/` (shared by simple/cnn/dense/denoiser)
+- UNet split PNGs → `src/image_based/data/unet-splits/train|test/`
+- Pix2Pix combo JPGs → `src/image_based/data/images-combo/train|val|test/`
 - Sequence JSON → `src/text_based/data/sequences.json`
 
 ### Train — Image-based (Phase I)
@@ -186,7 +188,10 @@ python testing/benchmark.py --geometry-approach graph_transformer
 
 ### Data pipeline (`src/utils/`)
 - `prepare_data.py` — reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
-- `prepare_plots.py` — visualization: side-by-side profile vs. predicted midcurve
+- `prepare_plots.py` — visualization utilities:
+  - `save_results_grid_images(inputs, gts, preds, save_path, n=5)` — n×3 grid PNG for image-based approaches
+  - `save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves, ..., save_path)` — n×3 grid PNG for graph-based approach
+  - Each approach saves its grid to `<approach>/results/results_grid.png` after training/test
 - `metric_utils.py` — Keras callbacks, best-epoch tracking, training history
 
 ### Path conventions (important for imports)

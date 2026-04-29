@@ -36,6 +36,10 @@ src/
 ├── utils/                            # Shared data prep, plotting, metrics
 │
 ├── image_based/                      # Phase I — raster/bitmap approaches
+│   ├── data/                         # Shared generated image data (one copy, no duplication)
+│   │   ├── image-pairs/              # PNG pairs — used by simple/cnn/dense/denoiser
+│   │   ├── unet-splits/train|test/   # UNet split PNGs
+│   │   └── images-combo/train|val|test/  # Side-by-side JPGs for pix2pix/img2img
 │   ├── simpleencoderdecoder/         # Dense baseline
 │   ├── cnnencoderdecoder/            # CNN encoder-decoder
 │   ├── denseencoderdecoder/          # Fully connected
@@ -77,6 +81,7 @@ conda env create -f environment.yml
 conda activate midcurvenn
 
 # Generate training data for all approaches
+# Outputs: image_based/data/image-pairs/, unet-splits/, images-combo/, text_based/data/sequences.json
 python utils/prepare_data.py
 
 # --- Image-based (Phase I) ---
@@ -84,6 +89,7 @@ python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
 
 # Best image model (UNet)
 cd image_based/unet && python train.py && python test.py
+# Each approach saves a results/results_grid.png (5-sample Input|GT|Predicted grid)
 
 # --- Geometry-based (Phase III) ---
 cd geometry_based/graph_transformer
@@ -200,6 +206,8 @@ For a wider discussion on Use of Deep Learning in CAD (Computer-aided Design), r
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
 - Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve. An [extended abstract](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/MidcurveLLM/MidcurveLLM_content.md) on the same topic.
 - Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
+- ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models" — presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
+- ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks" — published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025/`)
 
 ## Citations
 - [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)
