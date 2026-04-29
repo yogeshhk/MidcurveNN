@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 import os
+import matplotlib.gridspec as gridspec
 # from config import JSON_FOLDER
 JSON_FOLDER = "."
 
@@ -100,6 +101,127 @@ def plot_lines(lines, color='black'):
         x = a[:, 0].T
         y = a[:, 1].T
         plt.plot(x, y, c=color)
+
+def _squeeze_to_2d(arr):
+    """Reduce any numpy array to 2-D (H, W) suitable for imshow."""
+    arr = np.asarray(arr)
+    if arr.ndim == 3:
+        if arr.shape[2] == 1:
+            return arr[:, :, 0]
+        # CoordConv inputs: channels = [x_coord, y_coord, profile] — profile is last
+        return arr[:, :, -1]
+    return arr
+
+
+def save_results_grid_images(inputs, ground_truths, predictions, save_path,
+                              n=5, title="Midcurve Prediction Results",
+                              row_labels=None):
+    """
+    Save a results PNG grid: n rows × 3 cols (Input Profile | Ground Truth | Predicted).
+
+    inputs, ground_truths, predictions: lists or arrays whose elements are 2-D or 3-D
+        numpy arrays (H, W) or (H, W, C).  All values should be in [0, 1].
+    save_path: full path for the output PNG.
+    n: number of sample rows (capped at len(inputs)).
+    row_labels: optional list of strings printed as row y-labels.
+    """
+    n = min(n, len(inputs))
+    os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+
+    fig, axes = plt.subplots(n, 3, figsize=(9, n * 3 + 0.6))
+    if n == 1:
+        axes = axes[np.newaxis, :]
+
+    col_titles = ["Input (Profile)", "Ground Truth", "Predicted"]
+    for col, label in enumerate(col_titles):
+        axes[0, col].set_title(label, fontsize=11, fontweight="bold")
+
+    for row in range(n):
+        row_imgs = [inputs[row], ground_truths[row], predictions[row]]
+        for col, img in enumerate(row_imgs):
+            axes[row, col].imshow(_squeeze_to_2d(img), cmap="gray_r",
+                                  interpolation="nearest", vmin=0, vmax=1)
+            axes[row, col].axis("off")
+        if row_labels and row < len(row_labels):
+            axes[row, 0].set_ylabel(str(row_labels[row]), fontsize=8,
+                                    rotation=0, labelpad=50, va="center")
+
+    if title:
+        fig.suptitle(title, fontsize=13, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"[Results] grid saved -> {save_path}")
+
+
+def _draw_geo_panel(ax, coords, edge_index, color, alpha=1.0,
+                    marker="o", node_size=40, lw=1.5, linestyle="-"):
+    """Draw nodes and edges on a single geometry subplot."""
+    if edge_index is not None and edge_index.shape[1] > 0:
+        for u, v in edge_index.T:
+            ax.plot([coords[u, 0], coords[v, 0]],
+                    [coords[u, 1], coords[v, 1]],
+                    color=color, lw=lw, alpha=alpha, linestyle=linestyle)
+    ax.scatter(coords[:, 0], coords[:, 1],
+               c=color, s=node_size, marker=marker, alpha=alpha, zorder=5)
+
+
+def save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves,
+                                profile_edges, gt_edges, pred_edges,
+                                save_path, n=5,
+                                title="Midcurve Prediction Results (Geometry)",
+                                row_labels=None):
+    """
+    Save a geometry results PNG grid: n rows × 3 cols.
+      Col 0: input profile polygon (blue).
+      Col 1: ground-truth midcurve (red dashed).
+      Col 2: predicted midcurve overlaid on profile (green + grey profile + faint red GT).
+
+    profiles, gt_midcurves, pred_midcurves: lists of (N, 2) numpy float arrays.
+    profile_edges, gt_edges, pred_edges: lists of (2, E) numpy int arrays.
+    save_path: full path for the output PNG.
+    """
+    n = min(n, len(profiles))
+    os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+
+    fig, axes = plt.subplots(n, 3, figsize=(12, n * 3.5 + 0.6))
+    if n == 1:
+        axes = axes[np.newaxis, :]
+
+    col_titles = ["Input (Profile)", "Ground Truth", "Predicted"]
+    for col, label in enumerate(col_titles):
+        axes[0, col].set_title(label, fontsize=11, fontweight="bold")
+
+    _empty_edges = np.empty((2, 0), dtype=int)
+
+    for row in range(n):
+        pe = profile_edges[row] if profile_edges[row] is not None else _empty_edges
+        ge = gt_edges[row]      if gt_edges[row]      is not None else _empty_edges
+        de = pred_edges[row]    if pred_edges[row]     is not None else _empty_edges
+
+        _draw_geo_panel(axes[row, 0], profiles[row], pe, "#2c7bb6")
+        _draw_geo_panel(axes[row, 1], gt_midcurves[row], ge, "#d7191c", linestyle="--")
+        _draw_geo_panel(axes[row, 2], profiles[row],    pe, "#aaaaaa", alpha=0.35, lw=0.8)
+        _draw_geo_panel(axes[row, 2], pred_midcurves[row], de, "#1a9641", marker="*", node_size=70)
+        _draw_geo_panel(axes[row, 2], gt_midcurves[row],  ge, "#d7191c", alpha=0.3,
+                        linestyle="--", lw=1.0)
+
+        for col in range(3):
+            axes[row, col].set_aspect("equal")
+            axes[row, col].grid(alpha=0.25)
+            axes[row, col].tick_params(labelsize=7)
+
+        if row_labels and row < len(row_labels):
+            axes[row, 0].set_ylabel(str(row_labels[row]), fontsize=8,
+                                    rotation=0, labelpad=50, va="center")
+
+    if title:
+        fig.suptitle(title, fontsize=13, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"[Results] geometry grid saved -> {save_path}")
+
 
 def plot_list_of_lines(list_of_lines, names, color='black', figsize=(15, 5)):
     """

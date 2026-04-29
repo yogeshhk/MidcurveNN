@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # 
 
 
 from utils.prepare_data import get_training_data
-from utils.prepare_plots import plot_results
+from utils.prepare_plots import save_results_grid_images
 
 from cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
 
@@ -20,8 +20,14 @@ DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'image-pairs
 if __name__ == "__main__":
     profile_pngs_objs, midcurve_pngs_objs = get_training_data(datafolder=DATA_FOLDER, size=(128, 128))
 
-    test_gray_images = random.sample(profile_pngs_objs,5)
-    test_gray_images = np.expand_dims(np.asarray(test_gray_images),axis=-1)/255.
+    # Sample 5 paired indices to keep GT midcurves aligned
+    n_test = min(5, len(profile_pngs_objs))
+    test_indices = random.sample(range(len(profile_pngs_objs)), n_test)
+    test_gray_images_raw = [profile_pngs_objs[i] for i in test_indices]
+    test_gt_raw          = [midcurve_pngs_objs[i] for i in test_indices]
+
+    test_gray_images  = np.expand_dims(np.asarray(test_gray_images_raw), axis=-1) / 255.
+    test_gt_midcurves = np.asarray(test_gt_raw) / 255.  # (n_test, 128, 128)
 
     profile_pngs_objs = np.asarray(profile_pngs_objs)    
     midcurve_pngs_objs = np.asarray(midcurve_pngs_objs)    
@@ -68,7 +74,13 @@ if __name__ == "__main__":
     
     #print(test_profile_pngs.shape)
 
-    original_profile_imgs,predicted_midcurve_imgs = endec.predict(test_profile_pngs,expand_dims=False)
-    plot_results(original_profile_imgs[:,:,:,2],predicted_midcurve_imgs,size=(128,128))
-    #original_imgs,decoded_imgs = build_cnn_encoderdecoder_model(profile_pngs, midcurve_pngs_objs)
-    #plot_results(original_imgs,decoded_imgs)
+    original_profile_imgs, predicted_midcurve_imgs = endec.predict(test_profile_pngs, expand_dims=False)
+
+    RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    # Col 0: profile channel (index 2 of coord-conv input); Col 1: GT; Col 2: prediction
+    save_results_grid_images(
+        original_profile_imgs[:, :, :, 2], test_gt_midcurves, predicted_midcurve_imgs,
+        save_path=os.path.join(RESULTS_DIR, 'results_grid.png'),
+        title='CNN Encoder-Decoder – Midcurve Results'
+    )

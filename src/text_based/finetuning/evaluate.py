@@ -88,8 +88,9 @@ class ModelEvaluator:
                 result = {
                     "index": idx,
                     "shape_name": row.get('ShapeName', f'shape_{idx}'),
-                    "prediction": prediction,
+                    "profile_input": profile_input,
                     "ground_truth": ground_truth,
+                    "prediction": prediction,
                     **metrics
                 }
                 

@@ -12,6 +12,8 @@ Usage
 """
 
 import argparse
+import csv
+import json
 import os
 import math
 import numpy as np
@@ -19,11 +21,17 @@ import torch
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import sys
 
 from torch_geometric.utils import dense_to_sparse
 
 from graph_dataset import MidcurveGraphDataset, read_point_file, build_graph_pair
 from graph_transformer import MidcurveGraphTransformer, chamfer_loss
+
+# Shared grid utility (src/utils/prepare_plots.py)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+from utils.prepare_plots import save_results_grid_geometry  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -213,6 +221,8 @@ def evaluate(args):
     # Per-shape evaluation (on original, non-augmented data)
     dataset = MidcurveGraphDataset(args.data, augment=False)
     all_metrics = []
+    metrics_rows = []          # for CSV
+    grid_samples = []          # for summary grid (up to 5)
 
     print(f"\n{'Shape':>12}  {'Chamfer':>10}  {'Adj BCE':>10}")
     print("-" * 38)
@@ -241,10 +251,61 @@ def evaluate(args):
             save_path=os.path.join(args.out_dir, f"{label}_prediction.png"))
         plt.close(fig)
 
+        # Accumulate metrics CSV row
+        pred_np = coords_denorm.cpu().numpy()
+        gt_np   = y_denorm.cpu().numpy()
+        metrics_rows.append({
+            "shape_name":       label,
+            "chamfer":          round(metrics["chamfer"],  6),
+            "adj_bce":          round(metrics["adj_bce"],  6),
+            "n_pred_nodes":     pred_np.shape[0],
+            "n_gt_nodes":       gt_np.shape[0],
+            "pred_coords_json": json.dumps(pred_np.tolist()),
+            "gt_coords_json":   json.dumps(gt_np.tolist()),
+        })
+
+        # Accumulate grid samples (first 5)
+        if len(grid_samples) < 5:
+            pe = data.edge_index.cpu().numpy()
+            ge = data.mid_edge_index.cpu().numpy() if data.mid_edge_index.numel() > 0 else np.empty((2, 0), dtype=int)
+            de = edge_index_pred.cpu().numpy()      if edge_index_pred.numel()      > 0 else np.empty((2, 0), dtype=int)
+            grid_samples.append({
+                "label":          label,
+                "profile":        x_denorm.cpu().numpy(),
+                "gt_midcurve":    gt_np,
+                "pred_midcurve":  pred_np,
+                "profile_edges":  pe,
+                "gt_edges":       ge,
+                "pred_edges":     de,
+            })
+
     mean_ch  = np.mean([m["chamfer"]  for m in all_metrics])
     mean_adj = np.mean([m["adj_bce"]  for m in all_metrics])
     print("-" * 38)
     print(f"{'MEAN':>12}  {mean_ch:>10.4f}  {mean_adj:>10.4f}")
+
+    # ── Save metrics CSV ──────────────────────────────────────────────────────
+    metrics_csv = os.path.join(args.out_dir, "metrics.csv")
+    with open(metrics_csv, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(metrics_rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(metrics_rows)
+    print(f"[Eval] metrics CSV saved -> {metrics_csv}")
+
+    # ── Save summary grid (5 samples) ────────────────────────────────────────
+    if grid_samples:
+        save_results_grid_geometry(
+            profiles      = [s["profile"]       for s in grid_samples],
+            gt_midcurves  = [s["gt_midcurve"]   for s in grid_samples],
+            pred_midcurves= [s["pred_midcurve"]  for s in grid_samples],
+            profile_edges = [s["profile_edges"]  for s in grid_samples],
+            gt_edges      = [s["gt_edges"]       for s in grid_samples],
+            pred_edges    = [s["pred_edges"]     for s in grid_samples],
+            save_path     = os.path.join(args.out_dir, "results_grid.png"),
+            n             = len(grid_samples),
+            title         = "Graph Transformer – Midcurve Results",
+            row_labels    = [s["label"] for s in grid_samples],
+        )
 
 
 def get_args():

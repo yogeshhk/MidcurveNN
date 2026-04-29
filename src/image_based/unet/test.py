@@ -9,10 +9,15 @@ from config import *
 # from src.config import BASE_DIR
 from utils import get_coord_layers
 import os
+import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from train import init
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(_HERE)))  # src/
+from utils.prepare_plots import save_results_grid_images  # noqa: E402
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
@@ -20,6 +25,7 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
     plt.ioff()
     w = IMG_SHAPE[0]
     files = os.listdir(data_path)
+    _grid_samples = []   # collect up to 5: (poly_img, midcurve_img_gt, midc_pred)
     for file in files:
         path = os.path.join(data_path, file)
         img = cv2.imread(path , cv2.IMREAD_GRAYSCALE)
@@ -42,7 +48,14 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
         
         midc = np.reshape(midc, midcurve_img.shape)
         recon = np.reshape(recon, poly_img.shape)
-    
+
+        # Collect up to 5 samples for the summary grid
+        if len(_grid_samples) < 5:
+            best_midc = midc_st2 if TWO_STAGE else midc
+            _grid_samples.append((poly_img[:, :, 0],
+                                   midcurve_img[:, :, 0],
+                                   best_midc[:, :, 0]))
+
         plt.figure(figsize=(800/100, 800/100), dpi=100)
         plt.subplots_adjust(left = 0, right=1, wspace = 0., hspace = 0, bottom=0, top=0.95)
 
@@ -89,6 +102,16 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
             plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
         
         print(file)
+
+    # Save 5-sample summary grid after all per-file PNGs are written
+    if _grid_samples:
+        inputs = np.stack([s[0] for s in _grid_samples])
+        gts    = np.stack([s[1] for s in _grid_samples])
+        preds  = np.stack([s[2] for s in _grid_samples])
+        grid_path = os.path.join(os.path.dirname(__file__), 'results', 'results_grid.png')
+        save_results_grid_images(inputs, gts, preds, save_path=grid_path,
+                                  title='UNet – Midcurve Results')
+
 
 if __name__ == "__main__":
     generators = init()
