@@ -34,18 +34,18 @@ except ImportError:
     pass
 
 # ---------------------------------------------------------------------------
-# Helpers
+# Shared data dir constants (consolidated under image_based/data/)
 # ---------------------------------------------------------------------------
 
-def _data_dir(approach):
-    return os.path.join(_SRC, 'image_based', approach, 'data')
+_IMAGE_PAIRS_DIR = os.path.join(_SRC, 'image_based', 'data', 'image-pairs')
+_UNET_SPLITS_DIR = os.path.join(_SRC, 'image_based', 'data', 'unet-splits')
+_IMAGES_COMBO_DIR = os.path.join(_SRC, 'image_based', 'data', 'images-combo')
 
 
-def _has_png_pairs(approach):
-    d = _data_dir(approach)
-    if not os.path.isdir(d):
+def _has_png_pairs(data_dir):
+    if not os.path.isdir(data_dir):
         return False
-    files = os.listdir(d)
+    files = os.listdir(data_dir)
     has_profile  = any('Profile'  in f and f.endswith('.png') for f in files)
     has_midcurve = any('Midcurve' in f and f.endswith('.png') for f in files)
     return has_profile and has_midcurve
@@ -62,29 +62,30 @@ def _dummy_images(n=4, size=100):
 
 class TestDataFolders(unittest.TestCase):
 
-    def test_simple_data_exists(self):
+    def test_image_pairs_exist(self):
         self.assertTrue(
-            _has_png_pairs('simpleencoderdecoder'),
-            "simpleencoderdecoder/data/ missing PNG pairs — run utils/prepare_data.py")
+            _has_png_pairs(_IMAGE_PAIRS_DIR),
+            "image_based/data/image-pairs/ missing PNG pairs — run utils/prepare_data.py")
+
+    def test_simple_data_exists(self):
+        self.assertTrue(_has_png_pairs(_IMAGE_PAIRS_DIR),
+            "image-pairs/ missing PNG pairs — run utils/prepare_data.py")
 
     def test_cnn_data_exists(self):
-        self.assertTrue(
-            _has_png_pairs('cnnencoderdecoder'),
-            "cnnencoderdecoder/data/ missing PNG pairs — run utils/prepare_data.py")
+        self.assertTrue(_has_png_pairs(_IMAGE_PAIRS_DIR),
+            "image-pairs/ missing PNG pairs — run utils/prepare_data.py")
 
     def test_dense_data_exists(self):
-        self.assertTrue(
-            _has_png_pairs('denseencoderdecoder'),
-            "denseencoderdecoder/data/ missing PNG pairs")
+        self.assertTrue(_has_png_pairs(_IMAGE_PAIRS_DIR),
+            "image-pairs/ missing PNG pairs")
 
     def test_denoiser_data_exists(self):
-        self.assertTrue(
-            _has_png_pairs('denoiserencoderdecoder'),
-            "denoiserencoderdecoder/data/ missing PNG pairs")
+        self.assertTrue(_has_png_pairs(_IMAGE_PAIRS_DIR),
+            "image-pairs/ missing PNG pairs")
 
     def test_unet_data_dir_exists(self):
-        d = _data_dir('unet')
-        self.assertTrue(os.path.isdir(d), f"unet/data/ not found at {d}")
+        self.assertTrue(os.path.isdir(_UNET_SPLITS_DIR),
+            f"image_based/data/unet-splits/ not found")
 
 
 # ---------------------------------------------------------------------------

@@ -4,7 +4,7 @@ from glob import glob
 import numpy as np
 import imageio
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'images-combo')
 
 
 class DataLoader():

@@ -82,8 +82,8 @@ class TestImg2Img(unittest.TestCase):
                          "Discriminator output should be a 4D patch tensor")
 
     def test_05_data_folder_exists(self):
-        self.assertTrue(os.path.isdir(os.path.join(_HERE, 'data')),
-                        "data/ missing — run utils/prepare_data.py")
+        self.assertTrue(os.path.isdir(os.path.join(_HERE, '..', 'data', 'images-combo')),
+                        "image_based/data/images-combo/ missing — run utils/prepare_data.py")
 
     def test_06_logs_folder_exists(self):
         log_dir = os.path.join(_HERE, 'logs')

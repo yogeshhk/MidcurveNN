@@ -97,5 +97,5 @@ if __name__ == "__main__":
     generators[0].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage1', 'weights.h5'))
     generators[1].load_weights(os.path.join(os.path.dirname(__file__), 'weights', 'stage2', 'weights.h5'))
     
-    generate_test_results(generators[0], generators[1], os.path.join(os.path.dirname(__file__), 'data', 'test'), None)
+    generate_test_results(generators[0], generators[1], os.path.join(os.path.dirname(__file__), '..', 'data', 'unet-splits', 'test'), None)
     

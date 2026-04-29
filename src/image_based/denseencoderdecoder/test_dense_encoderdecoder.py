@@ -28,12 +28,12 @@ except ImportError:
 class TestDenseData(unittest.TestCase):
 
     def test_01_data_folder_exists(self):
-        self.assertTrue(os.path.isdir(os.path.join(_HERE, 'data')),
-                        "data/ missing — run utils/prepare_data.py")
+        self.assertTrue(os.path.isdir(os.path.join(_HERE, '..', 'data', 'image-pairs')),
+                        "image_based/data/image-pairs/ missing — run utils/prepare_data.py")
 
     def test_02_png_pairs_present(self):
-        data_dir = os.path.join(_HERE, 'data')
-        if not os.path.isdir(data_dir): self.skipTest("data/ missing")
+        data_dir = os.path.join(_HERE, '..', 'data', 'image-pairs')
+        if not os.path.isdir(data_dir): self.skipTest("image-pairs/ missing")
         files = os.listdir(data_dir)
         self.assertTrue(any('Profile'  in f for f in files))
         self.assertTrue(any('Midcurve' in f for f in files))

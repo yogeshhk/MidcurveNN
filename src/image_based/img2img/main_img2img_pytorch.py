@@ -28,8 +28,8 @@ torch.manual_seed(manual_seed)
 _HERE = os.path.dirname(os.path.abspath(__file__))
 log_path = os.path.join(_HERE, "logs")
 modelName = "pix2pix_pytorch"
-data_path_Train = os.path.join(_HERE, 'data', 'train')
-data_path_Test = os.path.join(_HERE, 'data', 'test')
+data_path_Train = os.path.join(_HERE, '..', 'data', 'images-combo', 'train')
+data_path_Test = os.path.join(_HERE, '..', 'data', 'images-combo', 'test')
 
 batch_size = 4
 num_workers = 2

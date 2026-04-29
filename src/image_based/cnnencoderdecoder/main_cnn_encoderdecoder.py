@@ -15,7 +15,7 @@ from cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
 import numpy as np
 import random
 
-DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'data')
+DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'image-pairs')
 
 if __name__ == "__main__":
     profile_pngs_objs, midcurve_pngs_objs = get_training_data(datafolder=DATA_FOLDER, size=(128, 128))

@@ -3,8 +3,10 @@
     Takes raw data from "data/raw/*" files for both, profile shape (shape.dat) and midcurve shape (shape.mid)
     Generates raster image files from svg (simple vector graphics)
     Multiple variations are populated using image transformations.
-    Each approach's images are stored in its own data/ subfolder:
-      src/<approach>/data/  (e.g. simpleencoderdecoder/data/, unet/data/, pix2pix/data/)
+    Shared data directories under image_based/data/:
+      image-pairs/   -- PNG pairs used by simple/cnn/dense/denoiser encoder-decoders
+      unet-splits/   -- train/test split PNGs for the UNet approach
+      images-combo/  -- side-by-side combo JPGs (train/val/test) for pix2pix and img2img
     Only raw .dat/.mid files remain in src/data/raw/.
 """
 from random import shuffle
@@ -41,10 +43,10 @@ from config import RAW_DATA_FOLDER
 # src/ directory (parent of utils/)
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-def _approach_data_dir(approach, type_folder='image_based'):
-    """Return the data directory for a given approach subfolder under its type folder."""
-    return os.path.join(SRC_DIR, type_folder, approach, 'data')
+# Shared image data directories (consolidated under image_based/data/)
+IMAGE_PAIRS_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'image-pairs')
+UNET_SPLITS_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'unet-splits')
+IMAGES_COMBO_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'images-combo')
 
 
 np.set_printoptions(threshold=sys.maxsize)
@@ -80,9 +82,9 @@ def combine_images(imga, imgb):
 
 def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
     if inputdatafolder is None:
-        inputdatafolder = _approach_data_dir('simpleencoderdecoder', 'image_based')
+        inputdatafolder = IMAGE_PAIRS_DIR
     if pix2pixdatafolder is None:
-        pix2pixdatafolder = _approach_data_dir('pix2pix', 'image_based')
+        pix2pixdatafolder = IMAGES_COMBO_DIR
     profile_pngs, midcurve_pngs = read_input_image_pairs(inputdatafolder)
 
     profile_pngs_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=(256, 256))) for f in profile_pngs]
@@ -460,20 +462,16 @@ def generate_sequences(sequences_filepath=None, recreate_data=False):
 
 
 if __name__ == "__main__":
-    # Generate 100x100 PNG pairs for encoder-decoder approaches (all image_based)
-    for approach in ['simpleencoderdecoder', 'cnnencoderdecoder',
-                     'denseencoderdecoder', 'denoiserencoderdecoder']:
-        print(f"Generating images for {approach}...")
-        generate_images(_approach_data_dir(approach, 'image_based'))
+    # Generate 100x100 PNG pairs — shared by simple/cnn/dense/denoiser encoder-decoders
+    print("Generating image pairs...")
+    generate_images(IMAGE_PAIRS_DIR)
 
-    # Generate pix2pix-format data (concatenated JPGs, split into train/val/test)
-    input_dir = _approach_data_dir('simpleencoderdecoder', 'image_based')
-    for approach in ['pix2pix', 'img2img']:
-        print(f"Generating pix2pix dataset for {approach}...")
-        generate_pix2pix_dataset(
-            inputdatafolder=input_dir,
-            pix2pixdatafolder=_approach_data_dir(approach, 'image_based')
-        )
+    # Generate combo images (side-by-side JPGs, train/val/test) — shared by pix2pix and img2img
+    print("Generating images-combo dataset...")
+    generate_pix2pix_dataset(
+        inputdatafolder=IMAGE_PAIRS_DIR,
+        pix2pixdatafolder=IMAGES_COMBO_DIR
+    )
 
     # Generate sequence JSON for text-based approaches
     text_data_dir = os.path.join(SRC_DIR, 'text_based', 'data')

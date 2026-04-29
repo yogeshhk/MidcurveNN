@@ -22,7 +22,15 @@ src/
 ├── utils/                       # Shared utilities (data prep, plotting, metrics)
 │
 ├── image_based/                 # Phase I — raster/bitmap approaches
-│   ├── data/                    # Generated PNG image pairs
+│   ├── data/                    # Shared generated image data (one copy, no duplication)
+│   │   ├── image-pairs/         # PNG pairs (Profile+Midcurve) — used by simple/cnn/dense/denoiser
+│   │   ├── unet-splits/         # UNet train/test split PNGs
+│   │   │   ├── train/
+│   │   │   └── test/
+│   │   └── images-combo/        # Side-by-side combo JPGs — used by pix2pix and img2img
+│   │       ├── train/
+│   │       ├── val/
+│   │       └── test/
 │   ├── simpleencoderdecoder/    # 1 dense hidden layer (baseline)
 │   ├── cnnencoderdecoder/       # 4-level Conv2D encoder-decoder
 │   ├── denseencoderdecoder/     # Fully connected (flattened 10K dims)
@@ -42,11 +50,12 @@ src/
 │   ├── data/
 │   │   ├── sequences.json       # Legacy flat-coord dataset (from src/utils/prepare_data.py)
 │   │   ├── brep/                # 4 base BRep JSON shapes (I, L, T, Plus)
-│   │   └── csvs/                # CSV train/test/val splits (993 rows, 80/10/10)
+│   │   ├── csvs/                # CSV train/test/val splits (993 rows, 80/10/10)
+│   │   └── shapes2brep.csv      # Ludwig framework training data
 │   ├── utils/                   # BRep data pipeline: config, prepare_data, create_brep_csvs, ...
 │   ├── finetuning/              # QLoRA fine-tuning: train, inference, evaluate, metrics, server
 │   ├── codeT5/                  # CodeT5 fine-tuning notebooks (Gdrive + Kaggle)
-│   ├── ludwig/                  # Ludwig framework notebooks + data
+│   ├── ludwig/                  # Ludwig framework notebooks
 │   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
 │   └── results/                 # Model checkpoints and evaluation outputs (generated)
 │

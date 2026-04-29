@@ -27,14 +27,14 @@ except ImportError:
 class TestPix2PixData(unittest.TestCase):
 
     def test_01_data_dir_exists(self):
-        self.assertTrue(os.path.isdir(os.path.join(_HERE, 'data')),
-                        "pix2pix/data/ missing — run utils/prepare_data.py")
+        self.assertTrue(os.path.isdir(os.path.join(_HERE, '..', 'data', 'images-combo')),
+                        "image_based/data/images-combo/ missing — run utils/prepare_data.py")
 
     def test_02_train_subdir(self):
-        train_dir = os.path.join(_HERE, 'data', 'train')
-        if not os.path.isdir(os.path.join(_HERE, 'data')): self.skipTest("data/ missing")
-        self.assertTrue(os.path.isdir(train_dir),
-                        "pix2pix/data/train/ missing")
+        combo_dir = os.path.join(_HERE, '..', 'data', 'images-combo')
+        if not os.path.isdir(combo_dir): self.skipTest("images-combo/ missing")
+        self.assertTrue(os.path.isdir(os.path.join(combo_dir, 'train')),
+                        "image_based/data/images-combo/train/ missing")
 
 
 @unittest.skipUnless(_TF_AVAILABLE, "TensorFlow not installed — skipping model tests")

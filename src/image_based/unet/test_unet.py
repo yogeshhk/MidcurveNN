@@ -29,8 +29,8 @@ except ImportError:
 class TestUNetData(unittest.TestCase):
 
     def test_01_data_folder_exists(self):
-        self.assertTrue(os.path.isdir(os.path.join(_HERE, 'data')),
-                        "unet/data/ missing — run utils/prepare_data.py")
+        self.assertTrue(os.path.isdir(os.path.join(_HERE, '..', 'data', 'unet-splits')),
+                        "image_based/data/unet-splits/ missing — run utils/prepare_data.py")
 
     def test_02_weights_stage1_dir(self):
         path = os.path.join(_HERE, 'weights', 'stage1')
