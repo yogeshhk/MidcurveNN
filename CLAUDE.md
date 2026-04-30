@@ -240,6 +240,15 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 - **CI image-based job is import/data only**: `.github/workflows/ci.yml` runs the image tests with `-k "not model and not unet_import"` and only installs `numpy pillow pytest` — no TF or matplotlib. Keep visualisation and model tests behind the existing skip guards.
 
+- **`unet/test.py` import ordering**: `unet/config.py` inserts `src/` at `sys.path[0]`, so `from utils.prepare_plots import save_results_grid_images` must be imported **before** `unet/` is inserted and before `from utils import get_coord_layers` runs. After the `prepare_plots` import, `sys.modules['utils']` must be evicted (`sys.modules.pop('utils', None)`) so that inserting `unet/` at position 0 and re-importing `utils` finds `unet/utils.py` rather than the cached `src/utils/` package. The fixed import block in `test.py` looks like:
+  ```python
+  from config import *                              # inserts src/ into sys.path
+  from utils.prepare_plots import save_results_grid_images
+  sys.modules.pop('utils', None); sys.modules.pop('utils.prepare_plots', None)
+  sys.path.insert(0, _HERE)                        # unet/ before src/
+  from utils import get_coord_layers               # finds unet/utils.py
+  ```
+
 ## Research Context
 
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps

@@ -2,5 +2,21 @@ __pycache__/
 .ipynb_checkpoints/
 .git/
 .idea/
+
+# Python
+*.pkl
+*.pyc
+
+# Model weights and checkpoints (large binary files — store locally only)
 models/
-*.pklReferences/code/sketches_sbsr.zip
+*.weights.h5
+*.keras
+*.pt
+*.pth
+
+# Training artefacts
+**/losses/
+training_run.log
+
+# Archives
+References/code/sketches_sbsr.zip

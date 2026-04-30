@@ -1,7 +1,8 @@
 # Slide Deck Enhancement — TODO Report
 **File:** `publications/Midcurve_LaTeX/Main_Midcurve_short_Presentation.tex`  
 **Target impl slides:** `midcurve_impl_ann_short.tex`, `midcurve_impl_llm_short.tex`  
-**Date created:** 2026-04-29
+**Date created:** 2026-04-29  
+**Status:** COMPLETED 2026-04-30 (UNet results and LLM C5 slide deferred — see notes below)
 
 ---
 
@@ -24,7 +25,7 @@ All result images go to `publications/Midcurve_LaTeX/images/` and are referenced
 
 All scripts require `conda activate midcurvenn` (Python 3.10, TF 2.13, PyTorch).
 
-### A1 — Simple Encoder-Decoder results
+### A1 — Simple Encoder-Decoder results ✓ DONE
 ```
 cd src/image_based/simpleencoderdecoder
 python main_simple_encoderdecoder.py
@@ -32,7 +33,7 @@ python main_simple_encoderdecoder.py
 - Output: `src/image_based/simpleencoderdecoder/results/results_grid.png`
 - Copy to: `publications/Midcurve_LaTeX/images/simple_results_grid.png`
 
-### A2 — CNN Encoder-Decoder results
+### A2 — CNN Encoder-Decoder results ✓ DONE
 ```
 cd src/image_based/cnnencoderdecoder
 python main_cnn_encoderdecoder.py
@@ -40,7 +41,7 @@ python main_cnn_encoderdecoder.py
 - Output: `src/image_based/cnnencoderdecoder/results/results_grid.png`
 - Copy to: `publications/Midcurve_LaTeX/images/cnn_results_grid.png`
 
-### A3 — UNet results
+### A3 — UNet results (SKIPPED — weights trained, test.py import fix applied; run test.py when needed)
 ```
 cd src/image_based/unet
 python test.py
@@ -49,7 +50,7 @@ python test.py
 - Output: `src/image_based/unet/results/results_grid.png`
 - Copy to: `publications/Midcurve_LaTeX/images/unet_results_grid.png`
 
-### A4 — Graph Transformer results (Phase III)
+### A4 — Graph Transformer results (Phase III) ✓ DONE
 ```
 cd src/geometry_based/graph_transformer
 python evaluate.py
@@ -59,7 +60,7 @@ python evaluate.py
 - Output: `src/geometry_based/graph_transformer/results/results_grid.png`
 - Copy to: `publications/Midcurve_LaTeX/images/graph_transformer_results_grid.png`
 
-### A5 — Text/LLM results (Phase II)
+### A5 — Text/LLM results (Phase II) (DEFERRED — requires QLoRA fine-tuning on larger GPU)
 - Requires a trained QLoRA checkpoint. Run only after fine-tuning completes:
 ```
 cd src/text_based/finetuning
@@ -73,7 +74,7 @@ python evaluate.py --model_path Midcurve-Qwen-Coder-v1 --visualize
 
 ## Phase B — Slide Changes in `midcurve_impl_ann_short.tex`
 
-### B1 — Expand "Simple Encoder Decoder" slide
+### B1 — Expand "Simple Encoder Decoder" slide ✓ DONE
 Current state: shows only `midcurve32` image.  
 **TODO:** Add bullet points below the image:
 - Input: 100×100 grayscale bitmap (flattened to 10,000 dims)
@@ -81,23 +82,23 @@ Current state: shows only `midcurve32` image.
 - Output: Dense(10,000, sigmoid)
 - Loss: binary cross-entropy; Optimizer: Adadelta
 
-### B2 — Update "Keras Implementation" code slide
+### B2 — Update "Keras Implementation" code slide ✓ DONE
 Current state: shows an older single-autoencoder snippet.  
 **TODO:** Replace lstlisting with current `_build()` method from
 `src/image_based/simpleencoderdecoder/build_simple_encoderdecoder_model.py`.
 Key lines to show: Input → Dense(encoding_dim) → Dense(input_dim), Model compile.
 
-### B3 — NEW slide: "CNN Encoder Decoder Architecture" (insert after Simple AE results)
+### B3 — NEW slide: "CNN Encoder Decoder Architecture" ✓ DONE
 **TODO:** Add new frame with:
 - Bullets: 4-level Conv2D encoder, Conv2DTranspose decoder, CoordConv (3-channel input = x_coord + y_coord + image), 128×128
 - Code snippet from `build_cnn_encoderdecoder_model.py` showing Conv2D → MaxPool stack
 
-### B4 — NEW slide: "UNet Architecture" (insert after CNN slide)
+### B4 — NEW slide: "UNet Architecture" ✓ DONE
 **TODO:** Add new frame with:
 - Bullets: 8-level UNet, auxiliary reconstruction decoder, CoordConv, 2-stage WBCE loss, 256×256
 - Code snippet from `unet/train.py`: the `init()` function signature and key loss definition
 
-### B5 — Update "Results" slide (currently shows `midcurve33`)
+### B5 — Update "Results" slide ✓ DONE (3 frames; unet_results_grid.png pending A3)
 **TODO:** Replace the single old image with three result slides:
 1. Simple AE results: `\includegraphics[width=\linewidth,keepaspectratio]{simple_results_grid}`
 2. CNN results: `\includegraphics[width=\linewidth,keepaspectratio]{cnn_results_grid}`
@@ -109,7 +110,7 @@ Each slide title: "Results — Simple AE", "Results — CNN Encoder-Decoder", "R
 
 ## Phase C — Slide Changes in `midcurve_impl_llm_short.tex`
 
-### C1 — NEW slide: "QLoRA Fine-tuning Pipeline" (insert before "2D Brep Representation")
+### C1 — NEW slide: "QLoRA Fine-tuning Pipeline" ✓ DONE
 **TODO:** Add frame with code snippet from `src/text_based/finetuning/train.py`:
 ```python
 bnb_config = BitsAndBytesConfig(
@@ -122,7 +123,7 @@ lora_config = LoraConfig(
     lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
 ```
 
-### C2 — NEW slide: "SFT Trainer Setup"
+### C2 — NEW slide: "SFT Trainer Setup" ✓ DONE
 **TODO:** Add frame with:
 ```python
 trainer = SFTTrainer(
@@ -135,13 +136,13 @@ trainer = SFTTrainer(
 trainer.train()
 ```
 
-### C3 — Expand "Data" slide (currently shows only `shapes_csv` image)
+### C3 — Expand "Data" slide ✓ DONE
 **TODO:** Add bullet list below image:
 - 993 rows total: 80% train / 10% val / 10% test
 - 4 base shapes: I, L, T, Plus — augmented by rotation, translation, mirroring
 - BRep JSON columns: `Profile_brep` → `Midcurve_brep` (Points / Lines / Segments)
 
-### C4 — NEW slide: "Evaluation Metrics"
+### C4 — NEW slide: "Evaluation Metrics" ✓ DONE
 **TODO:** Add frame with bullet list:
 - JSON validity (parse success rate)
 - Chamfer distance (point-cloud proximity)
@@ -151,7 +152,7 @@ trainer.train()
 
 Short snippet from `metrics_enhanced.py` showing `compute_all_metrics()` signature.
 
-### C5 — NEW slide: "Fine-tuning Results" (add AFTER A5 image is generated)
+### C5 — NEW slide: "Fine-tuning Results" (DEFERRED — depends on A5)
 **TODO:** Add frame referencing:
 - `\includegraphics[width=\linewidth,keepaspectratio]{llm_metric_distributions}`
 - Caption: "Metric distributions across test set after QLoRA fine-tuning"
@@ -160,7 +161,7 @@ Short snippet from `metrics_enhanced.py` showing `compute_all_metrics()` signatu
 
 ## Phase D — New slide in `midcurve_intro_ann_short.tex`
 
-### D1 — NEW slide: "Phase III — Graph Transformer" (append at end of file)
+### D1 — NEW slide: "Phase III — Graph Transformer" ✓ DONE
 **TODO:** Add frame:
 - Input: polygon graph (nodes = corner points with (x,y) features, edges = polygon sides)
 - Output: midcurve node coordinates + predicted adjacency matrix
@@ -172,7 +173,7 @@ Short snippet from `metrics_enhanced.py` showing `compute_all_metrics()` signatu
 
 ## Phase E — Update `midcurve_refs.tex`
 
-### E1 — Add new references
+### E1 — Add new references ✓ DONE
 **TODO:** Add to the itemize list:
 - Kulkarni, Y.H. "Midcurve Computation using LLM Fine-tuning" ICACCS 2024 / Gen4SE 2024
 - Kulkarni, Y.H. "MidcurveNN Phase III: Graph Transformer for Midcurve Computation" (this work, 2025)

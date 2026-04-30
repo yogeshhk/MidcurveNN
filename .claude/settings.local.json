@@ -47,7 +47,8 @@
       "Read(//c/ProgramData/anaconda3/**)",
       "Bash(where python *)",
       "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" evaluate.py)",
-      "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" train.py)"
+      "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" train.py)",
+      "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" test.py)"
     ]
   }
 }

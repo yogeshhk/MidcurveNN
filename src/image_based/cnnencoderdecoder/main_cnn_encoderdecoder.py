@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     retrain_model = True
     endec = cnn_encoderdecoder(input_shape = (128,128,3))
+    endec.epochs = 15  # quick run: ~23 min
     endec.train(profile_pngs, midcurve_pngs_objs,retrain_model)
     
     #print(test_profile_pngs.shape)

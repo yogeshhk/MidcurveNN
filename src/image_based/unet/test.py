@@ -6,18 +6,28 @@ Created on Wed Sep 25 09:17:47 2019
 """
 
 from config import *
-# from src.config import BASE_DIR
+
+import sys as _sys, os as _os
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+
+# Import from src/utils FIRST, while src/ is still the active 'utils' in sys.path.
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_HERE)))  # ensure src/ present
+from utils.prepare_plots import save_results_grid_images  # noqa: E402
+
+# Evict src/utils from sys.modules so unet/utils.py can register as 'utils'.
+_sys.modules.pop('utils', None)
+_sys.modules.pop('utils.prepare_plots', None)
+
+# Now insert unet/ before src/ so local utils.py is found for get_coord_layers.
+_sys.path.insert(0, _HERE)
 from utils import get_coord_layers
+
 import os
 import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from train import init
-
-_HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.dirname(os.path.dirname(_HERE)))  # src/
-from utils.prepare_plots import save_results_grid_images  # noqa: E402
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
