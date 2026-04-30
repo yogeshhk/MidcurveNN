@@ -1,5 +1,2 @@
 @echo off
-for %%i in (Main_Midcurve_Presentation*.tex) do (
-    pdflatex -interaction=nonstopmode %%i
-    pdflatex -interaction=nonstopmode %%i
-)
+for /r %%i in (Main_Seminar_Midcurve_*.tex) do texify --engine=luatex  -cp %%i

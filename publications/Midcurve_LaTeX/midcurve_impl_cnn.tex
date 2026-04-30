@@ -74,14 +74,14 @@ out = Conv2D(1, (1,1), activation='sigmoid')(d1)
 Simple AE  & 100$\times$100 & High   & Low  & \texttimes \\
 Dense AE   & 100$\times$100 & Medium & Med  & \texttimes \\
 CNN AE     & 128$\times$128 & Low    & High & \texttimes \\
-UNet       & 256$\times$256 & Lowest & Best & \texttimes \\
-Pix2Pix    & 256$\times$256 & Low    & High & \texttimes \\
+% UNet       & 256$\times$256 & Lowest & Best & \texttimes \\
+% Pix2Pix    & 256$\times$256 & Low    & High & \texttimes \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \begin{itemize}
-\item[\tiny$\blacktriangleright$] UNet best overall; CNN $\approx$10$\times$ improvement over Dense
+\item[\tiny$\blacktriangleright$] CNN $\approx$10$\times$ improvement over Dense % UNet best overall; 
 \item[\tiny$\blacktriangleright$] All image models lose exact geometry (rasterisation)
 \item[\tiny$\blacktriangleright$] None can represent branched midcurves (T, Plus) natively
 \end{itemize}
@@ -94,7 +94,7 @@ Pix2Pix    & 256$\times$256 & Low    & High & \texttimes \\
   \begin{block}{\textcolor{white}{Advantages}}
     \begin{itemize}
     \item[\tiny$\blacktriangleright$] Fixed-size i/o solves variable-length problem
-    \item[\tiny$\blacktriangleright$] Rich off-the-shelf architectures (UNet, GAN)
+    % \item[\tiny$\blacktriangleright$] Rich off-the-shelf architectures (UNet, GAN)
     \item[\tiny$\blacktriangleright$] Easy data augmentation (rotate, translate)
     \item[\tiny$\blacktriangleright$] Simple training pipeline
     \end{itemize}

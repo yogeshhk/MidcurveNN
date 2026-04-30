@@ -137,7 +137,7 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Keras Implementation --- Simple AE}
+\begin{frame}[fragile]\frametitle{Keras Implementation :  Simple AE}
 
 \begin{lstlisting}[basicstyle=\tiny]
 def _build(self):
@@ -186,56 +186,56 @@ decoded = Conv2D(1, (3,3), activation='sigmoid', padding='same')(x)
 \end{lstlisting}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{UNet Architecture}
-\begin{itemize}
-\item Input: $256 \times 256$ with CoordConv; 8-level encoder--decoder
-\item Two output heads: midcurve prediction + polygon reconstruction
-\item 2-stage training: stage~1 (polygon only) $\to$ stage~2 (refines with stage-1 output)
-\item Loss: Weighted Binary Cross-Entropy (WBCE), midcurve head weighted $10\times$
-\end{itemize}
-\begin{lstlisting}[basicstyle=\tiny]
-def init():
-    loss = {
-        'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
-        'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED),
-        'bce': binary_crossentropy, 'mae': mean_absolute_error}
-    optimizer = Adam(decay=0.0001);  loss_weights = [1E1, 1]
-    generator_1 = unet_stage1()
-    generator_1.compile(loss=[loss[STAGE1_LOSS]]*2,
-                        optimizer=optimizer, loss_weights=loss_weights)
-    if TWO_STAGE:
-        generator_2 = unet_stage2()
-        generator_2.compile(loss=[loss[STAGE2_LOSS]]*2,
-                            optimizer=optimizer, loss_weights=loss_weights)
-        return [generator_1, generator_2]
-    return [generator_1]
-\end{lstlisting}
-\end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{UNet Architecture}
+% \begin{itemize}
+% \item Input: $256 \times 256$ with CoordConv; 8-level encoder--decoder
+% \item Two output heads: midcurve prediction + polygon reconstruction
+% \item 2-stage training: stage~1 (polygon only) $\to$ stage~2 (refines with stage-1 output)
+% \item Loss: Weighted Binary Cross-Entropy (WBCE), midcurve head weighted $10\times$
+% \end{itemize}
+% \begin{lstlisting}[basicstyle=\tiny]
+% def init():
+    % loss = {
+        % 'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
+        % 'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED),
+        % 'bce': binary_crossentropy, 'mae': mean_absolute_error}
+    % optimizer = Adam(decay=0.0001);  loss_weights = [1E1, 1]
+    % generator_1 = unet_stage1()
+    % generator_1.compile(loss=[loss[STAGE1_LOSS]]*2,
+                        % optimizer=optimizer, loss_weights=loss_weights)
+    % if TWO_STAGE:
+        % generator_2 = unet_stage2()
+        % generator_2.compile(loss=[loss[STAGE2_LOSS]]*2,
+                            % optimizer=optimizer, loss_weights=loss_weights)
+        % return [generator_1, generator_2]
+    % return [generator_1]
+% \end{lstlisting}
+% \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Results --- Simple AE}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{Results :  Simple AE}
 
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{simple_results_grid}
-\end{center}
-\end{frame}
+% \begin{center}
+% \includegraphics[width=0.8\linewidth,keepaspectratio]{simple_results_grid}
+% \end{center}
+% \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Results --- CNN Encoder-Decoder}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{Results :  CNN Encoder-Decoder}
 
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{cnn_results_grid}
-\end{center}
-\end{frame}
+% \begin{center}
+% \includegraphics[width=0.8\linewidth,keepaspectratio]{cnn_results_grid}
+% \end{center}
+% \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Results --- UNet}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{Results :  UNet}
 
-\begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{unet_results_grid}
-\end{center}
-\end{frame}
+% \begin{center}
+% \includegraphics[width=\linewidth,keepaspectratio]{unet_results_grid}
+% \end{center}
+% \end{frame}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{frame}[fragile]\frametitle{Results}
