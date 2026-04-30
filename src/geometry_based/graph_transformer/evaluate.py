@@ -152,7 +152,7 @@ def plot_prediction(shape_name, x_denorm, profile_edge_index,
 
     if save_path:
         plt.savefig(save_path, dpi=150, bbox_inches="tight")
-        print(f"  [Plot] saved → {save_path}")
+        print(f"  [Plot] saved -> {save_path}")
     return fig
 
 
@@ -198,7 +198,7 @@ def plot_training_curves(log_csv: str, save_path=None):
     plt.tight_layout()
     if save_path:
         plt.savefig(save_path, dpi=150, bbox_inches="tight")
-        print(f"  [Plot] Training curves → {save_path}")
+        print(f"  [Plot] Training curves -> {save_path}")
     return fig
 
 

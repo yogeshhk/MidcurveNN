@@ -39,7 +39,15 @@
       "Bash(cp \"D:/Yogesh/GitHub/MidcurveLLM/src/ludwig/data/shapes2brep.csv\" \"D:/Yogesh/GitHub/MidcurveNN/src/text_based/ludwig/data/\")",
       "Bash(conda run *)",
       "Bash(sort -k2)",
-      "Bash(grep -E \"\\\\.\\(png|jpg|pdf\\)$\")"
+      "Bash(grep -E \"\\\\.\\(png|jpg|pdf\\)$\")",
+      "Bash(conda env *)",
+      "PowerShell(conda env *)",
+      "PowerShell(Get-ChildItem *)",
+      "Read(//c/Users/yoges/anaconda3/**)",
+      "Read(//c/ProgramData/anaconda3/**)",
+      "Bash(where python *)",
+      "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" evaluate.py)",
+      "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" train.py)"
     ]
   }
 }

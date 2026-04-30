@@ -7,10 +7,14 @@ Created on Wed Sep 25 09:16:17 2019
 
 from config import *
 
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))  # unet/ before src/
+
 from unet import unet_stage1, unet_stage2
 from utils import get_coord_layers, weighted_cross_entropy
 import numpy as np
-from tensorflow.keras.losses import mean_absolute_error, binary_crossentropy
+from tensorflow.keras.losses import binary_crossentropy, MeanAbsoluteError as _MAE
+mean_absolute_error = _MAE()
 from tensorflow.keras.optimizers import Adam
 from datagenerator import datagen
 from tqdm import tqdm
@@ -47,10 +51,10 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
             generator_stage1_json = json_file.read()
         gen_model = model_from_json(generator_stage1_json)
         if save_all:
-            gen_model.load_weights(weight_path + str(load_at) + '_epochs_gen.h5')
+            gen_model.load_weights(weight_path + str(load_at) + '_epochs_gen.weights.h5')
             print("\nLoaded at: ", load_at, " epochs")
         else:
-            gen_model.load_weights(weight_path + 'weights.h5')
+            gen_model.load_weights(weight_path + 'weights.weights.h5')
             print("\nWeights Loaded")
         # Recompile after loading so train_on_batch is available
         loss_fns = {'bce': binary_crossentropy, 'mae': mean_absolute_error,
@@ -74,10 +78,10 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
             json_file.write(generator_stage1_json)
 
         if save_all:
-            path_gen = os.path.join(weight_path, str(num_epochs) + '_epochs_gen.h5')
+            path_gen = os.path.join(weight_path, str(num_epochs) + '_epochs_gen.weights.h5')
             gen_model.save_weights(path_gen)
         else:
-            path_gen = os.path.join(weight_path, 'weights.h5')
+            path_gen = os.path.join(weight_path, 'weights.weights.h5')
             gen_model.save_weights(path_gen)
 
         gn_loss = np.array(loss)
@@ -92,10 +96,10 @@ def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_
             generator_stage2_json = json_file.read()
         generator_stage2 = model_from_json(generator_stage2_json)
         if save_all:
-            generator_stage2.load_weights(os.path.join(weight_path, str(load_at) + '_epochs_gen.h5'))
+            generator_stage2.load_weights(os.path.join(weight_path, str(load_at) + '_epochs_gen.weights.h5'))
             print("\nLoaded at: ", load_at, " epochs")
         else:
-            generator_stage2.load_weights(weight_path + 'weights.h5')
+            generator_stage2.load_weights(weight_path + 'weights.weights.h5')
             print("\nWeights Loaded")
         # Recompile after loading so train_on_batch is available
         loss_fns = {'bce': binary_crossentropy, 'mae': mean_absolute_error,
@@ -123,10 +127,10 @@ def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_
             json_file.write(generator_stage2_json)
 
         if save_all:
-            path_gen = os.path.join(weight_path, str(num_epochs) + '_epochs_gen.h5')
+            path_gen = os.path.join(weight_path, str(num_epochs) + '_epochs_gen.weights.h5')
             generator_stage2.save_weights(path_gen)
         else:
-            path_gen = os.path.join(weight_path, 'weights.h5')
+            path_gen = os.path.join(weight_path, 'weights.weights.h5')
             generator_stage2.save_weights(path_gen)
 
         gn_loss = np.array(loss)
@@ -144,17 +148,21 @@ if __name__ == "__main__":
     width = 256
     batch_size = 16
 
-    epochs = 1
+    epochs = 5
+    TRAIN_SIZE = 320  # quick run: 20 batches/epoch (~25 min total for both stages)
 
     data_gen = datagen(batch_size, height, width)
 
     pardir = os.path.dirname(__file__)
 
-    train_stage1(generators[0], epochs, batch_size, os.path.join(pardir, 'weights', 'stage1'),
+    os.makedirs(os.path.join(pardir, 'losses', 'stage1'), exist_ok=True)
+    os.makedirs(os.path.join(pardir, 'losses', 'stage2'), exist_ok=True)
+
+    train_stage1(generators[0], epochs, batch_size, os.path.join(pardir, 'weights', 'stage1') + os.sep,
                  os.path.join(pardir, 'losses', 'stage1'), data_gen, False, 0)
     if TWO_STAGE:
-        generators[0].load_weights(os.path.join(pardir, 'weights', 'stage1', '0_epochs_gen.h5'))
+        generators[0].load_weights(os.path.join(pardir, 'weights', 'stage1', 'weights.weights.h5'))
         train_stage2(generators[0], generators[1], epochs, batch_size,
-                     os.path.join(pardir, 'weights', 'stage2'),
+                     os.path.join(pardir, 'weights', 'stage2') + os.sep,
                      os.path.join(pardir, 'losses', 'stage2'),
                      data_gen, False, 0)

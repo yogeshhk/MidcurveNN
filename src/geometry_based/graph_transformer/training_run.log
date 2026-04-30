@@ -1,0 +1,48 @@
+﻿[Main] Device: cuda
+[Main] Data folder: D:\Yogesh\GitHub\MidcurveNN\src\data\raw
+
+[Step 1] Loading dataset �
+[Dataset] Loaded 136 samples from 4 shapes (augment=True).
+[Dataset] Loaded 4 samples from 4 shapes (augment=False).
+
+[Step 2] Generating dataset visualisations �
+  Saved: results/dataset_overview.png
+  Saved: results/augmentation_I.png
+  Saved: results/augmentation_L.png
+  Saved: results/augmentation_T.png
+  Saved: results/augmentation_Plus.png
+
+[Step 3] Training �
+[Train] 103 train / 20 val / 13 test
+[Train] params: 63,853
+
+   Ep   Tr-Loss    Tr-Ch   Val-Loss   Val-Ch
+------------------------------------------------
+    1    0.9866   0.2939     0.9591   0.2708
+   20    0.7110   0.0239     0.7046   0.0304
+   40    0.6855   0.0176     0.6706   0.0282
+   60    0.5969   0.0245     0.6157   0.0362
+   80    0.6014   0.0179     0.5927   0.0357
+  100    0.5269   0.0191     0.5467   0.0331
+  120    0.5186   0.0174     0.5372   0.0322
+  140    0.5188   0.0179     0.5242   0.0334
+  160    0.4858   0.0172     0.5433   0.0293
+  180    0.5390   0.0189     0.5112   0.0301
+  200    0.5014   0.0164     0.5123   0.0301
+
+[Train] Best val loss: 0.5086
+
+[Step 4] Plotting training curves �
+  Saved: results/training_curves.png
+
+[Step 5] Evaluating on original shapes �
+
+       Shape     Chamfer  Nodes-pred
+--------------------------------------
+           I      0.6234           3
+           L      0.4844           4
+        Plus      0.1069           8
+           T      0.1121           5
+        MEAN      0.3317
+
+[Main] All results saved to: results/

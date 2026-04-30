@@ -40,6 +40,51 @@ Can Large Language Models ``learn'' the dimension reduction transformation?
 % \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{QLoRA Fine-tuning Pipeline}
+\begin{itemize}
+\item Base models: Qwen2.5-Coder, Gemma-2, Mistral (causal LM family)
+\item 4-bit NF4 quantisation via BitsAndBytes (fits on consumer GPU)
+\item LoRA adapters on all attention projections ($r=16$, $\alpha=32$)
+\item SFTTrainer (TRL) with cosine LR schedule + gradient checkpointing
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny]
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True, bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True)
+
+peft_config = LoraConfig(
+    r=16, lora_alpha=32,
+    target_modules=["q_proj","k_proj","v_proj","o_proj",
+                    "gate_proj","up_proj","down_proj"],
+    lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{SFT Trainer Setup}
+\begin{lstlisting}[basicstyle=\tiny]
+model = AutoModelForCausalLM.from_pretrained(
+    Config.MODEL_ID, quantization_config=bnb_config,
+    device_map="auto", use_cache=False)
+model.gradient_checkpointing_enable()
+
+trainer = SFTTrainer(
+    model=model,
+    train_dataset=train_dataset,
+    eval_dataset=val_dataset,
+    peft_config=peft_config,
+    dataset_text_field="text",
+    max_seq_length=Config.MAX_SEQ_LENGTH,
+    tokenizer=tokenizer,
+    args=training_args,       # cosine LR, paged_adamw_8bit, ...
+    callbacks=[GeometricValidationCallback(...)]
+)
+trainer.train()
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{2D Brep Representation}
 
 Leverage a geometry representation similar to that found in 3D B-rep (Boundary representation), but in 2D. It can be shown as:
@@ -66,11 +111,40 @@ Leverage a geometry representation similar to that found in 3D B-rep (Boundary r
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Data}
 
-         \begin{center}
-	\includegraphics[width=\linewidth]{images/shapes_csv}
-	\label{fig_csv}
-    \end{center}
-	
+\begin{center}
+\includegraphics[width=0.85\linewidth]{images/shapes_csv}
+\end{center}
+\begin{itemize}
+\item 993 rows total: 80\% train / 10\% val / 10\% test
+\item 4 base shapes: I, L, T, Plus --- augmented by rotation, translation, mirroring
+\item Columns: \texttt{Profile\_brep} $\to$ \texttt{Midcurve\_brep} (Points / Lines / Segments)
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Evaluation Metrics}
+\begin{itemize}
+\item \textbf{JSON validity}: parse success rate (structural correctness)
+\item \textbf{Chamfer distance}: average nearest-neighbour distance between point clouds
+\item \textbf{Hausdorff distance}: worst-case deviation (max of min distances)
+\item \textbf{Topology accuracy}: correct node and edge count vs.\ ground truth
+\item \textbf{Combined score}: weighted average of the above metrics
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny]
+# From src/text_based/finetuning/metrics_enhanced.py
+def compute_all_metrics(pred_brep_str, gt_brep_str):
+    """Returns dict with keys: json_valid, chamfer, hausdorff,
+       topology_accuracy, combined_score."""
+    pred = safe_parse_brep(pred_brep_str)
+    gt   = safe_parse_brep(gt_brep_str)
+    if pred is None:
+        return {"json_valid": 0.0, "chamfer": float('inf'), ...}
+    pts_pred = extract_points(pred)
+    pts_gt   = extract_points(gt)
+    return {"chamfer":   chamfer_distance(pts_pred, pts_gt),
+            "hausdorff": hausdorff_distance(pts_pred, pts_gt), ...}
+\end{lstlisting}
 \end{frame}
 
 

@@ -126,36 +126,115 @@
 \begin{frame}[fragile]\frametitle{Simple Encoder Decoder}
 
 \begin{center}
-\includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve32}
-\end{center}	
+\includegraphics[width=0.65\linewidth,keepaspectratio]{midcurve32}
+\end{center}
+\begin{itemize}
+\item Input: $100 \times 100$ grayscale bitmap (flattened to 10,000 dims)
+\item Hidden: \texttt{Dense(100, relu)} + L1 activity regulariser + Dropout(0.2)
+\item Output: \texttt{Dense(10,000, sigmoid)}
+\item Loss: binary cross-entropy; Optimizer: Adam
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Keras Implementation}
+\begin{frame}[fragile]\frametitle{Keras Implementation --- Simple AE}
 
-\begin{lstlisting}
-input_img = Input(shape=(input_dim,))
-    
-encoded = Dense(encoding_dim, activation='relu',activity_regularizer=regularizers.l1(10e-5))(input_img)
-decoded = Dense(input_dim, activation='sigmoid')(encoded) 
-    
-autoencoder = Model(input_img, decoded)
-            
-encoder = Model(input_img, encoded)
-encoded_input = Input(shape=(encoding_dim,))
-decoder_layer = autoencoder.layers[-1]
-decoder = Model(encoded_input, decoder_layer(encoded_input))
-    
-autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
-\end{lstlisting}	
+\begin{lstlisting}[basicstyle=\tiny]
+def _build(self):
+    input_img = Input(shape=(self.input_dim,))   # 10,000 dims
+
+    encoded = Dense(self.encoding_dim,           # 100 units
+                    activation='relu',
+                    kernel_initializer='he_normal',
+                    activity_regularizer=regularizers.l1(1e-5))(input_img)
+    encoded = BatchNormalization()(encoded)
+    encoded = Dropout(0.2)(encoded)
+
+    decoded = Dense(self.input_dim,              # 10,000 dims
+                    activation='sigmoid',
+                    kernel_initializer='glorot_normal')(encoded)
+
+    self.autoencoder = Model(input_img, decoded)
+    self.autoencoder.compile(
+        optimizer=Adam(learning_rate=0.001),
+        loss='binary_crossentropy', metrics=['accuracy', 'mae'])
+\end{lstlisting}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Results}
+\begin{frame}[fragile]\frametitle{CNN Encoder Decoder Architecture}
+\begin{itemize}
+\item Input: $128 \times 128$ with CoordConv (3 channels: x\_coord + y\_coord + image)
+\item Encoder: 4-level Conv2D, stride-2 downsampling (32$\to$64$\to$128$\to$256 filters)
+\item Decoder: Conv2DTranspose + skip connections (\texttt{Add})
+\item Output: $128 \times 128$ single-channel sigmoid
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny]
+# Encoder (with skip connections saved at each level)
+x = Conv2D(32, (3,3), activation='relu', padding='same')(input_img); skip1=x
+x = Conv2D(64, (3,3), strides=2, activation='relu', padding='same')(x); skip2=x
+x = Conv2D(128,(3,3), strides=2, activation='relu', padding='same')(x); skip3=x
+x = Conv2D(256,(3,3), strides=2, activation='relu', padding='same')(x)
+# Decoder
+x = Conv2DTranspose(128,(3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip3])
+x = Conv2DTranspose(64, (3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip2])
+x = Conv2DTranspose(32, (3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip1])
+decoded = Conv2D(1, (3,3), activation='sigmoid', padding='same')(x)
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{UNet Architecture}
+\begin{itemize}
+\item Input: $256 \times 256$ with CoordConv; 8-level encoder--decoder
+\item Two output heads: midcurve prediction + polygon reconstruction
+\item 2-stage training: stage~1 (polygon only) $\to$ stage~2 (refines with stage-1 output)
+\item Loss: Weighted Binary Cross-Entropy (WBCE), midcurve head weighted $10\times$
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny]
+def init():
+    loss = {
+        'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
+        'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED),
+        'bce': binary_crossentropy, 'mae': mean_absolute_error}
+    optimizer = Adam(decay=0.0001);  loss_weights = [1E1, 1]
+    generator_1 = unet_stage1()
+    generator_1.compile(loss=[loss[STAGE1_LOSS]]*2,
+                        optimizer=optimizer, loss_weights=loss_weights)
+    if TWO_STAGE:
+        generator_2 = unet_stage2()
+        generator_2.compile(loss=[loss[STAGE2_LOSS]]*2,
+                            optimizer=optimizer, loss_weights=loss_weights)
+        return [generator_1, generator_2]
+    return [generator_1]
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Results --- Simple AE}
 
 \begin{center}
-\includegraphics[width=\linewidth,keepaspectratio]{midcurve33}
-\end{center}	
+\includegraphics[width=\linewidth,keepaspectratio]{simple_results_grid}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Results --- CNN Encoder-Decoder}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{cnn_results_grid}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Results --- UNet}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{unet_results_grid}
+\end{center}
 \end{frame}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

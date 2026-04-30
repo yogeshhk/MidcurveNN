@@ -177,3 +177,18 @@ Any ideas?
 	% \item How to augment/populate large variations \ldots
 	% \end{itemize}
 % \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase III --- Graph Transformer}
+
+\begin{itemize}
+\item Input: polygon graph (nodes = corner points with $(x,y)$ features, edges = polygon sides)
+\item Output: midcurve node coordinates + predicted adjacency matrix
+\item Architecture: LaplacianPE $\to$ TransformerConv layers (residual + LayerNorm) $\to$ TopKPooling bottleneck $\to$ non-auto-regressive decoder
+\item Loss: Chamfer distance + adjacency BCE; trained from scratch on augmented data
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{graph_transformer_results_grid}
+\end{center}
+\end{frame}

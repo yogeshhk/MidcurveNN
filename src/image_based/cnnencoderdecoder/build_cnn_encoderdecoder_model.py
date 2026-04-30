@@ -23,7 +23,7 @@ class cnn_encoderdecoder:
         self.input_dim = 128
         self.epochs = 100
         self.batch_size = 16
-        self.cnn_autoencoder_model_pkl = os.path.join("models", "cnn_autoencoder_model")
+        self.cnn_autoencoder_model_pkl = os.path.join("models", "cnn_autoencoder_model.keras")
         self.input_shape = input_shape
 
         self._build()

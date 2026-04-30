@@ -26,9 +26,9 @@ class simple_encoderdecoder:
         self.models_dir = Path("models")
         self.models_dir.mkdir(exist_ok=True)
 
-        self.autoencoder_model_pkl = self.models_dir / "autoencoder_model"
-        self.encoder_model_pkl = self.models_dir / "encoder_model"
-        self.decoder_model_pkl = self.models_dir / "decoder_model"
+        self.autoencoder_model_pkl = self.models_dir / "autoencoder_model.keras"
+        self.encoder_model_pkl = self.models_dir / "encoder_model.keras"
+        self.decoder_model_pkl = self.models_dir / "decoder_model.keras"
 
         self._build()
 
@@ -103,9 +103,9 @@ class simple_encoderdecoder:
                 verbose=1
             )
 
-            self.autoencoder.save(self.autoencoder_model_pkl, save_format='tf')
-            self.encoder.save(self.encoder_model_pkl, save_format='tf')
-            self.decoder.save(self.decoder_model_pkl, save_format='tf')
+            self.autoencoder.save(self.autoencoder_model_pkl)
+            self.encoder.save(self.encoder_model_pkl)
+            self.decoder.save(self.decoder_model_pkl)
             print_best_metrics(metrics_history.history, "Simple Encoder-Decoder")
         else:
             self.autoencoder = load_model(self.autoencoder_model_pkl)
