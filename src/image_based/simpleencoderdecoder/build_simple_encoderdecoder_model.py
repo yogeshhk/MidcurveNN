@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Dropout
-from tensorflow.keras.models import Model, load_model, save_model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 

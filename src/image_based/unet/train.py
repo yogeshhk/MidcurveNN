@@ -19,9 +19,6 @@ from tensorflow.keras.optimizers import Adam
 from datagenerator import datagen
 from tqdm import tqdm
 import os
-from tensorflow.keras.models import model_from_json
-
-
 def init():
     loss = {'bce': binary_crossentropy,
             'mae': mean_absolute_error,
@@ -46,10 +43,7 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
                  save_all=False):
     loss = []
     if load:
-        with open(os.path.join(os.path.dirname(__file__),
-                               'weights', 'stage1', 'generator_stage1.json'), 'r') as json_file:
-            generator_stage1_json = json_file.read()
-        gen_model = model_from_json(generator_stage1_json)
+        gen_model = unet_stage1()
         if save_all:
             gen_model.load_weights(weight_path + str(load_at) + '_epochs_gen.weights.h5')
             print("\nLoaded at: ", load_at, " epochs")
@@ -92,9 +86,7 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
 def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_path, loss_path, data_gen, load=False,
                  load_at=0, save_all=False):
     if load:
-        with open(os.path.join(os.path.dirname(__file__),'weights','stage2','generator_stage2.json'), 'r') as json_file:
-            generator_stage2_json = json_file.read()
-        generator_stage2 = model_from_json(generator_stage2_json)
+        generator_stage2 = unet_stage2()
         if save_all:
             generator_stage2.load_weights(os.path.join(weight_path, str(load_at) + '_epochs_gen.weights.h5'))
             print("\nLoaded at: ", load_at, " epochs")

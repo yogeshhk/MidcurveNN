@@ -187,5 +187,56 @@ class TestPrepareData(unittest.TestCase):
             get_training_data(datafolder='/nonexistent/path')
 
 
+# ---------------------------------------------------------------------------
+# Pix2Pix module existence / data smoke tests
+# ---------------------------------------------------------------------------
+
+class TestPix2PixFiles(unittest.TestCase):
+
+    _PIX2PIX_DIR = os.path.join(_SRC, 'image_based', 'pix2pix')
+
+    def test_main_script_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._PIX2PIX_DIR, 'main_pix2pix.py')))
+
+    def test_gan_module_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._PIX2PIX_DIR, 'keras_gan_pix2pix.py')))
+
+    def test_data_loader_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._PIX2PIX_DIR, 'keras_gan_data_loader.py')))
+
+    def test_combo_data_dir_exists(self):
+        self.assertTrue(
+            os.path.isdir(_IMAGES_COMBO_DIR),
+            "image_based/data/images-combo/ not found — run utils/prepare_data.py")
+
+
+# ---------------------------------------------------------------------------
+# Img2Img (PyTorch) module existence smoke tests
+# ---------------------------------------------------------------------------
+
+class TestImg2ImgFiles(unittest.TestCase):
+
+    _IMG2IMG_DIR = os.path.join(_SRC, 'image_based', 'img2img')
+
+    def test_main_script_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._IMG2IMG_DIR, 'main_img2img_pytorch.py')))
+
+    def test_torch_available(self):
+        try:
+            import torch  # noqa
+        except ImportError:
+            self.skipTest("PyTorch not installed — img2img requires torch")
+        self.assertTrue(True)
+
+    def test_combo_data_dir_exists(self):
+        self.assertTrue(
+            os.path.isdir(_IMAGES_COMBO_DIR),
+            "image_based/data/images-combo/ not found — run utils/prepare_data.py")
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

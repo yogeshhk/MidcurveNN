@@ -21,9 +21,11 @@ class dense_encoderdecoder:
         self.input_dim = 10000
         self.epochs = 100
         self.batch_size = 16
-        self.autoencoder_model_pkl = os.path.join("models", "dense_autoencoder_model")
-        self.encoder_model_pkl = os.path.join("models", "dense_encoder_model")
-        self.decoder_model_pkl = os.path.join("models", "dense_decoder_model")
+        _models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+        os.makedirs(_models_dir, exist_ok=True)
+        self.autoencoder_model_pkl = os.path.join(_models_dir, "dense_autoencoder_model.keras")
+        self.encoder_model_pkl = os.path.join(_models_dir, "dense_encoder_model.keras")
+        self.decoder_model_pkl = os.path.join(_models_dir, "dense_decoder_model.keras")
 
         self._build()
 

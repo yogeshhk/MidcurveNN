@@ -209,5 +209,24 @@ class TestFinetunedGraphTransformer(unittest.TestCase):
         self.assertFalse(torch.isnan(loss), "Loss is NaN")
 
 
+# ---------------------------------------------------------------------------
+# GNN Encoder-Decoder stub existence test
+# ---------------------------------------------------------------------------
+
+class TestGNNEncoderDecoderStub(unittest.TestCase):
+    """gnnencoderdecoder/ is a legacy reference stub — not yet implemented.
+    Only verify the placeholder files exist."""
+
+    _GNN_DIR = os.path.join(_SRC, 'geometry_based', 'gnnencoderdecoder')
+
+    def test_build_file_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._GNN_DIR, 'build_gnn_encoderdecoder_model.py')))
+
+    def test_main_file_exists(self):
+        self.assertTrue(
+            os.path.isfile(os.path.join(self._GNN_DIR, 'main_gnn_encoderdecoder.py')))
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

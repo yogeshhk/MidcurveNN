@@ -31,11 +31,13 @@ from train import init
 
 #BASE_DIR = 'D:/dev/MidcurveNN/'
 
+_GRID_N = 7  # number of samples for the summary grid
+
 def generate_test_results(generator_stage1, generator_stage2, data_path, interpolation):
     plt.ioff()
     w = IMG_SHAPE[0]
     files = os.listdir(data_path)
-    _grid_samples = []   # collect up to 5: (poly_img, midcurve_img_gt, midc_pred)
+    _grid_samples = []   # collect up to _GRID_N: (poly_img, midcurve_img_gt, midc_pred)
     for file in files:
         path = os.path.join(data_path, file)
         img = cv2.imread(path , cv2.IMREAD_GRAYSCALE)
@@ -59,8 +61,8 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
         midc = np.reshape(midc, midcurve_img.shape)
         recon = np.reshape(recon, poly_img.shape)
 
-        # Collect up to 5 samples for the summary grid
-        if len(_grid_samples) < 5:
+        # Collect up to _GRID_N samples for the summary grid
+        if len(_grid_samples) < _GRID_N:
             best_midc = midc_st2 if TWO_STAGE else midc
             _grid_samples.append((poly_img[:, :, 0],
                                    midcurve_img[:, :, 0],
@@ -89,31 +91,36 @@ def generate_test_results(generator_stage1, generator_stage2, data_path, interpo
             plt.subplot(326).set_title('ST2 Midcurve')
             plt.subplot(326).axis('off')
             plt.imshow(midc_st2[:, :, 0], cmap='gray', interpolation=interpolation)
-            
-            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
 
-        else:    
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
+            plt.close('all')
+
+        else:
             plt.subplot(221).set_title('Polygon')
             plt.subplot(221).axis('off')
             plt.imshow(poly_img[:, :, 0], cmap='gray', interpolation=interpolation)
-        
+
             plt.subplot(222).set_title('Midcurve')
             plt.subplot(222).axis('off')
             plt.imshow(midcurve_img[:, :, 0], cmap='gray', interpolation=interpolation)
-        
+
             plt.subplot(223).set_title('ST1 Polygon (R)')
             plt.subplot(223).axis('off')
             plt.imshow(recon[:, :, 0], cmap='gray', interpolation=interpolation)
-        
+
             plt.subplot(224).set_title('ST1 Midcurve')
             plt.subplot(224).axis('off')
             plt.imshow(midc[:, :, 0], cmap='gray', interpolation=interpolation)
-                    
-            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
-        
-        print(file)
 
-    # Save 5-sample summary grid after all per-file PNGs are written
+            plt.savefig(os.path.join(os.path.dirname(__file__), 'results', file), dpi=100)
+            plt.close('all')
+
+        print(file)
+        # Stop once we have enough grid samples to avoid processing all test images
+        if len(_grid_samples) >= _GRID_N:
+            break
+
+    # Save summary grid after collecting _GRID_N samples
     if _grid_samples:
         inputs = np.stack([s[0] for s in _grid_samples])
         gts    = np.stack([s[1] for s in _grid_samples])

@@ -21,7 +21,7 @@ if __name__ == "__main__":
     profile_pngs_objs, midcurve_pngs_objs = get_training_data(datafolder=DATA_FOLDER, size=(128, 128))
 
     # Sample 5 paired indices to keep GT midcurves aligned
-    n_test = min(5, len(profile_pngs_objs))
+    n_test = min(7, len(profile_pngs_objs))
     test_indices = random.sample(range(len(profile_pngs_objs)), n_test)
     test_gray_images_raw = [profile_pngs_objs[i] for i in test_indices]
     test_gt_raw          = [midcurve_pngs_objs[i] for i in test_indices]

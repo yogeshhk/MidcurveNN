@@ -54,10 +54,11 @@ src/
 │   │   └── shapes2brep.csv      # Ludwig framework training data
 │   ├── utils/                   # BRep data pipeline: config, prepare_data, create_brep_csvs, ...
 │   ├── finetuning/              # QLoRA fine-tuning: train, inference, evaluate, metrics, server
+│   │   └── results/             # evaluation_results.csv (populated by evaluate.py)
 │   ├── codeT5/                  # CodeT5 fine-tuning notebooks (Gdrive + Kaggle)
+│   │   └── results/             # evaluation_results_sample.csv (populated after training)
 │   ├── ludwig/                  # Ludwig framework notebooks
-│   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
-│   └── results/                 # Model checkpoints and evaluation outputs (generated)
+│   └── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
 │
 ├── image_based/testing/         # Phase I unit tests
 │   └── test_image_based.py
@@ -189,9 +190,10 @@ python testing/benchmark.py --geometry-approach graph_transformer
 ### Data pipeline (`src/utils/`)
 - `prepare_data.py` — reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
 - `prepare_plots.py` — visualization utilities:
-  - `save_results_grid_images(inputs, gts, preds, save_path, n=5)` — n×3 grid PNG for image-based approaches
-  - `save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves, ..., save_path)` — n×3 grid PNG for graph-based approach
+  - `save_results_grid_images(inputs, gts, preds, save_path, n=7)` — **3 rows × n cols** PNG (Row 0=Input, Row 1=GT, Row 2=Predicted); per-cell auto-scale so low-contrast predictions remain visible
+  - `save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves, ..., save_path)` — n×3 grid PNG for graph-based approach (samples as rows)
   - Each approach saves its grid to `<approach>/results/results_grid.png` after training/test
+  - Result grids copied to `publications/Midcurve_LaTeX/images/` as `<approach>_results_grid.png`
 - `metric_utils.py` — Keras callbacks, best-epoch tracking, training history
 
 ### Path conventions (important for imports)
@@ -248,6 +250,20 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
   sys.path.insert(0, _HERE)                        # unet/ before src/
   from utils import get_coord_layers               # finds unet/utils.py
   ```
+
+- **Image model `models/` directories**: `cnn`, `dense`, and `denoiser` encoder-decoders save trained weights under `<approach>/models/`. The directory is created automatically via `os.makedirs(..., exist_ok=True)` in `__init__`. Model files use `.keras` extension (Keras 3 format).
+
+- **Denoiser train() must call `process_images`**: `build_denoiser_encoderdecoder_model.py` `train()` must call `self.process_images()` on both X and Y before fitting, to reshape flat/2-D inputs to `(N, 100, 100, 1)`. Raw `midcurve_gray_objs` must be normalized to `[0, 1]` before being passed.
+
+- **`finetuning/config_enhanced.py` and `metrics_enhanced.py`**: These are alias re-exports (`from config import Config` / `from metrics import GeometricMetrics`). They exist so older scripts that import `config_enhanced` / `metrics_enhanced` continue to work without change. Do not delete them.
+
+- **`finetuning/evaluate.py` output path**: Default output is `results/evaluation_results.csv` (relative to the `finetuning/` directory). `os.makedirs` is called before saving to ensure the directory exists.
+
+- **`unet/test.py` memory and performance**: `plt.close('all')` is called after each per-image save to prevent "Fail to allocate bitmap" crashes. The loop breaks after collecting `_GRID_N=7` samples so only 7 test images are processed instead of all 400+.
+
+- **`unet/train.py` load path — no `model_from_json`**: Keras 3 removed `model_from_json`. The `load=True` code path in `train_stage1()` and `train_stage2()` now reconstructs the model by calling `unet_stage1()` / `unet_stage2()` (the same factory functions used during `init()`), then calls `load_weights()`. Do not reintroduce `model_from_json`.
+
+- **`pix2pix` and `img2img` results grids**: Both `main_pix2pix.py` and `main_img2img_pytorch.py` now call `save_results_grid_images` after training. Pix2Pix loads test data via `data_loader.load_data(batch_size=7, is_testing=True)`; img2img converts PyTorch tensors (B, C, H, W) in [-1,1] to grayscale numpy arrays via `_tensor_to_gray_list()`. Results go to `<approach>/results/results_grid.png`.
 
 ## Research Context
 

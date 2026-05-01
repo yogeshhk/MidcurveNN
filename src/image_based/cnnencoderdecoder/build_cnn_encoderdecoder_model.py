@@ -15,7 +15,6 @@ from utils.metric_utils import MetricsHistory, print_best_metrics
 import numpy as np
 import random
 import sys
-from config import MODELS_FOLDER
 
 class cnn_encoderdecoder:
     def __init__(self, input_shape=(128, 128, 1)):
@@ -23,7 +22,9 @@ class cnn_encoderdecoder:
         self.input_dim = 128
         self.epochs = 100
         self.batch_size = 16
-        self.cnn_autoencoder_model_pkl = os.path.join("models", "cnn_autoencoder_model.keras")
+        _models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+        os.makedirs(_models_dir, exist_ok=True)
+        self.cnn_autoencoder_model_pkl = os.path.join(_models_dir, "cnn_autoencoder_model.keras")
         self.input_shape = input_shape
 
         self._build()

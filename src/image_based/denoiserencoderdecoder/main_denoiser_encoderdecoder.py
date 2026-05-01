@@ -17,8 +17,8 @@ DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'image-pairs
 
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
-    profile_gray_objs  = list(profile_gray_objs)
-    midcurve_gray_objs = list(midcurve_gray_objs)
+    profile_gray_objs  = np.asarray(list(profile_gray_objs))  / 255.
+    midcurve_gray_objs = np.asarray(list(midcurve_gray_objs)) / 255.
 
     endec = simple_encoderdecoder()
     endec.train(profile_gray_objs, midcurve_gray_objs)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     denoiser.train(noisy_predicted_midcurve_images, midcurve_gray_objs, retrain_model)
 
     # Sample 5 by index to keep noisy-input / GT / denoised aligned
-    n_test = min(5, len(noisy_predicted_midcurve_images))
+    n_test = min(7, len(noisy_predicted_midcurve_images))
     test_indices = random.sample(range(len(noisy_predicted_midcurve_images)), n_test)
     sample_noisy = [noisy_predicted_midcurve_images[i] for i in test_indices]
     sample_gt    = np.asarray([midcurve_gray_objs[i] for i in test_indices])

@@ -9,9 +9,9 @@ from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encode
 from utils.prepare_data import get_training_data
 from utils.prepare_plots import plot_results
 import os
+import sys
 import numpy as np
 import random
-import sys
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -22,8 +22,10 @@ class denoiser_encoderdecoder:
         self.input_dim = 100
         self.epochs = 500
         self.batch_size = 5
-        self.denoiser_autoencoder_model_pkl = os.path.join("models",
-                                                           "denoiser_autoencoder_model.pkl")
+        _models_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+        os.makedirs(_models_dir, exist_ok=True)
+        self.denoiser_autoencoder_model_pkl = os.path.join(_models_dir,
+                                                           "denoiser_autoencoder_model.keras")
 
         self._build()
 
@@ -54,8 +56,8 @@ class denoiser_encoderdecoder:
     def train(self, noisy_images_objs, clean_images_objs, retrain_mdodel=False):
 
         if not os.path.exists(self.denoiser_autoencoder_model_pkl) or retrain_mdodel:
-            self.x = noisy_images_objs
-            self.y = clean_images_objs
+            self.x = self.process_images(noisy_images_objs)
+            self.y = self.process_images(clean_images_objs)
             es = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1)
 
             self.denoiser_autoencoder.fit(self.x, self.y,

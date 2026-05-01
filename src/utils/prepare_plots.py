@@ -114,37 +114,39 @@ def _squeeze_to_2d(arr):
 
 
 def save_results_grid_images(inputs, ground_truths, predictions, save_path,
-                              n=5, title="Midcurve Prediction Results",
+                              n=7, title="Midcurve Prediction Results",
                               row_labels=None):
     """
-    Save a results PNG grid: n rows × 3 cols (Input Profile | Ground Truth | Predicted).
+    Save a results PNG grid: 3 rows x n cols.
+    Row 0 = Input Profile, Row 1 = Ground Truth, Row 2 = Predicted.
+    Columns are individual samples, matching the reference visualisation style.
 
     inputs, ground_truths, predictions: lists or arrays whose elements are 2-D or 3-D
         numpy arrays (H, W) or (H, W, C).  All values should be in [0, 1].
     save_path: full path for the output PNG.
-    n: number of sample rows (capped at len(inputs)).
-    row_labels: optional list of strings printed as row y-labels.
+    n: number of sample columns (capped at len(inputs)).
+    row_labels: unused, kept for backward compatibility.
     """
     n = min(n, len(inputs))
     os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
 
-    fig, axes = plt.subplots(n, 3, figsize=(9, n * 3 + 0.6))
+    fig, axes = plt.subplots(3, n, figsize=(n * 2.5, 7.5))
     if n == 1:
-        axes = axes[np.newaxis, :]
+        axes = axes[:, np.newaxis]
 
-    col_titles = ["Input (Profile)", "Ground Truth", "Predicted"]
-    for col, label in enumerate(col_titles):
-        axes[0, col].set_title(label, fontsize=11, fontweight="bold")
+    row_titles = ["Input (Profile)", "Ground Truth", "Predicted"]
+    row_data   = [inputs, ground_truths, predictions]
 
-    for row in range(n):
-        row_imgs = [inputs[row], ground_truths[row], predictions[row]]
-        for col, img in enumerate(row_imgs):
-            axes[row, col].imshow(_squeeze_to_2d(img), cmap="gray_r",
-                                  interpolation="nearest", vmin=0, vmax=1)
+    for row, (label, data) in enumerate(zip(row_titles, row_data)):
+        axes[row, 0].set_ylabel(label, fontsize=10, fontweight="bold",
+                                 rotation=90, va="center", labelpad=8)
+        for col in range(n):
+            img = _squeeze_to_2d(data[col])
+            # Auto-scale per cell so low-contrast predictions (e.g. CNN) remain visible
+            axes[row, col].imshow(img, cmap="gray_r",
+                                  interpolation="nearest",
+                                  vmin=img.min(), vmax=img.max())
             axes[row, col].axis("off")
-        if row_labels and row < len(row_labels):
-            axes[row, 0].set_ylabel(str(row_labels[row]), fontsize=8,
-                                    rotation=0, labelpad=50, va="center")
 
     if title:
         fig.suptitle(title, fontsize=13, fontweight="bold")

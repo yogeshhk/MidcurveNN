@@ -1,0 +1,5 @@
+index,shape_name,exact_match,bleu_score,json_validity,chamfer,hausdorff,combined_score,notes
+0,I_shape_0,0,0.72,1.0,0.14,0.21,0.83,sample row - run Kaggle/Gdrive notebook to populate
+1,L_shape_0,0,0.68,1.0,0.17,0.25,0.79,
+2,T_shape_0,0,0.55,0.9,0.33,0.47,0.61,
+3,Plus_shape_0,0,0.41,0.7,0.52,0.68,0.43,

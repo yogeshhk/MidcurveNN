@@ -17,7 +17,7 @@ if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
 
     # Sample 5 paired (profile, GT midcurve) by index to keep correspondence
-    n_test = min(5, len(profile_gray_objs))
+    n_test = min(7, len(profile_gray_objs))
     test_indices = random.sample(range(len(profile_gray_objs)), n_test)
     test_profiles_raw = [profile_gray_objs[i] for i in test_indices]
     test_gt_raw       = [midcurve_gray_objs[i] for i in test_indices]

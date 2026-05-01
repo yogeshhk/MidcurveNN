@@ -353,5 +353,41 @@ class TestFinetuningImports(unittest.TestCase):
         self.assertLess(dist, 100.0, "Hausdorff distance should not be the error sentinel 1000.0")
 
 
+# ---------------------------------------------------------------------------
+# CodeT5 notebooks existence tests
+# ---------------------------------------------------------------------------
+
+class TestCodeT5Files(unittest.TestCase):
+
+    _CODET5_DIR = os.path.join(_TEXT_BASED, 'codeT5')
+
+    def test_28_codet5_dir_exists(self):
+        self.assertTrue(os.path.isdir(self._CODET5_DIR),
+                        f"codeT5/ directory not found: {self._CODET5_DIR}")
+
+    def test_29_results_placeholder_exists(self):
+        results = os.path.join(self._CODET5_DIR, 'results', 'evaluation_results_sample.csv')
+        self.assertTrue(os.path.isfile(results),
+                        "codeT5/results/evaluation_results_sample.csv not found")
+
+
+# ---------------------------------------------------------------------------
+# Prompt module smoke tests
+# ---------------------------------------------------------------------------
+
+class TestPromptModule(unittest.TestCase):
+
+    _PROMPT_DIR = os.path.join(_TEXT_BASED, 'prompt')
+
+    def test_30_prompt_dir_exists(self):
+        self.assertTrue(os.path.isdir(self._PROMPT_DIR),
+                        f"prompt/ directory not found: {self._PROMPT_DIR}")
+
+    def test_31_generator_script_exists(self):
+        script = os.path.join(self._PROMPT_DIR, 'midcurve_generator.py')
+        self.assertTrue(os.path.isfile(script),
+                        "prompt/midcurve_generator.py not found")
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

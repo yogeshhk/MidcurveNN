@@ -317,6 +317,13 @@ def model_training():
                 img_list.append(figs)
 
 
+def _tensor_to_gray_list(t):
+    """Convert a (B, C, H, W) tensor in [-1, 1] to a list of (H, W) numpy arrays in [0, 1]."""
+    arr = t.detach().cpu().numpy()
+    arr = (arr + 1.0) / 2.0
+    return [arr[i, 0, :, :] for i in range(arr.shape[0])]
+
+
 def main():
     model_training()
     t_batch, _ = next(iter(load_Test))
@@ -326,7 +333,19 @@ def main():
         Gen.eval()
         fk_batch = Gen(t_x.to(device))
     compare_batches(t_x, fk_batch, "input images", "predicted images", t_y, "ground truth")
-    plt.show()
+    plt.close('all')
+
+    sys.path.insert(0, os.path.join(_HERE, '..', '..'))  # src/
+    from utils.prepare_plots import save_results_grid_images
+    results_dir = os.path.join(_HERE, 'results')
+    os.makedirs(results_dir, exist_ok=True)
+    save_results_grid_images(
+        _tensor_to_gray_list(t_x),
+        _tensor_to_gray_list(t_y),
+        _tensor_to_gray_list(fk_batch.cpu()),
+        save_path=os.path.join(results_dir, 'results_grid.png'),
+        title='Img2Img (PyTorch) - Results (Profile | GT | Generated)'
+    )
 
 
 if __name__ == '__main__':

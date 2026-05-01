@@ -1,10 +1,11 @@
+import os
 import torch
 import pandas as pd
 import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
-from config_enhanced import Config
-from metrics_enhanced import GeometricMetrics
+from config import Config
+from metrics import GeometricMetrics
 from visualize import plot_results
 import json
 from tqdm import tqdm
@@ -109,6 +110,7 @@ class ModelEvaluator:
         results_df = pd.DataFrame(results)
         
         if output_file:
+            os.makedirs(os.path.dirname(os.path.abspath(output_file)), exist_ok=True)
             results_df.to_csv(output_file, index=False)
             print(f"Results saved to {output_file}")
         
@@ -307,7 +309,8 @@ def main():
                        help='Path to trained model')
     parser.add_argument('--test_file', type=str, default=Config.TEST_FILE,
                        help='Path to test dataset')
-    parser.add_argument('--output_file', type=str, default='evaluation_results.csv',
+    parser.add_argument('--output_file', type=str,
+                       default=os.path.join(os.path.dirname(__file__), 'results', 'evaluation_results.csv'),
                        help='Output file for results')
     parser.add_argument('--visualize', action='store_true',
                        help='Create visualizations')

@@ -59,7 +59,9 @@ src/
 │   ├── data/csvs/                    # CSV train/test/val splits (993 rows)
 │   ├── utils/                        # BRep data pipeline (generate CSVs, visualize)
 │   ├── finetuning/                   # QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral)
+│   │   └── results/                  # evaluation_results.csv (output of evaluate.py)
 │   ├── codeT5/                       # CodeT5 notebooks
+│   │   └── results/                  # evaluation CSV (populated after training)
 │   ├── ludwig/                       # Ludwig framework notebooks
 │   └── prompt/                       # Few-shot prompting + LLM comparison
 │
@@ -89,7 +91,7 @@ python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
 
 # Best image model (UNet)
 cd image_based/unet && python train.py && python test.py
-# Each approach saves a results/results_grid.png (5-sample Input|GT|Predicted grid)
+# Each approach saves a results/results_grid.png (3 rows × 7 cols: Input | GT | Predicted)
 
 # --- Geometry-based (Phase III) ---
 cd geometry_based/graph_transformer
