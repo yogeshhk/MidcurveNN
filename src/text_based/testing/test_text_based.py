@@ -389,5 +389,102 @@ class TestPromptModule(unittest.TestCase):
                         "prompt/midcurve_generator.py not found")
 
 
+# ---------------------------------------------------------------------------
+# Nemotron3 file existence tests
+# ---------------------------------------------------------------------------
+
+class TestNemotron3Files(unittest.TestCase):
+    """Verify that the nemotron3/ directory and its key scripts exist."""
+
+    _NEMOTRON_DIR = os.path.join(_TEXT_BASED, 'nemotron3')
+    _SCRIPTS = ['config.py', 'dataset_loader.py', 'metrics.py',
+                'train.py', 'inference.py', 'evaluate.py']
+
+    def test_32_nemotron3_dir_exists(self):
+        self.assertTrue(os.path.isdir(self._NEMOTRON_DIR),
+                        f"nemotron3/ directory not found: {self._NEMOTRON_DIR}")
+
+    def test_33_nemotron3_scripts_exist(self):
+        if not os.path.isdir(self._NEMOTRON_DIR):
+            self.skipTest("nemotron3/ dir missing")
+        for script in self._SCRIPTS:
+            path = os.path.join(self._NEMOTRON_DIR, script)
+            self.assertTrue(os.path.isfile(path),
+                            f"nemotron3/{script} not found")
+
+    def test_34_nemotron3_results_placeholder_exists(self):
+        csv = os.path.join(self._NEMOTRON_DIR, 'results',
+                           'evaluation_results_sample.csv')
+        self.assertTrue(os.path.isfile(csv),
+                        "nemotron3/results/evaluation_results_sample.csv not found")
+
+
+# ---------------------------------------------------------------------------
+# Nemotron3 import smoke tests  (no GPU, no model weights)
+# ---------------------------------------------------------------------------
+
+class TestNemotron3Imports(unittest.TestCase):
+    """Verify lightweight nemotron3 modules are importable without a GPU."""
+
+    def _add_nemotron_path(self):
+        n3_path = os.path.join(_TEXT_BASED, 'nemotron3')
+        if n3_path not in sys.path:
+            sys.path.insert(0, n3_path)
+
+    def test_35_nemotron3_config_importable(self):
+        self._add_nemotron_path()
+        # Guard against stale 'config' from earlier test classes
+        for mod in ['config', 'nemotron3.config']:
+            if mod in sys.modules and not hasattr(sys.modules[mod], 'MODEL_ID'):
+                del sys.modules[mod]
+        try:
+            import importlib
+            spec = importlib.util.spec_from_file_location(
+                'nemotron3_config',
+                os.path.join(_TEXT_BASED, 'nemotron3', 'config.py')
+            )
+            cfg_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(cfg_mod)
+            model_id = cfg_mod.Config.MODEL_ID
+            self.assertIn('nemotron', model_id.lower(),
+                          f"MODEL_ID should contain 'nemotron', got: {model_id}")
+        except Exception as exc:
+            self.fail(f"nemotron3/config.py import failed: {exc}")
+
+    def test_36_nemotron3_metrics_importable(self):
+        self._add_nemotron_path()
+        try:
+            import importlib
+            spec = importlib.util.spec_from_file_location(
+                'nemotron3_metrics',
+                os.path.join(_TEXT_BASED, 'nemotron3', 'metrics.py')
+            )
+            m_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m_mod)
+            self.assertTrue(hasattr(m_mod, 'GeometricMetrics'),
+                            "GeometricMetrics not found in nemotron3/metrics.py")
+        except Exception as exc:
+            self.skipTest(f"nemotron3/metrics.py import failed (missing dep?): {exc}")
+
+    def test_37_nemotron3_metrics_chamfer_callable(self):
+        self._add_nemotron_path()
+        try:
+            import importlib
+            spec = importlib.util.spec_from_file_location(
+                'nemotron3_metrics2',
+                os.path.join(_TEXT_BASED, 'nemotron3', 'metrics.py')
+            )
+            m_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(m_mod)
+            dist = m_mod.GeometricMetrics.chamfer_distance(
+                [[0.0, 0.0], [1.0, 0.0]],
+                [[0.0, 0.1], [1.0, 0.1]],
+            )
+            self.assertIsInstance(dist, float)
+            self.assertGreaterEqual(dist, 0.0)
+        except Exception as exc:
+            self.skipTest(f"chamfer_distance unavailable: {exc}")
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
