@@ -21,7 +21,12 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_DIR = os.path.dirname(os.path.abspath(__file__))
+_SRC = os.path.normpath(os.path.join(_DIR, '..', '..'))
+sys.path.insert(0, _DIR)
+if _SRC not in sys.path:
+    sys.path.insert(0, _SRC)
+
 from config import Config
 from inference import NemotronInference
 from metrics import GeometricMetrics
@@ -31,112 +36,28 @@ from metrics import GeometricMetrics
 # Visualization
 # ---------------------------------------------------------------------------
 
-def _draw_brep(ax, brep_str, title, color):
-    """Plot a BRep (Points + Lines) onto a matplotlib Axes."""
-    import ast as _ast
-    data = None
-    try:
-        if isinstance(brep_str, dict):
-            data = brep_str
-        else:
-            # Try JSON first, then Python repr (single-quote dicts from CSV)
-            try:
-                candidate = json.loads(brep_str)
-            except (json.JSONDecodeError, TypeError, ValueError):
-                candidate = _ast.literal_eval(brep_str)
-            if isinstance(candidate, str):
-                candidate = json.loads(candidate)
-            if isinstance(candidate, dict):
-                data = candidate
-    except Exception:
-        pass
-
-    if data is None:
-        ax.set_title(title, fontsize=8)
-        ax.text(0.5, 0.5, "parse\nerror", ha="center", va="center",
-                transform=ax.transAxes, color="red", fontsize=7)
-        ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-        return
-
-    pts   = data.get("Points", [])
-    lines = data.get("Lines",  [])
-
-    if not pts:
-        ax.set_title(title, fontsize=8)
-        return
-
-    # Normalise flat [x,y,x,y,...] to [[x,y],[x,y],...]
-    if pts and isinstance(pts[0], (int, float)):
-        if len(pts) % 2 == 0:
-            pts = [[pts[i], pts[i + 1]] for i in range(0, len(pts), 2)]
-        else:
-            ax.set_title(title, fontsize=8)
-            ax.text(0.5, 0.5, "bad\nformat", ha="center", va="center",
-                    transform=ax.transAxes, color="orange", fontsize=7)
-            ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-            return
-
-    # Draw edges
-    try:
-        for ln in lines:
-            if (isinstance(ln, (list, tuple)) and len(ln) >= 2
-                    and ln[0] < len(pts) and ln[1] < len(pts)):
-                x0, y0 = pts[ln[0]]
-                x1, y1 = pts[ln[1]]
-                ax.plot([x0, x1], [y0, y1], color=color, linewidth=1.5, zorder=2)
-    except Exception:
-        pass
-
-    # Draw vertices
-    try:
-        xs, ys = zip(*pts)
-        ax.scatter(xs, ys, color=color, s=18, zorder=3)
-    except Exception:
-        pass
-
-    ax.set_title(title, fontsize=8)
-    ax.set_aspect("equal", adjustable="datalim")
-    ax.grid(True, alpha=0.25)
-    ax.tick_params(labelsize=6)
-
-
 def make_results_grid(records, save_path, n=7):
-    """Create and save a n-row x 3-col results grid PNG."""
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
+    """Create and save a n-row x 3-col results grid PNG using shared utility."""
+    from utils.prepare_plots import save_results_grid_brep
 
     # Prefer samples with valid JSON; fall back to any
-    samples  = [r for r in records if r.get("json_validity", 0) > 0][:n]
+    samples = [r for r in records if r.get("json_validity", 0) > 0][:n]
     if not samples:
         samples = records[:n]
-    n_rows = len(samples)
-    if n_rows == 0:
+    if not samples:
         print("No samples to visualise.")
         return
 
-    fig, axes = plt.subplots(n_rows, 3, figsize=(13, 3.5 * n_rows),
-                             squeeze=False)
-
-    for row_i, rec in enumerate(samples):
-        shape = rec.get("shape_name", "")
-        score = rec.get("combined_score", 0.0)
-        row_ax = axes[row_i]
-
-        _draw_brep(row_ax[0], rec["profile"],
-                   f"Profile\n{shape}", "steelblue")
-        _draw_brep(row_ax[1], rec["true"],
-                   f"GT Midcurve\n{shape}", "forestgreen")
-        _draw_brep(row_ax[2], rec["pred"],
-                   f"Predicted\n{shape}\n(score={score:.2f})", "firebrick")
-
-    plt.suptitle("Nemotron-Mini Midcurve Predictions", fontsize=10, y=1.01)
-    plt.tight_layout()
-
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    plt.savefig(save_path, dpi=150, bbox_inches="tight")
-    plt.close("all")
-    print(f"Results grid saved: {save_path}")
+    save_results_grid_brep(
+        [r["profile"] for r in samples],
+        [r["true"]    for r in samples],
+        [r["pred"]    for r in samples],
+        save_path=save_path,
+        n=len(samples),
+        shape_names=[r.get("shape_name", "") for r in samples],
+        scores=[r.get("combined_score", 0.0) for r in samples],
+        title="Nemotron-Mini Midcurve Predictions",
+    )
 
 
 # ---------------------------------------------------------------------------

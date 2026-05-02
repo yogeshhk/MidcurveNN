@@ -1,4 +1,5 @@
 import os
+import sys
 import torch
 import pandas as pd
 import numpy as np
@@ -12,6 +13,12 @@ from tqdm import tqdm
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Allow importing shared utils from src/
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_SRC  = os.path.normpath(os.path.join(_HERE, '..', '..'))
+if _SRC not in sys.path:
+    sys.path.insert(0, _SRC)
 
 class ModelEvaluator:
     def __init__(self, model_path: str, base_model_id: str = None):
@@ -300,6 +307,32 @@ class ModelEvaluator:
         
         print(f"\nPrediction visualizations saved to {output_dir}/")
 
+    def save_results_grid(self, results_df: pd.DataFrame, n: int = 7,
+                          output_file: str = None):
+        """Save a n-row x 3-col BRep results grid PNG."""
+        from utils.prepare_plots import save_results_grid_brep
+
+        if output_file is None:
+            output_file = os.path.join(
+                os.path.dirname(__file__), "results", "results_grid.png")
+
+        needed = {"profile_input", "ground_truth", "prediction"}
+        if not needed.issubset(results_df.columns):
+            print("[evaluate] results_df missing prediction columns — skipping grid")
+            return
+
+        df = results_df.dropna(subset=["prediction"]).head(n)
+        save_results_grid_brep(
+            list(df["profile_input"]),
+            list(df["ground_truth"]),
+            list(df["prediction"]),
+            save_path=output_file,
+            n=n,
+            shape_names=list(df["shape_name"]) if "shape_name" in df.columns else None,
+            scores=list(df["combined_score"]) if "combined_score" in df.columns else None,
+            title="QLoRA Midcurve Predictions (Finetuning)",
+        )
+
 def main():
     """Main evaluation function"""
     import argparse
@@ -333,7 +366,10 @@ def main():
     if args.visualize:
         evaluator.create_visualizations(results_df)
         evaluator.visualize_predictions(results_df, args.test_file)
-    
+
+    # Always save results grid
+    evaluator.save_results_grid(results_df)
+
     # Save summary
     with open('evaluation_summary.json', 'w') as f:
         json.dump(summary, f, indent=2)

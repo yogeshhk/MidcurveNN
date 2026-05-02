@@ -225,6 +225,118 @@ def save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves,
     print(f"[Results] geometry grid saved -> {save_path}")
 
 
+def _draw_brep_panel(ax, brep_str, title, color):
+    """Plot a BRep JSON (Points + Lines) onto a single matplotlib Axes."""
+    import json as _json
+    import ast as _ast
+    data = None
+    try:
+        if isinstance(brep_str, dict):
+            data = brep_str
+        elif isinstance(brep_str, str):
+            try:
+                candidate = _json.loads(brep_str)
+            except (_json.JSONDecodeError, TypeError, ValueError):
+                candidate = _ast.literal_eval(brep_str)
+            if isinstance(candidate, str):
+                candidate = _json.loads(candidate)
+            if isinstance(candidate, dict):
+                data = candidate
+    except Exception:
+        pass
+
+    ax.set_title(title, fontsize=8)
+    if data is None:
+        msg = "no\nprediction" if brep_str is None else "parse\nerror"
+        ax.text(0.5, 0.5, msg, ha="center", va="center",
+                transform=ax.transAxes, color="gray", fontsize=8)
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        return
+
+    pts   = data.get("Points", [])
+    lines = data.get("Lines",  [])
+
+    if not pts:
+        return
+
+    # Normalise flat [x, y, x, y, ...] to [[x, y], ...]
+    if isinstance(pts[0], (int, float)):
+        if len(pts) % 2 == 0:
+            pts = [[pts[i], pts[i + 1]] for i in range(0, len(pts), 2)]
+        else:
+            ax.text(0.5, 0.5, "bad\nformat", ha="center", va="center",
+                    transform=ax.transAxes, color="orange", fontsize=7)
+            ax.set_xlim(0, 1)
+            ax.set_ylim(0, 1)
+            return
+
+    try:
+        for ln in lines:
+            if isinstance(ln, (list, tuple)) and len(ln) >= 2:
+                i0, i1 = int(ln[0]), int(ln[1])
+                if i0 < len(pts) and i1 < len(pts):
+                    x0, y0 = pts[i0]
+                    x1, y1 = pts[i1]
+                    ax.plot([x0, x1], [y0, y1], color=color, linewidth=1.5, zorder=2)
+    except Exception:
+        pass
+
+    try:
+        xs, ys = zip(*pts)
+        ax.scatter(xs, ys, color=color, s=18, zorder=3)
+    except Exception:
+        pass
+
+    ax.set_aspect("equal", adjustable="datalim")
+    ax.grid(True, alpha=0.25)
+    ax.tick_params(labelsize=6)
+
+
+def save_results_grid_brep(profiles, gt_midcurves, pred_midcurves,
+                            save_path, n=7, shape_names=None, scores=None,
+                            title="Midcurve Prediction Results (Text/BRep)"):
+    """
+    Save a results PNG grid for BRep JSON text-based approaches: n rows x 3 cols.
+      Col 0: input profile polygon (blue).
+      Col 1: ground-truth midcurve (green).
+      Col 2: predicted midcurve (red).
+
+    profiles, gt_midcurves, pred_midcurves: lists of BRep JSON strings or dicts.
+    save_path: full path for the output PNG.
+    n: number of sample rows (capped at len(profiles)).
+    shape_names: optional list of shape name strings for row labels.
+    scores: optional list of combined scores per sample.
+    """
+    n = min(n, len(profiles))
+    os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+
+    fig, axes = plt.subplots(n, 3, figsize=(13, 3.5 * n + 0.8), squeeze=False)
+
+    col_labels = ["Input (Profile)", "Ground Truth", "Predicted"]
+    colors     = ["steelblue", "forestgreen", "firebrick"]
+    for col, label in enumerate(col_labels):
+        axes[0, col].set_title(label, fontsize=10, fontweight="bold")
+
+    for row in range(n):
+        name  = shape_names[row] if shape_names and row < len(shape_names) else f"sample_{row}"
+        score = scores[row]      if scores is not None and row < len(scores) else None
+        pred_lbl = f"Predicted\n{name}"
+        if score is not None:
+            pred_lbl += f"\n(score={score:.2f})"
+
+        _draw_brep_panel(axes[row, 0], profiles[row],      f"Profile\n{name}",      colors[0])
+        _draw_brep_panel(axes[row, 1], gt_midcurves[row],  f"GT Midcurve\n{name}",  colors[1])
+        _draw_brep_panel(axes[row, 2], pred_midcurves[row], pred_lbl,                colors[2])
+
+    if title:
+        fig.suptitle(title, fontsize=13, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"[Results] BRep grid saved -> {save_path}")
+
+
 def plot_list_of_lines(list_of_lines, names, color='black', figsize=(15, 5)):
     """
     Plot each geometrical figure in its own subplot with a given name as title.
