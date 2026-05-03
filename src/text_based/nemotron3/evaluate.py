@@ -144,8 +144,21 @@ class NemotronEvaluator:
         grid_path = str(self.results_dir / "results_grid.png")
         try:
             make_results_grid(self.records, grid_path)
+            self._copy_to_publications(grid_path)
         except Exception as exc:
             print(f"WARNING: grid generation skipped — {exc}")
+
+    @staticmethod
+    def _copy_to_publications(grid_path: str):
+        import shutil
+        here     = Path(_DIR)
+        pub_dir  = here.parents[2] / "publications" / "Midcurve_LaTeX" / "images"
+        if pub_dir.is_dir():
+            dest = pub_dir / "nemotron_results_grid.png"
+            shutil.copy2(grid_path, dest)
+            print(f"[Publications] copied -> {dest}")
+        else:
+            print(f"NOTE: publications folder not found — skipping copy")
 
 
 # ---------------------------------------------------------------------------

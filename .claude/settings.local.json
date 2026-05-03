@@ -50,7 +50,9 @@
       "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" train.py)",
       "Bash(\"D:/Yogesh/anaconda3/envs/genai/python.exe\" test.py)",
       "PowerShell(conda run *)",
-      "PowerShell(Get-Process *)"
+      "PowerShell(Get-Process *)",
+      "PowerShell(cmd /c \"dir /b D:\\\\Yogesh\\\\Cache\\\\huggingface\\\\hub 2>&1\")",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }

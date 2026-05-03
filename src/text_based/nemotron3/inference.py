@@ -144,6 +144,17 @@ class NemotronInference:
         return len(visited) == len(pts)
 
     @staticmethod
+    def _ensure_lines(data):
+        """If Lines is absent/empty but Points has multiple entries, connect sequentially."""
+        pts   = data.get("Points", [])
+        lines = data.get("Lines",  [])
+        if len(pts) > 1 and not lines:
+            lines = [[i, i + 1] for i in range(len(pts) - 1)]
+            data["Lines"]    = lines
+            data["Segments"] = data.get("Segments") or [list(range(len(lines)))]
+        return data
+
+    @staticmethod
     def _repair(data):
         pts   = data["Points"]
         lines = list(data["Lines"])
@@ -195,13 +206,15 @@ class NemotronInference:
             if self._check_structure(data):
                 continue
 
+            data = self._ensure_lines(data)
+
             if not self._is_connected(data):
                 data = self._repair(data)
                 return json.dumps(data), {
                     "success": True, "attempts": attempt, "repaired": True
                 }
 
-            return raw, {"success": True, "attempts": attempt, "repaired": False}
+            return json.dumps(data), {"success": True, "attempts": attempt, "repaired": False}
 
         return last_raw, {"success": False, "attempts": max_retries}
 

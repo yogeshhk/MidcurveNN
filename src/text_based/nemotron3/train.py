@@ -86,15 +86,19 @@ def load_model_and_tokenizer():
 # ---------------------------------------------------------------------------
 
 def _make_args(output_dir):
+    use_bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
     common = dict(
         output_dir=str(output_dir),
         num_train_epochs=Config.NUM_EPOCHS,
         per_device_train_batch_size=Config.BATCH_SIZE,
         per_device_eval_batch_size=Config.BATCH_SIZE,
         gradient_accumulation_steps=Config.GRAD_ACC_STEPS,
+        gradient_checkpointing=True,       # trade compute for VRAM
         learning_rate=Config.LEARNING_RATE,
         lr_scheduler_type="cosine",
-        bf16=True,
+        warmup_ratio=0.03,
+        bf16=use_bf16,
+        fp16=(not use_bf16),
         eval_strategy="epoch",
         save_strategy="epoch",
         save_total_limit=2,
@@ -103,6 +107,8 @@ def _make_args(output_dir):
         seed=Config.SEED,
         logging_steps=10,
         report_to="none",
+        optim="adamw_8bit",                # 8-bit optimizer saves ~500 MB VRAM
+        dataloader_pin_memory=False,       # reduces overhead on Windows
     )
     if _HAS_SFT_CONFIG:
         return SFTConfig(

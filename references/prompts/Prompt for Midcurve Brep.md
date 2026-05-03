@@ -20,7 +20,7 @@ Input 2D polygonal profile is defined by Boundary Representation (Brep) format a
  'Midcurve_brep': {
     'Points': [(7.5, 5.0), (7.5, 20.0)],
     'Lines': [[0, 1]],
-                'Segments': [[0]]
+    'Segments': [[0]]
     },    
 }
 
@@ -103,6 +103,46 @@ Actual Answer:
     }
 }
 ----------------
+
+- Mistral 3 May 2026
+
+{
+  'ShapeName': 'L_rotated_172',
+  'Profile': [
+    [-5.65, -4.26],
+    [-10.6, -3.56],
+    [-14.08, -28.32],
+    [-38.83, -24.84],
+    [-39.53, -29.79],
+    [-9.82, -33.96]
+  ],
+  'Midcurve': [
+    [-8.125, -3.91],    # Midpoint of the first leg (points 0 and 1)
+    [-14.08, -28.32],   # Corner point (shared by both legs)
+    [-29.3933, -29.53] # Midpoint of the second leg (points 3, 4, and 5)
+  ],
+  'Profile_brep': {
+    'Points': [
+      [-5.65, -4.26],
+      [-10.6, -3.56],
+      [-14.08, -28.32],
+      [-38.83, -24.84],
+      [-39.53, -29.79],
+      [-9.82, -33.96]
+    ],
+    'Lines': [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]],
+    'Segments': [[0, 1, 2, 3, 4, 5]]
+  },
+  'Midcurve_brep': {
+    'Points': [
+      [-8.125, -3.91],
+      [-14.08, -28.32],
+      [-29.3933, -29.53]
+    ],
+    'Lines': [[0, 1], [1, 2]],
+    'Segments': [[0], [1]]
+  }
+}
 
 -- Gemini 3 19 Nov 2025
 {

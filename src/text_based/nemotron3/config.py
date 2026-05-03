@@ -18,9 +18,9 @@ class Config:
     LORA_DROPOUT        = 0.05
     LORA_TARGET_MODULES = "all-linear"  # PEFT auto-detects all linear layers
 
-    # Training
-    BATCH_SIZE     = 4
-    GRAD_ACC_STEPS = 8
+    # Training  (tuned for 4 GB VRAM: 4-bit model + grad-checkpointing)
+    BATCH_SIZE     = 1
+    GRAD_ACC_STEPS = 16   # effective batch = 16
     LEARNING_RATE  = 2e-4
     NUM_EPOCHS     = 3
     MAX_SEQ_LENGTH = 1024
