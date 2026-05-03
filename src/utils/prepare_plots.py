@@ -407,8 +407,9 @@ if __name__ == "__main__":
 
     profile =  [((-5.65, -4.26), (-10.6, -3.56), (-14.08, -28.32), (-38.83, -24.84), (-39.53, -29.79), (-9.82, -33.96), (-5.65, -4.26))]
     actual_midcurve = [((-8.12, -3.91), (-11.95, -31.14), (-39.18, -27.31))]
-    predicted_midcurve = [((-8.13, -3.91), (-11.95, -31.14), (-39.18, -27.32))] # gemini 3 19 Nov 2025
-    
+    # predicted_midcurve = [((-8.13, -3.91), (-11.95, -31.14), (-39.18, -27.32))] # gemini 3 19 Nov 2025
+    predicted_midcurve =  [((-8.5, -30.00), (-8.5, -4.26))] # nemotron 3 3 May 2026
+
     
     list_of_lines = [profile, actual_midcurve, predicted_midcurve]
     figure_names = ["profile", "actual_midcurve", "predicted_midcurve"]
