@@ -15,10 +15,10 @@ Metrics
 Usage
 -----
     cd src
-    python testing/benchmark.py
-    python testing/benchmark.py --approaches image geometry
-    python testing/benchmark.py --image-approach unet          # pick one image model
-    python testing/benchmark.py --geometry-approach graph_transformer
+    python benchmark.py
+    python benchmark.py --approaches image geometry
+    python benchmark.py --image-approach unet          # pick one image model
+    python benchmark.py --geometry-approach graph_transformer
 """
 
 import argparse
@@ -28,7 +28,7 @@ import time
 import textwrap
 import numpy as np
 
-_SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_SRC = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _SRC)
 sys.path.insert(0, os.path.join(_SRC, 'image_based'))
 
@@ -347,9 +347,9 @@ def get_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Examples:
-              python testing/benchmark.py
-              python testing/benchmark.py --approaches image geometry
-              python testing/benchmark.py --image-approach unet
+              python benchmark.py
+              python benchmark.py --approaches image geometry
+              python benchmark.py --image-approach unet
         """))
     p.add_argument("--approaches",        nargs='+',
                    choices=['image', 'geometry', 'text'],

@@ -63,7 +63,8 @@ src/
 │   ├── codeT5/                       # CodeT5 notebooks
 │   │   └── results/                  # evaluation CSV (populated after training)
 │   ├── ludwig/                       # Ludwig framework notebooks
-│   └── prompt/                       # Few-shot prompting + LLM comparison
+│   ├── prompt/                       # Few-shot prompting + LLM comparison
+│   └── nemotron3/                    # Nemotron-Mini-4B: HF SFTTrainer / Unsloth / few-shot
 │
 ├── image_based/testing/              # Phase I tests
 │   └── test_image_based.py
@@ -71,8 +72,7 @@ src/
 │   └── test_geometry_based.py
 ├── text_based/testing/               # Phase II tests
 │   └── test_text_based.py
-└── testing/                          # Cross-approach benchmark
-    └── benchmark.py
+└── benchmark.py                      # Cross-approach benchmark (image / geometry / text)
 ```
 
 ## Instructions to Run
@@ -112,13 +112,19 @@ python train.py                     # QLoRA fine-tune Qwen/Gemma/Mistral
 python run_pipeline.py --full       # full pipeline in one command
 python model_server.py --port 8000  # serve via FastAPI
 
+# --- Nemotron-Mini-4B (Phase II, nemotron3) ---
+cd text_based/nemotron3
+python hf_sft_trainer.py            # Approach 1: HuggingFace SFTTrainer QLoRA
+python unsloth_trainer.py           # Approach 2: Unsloth-accelerated QLoRA (PEFT fallback)
+python fewshot_prompter.py          # Approach 3: few-shot base-model inference (no fine-tuning)
+
 # --- Tests & Benchmark ---
 cd src
 python -m pytest                                              # all 3 approach suites (via pytest.ini)
 python -m pytest image_based/testing/test_image_based.py -v  # Phase I only
 python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase III only
 python -m pytest text_based/testing/test_text_based.py -v    # Phase II only
-python testing/benchmark.py                                   # cross-approach benchmark
+python benchmark.py                                   # cross-approach benchmark
 ```
 
 ## Thoughts

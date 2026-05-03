@@ -45,7 +45,7 @@ def make_results_grid(records, save_path, n=7):
     if not samples:
         samples = records[:n]
     if not samples:
-        print("No samples to visualise.")
+        print("No samples to visualize.")
         return
 
     save_results_grid_brep(

@@ -67,6 +67,17 @@ text_based/
 │   ├── midcurve_generator.py   -- prompt-based generation script
 │   └── *.png                   -- LLM comparison screenshots (ChatGPT, Bard, etc.)
 │
+├── nemotron3/                  -- Nemotron-Mini-4B (nvidia/Nemotron-Mini-4B-Instruct)
+│   ├── hf_sft_trainer.py       -- HFSFTTrainer: PEFT + HuggingFace SFTTrainer QLoRA
+│   ├── unsloth_trainer.py      -- UnslothTrainer: Unsloth-accelerated QLoRA (PEFT fallback)
+│   ├── fewshot_prompter.py     -- FewShotPrompter: base model + 2-shot prompting, no adapter
+│   ├── config.py               -- Config class (MODEL_ID, LoRA, training hyperparameters)
+│   ├── dataset_loader.py       -- MidcurveDataset: CSV -> chat-formatted HF Dataset
+│   ├── inference.py            -- NemotronInference: load adapter + predict + repair
+│   ├── evaluate.py             -- NemotronEvaluator: test-set evaluation + results grid
+│   ├── metrics.py              -- GeometricMetrics: Chamfer, Hausdorff, topology, connectivity
+│   └── results/                -- evaluation_results.csv, results_grid.png (generated)
+│
 ├── results/                    -- model checkpoints and evaluation outputs (generated)
 └── testing/
     └── test_text_based.py      -- smoke tests for all components
@@ -150,6 +161,46 @@ python model_server.py --host 0.0.0.0 --port 8000
 # GET  http://localhost:8000/docs  (Swagger UI)
 ```
 
+### Nemotron-Mini-4B (nemotron3)
+
+```bash
+cd src/text_based/nemotron3
+conda activate genai
+
+# Approach 1 — HuggingFace SFTTrainer QLoRA fine-tuning
+python hf_sft_trainer.py
+
+# Approach 2 — Unsloth-accelerated QLoRA (auto-falls back to PEFT if Unsloth not installed)
+python unsloth_trainer.py
+
+# Approach 3 — Few-shot prompting with the base model (no fine-tuning required)
+python fewshot_prompter.py
+
+# Evaluate a fine-tuned adapter
+python evaluate.py --model_path results/Midcurve-Nemotron-Mini-v1
+
+# Single inference
+python inference.py --single
+```
+
+Each of the three approaches can also be used as a library:
+
+```python
+from hf_sft_trainer import HFSFTTrainer
+from unsloth_trainer import UnslothTrainer
+from fewshot_prompter import FewShotPrompter
+
+# Fine-tuning (one call)
+HFSFTTrainer().run()
+UnslothTrainer().run()
+
+# Few-shot prediction (no training needed)
+p = FewShotPrompter()
+p.load_model()
+print(p.predict('{"Points": [...], "Lines": [...], "Segments": [...]}'))
+p.evaluate()   # runs on test set, saves CSV + results grid
+```
+
 ### Run tests
 
 ```bash
@@ -167,6 +218,7 @@ python -m pytest text_based/testing/test_text_based.py -v
 | `codeT5/` | CodeT5 seq2seq fine-tuning | Notebooks available |
 | `ludwig/` | Ludwig declarative fine-tuning | Notebooks available |
 | `prompt/` | Few-shot prompting (ChatGPT, Bard, etc.) | Scripts + screenshots |
+| `nemotron3/` | Nemotron-Mini-4B: HF SFT / Unsloth / few-shot (3 class-based files) | Implemented |
 
 ---
 

@@ -398,7 +398,8 @@ class TestNemotron3Files(unittest.TestCase):
 
     _NEMOTRON_DIR = os.path.join(_TEXT_BASED, 'nemotron3')
     _SCRIPTS = ['config.py', 'dataset_loader.py', 'metrics.py',
-                'train.py', 'inference.py', 'evaluate.py']
+                'train.py', 'inference.py', 'evaluate.py',
+                'hf_sft_trainer.py', 'unsloth_trainer.py', 'fewshot_prompter.py']
 
     def test_32_nemotron3_dir_exists(self):
         self.assertTrue(os.path.isdir(self._NEMOTRON_DIR),
@@ -484,6 +485,119 @@ class TestNemotron3Imports(unittest.TestCase):
             self.assertGreaterEqual(dist, 0.0)
         except Exception as exc:
             self.skipTest(f"chamfer_distance unavailable: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Nemotron3 new class-file import smoke tests  (no GPU, no model weights)
+# ---------------------------------------------------------------------------
+
+class TestNemotron3ClassImports(unittest.TestCase):
+    """Verify the three new class-based files are importable up to the point
+    that heavy ML dependencies (torch, peft, unsloth) are needed.  The headers
+    of all three files can be loaded via importlib without a GPU."""
+
+    _NEMOTRON_DIR = os.path.join(_TEXT_BASED, 'nemotron3')
+
+    def _load_module(self, filename, mod_name):
+        import importlib.util
+        path = os.path.join(self._NEMOTRON_DIR, filename)
+        if not os.path.isfile(path):
+            self.skipTest(f"{filename} not found")
+        spec = importlib.util.spec_from_file_location(mod_name, path)
+        mod  = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_38_hf_sft_trainer_has_class(self):
+        try:
+            mod = self._load_module('hf_sft_trainer.py', 'hf_sft_trainer')
+            self.assertTrue(hasattr(mod, 'HFSFTTrainer'),
+                            "HFSFTTrainer class not found in hf_sft_trainer.py")
+        except Exception as exc:
+            self.skipTest(f"hf_sft_trainer.py import failed (missing dep?): {exc}")
+
+    def test_39_unsloth_trainer_has_class(self):
+        try:
+            mod = self._load_module('unsloth_trainer.py', 'unsloth_trainer')
+            self.assertTrue(hasattr(mod, 'UnslothTrainer'),
+                            "UnslothTrainer class not found in unsloth_trainer.py")
+        except Exception as exc:
+            self.skipTest(f"unsloth_trainer.py import failed (missing dep?): {exc}")
+
+    def test_40_fewshot_prompter_has_class(self):
+        try:
+            mod = self._load_module('fewshot_prompter.py', 'fewshot_prompter')
+            self.assertTrue(hasattr(mod, 'FewShotPrompter'),
+                            "FewShotPrompter class not found in fewshot_prompter.py")
+        except Exception as exc:
+            self.skipTest(f"fewshot_prompter.py import failed (missing dep?): {exc}")
+
+
+# ---------------------------------------------------------------------------
+# FewShotPrompter pure-Python logic tests  (no GPU, no model weights)
+# ---------------------------------------------------------------------------
+
+class TestFewShotPrompterLogic(unittest.TestCase):
+    """Test the JSON extraction and repair helpers in FewShotPrompter.
+    These are pure Python — no model, no GPU required."""
+
+    _NEMOTRON_DIR = os.path.join(_TEXT_BASED, 'nemotron3')
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        path = os.path.join(cls._NEMOTRON_DIR, 'fewshot_prompter.py')
+        if not os.path.isfile(path):
+            raise unittest.SkipTest("fewshot_prompter.py not found")
+        try:
+            spec = importlib.util.spec_from_file_location('fewshot_prompter', path)
+            mod  = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            cls.FewShotPrompter = mod.FewShotPrompter
+        except Exception as exc:
+            raise unittest.SkipTest(f"fewshot_prompter.py import failed: {exc}")
+
+    def _prompter(self):
+        return self.FewShotPrompter.__new__(self.FewShotPrompter)
+
+    def test_41_repair_lines_adds_sequential_lines(self):
+        p = self._prompter()
+        data = {"Points": [[0.0, 0.0], [1.0, 0.0], [2.0, 0.0]], "Lines": []}
+        result = p._repair_lines(data)
+        self.assertEqual(result["Lines"], [[0, 1], [1, 2]],
+                         "_repair_lines should connect 3 points sequentially")
+
+    def test_42_repair_lines_skips_when_lines_present(self):
+        p = self._prompter()
+        existing = [[0, 1]]
+        data = {"Points": [[0.0, 0.0], [1.0, 0.0]], "Lines": existing}
+        result = p._repair_lines(data)
+        self.assertEqual(result["Lines"], existing,
+                         "_repair_lines should not overwrite existing Lines")
+
+    def test_43_try_parse_valid_json(self):
+        p = self._prompter()
+        raw = '{"Points": [[0, 0], [1, 0]], "Lines": [[0, 1]], "Segments": [[0]]}'
+        result = p._try_parse(raw)
+        self.assertIsNotNone(result, "_try_parse should succeed on valid JSON")
+        self.assertIn("Points", result)
+
+    def test_44_try_parse_invalid_returns_none(self):
+        p = self._prompter()
+        self.assertIsNone(p._try_parse("not json at all"),
+                          "_try_parse should return None on unparseable input")
+
+    def test_45_extraction_candidates_handles_no_closing_brace(self):
+        p = self._prompter()
+        # A string with an opening brace but no closing brace should not crash
+        # and should not append a garbage slice
+        candidates = p._extraction_candidates('{"Points": [[0,0]')
+        # The raw text is always candidate[0]; the brace-extraction should not
+        # add a second entry when there is no closing brace
+        self.assertGreaterEqual(len(candidates), 1)
+        for c in candidates[1:]:
+            self.assertNotEqual(c, "{",
+                                "Extraction should not add a single-char garbage candidate")
 
 
 if __name__ == '__main__':

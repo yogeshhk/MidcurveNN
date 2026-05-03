@@ -35,7 +35,7 @@ python -m pytest geometry_based/testing/test_geometry_based.py -v
 python -m pytest text_based/testing/test_text_based.py -v
 
 # Benchmark
-python testing/benchmark.py --approaches geometry text
+python benchmark.py --approaches geometry text
 ```
 
 Tests that require optional dependencies (TensorFlow, PyTorch Geometric, GPU) skip automatically when those packages are not available.

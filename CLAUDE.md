@@ -58,7 +58,17 @@ src/
 │   ├── codeT5/                  # CodeT5 fine-tuning notebooks (Gdrive + Kaggle)
 │   │   └── results/             # evaluation_results_sample.csv (populated after training)
 │   ├── ludwig/                  # Ludwig framework notebooks
-│   └── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
+│   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
+│   └── nemotron3/               # Nemotron-Mini-4B: 3 class-based approach files + shared utils
+│       ├── hf_sft_trainer.py    # HFSFTTrainer — PEFT + HuggingFace SFTTrainer QLoRA
+│       ├── unsloth_trainer.py   # UnslothTrainer — Unsloth-accelerated QLoRA (PEFT fallback)
+│       ├── fewshot_prompter.py  # FewShotPrompter — base model + 2-shot prompting, no fine-tuning
+│       ├── config.py            # Config class (MODEL_ID, LoRA, training hyperparameters)
+│       ├── dataset_loader.py    # MidcurveDataset — CSV → chat-formatted HF Dataset
+│       ├── inference.py         # NemotronInference — load adapter + predict + repair
+│       ├── evaluate.py          # NemotronEvaluator — test-set evaluation + results grid
+│       ├── metrics.py           # GeometricMetrics — Chamfer, Hausdorff, topology, connectivity
+│       └── results/             # evaluation_results.csv, results_grid.png (populated at runtime)
 │
 ├── image_based/testing/         # Phase I unit tests
 │   └── test_image_based.py
@@ -66,8 +76,7 @@ src/
 │   └── test_geometry_based.py
 ├── text_based/testing/          # Phase II smoke tests
 │   └── test_text_based.py
-├── testing/                     # Cross-approach benchmark
-│   └── benchmark.py
+├── benchmark.py                 # Cross-approach benchmark (image / geometry / text)
 ├── conftest.py                  # Pytest sys.path setup (auto-loaded by pytest)
 └── pytest.ini                   # Test discovery config: maps `pytest` to all 3 test dirs
 ```
@@ -149,6 +158,27 @@ python run_pipeline.py --full
 python model_server.py --host 0.0.0.0 --port 8000
 ```
 
+### Train / Infer — Nemotron-Mini-4B (Phase II, nemotron3)
+```bash
+cd src/text_based/nemotron3
+conda activate genai
+
+# Approach 1: HuggingFace SFTTrainer QLoRA fine-tuning
+python hf_sft_trainer.py
+
+# Approach 2: Unsloth-accelerated QLoRA (auto-falls back to PEFT if Unsloth not installed)
+python unsloth_trainer.py
+
+# Approach 3: Few-shot prompting with the base model (no fine-tuning, no adapter needed)
+python fewshot_prompter.py
+
+# Evaluate a fine-tuned adapter
+python evaluate.py --model_path results/Midcurve-Nemotron-Mini-v1
+
+# Single inference from a trained adapter
+python inference.py --single
+```
+
 ### Test / Infer
 ```bash
 # UNet
@@ -176,9 +206,9 @@ python -m pytest text_based/testing/test_text_based.py -v    # Phase II
 ### Run benchmark
 ```bash
 cd src
-python testing/benchmark.py                           # all approaches
-python testing/benchmark.py --approaches geometry     # geometry only
-python testing/benchmark.py --geometry-approach graph_transformer
+python benchmark.py                           # all approaches
+python benchmark.py --approaches geometry     # geometry only
+python benchmark.py --geometry-approach graph_transformer
 ```
 
 ## Code Architecture

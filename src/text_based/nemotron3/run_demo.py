@@ -195,7 +195,7 @@ def _extraction_candidates(text: str):
             candidates.append(text.split(fence)[-1].split("```")[0].strip())
     start = text.find("{")
     if start != -1:
-        depth, end = 0, start
+        depth, end = 0, -1
         for i, ch in enumerate(text[start:], start):
             if ch == "{":
                 depth += 1
@@ -204,7 +204,8 @@ def _extraction_candidates(text: str):
                 if depth == 0:
                     end = i
                     break
-        candidates.append(text[start:end + 1])
+        if end != -1:
+            candidates.append(text[start:end + 1])
     return candidates
 
 
@@ -306,7 +307,8 @@ def main():
     total = len(records)
     print(f"\n=== Demo Summary ({DEMO_MODEL}) ===")
     print(f"Total     : {total}")
-    print(f"Valid JSON: {len(valid)} ({100 * len(valid) // total if total else 0} %)")
+    pct = (100.0 * len(valid) / total) if total else 0.0
+    print(f"Valid JSON: {len(valid)} ({pct:.1f} %)")
     if valid:
         for key in ("hausdorff", "chamfer", "topology_accuracy",
                     "connectivity_score", "combined_score"):

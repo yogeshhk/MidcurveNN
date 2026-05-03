@@ -79,6 +79,8 @@ class NemotronInference:
     # ------------------------------------------------------------------
 
     def generate_raw(self, profile_brep_json):
+        if self.model is None:
+            raise RuntimeError("Call load_model() before generate_raw().")
         messages = [
             {"role": "system", "content": Config.SYSTEM_PROMPT},
             {"role": "user",   "content": str(profile_brep_json)},
@@ -201,9 +203,12 @@ class NemotronInference:
             data, err = self._parse(raw)
 
             if err:
+                print(f"  [attempt {attempt}] parse failed: {err[:80]}")
                 continue
 
-            if self._check_structure(data):
+            struct_err = self._check_structure(data)
+            if struct_err:
+                print(f"  [attempt {attempt}] structure check failed: {struct_err}")
                 continue
 
             data = self._ensure_lines(data)
@@ -211,7 +216,8 @@ class NemotronInference:
             if not self._is_connected(data):
                 data = self._repair(data)
                 return json.dumps(data), {
-                    "success": True, "attempts": attempt, "repaired": True
+                    "success": True, "attempts": attempt, "repaired": True,
+                    "fully_connected": self._is_connected(data),
                 }
 
             return json.dumps(data), {"success": True, "attempts": attempt, "repaired": False}
