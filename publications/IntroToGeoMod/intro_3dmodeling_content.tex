@@ -1,0 +1,275 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 2 -- section divider
+\begin{frame}[fragile]{}
+\begin{center}
+{\Large Introduction}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 3 -- Introduction
+\begin{frame}[fragile]\frametitle{Introduction}
+\begin{itemize}
+\item How to model real world objects? --- Design
+\item How to put forth ideas in visual manner --- Communication
+\item How to verify that design serves the purpose --- Analysis
+\item How to get it made? --- Manufacturing
+\end{itemize}
+
+All of the above can happen without Computers, but better with Computer assistance.
+
+That's why: Computer Aided \ldots\ (CAx)
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 4 -- History section divider + content
+\begin{frame}[fragile]{}
+\begin{center}
+{\Large History}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{History}
+\begin{itemize}
+\item The first source of CAD resulted from attempts to automate the drafting process.
+\item These developments were pioneered by the General Motors Research Laboratories in the early 1960s.
+\item Ivan Sutherland's \textit{Sketchpad} (MIT, 1963) established interactive computer graphics as the foundation of modern CAD.
+\item CAD became more widely used after 1970 because of technological advancements.
+\item CAD allowed users to design products much quicker without the production of an actual product.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 5 -- Evolution of CAD Technology
+\begin{frame}[fragile]{Evolution of CAD Technology}
+\begin{center}
+\includegraphics[width=0.9\linewidth,keepaspectratio]{geomod1}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 6 -- Manual drafting caption slide
+\begin{frame}[fragile]{}
+\begin{center}
+\includegraphics[width=0.75\linewidth,keepaspectratio]{geomod2}
+\end{center}
+\vspace{2mm}
+\small Manual drafting. Since 1970s: electronic drafting board.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 7 -- Manual Drafting
+\begin{frame}[fragile]\frametitle{Manual Drafting}
+\begin{columns}
+  \begin{column}{0.55\linewidth}
+  \begin{itemize}
+  \item 2D representations used to represent 3D objects
+    \begin{itemize}
+    \item Multi-view drawings (Multiview, Axonometric, Oblique, Perspective)
+    \item Pictorials
+    \end{itemize}
+  \item Standards and conventions developed so 3D object could be built from drawings
+  \item Drawings created manually or using 2D CAD
+  \item Difficult to visualise, error-prone, time-consuming
+  \end{itemize}
+  \end{column}
+  \begin{column}{0.45\linewidth}
+  \begin{center}
+  \includegraphics[width=0.9\linewidth,keepaspectratio]{geomod2}
+  \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 8 -- CAD Types
+\begin{frame}[fragile]\frametitle{CAD -- Types}
+\begin{columns}
+  \begin{column}{0.55\linewidth}
+  \begin{itemize}
+  \item 2D model: Point, line, circular arc, planar curve
+  \item 3D model
+    \begin{itemize}
+    \item Wire frame
+    \item Surface
+    \item Solid
+    \end{itemize}
+  \end{itemize}
+  \begin{alertblock}{}
+  Advantages and Disadvantages of each?
+  \end{alertblock}
+  \end{column}
+  \begin{column}{0.45\linewidth}
+  \begin{center}
+  \includegraphics[width=0.45\linewidth,keepaspectratio]{CAD2dprofile}
+  \includegraphics[width=0.55\linewidth,keepaspectratio]{CADWireframe}
+  \includegraphics[width=0.55\linewidth,keepaspectratio]{CADSurface}
+  \includegraphics[width=0.55\linewidth,keepaspectratio]{CADSolid}
+  \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 9 -- 2D CAD
+\begin{frame}[fragile]\frametitle{2D CAD}
+\begin{columns}
+  \begin{column}{0.55\linewidth}
+  \begin{itemize}
+  \item Simply replaces manual drawing
+  \item Provides a set of drawing tools to create 2D elements: Lines, circles, arcs, etc.
+  \item More accurate, easier changes to drawings
+  \item Still no 3D representation of the object
+  \item Example: AutoCAD
+  \end{itemize}
+  \end{column}
+  \begin{column}{0.45\linewidth}
+  \begin{center}
+  \includegraphics[width=0.9\linewidth,keepaspectratio]{geomod3}
+  \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 10 -- Wire frame caption slide
+\begin{frame}[fragile]{}
+\begin{center}
+\includegraphics[width=0.75\linewidth,keepaspectratio]{geomod4}
+\end{center}
+\vspace{2mm}
+\small Early 1980s: wire frame geometry
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 11 -- 3D Wire frame Modeling
+\begin{frame}[fragile]\frametitle{3D Wire frame Modeling}
+\begin{columns}
+  \begin{column}{0.55\linewidth}
+  \begin{itemize}
+  \item Geometric entities are lines and curves in 3D
+  \item Volume or surfaces of object not defined
+  \item Easy to store and display
+  \item Hard to interpret --- ambiguous
+  \end{itemize}
+  \end{column}
+  \begin{column}{0.45\linewidth}
+  \begin{center}
+  \includegraphics[width=0.9\linewidth,keepaspectratio]{geomod4}
+  \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 12 -- Wireframe ambiguity
+\begin{frame}[fragile]\frametitle{What is this?}
+\begin{center}
+Problems with wire frame models
+
+\includegraphics[width=0.8\linewidth,keepaspectratio]{geomod5}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 13 -- Surface modeling caption slide
+\begin{frame}[fragile]{}
+\begin{center}
+\includegraphics[width=0.75\linewidth,keepaspectratio]{geomod6}
+\end{center}
+\vspace{2mm}
+\small Late 1980s: Surface Modeling
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 14 -- 3D Surface Modeling
+\begin{frame}[fragile]\frametitle{3D Surface Modeling}
+\begin{columns}
+  \begin{column}{0.55\linewidth}
+  \begin{itemize}
+  \item Models 2D surfaces in 3D space using NURBS and other spline techniques
+  \item All points on surface are defined; useful for machining, visualisation, etc.
+  \item Surfaces have no thickness; objects have no volume or solid properties
+  \item Surfaces may be open
+  \end{itemize}
+  \end{column}
+  \begin{column}{0.45\linewidth}
+  \begin{center}
+  \includegraphics[width=0.9\linewidth,keepaspectratio]{geomod7}
+  \end{center}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 15 -- Surface Model Alias StudioTools
+\begin{frame}[fragile]\frametitle{Surface Model --- Alias StudioTools}
+\begin{center}
+\includegraphics[width=0.7\linewidth,keepaspectratio]{geomod8}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 16 -- Surface Model Rhino
+\begin{frame}[fragile]\frametitle{Surface Model --- Rhino}
+\begin{center}
+\includegraphics[width=0.7\linewidth,keepaspectratio]{geomod9}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 17 -- Why draw 3D Models?
+\begin{frame}[fragile]\frametitle{Why Draw 3D Models?}
+\begin{itemize}
+\item 3D models are easier to interpret.
+\item Less expensive than building a physical model.
+\item 3D models can be altered easily; create more design concepts.
+\item 3D models can be used to perform engineering analysis: finite element analysis (stress, deflection, thermal \ldots) and motion analysis.
+\item 3D models can be used directly in manufacturing via Computer Numerical Control (CNC).
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 18 -- 2D Applications
+\begin{frame}[fragile]\frametitle{2D Applications}
+\begin{itemize}
+\item Drafting --- sketches, architectures, drawings
+\item Art --- sketches, painting
+\item Electronic layouts, circuit design
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.7\linewidth,keepaspectratio]{geomod10}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 19 -- 3D Applications
+\begin{frame}[fragile]\frametitle{3D Applications}
+\begin{itemize}
+\item CAD (Computer Aided Design)
+\item CAM (Computer Aided Manufacturing)
+\item CAE (Computer Aided Engineering) Finite Element Method
+\item CG (Computer Graphics)
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.7\linewidth,keepaspectratio]{geomod11}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Slide 20 -- Basics of FEA
+\begin{frame}[fragile]\frametitle{Basics of Finite Element Analysis (FEA)}
+\begin{itemize}
+\item A complex problem is divided into smaller and simpler problems that can be solved using existing knowledge of mechanics and mathematical tools.
+\item Modern mechanical design involves complicated shapes that as a whole cannot be solved by existing mathematical tools.
+\item Engineers need FEA to evaluate their designs.
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.65\linewidth,keepaspectratio]{geomod12}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: Slides 21+ -- export Intro_3DModeling.ppt as PDF and read remaining pages
+% to complete this content file.

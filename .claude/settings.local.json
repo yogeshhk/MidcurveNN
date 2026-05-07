@@ -57,7 +57,18 @@
       "PowerShell(Get-ChildItem -Path \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\\\\\" -Force | ForEach-Object { $_.FullName })",
       "PowerShell(Get-ChildItem -Path \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\\\\.claude\\\\\" -Force -Recurse | ForEach-Object { $_.FullName })",
       "Bash(pdflatex -interaction=nonstopmode Main_Paper_MidcurveNN_Comprehensive.tex)",
-      "Bash(bibtex Main_Paper_MidcurveNN_Comprehensive)"
+      "Bash(bibtex Main_Paper_MidcurveNN_Comprehensive)",
+      "Bash(texify -cp Main_Intro_3DModeling.tex)",
+      "Bash(texify -cp Main_Intro_SolidModeling.tex)",
+      "Bash(texify -cp Main_Introduction_To_3D_Modeling_yhk.tex)",
+      "Bash(cmd /c make.bat)",
+      "Bash(grep \"\\\\.pdf$\")",
+      "Bash(texify -cp Main_IntroductionToCAD_Presentation.tex)",
+      "Bash(texify -cp Main_Solid_Modeling_Notes.tex)",
+      "PowerShell(Get-Content *)",
+      "Bash(texify -cp Main_Intro_GeoMod_Comprehensive.tex)",
+      "Bash(python3 *)",
+      "Bash(grep -v \"^images$\")"
     ]
   }
 }
