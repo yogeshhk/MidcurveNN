@@ -15,16 +15,10 @@
 \item How to get it made? – Manufacturing
 \end{itemize}
 
-All of the above can happen without Computers, but \ldots 
+All of the above can happen without Computers, but better with Computer assistance.
 
-\end{frame}
+That's why: Computer Aided $\ldots$ (CAx)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Why CAD?}
-
-Better if assisted by Computers/Software
-
-That's why : Computer Aided $\ldots$ (CAx)
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,6 +33,7 @@ That's why : Computer Aided $\ldots$ (CAx)
 \begin{itemize}
 \item The first source of CAD resulted from attempts to automate the drafting process.
 \item These developments were pioneered by the General Motors Research Laboratories in the early 1960s.
+\item Ivan Sutherland's \textit{Sketchpad} (MIT, 1963) established interactive computer graphics as the foundation of modern CAD.
 \item CAD became more widely used after 1970 because of technological advancements.
 \item CAD allowed users to design products much quicker without the production of an actual product.
 
@@ -92,7 +87,7 @@ That's why : Computer Aided $\ldots$ (CAx)
 
 \begin{itemize}
 \item By dimensionality: 2D/3D
-\item 2-Manifold vs Non-manifold
+\item 2-Manifold vs Non-manifold (\textit{each edge shared by exactly two faces, or not})
 \item Precision: Exact/Approximate
 \item What to store?
 	\begin{itemize}
@@ -201,6 +196,8 @@ That's why : Computer Aided $\ldots$ (CAx)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Surface Modeling}
+Example: A surface model of a complex freeform shape
+
 			\begin{center}
 	\includegraphics[width=0.9\linewidth,keepaspectratio]{geomod6}
 			\end{center}
@@ -357,7 +354,7 @@ A CNC machine is an NC machine with the added feature of an on-board computer.
 \begin{frame}[fragile]\frametitle{Mesh}
 \begin{itemize}
 \item Most popular approximation model
-\item Graphics, RP, CAD/CAM, DMU, CAE
+\item Graphics, Rapid Prototyping (RP), CAD/CAM, Digital Mock-Up (DMU), CAE
 \item Hard to handle
 \item Triangular mesh, Quad mesh, General polygonal mesh
 \item Create mesh by
@@ -450,15 +447,16 @@ A CNC machine is an NC machine with the added feature of an on-board computer.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Euler-Poincare formula}
 \begin{itemize}
-\item For a polyhedron $ V - E + F - 2 = 0$               
+\item For a simple polyhedron $ V - E + F = 2$
 \begin{itemize}
 \item V = Vertices
 \item E = Edges
 \item F = Faces
 \end{itemize}
 \item Example: A tetrahedron has four vertices, four faces, and six edges
-$4-6+4=2$
+$4-6+4=2$ \checkmark
 \end{itemize}
+\note{This formula is used to check whether a solid model is topologically valid. Any valid simple polyhedron must satisfy it.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -485,6 +483,7 @@ $V-E+F-H=2(C-G)$
 
 ``Tweaking'' (deformations, twisting, and stretching but not tearing, or cutting ) solids modifies the solid without changing the topology or the above numbers.
 
+\note{This generalization handles solids with through-holes (genus G), inner loops on faces (H), and multiple separate bodies (C). A torus, for example, has G=1.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -515,10 +514,12 @@ $V-E+F-H=2(C-G)$
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Brep vs Mesh  }
+\begin{frame}[fragile]\frametitle{B-Rep vs Mesh}
 
-The object is represented by subdivision/discretization such as mesh and other geometric primitives.
-
+\begin{itemize}
+\item \textbf{B-Rep}: exact boundary; topology (vertices/edges/faces) + geometry (curves/surfaces). Precise, editable.
+\item \textbf{Mesh}: approximation by triangles/quads. Lightweight, widely supported (graphics, FEA, 3D printing), but loses exact shape.
+\end{itemize}
 
 			\begin{center}
 	\includegraphics[width=0.9\linewidth,keepaspectratio]{geomod19}
@@ -539,20 +540,31 @@ The object is represented by subdivision/discretization such as mesh and other g
 \item High-end (more powerful)
 \begin{itemize}
 
-\item NX (UGS)
-\item Catia (Dassault Systémes)
-\item Pro/Engineer (Parametric Technologies Corp.)
+\item NX (Siemens)
+\item Catia (Dassault Syst\'{e}mes)
+\item Creo (PTC, formerly Pro/Engineer)
 \end{itemize}
 
 \item Mid-Range (easier to use)
 \begin{itemize}
 
-\item Solid Edge (UGS)
+\item Solid Edge (Siemens)
 \item Inventor (Autodesk)
-\item SolidWorks (SolidWorks Corp.)
+\item SolidWorks (Dassault Syst\'{e}mes)
 \end{itemize}
 \end{itemize}
 
-They all work basically the same way, $somewhat$!!
+They all work basically the same way, \textit{somewhat}!!
 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Modern CAD Landscape}
+\begin{itemize}
+\item Cloud-based: Onshape, Autodesk Fusion 360
+\item Open-source: FreeCAD, OpenSCAD (script-based parametric)
+\item AI-assisted / generative design is emerging
+\item Key file exchange standards: STEP, IGES, STL (for 3D printing)
+\end{itemize}
+\note{These tools now dominate in education and startups. STEP and IGES are neutral exchange formats; STL is the universal 3D printing format.}
 \end{frame}
