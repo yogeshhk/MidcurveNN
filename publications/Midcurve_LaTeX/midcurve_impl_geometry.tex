@@ -48,11 +48,11 @@ Limitations of the image approach motivate working directly on coordinates:
 	\end{itemize}
 
 \begin{center}
-\includegraphics[width=0.75\linewidth,keepaspectratio]{shapes_drawio}
+\includegraphics[width=0.5\linewidth,keepaspectratio]{shapes_drawio}
 \end{center}
 
 \vspace{-4pt}
-{\footnotesize Input shapes I, L, T, Plus --- each becomes a closed ring graph.}
+{\footnotesize Input shapes I, L, T, Plus: each becomes a closed ring graph.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,112 +64,29 @@ Limitations of the image approach motivate working directly on coordinates:
 
 \begin{itemize}
 \item \textbf{Encoder}: TransformerConv layers with Laplacian Positional Encoding
-\item \textbf{Bottleneck}: TopK Pooling --- keeps top-scored nodes
+\item \textbf{Bottleneck}: TopK Pooling: keeps top-scored nodes
 \item \textbf{Decoder}: per-node MLP $\rightarrow$ coordinates; pairwise MLP $\rightarrow$ adjacency
 \end{itemize}
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Pseudocode: Encoder + Bottleneck}
+% ── Pseudocode and results frames commented out (implementation details
+%    and preliminary results not shown in this presentation scope) ──────────
+% \begin{frame}[fragile]\frametitle{Pseudocode: Encoder + Bottleneck}
+% ...
+% \end{frame}
 
-\begin{lstlisting}
-# Phase III: Graph Transformer (pseudocode)
-# --- Laplacian Positional Encoding ---
-L = normalised_laplacian(edge_index)
-pe = eigenvectors(L, k=4)          # [N, 4]  structural position
-x  = x + Linear(4, hidden)(pe)    # inject into node features
+% \begin{frame}[fragile]\frametitle{Pseudocode: Decoder + Loss}
+% ...
+% \end{frame}
 
-# --- Encoder (L TransformerConv layers) ---
-for TransformerConv, LayerNorm in zip(layers, norms):
-    x = LayerNorm(x + TransformerConv(x, edge_index, edge_attr))
-    x = GELU(x)                    # [N, H]
+% \begin{frame}[fragile]\frametitle{Training Setup}
+% ...
+% \end{frame}
 
-# --- Bottleneck: TopK Pooling ---
-z_s, _, _, batch, perm, score = TopKPooling(x, ratio=0.6)
-# z_s: [k, H]  -- only top-k nodes kept
-\end{lstlisting}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Pseudocode: Decoder + Loss}
-
-\begin{lstlisting}
-# --- Decoder: coordinates + adjacency ---
-coords_pred = CoordMLP(z_s)          # [k, 2]  (x,y) per node
-adj_logits  = PairwiseMLP(z_s)       # [k, k]  edge logit pairs
-
-# --- Loss ---
-# Chamfer: bidirectional nearest-neighbour distance
-L_chamfer = mean(min_dist(pred, gt)) + mean(min_dist(gt, pred))
-
-# Adjacency: binary cross-entropy on k x k matrix
-L_adj = BCEWithLogits(adj_logits, gt_adj_matrix)
-
-L_total = lambda_ch * L_chamfer + lambda_adj * L_adj
-# Typical: lambda_ch=1.0, lambda_adj=0.5
-
-optimizer.zero_grad()
-L_total.backward()
-clip_grad_norm_(model.parameters(), max_norm=1.0)
-optimizer.step()
-\end{lstlisting}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Training Setup}
-
-\begin{columns}[t]
-  \begin{column}[T]{0.5\linewidth}
-  \begin{block}{\textcolor{white}{Model Hyperparameters}}
-    \begin{itemize}
-    \item[\tiny$\blacktriangleright$] Hidden dim: 64
-    \item[\tiny$\blacktriangleright$] Encoder layers: 3
-    \item[\tiny$\blacktriangleright$] Attention heads: 4
-    \item[\tiny$\blacktriangleright$] Pool ratio: 0.6
-    \item[\tiny$\blacktriangleright$] LaplacianPE $k$: 4
-    \end{itemize}
-  \end{block}
-  \end{column}
-  \begin{column}[T]{0.5\linewidth}
-  \begin{block}{\textcolor{white}{Training}}
-    \begin{itemize}
-    \item[\tiny$\blacktriangleright$] Optimizer: Adam, lr=1e-3
-    \item[\tiny$\blacktriangleright$] Data: 4 shapes $\times$ augmentations
-    \item[\tiny$\blacktriangleright$] Augmentation: rotate, scale, translate, mirror
-    \item[\tiny$\blacktriangleright$] Epochs: 300
-    \end{itemize}
-  \end{block}
-  \end{column}
-\end{columns}
-
-\vspace{4pt}
-Also tested: \textbf{Phase III-b} --- fine-tuning pretrained Graphormer \\ (\texttt{clefourrier/graphormer-base-pcqm4mv2}) with 2-phase frozen$\rightarrow$joint training.
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase III: Results}
-
-\begin{center}
-\small
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Shape} & \textbf{Nodes} & \textbf{Chamfer $\downarrow$} & \textbf{Adj-BCE $\downarrow$} & \textbf{Branch} \\
-\midrule
-I (simple)  & 4  & Low    & Low    & N/A \\
-L (bend)    & 6  & Low    & Low    & N/A \\
-T (junction)& 8  & Medium & Medium & \checkmark \\
-Plus (cross)& 12 & Medium & Medium & \checkmark \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\begin{itemize}
-\item[\tiny$\blacktriangleright$] Simple shapes (I, L): accurate midcurve in exact coordinates
-\item[\tiny$\blacktriangleright$] Branched shapes (T, Plus): topology correctly detected
-\item[\tiny$\blacktriangleright$] No post-processing needed --- output is already a clean polyline graph
-\end{itemize}
-\end{frame}
+% \begin{frame}[fragile]\frametitle{Phase III: Results}
+% ...
+% \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Phase III: Pros and Cons}
@@ -177,7 +94,7 @@ Plus (cross)& 12 & Medium & Medium & \checkmark \\
   \begin{column}[T]{0.48\linewidth}
   \begin{block}{\textcolor{white}{Advantages}}
     \begin{itemize}
-    \item[\tiny$\blacktriangleright$] Exact geometry --- no rasterisation
+    \item[\tiny$\blacktriangleright$] Exact geometry: no rasterisation
     \item[\tiny$\blacktriangleright$] Branches (T, Plus) handled natively
     \item[\tiny$\blacktriangleright$] Output is a clean graph, not a bitmap
     \item[\tiny$\blacktriangleright$] Invariant to point-listing order (with PE)
@@ -188,7 +105,7 @@ Plus (cross)& 12 & Medium & Medium & \checkmark \\
   \begin{column}[T]{0.48\linewidth}
   \begin{alertblock}{\textcolor{white}{Limitations}}
     \begin{itemize}
-    \item[\tiny$\blacktriangleright$] Requires PyTorch Geometric --- heavier stack
+    \item[\tiny$\blacktriangleright$] Requires PyTorch Geometric: heavier stack
     \item[\tiny$\blacktriangleright$] TopK pooling fixes output node count
     \item[\tiny$\blacktriangleright$] Chamfer loss is not differentiable everywhere
     \item[\tiny$\blacktriangleright$] Limited training data (4 base shapes)

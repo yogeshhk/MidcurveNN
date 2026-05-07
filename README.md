@@ -65,6 +65,11 @@ src/
 │   ├── ludwig/                       # Ludwig framework notebooks
 │   ├── prompt/                       # Few-shot prompting + LLM comparison
 │   └── nemotron3/                    # Nemotron-Mini-4B: HF SFTTrainer / Unsloth / few-shot
+│       ├── hf_sft_trainer.py         # HFSFTTrainer — QLoRA via HuggingFace SFTTrainer
+│       ├── unsloth_trainer.py        # UnslothTrainer — Unsloth-accelerated QLoRA
+│       ├── fewshot_prompter.py       # FewShotPrompter — 2-shot inference, no fine-tuning
+│       ├── train.py / train_unsloth.py  # Entry-point wrappers
+│       └── run_demo.py               # Quick end-to-end demo
 │
 ├── image_based/testing/              # Phase I tests
 │   └── test_image_based.py
@@ -168,9 +173,9 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- With representation of Profile and Midcurve in form of text, json-brep, so that LLMs can be leveraged
 		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
-- **Phase I** is fully implemented with 7 encoder-decoder variants. UNet (2-stage, CoordConv, weighted BCE) is the strongest.
-- **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`).
-- **Phase II** is **implemented** (`text_based/`) — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral 7B), CodeT5 and Ludwig notebooks, few-shot prompt scripts, and a FastAPI inference server. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
+- **Phase I** is fully implemented with 7 encoder-decoder variants. Four are the primary focus: Simple AE, Dense AE, CNN AE (CoordConv, stride-2 skip connections), and Denoising AE (2-stage training). UNet (2-stage, CoordConv, weighted BCE) is the strongest but an extended variant.
+- **Phase II** is **implemented and currently the best performer** (`text_based/`) — QLoRA fine-tuning of Qwen2.5-7B achieves **MAE=0.78, PSR=98%, Hausdorff=2.1** on the 4-shape benchmark. Nemotron-Mini-4B in a 2-shot setting achieves PSR=85.7%, topology accuracy=0.83, fitting in ~2 GB VRAM. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
+- **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`). Comprehensive evaluation is ongoing (preliminary status).
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
 ```
@@ -216,6 +221,8 @@ For a wider discussion on Use of Deep Learning in CAD (Computer-aided Design), r
 - Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
 - ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models" — presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
 - ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks" — published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025/`)
+- Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md) — describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
+- Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction" — IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
 
 ## Citations
 - [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)

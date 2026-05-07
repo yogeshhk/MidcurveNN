@@ -12,7 +12,8 @@ Input type   & Bitmap (100--256px) & BRep JSON text & Graph $(x,y)$ \\
 Output type  & Bitmap             & BRep JSON text & Graph $(x,y)$ \\
 Exact coords & No                 & Yes            & Yes \\
 Branches     & No                 & Yes (BRep)     & Yes (native) \\
-Best model   & UNet               & GPT-4 (prompt) & Graph Transformer \\
+Best model   & UNet               & GPT-4 (prompt) / Nemotron-Mini-4B & Graph Transformer \\
+Sub-variants & 7 variants         & Prompt, CodeT5, QLoRA, Nemotron3  & GT + Graphormer FT \\
 Status       & Fully impl.        & Implemented    & Implemented \\
 \bottomrule
 \end{tabular}
@@ -24,7 +25,7 @@ Status       & Fully impl.        & Implemented    & Implemented \\
 	\begin{itemize}
 	\item Midcurve computation is a \textbf{dimension-reduction problem}: 2D $\rightarrow$ 1D, graph-to-graph
 	\item \textbf{Phase I} (image): encoder-decoder with UNet achieves good results; rasterisation trade-off is the key limitation
-	\item \textbf{Phase II} (LLM): text-based BRep representation works; GPT-4 solves simple shapes via few-shot prompting; fine-tuning shows promise but needs more data
+	\item \textbf{Phase II} (LLM): BRep JSON representation works; GPT-4 solves simple shapes via prompting; Nemotron-Mini-4B achieves 85.7\% valid JSON + 0.83 topology accuracy base-model; QLoRA fine-tuning (Qwen, Gemma, Nemotron) shows promise but needs more data
 	\item \textbf{Phase III} (geometry): Graph Transformer operates directly on polygon coordinates, handles branches natively, and outputs a clean polyline graph without post-processing
 	\end{itemize}
 \end{frame}

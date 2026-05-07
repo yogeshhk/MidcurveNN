@@ -185,16 +185,54 @@ All of the above have failed. Even latest, the results are:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Interpretation}
 
-LLMs by an large seem to have failed for such simple shapes.
-
-There could be two prominent reasons:
-
 \begin{itemize}
-\item The prompt design was not effective and could be improved upon.
-\item The LLM model itself is not able to learn the pattern and predict well.
-\end{itemize}	
+\item \textbf{GPT-4}: correct answer — sequence-only representation with good prompting is sufficient for simple shapes
+\item \textbf{Smaller models (Llama 7B, Gemini, Bard)}: fail on coordinate arithmetic with raw sequence format
+\item \textbf{Key insight}: the flat line-sequence representation has limitations for complex shapes; a richer structure (BRep JSON) is needed
+\item \textbf{Solution}: switch to BRep JSON + fine-tuning $\Rightarrow$ Qwen2.5-7B achieves MAE\,=\,0.78, PSR\,=\,98\%
+\end{itemize}
+\end{frame}
 
-The current geometry representation as a sequence of lines, has limitations. Trying to look for a good representation to store geometry/graph/network as text so that NLP (Natural Language Techniques) can be applied.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Nemotron-Mini-4B: NVIDIA's Compact Model}
+\begin{columns}[t]
+  \begin{column}[T]{0.55\linewidth}
+  \begin{center}
+  \includegraphics[width=\linewidth,keepaspectratio]{nemotron_banner}
+  \end{center}
+  \end{column}
+  \begin{column}[T]{0.45\linewidth}
+  \begin{itemize}
+  \item \textbf{4B params}, pruned + distilled from Nemotron-4 15B (Minitron technique)
+  \item Group Query Attention (24 query / 8 KV heads) + relu\textsuperscript{2} activation
+  \item 4-bit NF4 quantisation fits in $\sim$2--3\,GB VRAM
+  \item \textbf{Three usage modes}: (1) HF SFTTrainer QLoRA fine-tune, (2) Unsloth-accelerated QLoRA, (3) Few-shot base-model prompting (no training)
+  \item BRep JSON chat format: system $\to$ user (profile) $\to$ assistant (midcurve)
+  \end{itemize}
+  \end{column}
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Nemotron: Few-Shot Prompt and Result}
+\begin{columns}[t]
+  \begin{column}[T]{0.5\linewidth}
+  \begin{center}
+  \includegraphics[width=\linewidth,keepaspectratio]{nemotron_prompt}
+  \end{center}
+  {\footnotesize BRep JSON prompt sent to Nemotron-Mini-4B}
+  \end{column}
+  \begin{column}[T]{0.5\linewidth}
+  \begin{center}
+  \includegraphics[width=\linewidth,keepaspectratio]{nemotron_result}
+  \end{center}
+  {\footnotesize Predicted midcurve (red) vs ground truth (green)}
+  \end{column}
+\end{columns}
+\begin{itemize}
+\item Valid JSON rate: 85.7\% (6/7 test shapes); Topology accuracy: 0.83; Combined score: 0.56
+\item Base model (no fine-tuning) already generates structurally valid BRep output
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -288,7 +326,7 @@ Generated Midcurve: "{\"Points\": [[-8.83, 4.32], [-21.23
 \begin{frame}[fragile]\frametitle{QLoRA Fine-Tuning (Efficient Approach)}
 	\begin{itemize}
 	\item 4-bit quantised base model (Qwen / Gemma / Mistral 7B)
-	\item LoRA adapters on query/value projections --- only $\sim$1\% params trained
+	\item LoRA adapters on query/value projections: only $\sim$1\% params trained
 	\item Instruction-formatted BRep JSON dataset (993 rows)
 	\end{itemize}
 \begin{lstlisting}[basicstyle=\tiny, breaklines=true, breakatwhitespace=true]
@@ -315,23 +353,23 @@ model.save_pretrained("Midcurve-Qwen-Coder-v1")
 
 \begin{center}
 \small
-\begin{tabular}{@{}llcc@{}}
+\begin{tabular}{@{}llccc@{}}
 \toprule
-\textbf{Approach} & \textbf{Model} & \textbf{T shape} & \textbf{Plus shape} \\
+\textbf{Approach} & \textbf{Model} & \textbf{PSR\,(\%)} & \textbf{MAE} & \textbf{Topo} \\
 \midrule
-Few-shot Prompt  & GPT-4      & Correct  & Partial \\
-Few-shot Prompt  & Gemini     & Wrong    & Wrong   \\
-Few-shot Prompt  & Llama 7B   & Wrong    & Wrong   \\
-Fine-tune        & CodeT5-sm  & Partial  & Wrong   \\
-Fine-tune QLoRA  & Qwen-7B    & Partial  & Partial \\
+Few-shot (seq)   & GPT-4              & $\sim$90 & ---  & $\sim$0.75 \\
+Few-shot (seq)   & Gemini / Llama 7B  & $<$30    & ---  & ---        \\
+Fine-tune        & CodeT5-small       & $\sim$50 & ---  & ---        \\
+\textbf{QLoRA}   & \textbf{Qwen2.5-7B}& \textbf{98} & \textbf{0.78} & --- \\
+Few-shot (BRep)  & Nemotron-Mini-4B   & 85.7     & ---  & 0.83\,\textit{(prelim.)} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \begin{itemize}
-\item[\tiny$\blacktriangleright$] GPT-4 is the only model that solved simple shapes via prompting
-\item[\tiny$\blacktriangleright$] Fine-tuning shows promise but needs a larger dataset
-\item[\tiny$\blacktriangleright$] BRep JSON format successfully encodes branched midcurves
+\item[\tiny$\blacktriangleright$] BRep JSON + QLoRA (Qwen2.5-7B): best results — MAE\,=\,0.78, PSR\,=\,98\%
+\item[\tiny$\blacktriangleright$] Nemotron-Mini-4B: 2\,GB VRAM, no fine-tuning, 85.7\% valid JSON — \textit{preliminary}
+\item[\tiny$\blacktriangleright$] BRep JSON format successfully encodes branched midcurves for all models
 \end{itemize}
 \end{frame}
 
@@ -341,7 +379,7 @@ Fine-tune QLoRA  & Qwen-7B    & Partial  & Partial \\
   \begin{column}[T]{0.48\linewidth}
   \begin{block}{\textcolor{white}{Advantages}}
     \begin{itemize}
-    \item[\tiny$\blacktriangleright$] Exact coordinates --- no rasterisation loss
+    \item[\tiny$\blacktriangleright$] Exact coordinates: no rasterisation loss
     \item[\tiny$\blacktriangleright$] BRep JSON handles branches natively
     \item[\tiny$\blacktriangleright$] Leverages vast LLM pretraining knowledge
     \item[\tiny$\blacktriangleright$] Easy to add new shapes to dataset
@@ -351,10 +389,10 @@ Fine-tune QLoRA  & Qwen-7B    & Partial  & Partial \\
   \begin{column}[T]{0.48\linewidth}
   \begin{alertblock}{\textcolor{white}{Limitations}}
     \begin{itemize}
-    \item[\tiny$\blacktriangleright$] LLMs lack geometric reasoning (coordinates are ``tokens'')
-    \item[\tiny$\blacktriangleright$] Output validity not guaranteed (needs repair)
-    \item[\tiny$\blacktriangleright$] GPT-4 only --- smaller models fail
-    \item[\tiny$\blacktriangleright$] Fine-tuning requires large GPU and dataset
+    \item[\tiny$\blacktriangleright$] Coordinates are tokens: digit arithmetic is harder than regression
+    \item[\tiny$\blacktriangleright$] Output validity not guaranteed (needs JSON repair pass)
+    \item[\tiny$\blacktriangleright$] Inference latency: 2--10\,s on GPU (vs $<$10\,ms for Phase I)
+    \item[\tiny$\blacktriangleright$] Nemotron results preliminary; QLoRA fine-tune ongoing
     \end{itemize}
   \end{alertblock}
   \end{column}

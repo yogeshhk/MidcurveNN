@@ -58,6 +58,7 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 	\item Left side (input): 2D Sketch Profile; Right side (output): 1D Midcurve
 	\item \textbf{Not} an Auto-Encoder: input and output are \textit{different} shapes
 	\item Variable-length input/output makes padding unsafe in geometry (any value is valid)
+	\item Analogous to \textbf{graph summarization}: reduce a large graph to a smaller graph preserving structural essence --- like text summarization keeps the meaning
 	\end{itemize}
 \begin{center}
 \includegraphics[width=0.55\linewidth,keepaspectratio]{midcurve20}
@@ -80,11 +81,12 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 \begin{frame}[fragile]\frametitle{Variable Size Encoder Decoder}
 
 	\begin{itemize}
-	\item OK for NLP, say Machine Translations, where padding values like ``-1'' can be added along with other words (vectors or indices)
-	\item But in Geometry, its not OK. 
+	\item OK for NLP, say Machine Translations, where padding values like ``-1’’ can be added along with other words (vectors or indices)
+	\item But in Geometry, its not OK.
 	\item Because any value can represent a Valid Input, even though we don’t want it to be the input.
+	\item Not all shapes can be serialised as sequences: Y-shapes and concentric rings (\textit{O}) cannot be traversed without lifting the pen --- ruling out Seq2Seq models entirely
 	\end{itemize}
-	
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

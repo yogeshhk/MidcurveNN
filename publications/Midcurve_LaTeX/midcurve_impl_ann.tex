@@ -105,14 +105,16 @@ Original input and output are in the form of polylines, meaning a list of points
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Options For Architectures}
-	\begin{itemize}
-	\item Simple Encoder Decoder (one layer each)
-	\item Dense Encoder Decoder
-	\item Convolutional Encoder Decoder
-	\item Pix2Pix
-	\item \ldots
-	\end{itemize}	
+\begin{frame}[fragile]\frametitle{Phase I: Encoder-Decoder Variants}
+\begin{itemize}
+\item \textbf{Simple Encoder Decoder}: 1 dense hidden layer, $100\times100$ \hfill\alert{(covered)}
+\item \textbf{Dense Encoder Decoder}: gradual reduction (10K$\to$4K$\to$1K$\to$256), $100\times100$ \hfill\alert{(covered)}
+\item \textbf{Convolutional Encoder Decoder}: 4-level Conv2D + CoordConv, $128\times128$ \hfill\alert{(covered)}
+\item \textbf{Denoising Autoencoder}: 2-stage (simple AE $\to$ denoiser), $100\times100$ \hfill\alert{(covered)}
+\item[\textcolor{gray}{$\circ$}] \textcolor{gray}{UNet: 8-level, CoordConv, 2-stage WBCE loss, $256\times256$ \hfill(beyond scope)}
+\item[\textcolor{gray}{$\circ$}] \textcolor{gray}{Pix2Pix GAN: conditional GAN with PatchGAN discriminator, $256\times256$ \hfill(beyond scope)}
+\item[\textcolor{gray}{$\circ$}] \textcolor{gray}{Img2Img: Pix2Pix re-implementation in PyTorch, $256\times256$ \hfill(beyond scope)}
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -126,28 +128,64 @@ Original input and output are in the form of polylines, meaning a list of points
 \begin{frame}[fragile]\frametitle{Simple Encoder Decoder}
 
 \begin{center}
-\includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve32}
-\end{center}	
+\includegraphics[width=0.65\linewidth,keepaspectratio]{midcurve32}
+\end{center}
+\begin{itemize}
+\item Input: $100 \times 100$ grayscale bitmap (flattened to 10,000 dims)
+\item Hidden: \texttt{Dense(100, relu)} + L1 activity regulariser + Dropout(0.2)
+\item Output: \texttt{Dense(10,000, sigmoid)}
+\item Loss: binary cross-entropy; Optimizer: Adam
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Keras Implementation}
+\begin{frame}[fragile]\frametitle{Keras Implementation :  Simple AE}
 
-\begin{lstlisting}
-input_img = Input(shape=(input_dim,))
-    
-encoded = Dense(encoding_dim, activation='relu',activity_regularizer=regularizers.l1(10e-5))(input_img)
-decoded = Dense(input_dim, activation='sigmoid')(encoded) 
-    
-autoencoder = Model(input_img, decoded)
-            
-encoder = Model(input_img, encoded)
-encoded_input = Input(shape=(encoding_dim,))
-decoder_layer = autoencoder.layers[-1]
-decoder = Model(encoded_input, decoder_layer(encoded_input))
-    
-autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
-\end{lstlisting}	
+\begin{lstlisting}[basicstyle=\tiny]
+def _build(self):
+    input_img = Input(shape=(self.input_dim,))   # 10,000 dims
+
+    encoded = Dense(self.encoding_dim,           # 100 units
+                    activation='relu',
+                    kernel_initializer='he_normal',
+                    activity_regularizer=regularizers.l1(1e-5))(input_img)
+    encoded = BatchNormalization()(encoded)
+    encoded = Dropout(0.2)(encoded)
+
+    decoded = Dense(self.input_dim,              # 10,000 dims
+                    activation='sigmoid',
+                    kernel_initializer='glorot_normal')(encoded)
+
+    self.autoencoder = Model(input_img, decoded)
+    self.autoencoder.compile(
+        optimizer=Adam(learning_rate=0.001),
+        loss='binary_crossentropy', metrics=['accuracy', 'mae'])
+\end{lstlisting}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{CNN Encoder Decoder Architecture}
+\begin{itemize}
+\item Input: $128 \times 128$ with CoordConv (3 channels: x\_coord + y\_coord + image)
+\item Encoder: 4-level Conv2D, stride-2 downsampling (32$\to$64$\to$128$\to$256 filters)
+\item Decoder: Conv2DTranspose + skip connections (\texttt{Add})
+\item Output: $128 \times 128$ single-channel sigmoid
+\end{itemize}
+\begin{lstlisting}[basicstyle=\tiny]
+# Encoder (with skip connections saved at each level)
+x = Conv2D(32, (3,3), activation='relu', padding='same')(input_img); skip1=x
+x = Conv2D(64, (3,3), strides=2, activation='relu', padding='same')(x); skip2=x
+x = Conv2D(128,(3,3), strides=2, activation='relu', padding='same')(x); skip3=x
+x = Conv2D(256,(3,3), strides=2, activation='relu', padding='same')(x)
+# Decoder
+x = Conv2DTranspose(128,(3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip3])
+x = Conv2DTranspose(64, (3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip2])
+x = Conv2DTranspose(32, (3,3), strides=2, activation='relu', padding='same')(x)
+x = Add()([x, skip1])
+decoded = Conv2D(1, (3,3), activation='sigmoid', padding='same')(x)
+\end{lstlisting}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -179,6 +217,53 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 	\item Classify single pixel image as the skeleton, and rest as noise.
 	% \item Use deeper / skip-connection architectures: UNet, Pix2Pix
 	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{}
+\begin{center}
+{\Large Phase I: Results Grids}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Simple AE: Results Grid}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{simple_results_grid}
+\end{center}
+
+{\footnotesize Row 0: Input profile \quad Row 1: Ground-truth midcurve \quad Row 2: Predicted midcurve}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Dense AE: Results Grid}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{dense_results_grid}
+\end{center}
+
+{\footnotesize Row 0: Input profile \quad Row 1: Ground-truth midcurve \quad Row 2: Predicted midcurve}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{CNN Encoder-Decoder: Results Grid}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{cnn_results_grid}
+\end{center}
+
+{\footnotesize Row 0: Input profile \quad Row 1: Ground-truth midcurve \quad Row 2: Predicted midcurve}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Denoising AE: Results Grid}
+
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{denoiser_results_grid}
+\end{center}
+
+{\footnotesize Row 0: Input profile \quad Row 1: Ground-truth midcurve \quad Row 2: Predicted midcurve}
 \end{frame}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

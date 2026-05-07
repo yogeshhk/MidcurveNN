@@ -63,6 +63,9 @@ src/
 │       ├── hf_sft_trainer.py    # HFSFTTrainer — PEFT + HuggingFace SFTTrainer QLoRA
 │       ├── unsloth_trainer.py   # UnslothTrainer — Unsloth-accelerated QLoRA (PEFT fallback)
 │       ├── fewshot_prompter.py  # FewShotPrompter — base model + 2-shot prompting, no fine-tuning
+│       ├── train.py             # Entry-point wrapper: delegates to hf_sft_trainer or unsloth_trainer
+│       ├── train_unsloth.py     # Standalone Unsloth training script (alternative entry point)
+│       ├── run_demo.py          # Quick end-to-end demo: load adapter → infer → print result
 │       ├── config.py            # Config class (MODEL_ID, LoRA, training hyperparameters)
 │       ├── dataset_loader.py    # MidcurveDataset — CSV → chat-formatted HF Dataset
 │       ├── inference.py         # NemotronInference — load adapter + predict + repair
@@ -297,10 +300,17 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 ## Research Context
 
-- **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps
-- **Phase III** (`graph_transformer/`) is the current best approach — handles exact geometry and branching natively
-- **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning on top of Phase III
-- **Phase II** (`text_based/`) is **implemented** — QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral), CodeT5 and Ludwig notebooks, few-shot prompt scripts
+- **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps. Four in-scope variants: Simple AE, Dense AE, CNN AE, Denoising AE.
+- **Phase II** (`text_based/`) is the **current best performer on the 4-shape benchmark** — QLoRA fine-tuning of Qwen2.5-7B achieves MAE=0.78, RMSE=1.24, Hausdorff=2.1, PSR=98% on the 100-sample test set. Nemotron-Mini-4B in 2-shot setting: PSR=85.7%, topology accuracy=0.83, ~2 GB VRAM.
+- **Phase III** (`graph_transformer/`) operates directly on polygon graphs — exact coordinates, branching native. Comprehensive evaluation ongoing (preliminary status); target architecture for future work.
+- **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning from pretrained Graphormer.
 - BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology
 - `text_based/data/brep/` — 4 base BRep JSON shapes; `text_based/data/csvs/` — 993-row train/test/val CSV splits
 - `text_based/finetuning/` — full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)
+- `text_based/nemotron3/` — Nemotron-Mini-4B pipeline: HF SFTTrainer QLoRA, Unsloth-accelerated QLoRA, few-shot prompting
+
+## Publications
+
+- `publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex` — IEEEtran journal paper covering all 3 phases (created May 2026). Single authoritative paper; older per-phase drafts have been removed.
+- `publications/Midcurve_LaTeX/Main_Seminar_Midcurve_Presentation.tex` — consolidated Beamer presentation. Short-version files removed; Nemotron and Phase III conceptual slides added.
+- `publications/Midcurve_LaTeX/Main_Paper_TopoVal_upgraded.tex` — separate topological validation paper, unrelated to the neural midcurve work.

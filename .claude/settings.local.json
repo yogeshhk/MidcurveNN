@@ -52,7 +52,12 @@
       "PowerShell(conda run *)",
       "PowerShell(Get-Process *)",
       "PowerShell(cmd /c \"dir /b D:\\\\Yogesh\\\\Cache\\\\huggingface\\\\hub 2>&1\")",
-      "PowerShell(Stop-Process *)"
+      "PowerShell(Stop-Process *)",
+      "Bash(Get-ChildItem *)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\\\\\" -Force | ForEach-Object { $_.FullName })",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\\\\.claude\\\\\" -Force -Recurse | ForEach-Object { $_.FullName })",
+      "Bash(pdflatex -interaction=nonstopmode Main_Paper_MidcurveNN_Comprehensive.tex)",
+      "Bash(bibtex Main_Paper_MidcurveNN_Comprehensive)"
     ]
   }
 }
