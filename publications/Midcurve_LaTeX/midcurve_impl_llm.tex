@@ -195,44 +195,45 @@ All of the above have failed. Even latest, the results are:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Nemotron-Mini-4B: NVIDIA's Compact Model}
-\begin{columns}[t]
-  \begin{column}[T]{0.55\linewidth}
+% \begin{columns}[t]
+  % \begin{column}[T]{0.55\linewidth}
   \begin{center}
   \includegraphics[width=\linewidth,keepaspectratio]{nemotron_banner}
   \end{center}
-  \end{column}
-  \begin{column}[T]{0.45\linewidth}
-  \begin{itemize}
-  \item \textbf{4B params}, pruned + distilled from Nemotron-4 15B (Minitron technique)
-  \item Group Query Attention (24 query / 8 KV heads) + relu\textsuperscript{2} activation
-  \item 4-bit NF4 quantisation fits in $\sim$2--3\,GB VRAM
-  \item \textbf{Three usage modes}: (1) HF SFTTrainer QLoRA fine-tune, (2) Unsloth-accelerated QLoRA, (3) Few-shot base-model prompting (no training)
-  \item BRep JSON chat format: system $\to$ user (profile) $\to$ assistant (midcurve)
-  \end{itemize}
-  \end{column}
-\end{columns}
+  % \end{column}
+  % \begin{column}[T]{0.45\linewidth}
+  % \begin{itemize}
+  % \item \textbf{4B params}, pruned + distilled from Nemotron-4 15B (Minitron technique)
+  % \item Group Query Attention (24 query / 8 KV heads) + relu\textsuperscript{2} activation
+  % \item 4-bit NF4 quantisation fits in $\sim$2--3\,GB VRAM
+  % \item \textbf{Three usage modes}: (1) HF SFTTrainer QLoRA fine-tune, (2) Unsloth-accelerated QLoRA, (3) Few-shot base-model prompting (no training)
+  % \item BRep JSON chat format: system $\to$ user (profile) $\to$ assistant (midcurve)
+  % \end{itemize}
+  % \end{column}
+% \end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Nemotron: Few-Shot Prompt and Result}
-\begin{columns}[t]
-  \begin{column}[T]{0.5\linewidth}
+\begin{frame}[fragile]\frametitle{Nemotron: Few-Shot Prompt }
+
   \begin{center}
   \includegraphics[width=\linewidth,keepaspectratio]{nemotron_prompt}
   \end{center}
+  
+  
   {\footnotesize BRep JSON prompt sent to Nemotron-Mini-4B}
-  \end{column}
-  \begin{column}[T]{0.5\linewidth}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Nemotron: Few-Shot Prompt  Result}
+
   \begin{center}
   \includegraphics[width=\linewidth,keepaspectratio]{nemotron_result}
   \end{center}
+  
   {\footnotesize Predicted midcurve (red) vs ground truth (green)}
-  \end{column}
-\end{columns}
-\begin{itemize}
-\item Valid JSON rate: 85.7\% (6/7 test shapes); Topology accuracy: 0.83; Combined score: 0.56
-\item Base model (no fine-tuning) already generates structurally valid BRep output
-\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -357,11 +358,11 @@ model.save_pretrained("Midcurve-Qwen-Coder-v1")
 \toprule
 \textbf{Approach} & \textbf{Model} & \textbf{PSR\,(\%)} & \textbf{MAE} & \textbf{Topo} \\
 \midrule
-Few-shot (seq)   & GPT-4              & $\sim$90 & ---  & $\sim$0.75 \\
-Few-shot (seq)   & Gemini / Llama 7B  & $<$30    & ---  & ---        \\
-Fine-tune        & CodeT5-small       & $\sim$50 & ---  & ---        \\
-\textbf{QLoRA}   & \textbf{Qwen2.5-7B}& \textbf{98} & \textbf{0.78} & --- \\
-Few-shot (BRep)  & Nemotron-Mini-4B   & 85.7     & ---  & 0.83\,\textit{(prelim.)} \\
+Few-shot (seq)   & GPT-4              & $\sim$90 & N/A  & $\sim$0.75 \\
+Few-shot (seq)   & Gemini / Llama 7B  & $<$30    & N/A  & N/A        \\
+Fine-tune        & CodeT5-small       & $\sim$50 & N/A  & N/A        \\
+\textbf{QLoRA}   & \textbf{Qwen2.5-7B}& \textbf{98} & \textbf{0.78} & N/A \\
+Few-shot (BRep)  & Nemotron-Mini-4B   & 85.7     & N/A  & 0.83\,\textit{(prelim.)} \\
 \bottomrule
 \end{tabular}
 \end{center}

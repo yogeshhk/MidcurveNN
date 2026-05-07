@@ -12,11 +12,9 @@
 \begin{document}
 \title{Topological Validation of Mid-Surface Computed from Sheet Metal Parts: Rigorous Mathematical Framework and Enhanced Validation}
 \author{
-\IEEEauthorblockN{Yogesh H. Kulkarni\IEEEauthorrefmark{1}, Anil Sahasrabudhe\IEEEauthorrefmark{2}, and Mukund Kale\IEEEauthorrefmark{3}}
-\IEEEauthorblockA{\IEEEauthorrefmark{1}College of Engineering Pune, India}
-\IEEEauthorblockA{\IEEEauthorrefmark{2}College of Engineering Pune, India}
-\IEEEauthorblockA{\IEEEauthorrefmark{3}Siemens PLM, Pune, India}
-\IEEEauthorblockA{Emails: {\href{mailto:kulkarniyh12.mech@coep.ac.in}{kulkarniyh12.mech@coep.ac.in}, \href{mailto:director@coep.ac.in}{director@coep.ac.in}, \href{mailto:Mukund_kale@hotmail.com}{Mukund_kale@hotmail.com}}}
+\IEEEauthorblockN{Yogesh H. Kulkarni}
+\IEEEauthorblockA{Independent Researcher\\
+\href{mailto:yogeshkulkarni@yahoo.com}{yogeshkulkarni@yahoo.com}}
 }
 \maketitle
 
@@ -51,13 +49,13 @@ Following \cite{Chen2006} and \cite{Woo2003}, thin-walled solids exhibit:
 These constraints ensure the applicability of standard cellular decomposition algorithms without generating degenerate topological elements. \subsection{Mid-Surface Computation: State of the Art}
 Recent advances include:
 \begin{enumerate}
-\item \textbf{Feature-based methods} (Lee \cite{Lee2009}, Kim & Mun \cite{Kim2014}): Use topological operators on CAD feature models. Strengths: preserves design intent. Weaknesses: dependent on feature tree quality.
+\item \textbf{Feature-based methods} (Lee \cite{Lee2009}, Kim \& Mun \cite{Kim2014}): Use topological operators on CAD feature models. Strengths: preserves design intent. Weaknesses: dependent on feature tree quality.
 \item \textbf{Deflation/Medial Axis approaches} (Sheen et al. \cite{Sheen2010}, Thakur et al. \cite{Thakur2009}): Transform solid through iterative offset. Strengths: geometrically accurate. Weaknesses: topology can degrade with degenerate offsets.
 \item \textbf{Topology-preserving Skeletonization} (Yin et al. \cite{Yin2019}): Maps topology-optimized FEM models to CAD via digital topology. Achieves topological robustness through persistent homology principles.
 \item \textbf{Machine Learning Enhancement} (Chen et al. \cite{Chen2022}): Neural networks predict mesh quality incorporating both geometric and topological properties. Complements traditional validation methods.
 \end{enumerate}
 Our approach is distinct: we provide a \textbf{bidirectional topological transformation} framework grounded in cellular homology, enabling both prediction verification (solid $\to$ surface) and consistency checking (surface $\to$ solid). \subsection{Topological Validation: Prior Work and Gaps}
-Lipson \cite{Lipson1998} noted that topological invariants could serve as necessary conditions for validity. Lockett & Guenov \cite{Lockett2008} combined geometric and topological metrics but mixed geometric criteria (proximity, angles) with topological validation, which is theoretically inconsistent. Existing work:
+Lipson \cite{Lipson1998} noted that topological invariants could serve as necessary conditions for validity. Lockett \& Guenov \cite{Lockett2008} combined geometric and topological metrics but mixed geometric criteria (proximity, angles) with topological validation, which is theoretically inconsistent. Existing work:
 \begin{itemize}
 \item Lacks formal mathematical proofs of transformation correctness.
 \item Does not connect to modern topological data analysis (persistent homology) \cite{Chazal2021}.

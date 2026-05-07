@@ -414,16 +414,16 @@ Because the three phases produce outputs in different representation spaces,
 evaluation is performed after converting all outputs to polyline vertex sets.
 The following metrics are used throughout:
 
-\begin{description}
-  \item[Mean Absolute Error (MAE)] Average per-coordinate absolute difference
+\begin{itemize}
+  \item Mean Absolute Error (MAE): Average per-coordinate absolute difference
         between predicted and ground-truth vertex positions, after nearest-
         neighbour matching.
 
-  \item[Root Mean Square Error (RMSE)] As MAE but penalises large outlier
+  \item Root Mean Square Error (RMSE): As MAE but penalises large outlier
         deviations more heavily; $\text{RMSE} = \sqrt{\tfrac{1}{N}\sum_i
         \|q_i - \hat{q}_i\|^2}$.
 
-  \item[Hausdorff Distance ($d_H$)] The maximum of the one-sided distances
+  \item Hausdorff Distance ($d_H$): The maximum of the one-sided distances
         between the predicted and ground-truth point sets.
         Let $d_{\rightarrow}(A,B)=\sup_{a\in A}\inf_{b\in B}\|a-b\|$; then
         \[
@@ -432,18 +432,18 @@ The following metrics are used throughout:
         \]
         Sensitive to the worst-case mis-predicted point.
 
-  \item[Chamfer Distance ($d_C$)] The symmetric average nearest-neighbour
+  \item Chamfer Distance ($d_C$): The symmetric average nearest-neighbour
         distance, less sensitive to outliers than Hausdorff.
 
-  \item[Parsing Success Rate (PSR)] Fraction of model outputs that parse as
+  \item Parsing Success Rate (PSR): Fraction of model outputs that parse as
         valid BRep JSON with correct \texttt{Points}/\texttt{Lines}/
         \texttt{Segments} keys (Phase~II only).
 
-  \item[Topology Accuracy] Binary score: 1 if the predicted midcurve graph
+  \item Topology Accuracy: Binary score: 1 if the predicted midcurve graph
         has the same number of branches and the same connectivity pattern as
         the ground truth, 0 otherwise; averaged over the test set (Phase~II
         only).
-\end{description}
+\end{itemize}
 
 For Phase~I (bitmap outputs), MAE and RMSE are computed on pixel intensities
 after thresholding the output at 0.5.  For Phases~II and~III, metrics are

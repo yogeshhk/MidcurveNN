@@ -1,3 +1,68 @@
+% ── merged from midcurve_conclusion_ann.tex (Phase I summary) ──────────────────
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase I Summary}
+	\begin{itemize}
+	\item Various applications need lower dimensional representation of shapes.
+	\item Midcurve is one-dimensional (1D) representation of a two-dimensional (2D) planar shape.
+	\item Used in animation, shape matching, retrieval, finite element analysis, etc.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase I Summary}
+	\begin{itemize}
+	\item Approaches: Thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc., all of which are rule-based.
+	\item Proposing a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing midcurve from images of 2D thin polygons in supervised learning manner.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase I Summary}
+	\begin{itemize}
+	\item This dimension reduction transformation from input 2D thin polygon image to output 1D midcurve image is learnt by the neural network,
+	\item Which can then be used to compute midcurve of an unseen 2D thin polygonal shape.
+	\end{itemize}
+\end{frame}
+
+% ── merged from midcurve_conclusion_llm.tex (Phase II summary) ─────────────────
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II Summary}
+	\begin{itemize}
+	\item Traditional methods of computing midcurves are predominantly rules-based and thus, have limitation of not developing a generic model which will accept any input shape.
+	\item A novel Large Language Model based approach attempts to build such a generic model.
+	\item One such model, GPT-4, seems to be very effective. Although other proprietary and open-source models need to catch-up with GPT-4, even GPT-4 needs to be developed further to understand not just sequential lines but graphs/networks with different shapes, essentially, the geometry.
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II Summary}
+    \begin{itemize}
+        \item This research significantly advances midcurve computation by exploring the interplay between established methodologies and cutting-edge approaches, particularly integrating Large Language Models (LLMs).
+        \item Emphasizing the nuanced nature of geometric dimension reduction, it identifies challenges in handling variable-length input data, representing intricate shapes, and addressing limitations in existing models.
+    \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: MidcurveLLM Architecture}
+    \begin{itemize}
+        \item Utilizes an Encoder-Decoder architecture and B-rep structures.
+        \item Showcases promise, despite discrepancies with ground truths.
+    \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: Implications and Future Directions}
+    \begin{itemize}
+        \item Points to the need for more extensive datasets and refined training parameters.
+        \item Serves as a crucial catalyst for advancing midcurve computation methodologies.
+        \item Invites further scrutiny and advancements in the transformative intersection of geometry and advanced machine learning.
+    \end{itemize}
+\end{frame}
+
+% ── overall conclusion (original midcurve_conclusion.tex) ──────────────────────
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Three Approaches: Summary}
 
@@ -35,7 +100,7 @@ Status       & Fully impl.        & Implemented    & Implemented \\
 
 	\begin{itemize}
 	\item The ultimate formulation is \textbf{graph-to-graph}: profile graph $\Rightarrow$ midcurve graph
-	\item This is a \textbf{graph coarsening / dimension-reduction} problem --- currently underexplored in geometric deep learning
+	\item This is a \textbf{graph coarsening / dimension-reduction} problem, currently underexplored in geometric deep learning
 	\item Promising directions:
 		\begin{itemize}
 		\item Non-auto-regressive Graph Transformers (Phase III, this work)
@@ -43,7 +108,7 @@ Status       & Fully impl.        & Implemented    & Implemented \\
 		\item Geometric Graph Normalizing Flows
 		\item Integration of LLM structural reasoning (Phase II) with geometric constraints (Phase III)
 		\end{itemize}
-	\item Goal: a model that generalises to \textbf{any 2D thin polygon} --- not just I, L, T, Plus --- and produces an exact, branch-aware midcurve without rasterisation or post-processing
+	\item Goal: a model that generalises to \textbf{any 2D thin polygon} (not just I, L, T, Plus) and produces an exact, branch-aware midcurve without rasterisation or post-processing
 	\end{itemize}
 
 \begin{center}

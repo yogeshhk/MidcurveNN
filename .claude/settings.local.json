@@ -68,7 +68,14 @@
       "PowerShell(Get-Content *)",
       "Bash(texify -cp Main_Intro_GeoMod_Comprehensive.tex)",
       "Bash(python3 *)",
-      "Bash(grep -v \"^images$\")"
+      "Bash(grep -v \"^images$\")",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(grep -n -A3 -B3 \"Missing \\\\$\\\\|l\\\\.22\\\\|which file\" \"C:/Users/yoges/AppData/Local/Temp/claude/D--Yogesh-GitHub-MidcurveNN/3d94e1d5-183a-4f05-8eb0-4cf0de00e9f9/tasks/b68o70qwm.output\")",
+      "PowerShell(cd \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\"; .\\\\make.bat 2>&1; Write-Host \"EXIT:$LASTEXITCODE\")",
+      "Bash(grep -n \"[^\\\\\\\\\\\\\\\\]&[^&]\" \"D:/Yogesh/GitHub/MidcurveNN/publications/Midcurve_LaTeX/Main_Paper_TopoVal_upgraded.tex\")",
+      "Bash(grep -v \"\\\\\\\\\\\\\\\\begin{table\\\\|\\\\\\\\\\\\\\\\begin{align\\\\|\\\\\\\\\\\\\\\\begin{array\\\\|\\\\\\\\\\\\\\\\begin{tabular\\\\|\\\\\\\\\\\\\\\\begin{IEEEeqnarray\\\\|\\\\\\\\\\\\\\\\hline\\\\|^\\\\s*[0-9]\\\\+\\\\s*&\\\\|^\\\\s*\\\\\\\\\\\\\\\\[a-zA-Z]\")",
+      "Bash(grep *)"
     ]
   }
 }
