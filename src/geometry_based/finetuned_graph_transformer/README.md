@@ -46,11 +46,11 @@ python train.py --no-pretrained --quick
 ```
 
 Key options:
-- `--freeze-epochs N` — epochs to keep backbone frozen (default 20)
-- `--epochs N` — total training epochs (default 100)
-- `--lr F` — head learning rate; backbone uses lr/10 after unfreeze (default 1e-4)
-- `--max-nodes N` — maximum output midcurve nodes (default 32)
-- `--data PATH` — path to raw `.dat`/`.mid` files (default: `src/data/raw`)
+- `--freeze-epochs N`: epochs to keep backbone frozen (default 20)
+- `--epochs N`: total training epochs (default 100)
+- `--lr F`: head learning rate; backbone uses lr/10 after unfreeze (default 1e-4)
+- `--max-nodes N`: maximum output midcurve nodes (default 32)
+- `--data PATH`: path to raw `.dat`/`.mid` files (default: `src/data/raw`)
 
 ### Evaluation
 
@@ -94,7 +94,7 @@ Default: λ_ch = 1.0, λ_adj = 0.5
 
 ## Outputs
 
-- `checkpoints/best_model.pt` — best validation checkpoint
-- `checkpoints/last_model.pt` — final epoch checkpoint
-- `checkpoints/training_log.csv` — per-epoch metrics
-- `results/<shape>_finetuned_prediction.png` — per-shape prediction visualisations
+- `checkpoints/best_model.pt`: best validation checkpoint
+- `checkpoints/last_model.pt`: final epoch checkpoint
+- `checkpoints/training_log.csv`: per-epoch metrics
+- `results/<shape>_finetuned_prediction.png`: per-shape prediction visualisations

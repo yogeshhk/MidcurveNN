@@ -1,19 +1,19 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Idea}
-\begin{center}
-\includegraphics[width=0.3\linewidth,keepaspectratio]{midcurve18}
-
-Can Large Language Models ``learn'' the dimension reduction transformation?
-\end{center}	
-\end{frame}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{}
 \begin{center}
 {\Large LLMs for Midcurve Implementation}
 \end{center}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: Key Idea}
+\begin{center}
+\includegraphics[width=0.3\linewidth,keepaspectratio]{midcurve18}
+
+Can Large Language Models ``learn'' the dimension reduction transformation?
+\end{center}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Proposed Approach}
@@ -131,26 +131,26 @@ output:
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Few Shot Examples Shapes}
+\begin{frame}[fragile]\frametitle{Few Shot: L-Shape Example}
 The first input example above represents ‘L’ shape (shown below) and the second is an ‘I’, whereas the 3rd is a ‘Plus’ sign shape.
 
 \begin{center}
 \includegraphics[width=\linewidth,keepaspectratio]{L}
-\end{center}	
+\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Few Shot Examples Shapes}
+\begin{frame}[fragile]\frametitle{Few Shot: T-Shape (Query)}
 The last shape for which LLM has been asked for the answer is actually a ‘T’ shape. The picture below shows the correct/actual answer as well.
 
 \begin{center}
 \includegraphics[width=\linewidth,keepaspectratio]{T}
-\end{center}	
+\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Output}
-And the outputs computed by various LLMs (ChatGPT, Perplexity AI, Bard) , along with the real/actual answer:
+\begin{frame}[fragile]\frametitle{LLM Raw Outputs}
+And the outputs computed by various LLMs (ChatGPT, Perplexity AI, Bard), along with the real/actual answer:
 
 \begin{lstlisting}
 Actual: [((12.5,0), (12.5,22.5)), ((12.5,22.5),(25.0,22.5)), ((12.5,22.5),(0,22.5))]
@@ -161,7 +161,7 @@ Bard: [((12.5, 0), (12.5, 25.0)), ((12.5, 25.0), (25.0, 25.0)), ((25.0, 25.0), (
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Output}
+\begin{frame}[fragile]\frametitle{LLM Outputs: Visual Comparison}
 
 Visually here is how results from different LLMs look:
 
@@ -171,9 +171,9 @@ Visually here is how results from different LLMs look:
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Interpretation}
+\begin{frame}[fragile]\frametitle{Initial Results: Most Models Fail}
 
-All of the above have failed. Even latest, the results are:
+Most models fail; only GPT-4 gives a correct answer. Results from various models:
 \begin{itemize}
 \item \lstinline|llama 7B g4_0 ggml: (8, 17) & (64, 32)|: Wrong.
 \item \lstinline|Gemini: [((8.33,5),(8.33, 22.5)), ((8.33, 22.5), (25,22.5)), ((8.33, 22.5), (0,25))]|: Wrong.
@@ -183,7 +183,7 @@ All of the above have failed. Even latest, the results are:
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Interpretation}
+\begin{frame}[fragile]\frametitle{Interpretation: Summary}
 
 \begin{itemize}
 \item \textbf{GPT-4}: correct answer — sequence-only representation with good prompting is sufficient for simple shapes

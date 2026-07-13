@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **MidcurveNN** computes the midcurve (medial axis/skeleton) of 2D closed polygons using neural networks. It is a research project with three approach families:
 
 - **Image-based (Phase I)**: Rasterize polygons to 100×100 or 256×256 bitmaps → encoder-decoder networks
-- **Geometry-based (Phase III)**: Graph neural network approach — exact coordinates, handles branching natively
+- **Geometry-based (Phase III)**: Graph neural network approach: exact coordinates, handles branching natively
 - **Text-based (Phase II)**: LLM/seq2seq approach using B-rep JSON text representations (implemented)
 
 Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyline (`.mid` file = skeleton points).
@@ -18,16 +18,16 @@ Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyli
 src/
 ├── config.py                    # Global config (IMG_SHAPE, TRAIN_SIZE, loss settings)
 ├── environment.yml
-├── data/raw/                    # Raw .dat/.mid coordinate files — shared by ALL approaches
+├── data/raw/                    # Raw .dat/.mid coordinate files: shared by ALL approaches
 ├── utils/                       # Shared utilities (data prep, plotting, metrics)
 │
-├── image_based/                 # Phase I — raster/bitmap approaches
+├── image_based/                 # Phase I: raster/bitmap approaches
 │   ├── data/                    # Shared generated image data (one copy, no duplication)
-│   │   ├── image-pairs/         # PNG pairs (Profile+Midcurve) — used by simple/cnn/dense/denoiser
+│   │   ├── image-pairs/         # PNG pairs (Profile+Midcurve): used by simple/cnn/dense/denoiser
 │   │   ├── unet-splits/         # UNet train/test split PNGs
 │   │   │   ├── train/
 │   │   │   └── test/
-│   │   └── images-combo/        # Side-by-side combo JPGs — used by pix2pix and img2img
+│   │   └── images-combo/        # Side-by-side combo JPGs: used by pix2pix and img2img
 │   │       ├── train/
 │   │       ├── val/
 │   │       └── test/
@@ -40,13 +40,13 @@ src/
 │   ├── img2img/                 # Image-to-image (PyTorch)
 │   └── kaggle/                  # Kaggle notebooks / dataset exports
 │
-├── geometry_based/              # Phase III — graph/geometric approaches
+├── geometry_based/              # Phase III: graph/geometric approaches
 │   ├── data/                    # Graph datasets
 │   ├── graph_transformer/       # Non-auto-regressive Graph Transformer (primary)
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurve data
 │   └── gnnencoderdecoder/       # Legacy GNN stub (reference only)
 │
-├── text_based/                  # Phase II — LLM/sequence approaches (implemented)
+├── text_based/                  # Phase II: LLM/sequence approaches (implemented)
 │   ├── data/
 │   │   ├── sequences.json       # Legacy flat-coord dataset (from src/utils/prepare_data.py)
 │   │   ├── brep/                # 4 base BRep JSON shapes (I, L, T, Plus)
@@ -60,17 +60,17 @@ src/
 │   ├── ludwig/                  # Ludwig framework notebooks
 │   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
 │   └── nemotron3/               # Nemotron-Mini-4B: 3 class-based approach files + shared utils
-│       ├── hf_sft_trainer.py    # HFSFTTrainer — PEFT + HuggingFace SFTTrainer QLoRA
-│       ├── unsloth_trainer.py   # UnslothTrainer — Unsloth-accelerated QLoRA (PEFT fallback)
-│       ├── fewshot_prompter.py  # FewShotPrompter — base model + 2-shot prompting, no fine-tuning
+│       ├── hf_sft_trainer.py    # HFSFTTrainer: PEFT + HuggingFace SFTTrainer QLoRA
+│       ├── unsloth_trainer.py   # UnslothTrainer: Unsloth-accelerated QLoRA (PEFT fallback)
+│       ├── fewshot_prompter.py  # FewShotPrompter: base model + 2-shot prompting, no fine-tuning
 │       ├── train.py             # Entry-point wrapper: delegates to hf_sft_trainer or unsloth_trainer
 │       ├── train_unsloth.py     # Standalone Unsloth training script (alternative entry point)
 │       ├── run_demo.py          # Quick end-to-end demo: load adapter → infer → print result
 │       ├── config.py            # Config class (MODEL_ID, LoRA, training hyperparameters)
-│       ├── dataset_loader.py    # MidcurveDataset — CSV → chat-formatted HF Dataset
-│       ├── inference.py         # NemotronInference — load adapter + predict + repair
-│       ├── evaluate.py          # NemotronEvaluator — test-set evaluation + results grid
-│       ├── metrics.py           # GeometricMetrics — Chamfer, Hausdorff, topology, connectivity
+│       ├── dataset_loader.py    # MidcurveDataset: CSV → chat-formatted HF Dataset
+│       ├── inference.py         # NemotronInference: load adapter + predict + repair
+│       ├── evaluate.py          # NemotronEvaluator: test-set evaluation + results grid
+│       ├── metrics.py           # GeometricMetrics: Chamfer, Hausdorff, topology, connectivity
 │       └── results/             # evaluation_results.csv, results_grid.png (populated at runtime)
 │
 ├── image_based/testing/         # Phase I unit tests
@@ -114,7 +114,7 @@ Reads ASCII coordinate files from `src/data/raw/`, rasterizes via DrawSVG with a
 - Pix2Pix combo JPGs → `src/image_based/data/images-combo/train|val|test/`
 - Sequence JSON → `src/text_based/data/sequences.json`
 
-### Train — Image-based (Phase I)
+### Train: Image-based (Phase I)
 ```bash
 # Best performer (UNet, 2-stage training)
 cd src/image_based/unet
@@ -129,7 +129,7 @@ python image_based/pix2pix/main_pix2pix.py
 python image_based/img2img/main_img2img_pytorch.py
 ```
 
-### Train — Geometry-based (Phase III)
+### Train: Geometry-based (Phase III)
 ```bash
 # Non-auto-regressive Graph Transformer (trained from scratch)
 cd src/geometry_based/graph_transformer
@@ -142,7 +142,7 @@ python train.py
 python train.py --quick --no-pretrained                 # offline / CI
 ```
 
-### Train — Text-based / LLM (Phase II)
+### Train: Text-based / LLM (Phase II)
 ```bash
 # Regenerate BRep CSV datasets from base shapes
 cd src/text_based/utils
@@ -161,7 +161,7 @@ python run_pipeline.py --full
 python model_server.py --host 0.0.0.0 --port 8000
 ```
 
-### Train / Infer — Nemotron-Mini-4B (Phase II, nemotron3)
+### Train / Infer: Nemotron-Mini-4B (Phase II, nemotron3)
 ```bash
 cd src/text_based/nemotron3
 conda activate genai
@@ -217,17 +217,17 @@ python benchmark.py --geometry-approach graph_transformer
 ## Code Architecture
 
 ### Configuration
-- `src/config.py` — global config: `IMG_SHAPE`, `TRAIN_SIZE`/`TEST_SIZE`, `TWO_STAGE`, `COORD_CONV`, loss functions
-- `src/image_based/unet/config.py` — re-exports src/config.py for unet's local imports
+- `src/config.py`: global config: `IMG_SHAPE`, `TRAIN_SIZE`/`TEST_SIZE`, `TWO_STAGE`, `COORD_CONV`, loss functions
+- `src/image_based/unet/config.py`: re-exports src/config.py for unet's local imports
 
 ### Data pipeline (`src/utils/`)
-- `prepare_data.py` — reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
-- `prepare_plots.py` — visualization utilities:
-  - `save_results_grid_images(inputs, gts, preds, save_path, n=7)` — **3 rows × n cols** PNG (Row 0=Input, Row 1=GT, Row 2=Predicted); per-cell auto-scale so low-contrast predictions remain visible
-  - `save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves, ..., save_path)` — n×3 grid PNG for graph-based approach (samples as rows)
+- `prepare_data.py`: reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
+- `prepare_plots.py`: visualization utilities:
+  - `save_results_grid_images(inputs, gts, preds, save_path, n=7)`: **3 rows × n cols** PNG (Row 0=Input, Row 1=GT, Row 2=Predicted); per-cell auto-scale so low-contrast predictions remain visible
+  - `save_results_grid_geometry(profiles, gt_midcurves, pred_midcurves, ..., save_path)`: n×3 grid PNG for graph-based approach (samples as rows)
   - Each approach saves its grid to `<approach>/results/results_grid.png` after training/test
   - Result grids copied to `publications/Midcurve_LaTeX/images/` as `<approach>_results_grid.png`
-- `metric_utils.py` — Keras callbacks, best-epoch tracking, training history
+- `metric_utils.py`: Keras callbacks, best-epoch tracking, training history
 
 ### Path conventions (important for imports)
 All `main_*.py` files under `image_based/` compute `project_root` as **3 levels up** from
@@ -254,7 +254,7 @@ Geometry-based scripts auto-resolve `src/data/raw` relative to `__file__`.
 |---|---|
 | `graph_transformer/` | Non-auto-regressive Graph Transformer trained from scratch. Input: polygon graph (nodes=corners, features=(x,y)). Output: midcurve coords + adjacency. Loss: Chamfer + BCE. |
 | `finetuned_graph_transformer/` | Pretrained `clefourrier/graphormer-base-pcqm4mv2` (HuggingFace) fine-tuned in two phases: frozen head-only → joint fine-tuning. |
-| `gnnencoderdecoder/` | Legacy stub — not implemented, kept for reference. |
+| `gnnencoderdecoder/` | Legacy stub: not implemented, kept for reference. |
 
 ### Data format
 Raw data in `src/data/raw/`:
@@ -265,15 +265,15 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 ## Known Gotchas
 
-- **`src/utils/prepare_data.py` lazy imports**: TensorFlow and matplotlib are imported lazily (try/except at the top) so that geometry and text tests can import the module without those heavy deps installed. Do not move them to unconditional top-level imports — CI jobs will break.
+- **`src/utils/prepare_data.py` lazy imports**: TensorFlow and matplotlib are imported lazily (try/except at the top) so that geometry and text tests can import the module without those heavy deps installed. Do not move them to unconditional top-level imports: CI jobs will break.
 
-- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase II `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing — do not remove that guard.
+- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase II `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing: do not remove that guard.
 
 - **Image model `_build()` pattern**: All four image encoder-decoder classes (`simple`, `cnn`, `dense`, `denoiser`) build their Keras sub-models in `_build()` called from `__init__()`, not inside `train()`. This is required for `predict()` to work without training first (e.g. in tests). Do not inline model construction back into `train()`.
 
-- **HuggingFace Graphormer is deprecated**: The `finetuned_graph_transformer` targets `clefourrier/graphormer-base-pcqm4mv2`. Newer `transformers` versions mark this deprecated and the `forward()` API has changed incompatibly. The two forward-pass tests gracefully `skipTest` on `IndexError/RuntimeError/TypeError` — this is intentional.
+- **HuggingFace Graphormer is deprecated**: The `finetuned_graph_transformer` targets `clefourrier/graphormer-base-pcqm4mv2`. Newer `transformers` versions mark this deprecated and the `forward()` API has changed incompatibly. The two forward-pass tests gracefully `skipTest` on `IndexError/RuntimeError/TypeError`: this is intentional.
 
-- **CI image-based job is import/data only**: `.github/workflows/ci.yml` runs the image tests with `-k "not model and not unet_import"` and only installs `numpy pillow pytest` — no TF or matplotlib. Keep visualisation and model tests behind the existing skip guards.
+- **No CI/CD in this repo**: there is no `.github/workflows/` directory and none should be added (standing preference). A lightweight local check for the image-based suite only needs `numpy`, `pillow`, and `pytest` if run as `-k "not model and not unet_import"` (no TF or matplotlib required). Keep visualisation and model tests behind the existing skip guards so that subset stays runnable without the heavier deps.
 
 - **`unet/test.py` import ordering**: `unet/config.py` inserts `src/` at `sys.path[0]`, so `from utils.prepare_plots import save_results_grid_images` must be imported **before** `unet/` is inserted and before `from utils import get_coord_layers` runs. After the `prepare_plots` import, `sys.modules['utils']` must be evicted (`sys.modules.pop('utils', None)`) so that inserting `unet/` at position 0 and re-importing `utils` finds `unet/utils.py` rather than the cached `src/utils/` package. The fixed import block in `test.py` looks like:
   ```python
@@ -294,23 +294,38 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 - **`unet/test.py` memory and performance**: `plt.close('all')` is called after each per-image save to prevent "Fail to allocate bitmap" crashes. The loop breaks after collecting `_GRID_N=7` samples so only 7 test images are processed instead of all 400+.
 
-- **`unet/train.py` load path — no `model_from_json`**: Keras 3 removed `model_from_json`. The `load=True` code path in `train_stage1()` and `train_stage2()` now reconstructs the model by calling `unet_stage1()` / `unet_stage2()` (the same factory functions used during `init()`), then calls `load_weights()`. Do not reintroduce `model_from_json`.
+- **`unet/train.py` load path: no `model_from_json`**: Keras 3 removed `model_from_json`. The `load=True` code path in `train_stage1()` and `train_stage2()` now reconstructs the model by calling `unet_stage1()` / `unet_stage2()` (the same factory functions used during `init()`), then calls `load_weights()`. Do not reintroduce `model_from_json`.
 
 - **`pix2pix` and `img2img` results grids**: Both `main_pix2pix.py` and `main_img2img_pytorch.py` now call `save_results_grid_images` after training. Pix2Pix loads test data via `data_loader.load_data(batch_size=7, is_testing=True)`; img2img converts PyTorch tensors (B, C, H, W) in [-1,1] to grayscale numpy arrays via `_tensor_to_gray_list()`. Results go to `<approach>/results/results_grid.png`.
+
+## Code Analysis Reports
+
+Each of the three approach folders has a standalone `analysis_report.md` (bugs,
+design risks, and accuracy recommendations, no code changes applied):
+- `src/image_based/analysis_report.md`
+- `src/geometry_based/analysis_report.md`
+- `src/text_based/analysis_report.md`
+
+All three flag the same root cause independently: augmented variants (rotate/
+scale/translate/mirror) of one base shape are shuffled flatly across
+train/test/val instead of being grouped by shape identity, so reported
+accuracy metrics likely reflect interpolation rather than generalization.
+Fix this dataset-splitting issue first: it affects the validity of headline
+numbers cited in Research Context below for all three phases.
 
 ## Research Context
 
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps. Four in-scope variants: Simple AE, Dense AE, CNN AE, Denoising AE.
-- **Phase II** (`text_based/`) is the **current best performer on the 4-shape benchmark** — QLoRA fine-tuning of Qwen2.5-7B achieves MAE=0.78, RMSE=1.24, Hausdorff=2.1, PSR=98% on the 100-sample test set. Nemotron-Mini-4B in 2-shot setting: PSR=85.7%, topology accuracy=0.83, ~2 GB VRAM.
-- **Phase III** (`graph_transformer/`) operates directly on polygon graphs — exact coordinates, branching native. Comprehensive evaluation ongoing (preliminary status); target architecture for future work.
+- **Phase II** (`text_based/`) is the **current best performer on the 4-shape benchmark**: QLoRA fine-tuning of Qwen2.5-7B achieves MAE=0.78, RMSE=1.24, Hausdorff=2.1, PSR=98% on the 100-sample test set. Nemotron-Mini-4B in 2-shot setting: PSR=85.7%, topology accuracy=0.83, ~2 GB VRAM.
+- **Phase III** (`graph_transformer/`) operates directly on polygon graphs: exact coordinates, branching native. Comprehensive evaluation ongoing (preliminary status); target architecture for future work.
 - **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning from pretrained Graphormer.
 - BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology
-- `text_based/data/brep/` — 4 base BRep JSON shapes; `text_based/data/csvs/` — 993-row train/test/val CSV splits
-- `text_based/finetuning/` — full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)
-- `text_based/nemotron3/` — Nemotron-Mini-4B pipeline: HF SFTTrainer QLoRA, Unsloth-accelerated QLoRA, few-shot prompting
+- `text_based/data/brep/`: 4 base BRep JSON shapes; `text_based/data/csvs/`: 993-row train/test/val CSV splits
+- `text_based/finetuning/`: full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)
+- `text_based/nemotron3/`: Nemotron-Mini-4B pipeline: HF SFTTrainer QLoRA, Unsloth-accelerated QLoRA, few-shot prompting
 
 ## Publications
 
-- `publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex` — IEEEtran journal paper covering all 3 phases (created May 2026). Single authoritative paper; older per-phase drafts have been removed.
-- `publications/Midcurve_LaTeX/Main_Seminar_Midcurve_Presentation.tex` — consolidated Beamer presentation. Short-version files removed; Nemotron and Phase III conceptual slides added.
-- `publications/Midcurve_LaTeX/Main_Paper_TopoVal_upgraded.tex` — separate topological validation paper, unrelated to the neural midcurve work.
+- `publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`: IEEEtran journal paper covering all 3 phases (created May 2026). Single authoritative paper; older per-phase drafts have been removed.
+- `publications/Midcurve_LaTeX/Main_Seminar_Midcurve_Presentation.tex`: consolidated Beamer presentation. Short-version files removed; Nemotron and Phase III conceptual slides added.
+- `publications/Midcurve_LaTeX/Main_Paper_TopoVal_upgraded.tex`: separate topological validation paper, unrelated to the neural midcurve work.

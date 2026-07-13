@@ -1,7 +1,7 @@
 % ── merged from midcurve_conclusion_ann.tex (Phase I summary) ──────────────────
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase I Summary}
+\begin{frame}[fragile]\frametitle{Phase I: Context}
 	\begin{itemize}
 	\item Various applications need lower dimensional representation of shapes.
 	\item Midcurve is one-dimensional (1D) representation of a two-dimensional (2D) planar shape.
@@ -10,37 +10,55 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase I Summary}
+\begin{frame}[fragile]\frametitle{Phase I: Approach}
 	\begin{itemize}
-	\item Approaches: Thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons, etc., all of which are rule-based.
-	\item Proposing a novel method called MidcurveNN which uses Encoder-Decoder neural network for computing midcurve from images of 2D thin polygons in supervised learning manner.
+	\item Prior approaches: Thinning, Medial Axis Transform (MAT), Chordal Axis Transform (CAT), Straight Skeletons --- all rule-based, not scalable.
+	\item MidcurveNN: Encoder-Decoder neural network learns the mapping from 2D polygon image to 1D midcurve image in a supervised manner.
+	\item Once trained, the network predicts midcurves for unseen polygon shapes.
 	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase I Summary}
-	\begin{itemize}
-	\item This dimension reduction transformation from input 2D thin polygon image to output 1D midcurve image is learnt by the neural network,
-	\item Which can then be used to compute midcurve of an unseen 2D thin polygonal shape.
-	\end{itemize}
+\begin{frame}[fragile]\frametitle{Phase I: Results}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Variant} & \textbf{Input} & \textbf{Loss} & \textbf{IoU} & \textbf{Branches} \\
+\midrule
+Simple AE  & $100\times100$ & High   & Low  & \texttimes \\
+Dense AE   & $100\times100$ & Medium & Med  & \texttimes \\
+CNN AE     & $128\times128$ & Low    & High & \texttimes \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item CNN AE achieves $\approx10\times$ lower loss than Dense AE
+\item All variants lose exact geometry (rasterisation trade-off)
+\item None can represent branched midcurves (T, Plus) natively
+\end{itemize}
 \end{frame}
 
 % ── merged from midcurve_conclusion_llm.tex (Phase II summary) ─────────────────
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase II Summary}
+\begin{frame}[fragile]\frametitle{Phase II: Motivation}
 	\begin{itemize}
-	\item Traditional methods of computing midcurves are predominantly rules-based and thus, have limitation of not developing a generic model which will accept any input shape.
-	\item A novel Large Language Model based approach attempts to build such a generic model.
-	\item One such model, GPT-4, seems to be very effective. Although other proprietary and open-source models need to catch-up with GPT-4, even GPT-4 needs to be developed further to understand not just sequential lines but graphs/networks with different shapes, essentially, the geometry.
+	\item Traditional methods are predominantly rule-based: not scalable to arbitrary shapes.
+	\item A novel Large Language Model approach attempts to build a generic, data-driven model.
+	\item GPT-4 (few-shot) succeeds on simple shapes; open-source models struggle without fine-tuning --- pointing to the value of domain-specific QLoRA fine-tuning.
 	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase II Summary}
+\begin{frame}[fragile]\frametitle{Phase II: Findings}
     \begin{itemize}
-        \item This research significantly advances midcurve computation by exploring the interplay between established methodologies and cutting-edge approaches, particularly integrating Large Language Models (LLMs).
-        \item Emphasizing the nuanced nature of geometric dimension reduction, it identifies challenges in handling variable-length input data, representing intricate shapes, and addressing limitations in existing models.
+        \item BRep JSON representation solves the branching serialization problem for T- and Plus-shapes.
+        \item QLoRA fine-tuning of Qwen2.5-7B achieves \textbf{PSR = 98\%, MAE = 0.78} on the 4-shape benchmark.
+        \item Nemotron-Mini-4B (2-shot, no fine-tuning): PSR = 85.7\%, topology accuracy = 0.83, fits in $\sim$2\,GB VRAM.
+        \item Key challenge: coordinates are text tokens --- digit arithmetic is harder for LLMs than neural regression.
     \end{itemize}
 \end{frame}
 
@@ -73,13 +91,14 @@
  & \textbf{Phase I} & \textbf{Phase II} & \textbf{Phase III} \\
  & \textbf{Image} & \textbf{Text/LLM} & \textbf{Geometry} \\
 \midrule
-Input type   & Bitmap (100--256px) & BRep JSON text & Graph $(x,y)$ \\
-Output type  & Bitmap             & BRep JSON text & Graph $(x,y)$ \\
-Exact coords & No                 & Yes            & Yes \\
-Branches     & No                 & Yes (BRep)     & Yes (native) \\
-Best model   & UNet               & GPT-4 (prompt) / Nemotron-Mini-4B & Graph Transformer \\
-Sub-variants & 7 variants         & Prompt, CodeT5, QLoRA, Nemotron3  & GT + Graphormer FT \\
-Status       & Fully impl.        & Implemented    & Implemented \\
+Input type      & Bitmap (100--256px) & BRep JSON text & Graph $(x,y)$ \\
+Output type     & Bitmap             & BRep JSON text & Graph $(x,y)$ \\
+Exact coords    & No                 & Yes            & Yes \\
+Branches        & No                 & Yes (BRep)     & Yes (native) \\
+Best model      & CNN encoder-decoder & Qwen2.5-7B QLoRA / Nemotron-Mini-4B & Graph Transformer \\
+Sub-variants    & 7 variants         & Prompt, CodeT5, QLoRA, Nemotron3  & GT + Graphormer FT \\
+Key limitation  & Rasterisation loss & Token arithmetic; repair needed & TopK fixes node count \\
+Status          & Fully impl.        & Implemented    & Implemented \\
 \bottomrule
 \end{tabular}
 \end{center}

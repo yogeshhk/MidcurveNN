@@ -4,7 +4,7 @@ Non-auto-regressive Graph Transformer trained from scratch on exact polygon geom
 
 **Architecture:** Node feature embedding (x, y coords) → multi-head self-attention layers → node-wise coordinate regression + adjacency prediction
 
-**Input:** Polygon graph — nodes are corner vertices with (x, y) features, edges encode adjacency
+**Input:** Polygon graph: nodes are corner vertices with (x, y) features, edges encode adjacency
 **Output:** Midcurve node coordinates + adjacency matrix
 
 **Run:**

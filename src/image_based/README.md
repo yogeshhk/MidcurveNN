@@ -1,4 +1,4 @@
-# Phase I — Image-Based Approaches
+# Phase I: Image-Based Approaches
 
 This folder contains seven encoder-decoder variants that solve midcurve extraction by converting the problem into an image-to-image translation task.
 

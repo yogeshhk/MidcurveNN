@@ -1,7 +1,6 @@
 # MidcurveNN
 Midcurve by Neural Networks
 
-[![CI](https://github.com/yogeshhk/MidcurveNN/actions/workflows/ci.yml/badge.svg)](https://github.com/yogeshhk/MidcurveNN/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
 
@@ -35,9 +34,9 @@ src/
 ├── data/raw/                         # Raw .dat/.mid coordinate files (shared by all)
 ├── utils/                            # Shared data prep, plotting, metrics
 │
-├── image_based/                      # Phase I — raster/bitmap approaches
+├── image_based/                      # Phase I: raster/bitmap approaches
 │   ├── data/                         # Shared generated image data (one copy, no duplication)
-│   │   ├── image-pairs/              # PNG pairs — used by simple/cnn/dense/denoiser
+│   │   ├── image-pairs/              # PNG pairs, used by simple/cnn/dense/denoiser
 │   │   ├── unet-splits/train|test/   # UNet split PNGs
 │   │   └── images-combo/train|val|test/  # Side-by-side JPGs for pix2pix/img2img
 │   ├── simpleencoderdecoder/         # Dense baseline
@@ -49,12 +48,12 @@ src/
 │   ├── img2img/                      # Pix2Pix (PyTorch)
 │   └── kaggle/                       # Kaggle notebooks
 │
-├── geometry_based/                   # Phase III — graph/geometric approaches
+├── geometry_based/                   # Phase III: graph/geometric approaches
 │   ├── graph_transformer/            # Non-auto-regressive Graph Transformer ← primary
 │   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurves
 │   └── gnnencoderdecoder/            # Legacy GNN stub (reference)
 │
-├── text_based/                       # Phase II — LLM/seq2seq (implemented)
+├── text_based/                       # Phase II: LLM/seq2seq (implemented)
 │   ├── data/brep/                    # 4 base BRep JSON shapes (I, L, T, Plus)
 │   ├── data/csvs/                    # CSV train/test/val splits (993 rows)
 │   ├── utils/                        # BRep data pipeline (generate CSVs, visualize)
@@ -65,9 +64,9 @@ src/
 │   ├── ludwig/                       # Ludwig framework notebooks
 │   ├── prompt/                       # Few-shot prompting + LLM comparison
 │   └── nemotron3/                    # Nemotron-Mini-4B: HF SFTTrainer / Unsloth / few-shot
-│       ├── hf_sft_trainer.py         # HFSFTTrainer — QLoRA via HuggingFace SFTTrainer
-│       ├── unsloth_trainer.py        # UnslothTrainer — Unsloth-accelerated QLoRA
-│       ├── fewshot_prompter.py       # FewShotPrompter — 2-shot inference, no fine-tuning
+│       ├── hf_sft_trainer.py         # HFSFTTrainer: QLoRA via HuggingFace SFTTrainer
+│       ├── unsloth_trainer.py        # UnslothTrainer: Unsloth-accelerated QLoRA
+│       ├── fewshot_prompter.py       # FewShotPrompter: 2-shot inference, no fine-tuning
 │       ├── train.py / train_unsloth.py  # Entry-point wrappers
 │       └── run_demo.py               # Quick end-to-end demo
 │
@@ -79,6 +78,16 @@ src/
 │   └── test_text_based.py
 └── benchmark.py                      # Cross-approach benchmark (image / geometry / text)
 ```
+
+Each of `image_based/`, `geometry_based/`, and `text_based/` has an `analysis_report.md`
+documenting known bugs, design risks, and accuracy recommendations for that approach
+(no code changes applied yet).
+
+Two other top-level folders sit alongside `src/`:
+- `publications/` holds conference/journal submission archives, presentation sources, and
+  supporting material for the papers and talks listed under [Publications/Talks](#publicationstalks)
+  below, including prior related research (e.g. the author's Midsurface PhD work).
+- `references/` holds locally-used prompt templates and research notes for this project.
 
 ## Instructions to Run
 
@@ -174,7 +183,7 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
 - **Phase I** is fully implemented with 7 encoder-decoder variants. Four are the primary focus: Simple AE, Dense AE, CNN AE (CoordConv, stride-2 skip connections), and Denoising AE (2-stage training). UNet (2-stage, CoordConv, weighted BCE) is the strongest but an extended variant.
-- **Phase II** is **implemented and currently the best performer** (`text_based/`) — QLoRA fine-tuning of Qwen2.5-7B achieves **MAE=0.78, PSR=98%, Hausdorff=2.1** on the 4-shape benchmark. Nemotron-Mini-4B in a 2-shot setting achieves PSR=85.7%, topology accuracy=0.83, fitting in ~2 GB VRAM. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
+- **Phase II** is **implemented and currently the best performer** (`text_based/`): QLoRA fine-tuning of Qwen2.5-7B achieves **MAE=0.78, PSR=98%, Hausdorff=2.1** on the 4-shape benchmark. Nemotron-Mini-4B in a 2-shot setting achieves PSR=85.7%, topology accuracy=0.83, fitting in ~2 GB VRAM. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
 - **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`). Comprehensive evaluation is ongoing (preliminary status).
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
@@ -209,20 +218,18 @@ Once we have this brep representations of both, profile and the corresponding mi
 
 One major advantage of text based method over image based method is that image output still has stray pixels, cleaning which will be a complex task. But text method has exact points. It may just give odd lines, which can be removed easily.
 
-For a wider discussion on Use of Deep Learning in CAD (Computer-aided Design), refer [Notes](./Notes.md)
-
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
 - ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
 - CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
 - CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
 - Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
-- Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve. An [extended abstract](https://github.com/yogeshhk/MidcurveNN/blob/master/TalksPublications/MidcurveLLM/MidcurveLLM_content.md) on the same topic.
+- Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve.
 - Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
-- ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models" — presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
-- ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks" — published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025/`)
-- Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md) — describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
-- Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction" — IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
+- ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models", presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
+- ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks", published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025.zip`)
+- Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md): describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
+- Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction", IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
 
 ## Citations
 - [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)

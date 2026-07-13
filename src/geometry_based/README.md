@@ -1,4 +1,4 @@
-# Phase III — Geometry-Based Approaches
+# Phase III: Geometry-Based Approaches
 
 This folder contains graph neural network approaches that operate directly on polygon coordinates, avoiding the rasterization approximation of Phase I.
 
@@ -14,7 +14,7 @@ Losses combine **Chamfer distance** (point-cloud matching) and **binary cross-en
 |---|---|---|
 | `graph_transformer/` | Non-auto-regressive Graph Transformer trained from scratch. Custom LaplacianPE + TransformerConv + TopKPooling architecture. | **Primary** |
 | `finetuned_graph_transformer/` | Pretrained `clefourrier/graphormer-base-pcqm4mv2` (HuggingFace) fine-tuned in two phases: frozen head-only → joint fine-tuning. | Active |
-| `gnnencoderdecoder/` | Legacy GNN stub — not implemented, kept as reference. | Reference only |
+| `gnnencoderdecoder/` | Legacy GNN stub: not implemented, kept as reference. | Reference only |
 
 ## Training
 
@@ -53,7 +53,7 @@ PyTorch Geometric tests are skipped automatically if `torch_geometric` is not in
 ## Data Format
 
 Input comes from `src/data/raw/`:
-- `.dat` — profile polygon points (ASCII, `x y` per line, closed)
-- `.mid` — midcurve polyline points (same format, open/branched)
+- `.dat`: profile polygon points (ASCII, `x y` per line, closed)
+- `.mid`: midcurve polyline points (same format, open/branched)
 
 `MidcurveGraphDataset` reads these files, normalizes coordinates to `[-1, 1]`, and builds PyG `Data` objects with optional geometric augmentation.

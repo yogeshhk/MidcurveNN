@@ -3,6 +3,9 @@ __pycache__/
 .git/
 .idea/
 
+# Claude Code local tool config (should never be committed)
+.claude/
+
 # Python
 *.pkl
 *.pyc

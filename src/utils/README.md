@@ -1,4 +1,4 @@
-# utils — Shared Utilities
+# utils: Shared Utilities
 
 Utilities shared across all model experiments.
 
@@ -12,6 +12,6 @@ Utilities shared across all model experiments.
 ## Import convention
 
 All model modules should import from:
-- `utils.prepare_data` — for `get_training_data`, `read_input_image_pairs`, `generate_images`
-- `utils.prepare_plots` — for `plot_results` and geometry visualisers
-- `utils.metric_utils` — for `MetricsHistory`, `print_best_metrics`
+- `utils.prepare_data`: for `get_training_data`, `read_input_image_pairs`, `generate_images`
+- `utils.prepare_plots`: for `plot_results` and geometry visualisers
+- `utils.metric_utils`: for `MetricsHistory`, `print_best_metrics`

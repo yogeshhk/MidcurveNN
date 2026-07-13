@@ -75,7 +75,17 @@
       "PowerShell(cd \"D:\\\\Yogesh\\\\GitHub\\\\MidcurveNN\\\\publications\\\\Midcurve_LaTeX\"; .\\\\make.bat 2>&1; Write-Host \"EXIT:$LASTEXITCODE\")",
       "Bash(grep -n \"[^\\\\\\\\\\\\\\\\]&[^&]\" \"D:/Yogesh/GitHub/MidcurveNN/publications/Midcurve_LaTeX/Main_Paper_TopoVal_upgraded.tex\")",
       "Bash(grep -v \"\\\\\\\\\\\\\\\\begin{table\\\\|\\\\\\\\\\\\\\\\begin{align\\\\|\\\\\\\\\\\\\\\\begin{array\\\\|\\\\\\\\\\\\\\\\begin{tabular\\\\|\\\\\\\\\\\\\\\\begin{IEEEeqnarray\\\\|\\\\\\\\\\\\\\\\hline\\\\|^\\\\s*[0-9]\\\\+\\\\s*&\\\\|^\\\\s*\\\\\\\\\\\\\\\\[a-zA-Z]\")",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(awk -F',' 'NR>1{print $1}' midcurve_llm.csv)",
+      "Bash(sed -E 's/_[0-9.].*//')",
+      "Bash(awk 'END{print NR-1}' midcurve_llm.csv)",
+      "PowerShell(Copy-Item *)",
+      "Bash(sed 's/.*\\\\.//')",
+      "Bash(mkdir -p \"D:/Yogesh/GitHub/MidcurveNN_third_party_refs\")",
+      "Bash(mv \"D:/Yogesh/GitHub/MidcurveNN/references/papers\" \"D:/Yogesh/GitHub/MidcurveNN_third_party_refs/papers\")",
+      "Bash(mv \"D:/Yogesh/GitHub/MidcurveNN/references/code\" \"D:/Yogesh/GitHub/MidcurveNN_third_party_refs/code\")",
+      "Bash(mkdir -p \"D:/Yogesh/GitHub/MidcurveNN_personal_archive\")",
+      "Bash(mv \"D:/Yogesh/GitHub/MidcurveNN/publications/Midsurface_PhDThesis/publications/Viva\" \"D:/Yogesh/GitHub/MidcurveNN_personal_archive/Viva\")"
     ]
   }
 }

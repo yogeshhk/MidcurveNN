@@ -87,7 +87,7 @@ text_based/
 
 ## Data Format
 
-### BRep JSON (canonical — `data/brep/`)
+### BRep JSON (canonical: `data/brep/`)
 
 ```json
 {
@@ -103,7 +103,7 @@ text_based/
 }
 ```
 
-Key invariant: `Lines` and `Segments` (topology) are **never changed** by transformations —
+Key invariant: `Lines` and `Segments` (topology) are **never changed** by transformations:
 only `Points` coordinates are updated.
 
 ### CSV columns (`data/csvs/`)
@@ -111,10 +111,10 @@ only `Points` coordinates are updated.
 | Column | Content |
 |---|---|
 | `ShapeName` | e.g. `T_rotated_45` |
-| `Profile` | JSON string — flat `[[x,y],...]` |
-| `Midcurve` | JSON string — flat `[[x,y],...]` |
-| `Profile_brep` | JSON string — full BRep sub-dict |
-| `Midcurve_brep` | JSON string — full BRep sub-dict |
+| `Profile` | JSON string: flat `[[x,y],...]` |
+| `Midcurve` | JSON string: flat `[[x,y],...]` |
+| `Profile_brep` | JSON string: full BRep sub-dict |
+| `Midcurve_brep` | JSON string: full BRep sub-dict |
 
 ---
 
@@ -167,13 +167,13 @@ python model_server.py --host 0.0.0.0 --port 8000
 cd src/text_based/nemotron3
 conda activate genai
 
-# Approach 1 — HuggingFace SFTTrainer QLoRA fine-tuning
+# Approach 1: HuggingFace SFTTrainer QLoRA fine-tuning
 python hf_sft_trainer.py
 
-# Approach 2 — Unsloth-accelerated QLoRA (auto-falls back to PEFT if Unsloth not installed)
+# Approach 2: Unsloth-accelerated QLoRA (auto-falls back to PEFT if Unsloth not installed)
 python unsloth_trainer.py
 
-# Approach 3 — Few-shot prompting with the base model (no fine-tuning required)
+# Approach 3: Few-shot prompting with the base model (no fine-tuning required)
 python fewshot_prompter.py
 
 # Evaluate a fine-tuned adapter
@@ -224,7 +224,7 @@ python -m pytest text_based/testing/test_text_based.py -v
 
 ## Key Challenge
 
-Branched midcurves (T, Plus shapes) **cannot be serialized as a simple linear sequence** — the
+Branched midcurves (T, Plus shapes) **cannot be serialized as a simple linear sequence**: the
 skeleton has junctions requiring a graph. The BRep format with `Lines` and `Segments` solves this
 explicitly. Fine-tuned LLMs must learn to output valid BRep JSON with correct junction connectivity.
 

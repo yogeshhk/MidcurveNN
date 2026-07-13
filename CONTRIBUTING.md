@@ -60,7 +60,7 @@ Tests that require optional dependencies (TensorFlow, PyTorch Geometric, GPU) sk
 ## Code Style
 
 - Python 3.10, PEP 8 formatting.
-- Prefer readability over cleverness — this is an academic codebase.
+- Prefer readability over cleverness: this is an academic codebase.
 - Add comments only when the **why** is non-obvious.
 - Match import conventions of the surrounding file.
 

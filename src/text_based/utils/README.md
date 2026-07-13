@@ -1,4 +1,4 @@
-# Midcurve Generation Pipeline — Program Flow Documentation
+# Midcurve Generation Pipeline: Program Flow Documentation
 
 ## Overview
 
@@ -8,7 +8,7 @@ midcurves into a large augmented dataset, using geometric transformations
 small set of originals.
 
 The dataset is intended as training/evaluation data for models that learn to
-predict a midcurve from a profile — a core step in thin-wall structural
+predict a midcurve from a profile: a core step in thin-wall structural
 analysis.
 
 ### What changed from the original design
@@ -17,13 +17,13 @@ The original pipeline had two generators (`create_line_ds.py` and
 `create_brep_csvs.py`) and inferred midcurve topology at runtime using
 shape-name `if/elif` branches.  The current design eliminates both problems:
 
-- **One generator only** — `create_brep_csvs.py`. Line-based JSON output
+- **One generator only**: `create_brep_csvs.py`. Line-based JSON output
   (`create_line_ds.py`) is no longer needed; the BRep JSON is the complete
   representation.
-- **No topology inference** — connectivity is authored once per shape in a
+- **No topology inference**: connectivity is authored once per shape in a
   hand-written JSON file and carried through every transformation unchanged.
   Adding a new shape never requires touching pipeline code.
-- **Automated onboarding** — `create_brep_jsons.py` converts the raw
+- **Automated onboarding**: `create_brep_jsons.py` converts the raw
   `.dat` + `_MidcurvesByYogeshMethod.txt` pair for a new shape into a `.mid`
   file and a ready-to-use `.json` in one command, removing the need to author
   JSON by hand.
@@ -51,7 +51,7 @@ shape-name `if/elif` branches.  The current design eliminates both problems:
 
 ---
 
-## Adding a New Shape — Recommended Workflow
+## Adding a New Shape: Recommended Workflow
 
 The typical workflow for onboarding a new shape is now automated:
 
@@ -60,23 +60,23 @@ The typical workflow for onboarding a new shape is now automated:
         │
         ▼  python create_brep_jsons.py --shape <ShapeName>
         │
-        ├── <ShapeName>.mid    (Stage 1 — midcurve point file)
-        └── <ShapeName>.json   (Stage 2 — self-contained BRep JSON)
+        ├── <ShapeName>.mid    (Stage 1: midcurve point file)
+        └── <ShapeName>.json   (Stage 2: self-contained BRep JSON)
 ```
 
 After running the converter, `<ShapeName>.json` is immediately usable by
-`create_brep_csvs.py` — no further manual editing required.
+`create_brep_csvs.py`: no further manual editing required.
 
 ---
 
 ## File-by-File Reference
 
-### `create_brep_jsons.py` — Shape onboarding converter
+### `create_brep_jsons.py`: Shape onboarding converter
 
 Scans `RAW_DATA_FOLDER` for `<ShapeName>.dat` /
 `<ShapeName>_MidcurvesByYogeshMethod.txt` pairs and runs two stages per pair.
 
-#### Stage 1 — Extract midcurve → write `<ShapeName>.mid`
+#### Stage 1: Extract midcurve → write `<ShapeName>.mid`
 
 Parses the Yogesh method txt file, extracts the ordered unique midcurve
 points, and writes them as a plain `x y` point file (one point per line),
@@ -95,7 +95,7 @@ matching the original `.mid` format.
                  ←
                  ←
                  ←
-0     250        ← profile polygon (closed — first point repeated at end)
+0     250        ← profile polygon (closed: first point repeated at end)
 250   250
 ...
 0     250        ← closing point
@@ -105,7 +105,7 @@ The 4-blank-line separator (5 consecutive newlines) is the reliable structural
 marker.  Points are de-duplicated in first-appearance order; shared junction
 points appear exactly once in the output.
 
-#### Stage 2 — Build BRep JSON → write `<ShapeName>.json`
+#### Stage 2: Build BRep JSON → write `<ShapeName>.json`
 
 Reads the `.dat` and the freshly written `.mid`, builds full BRep structures
 for both profile and midcurve, cross-checks that the profile in the txt matches
@@ -113,9 +113,9 @@ the `.dat`, and writes the self-contained JSON.
 
 **BRep conventions applied:**
 
-- **Profile** — closed polygon: N points → N lines (consecutive index pairs
+- **Profile**: closed polygon: N points → N lines (consecutive index pairs
   wrapping back to 0) → one segment containing all line indices.
-- **Midcurve** — topology from Yogesh segments: each input segment becomes one
+- **Midcurve**: topology from Yogesh segments: each input segment becomes one
   `Line` (index pair), each `Line` is its own `Segment`.  Shared junction
   points appear once in `Points` and are referenced by multiple `Lines`.
 
@@ -145,7 +145,7 @@ Stage 2: T.dat + T.mid → T.json
 
 ---
 
-### `config.py` — Central configuration
+### `config.py`: Central configuration
 
 Single source of truth for all paths and transformation ranges.  All pipeline
 scripts import from here so ranges are never duplicated.
@@ -169,9 +169,9 @@ TRANSLATE_Y_START, TRANSLATE_Y_STOP, TRANSLATE_Y_STEP = -50, 51, 2
 
 ---
 
-### `prepare_data.py` — I/O and geometric transforms
+### `prepare_data.py`: I/O and geometric transforms
 
-Pure data layer — no matplotlib dependency.
+Pure data layer: no matplotlib dependency.
 
 #### I/O functions
 
@@ -207,14 +207,14 @@ apply_transform_to_shape(shape, transform_fn, suffix, **kwargs) → dict
 
 ---
 
-### `prepare_plots.py` — All visualization
+### `prepare_plots.py`: All visualization
 
 All plotting functions live here.  `prepare_data.py` has no matplotlib
 dependency.
 
 | Function | Purpose |
 |---|---|
-| `plot_shape(shape_dict, ax)` | Single shape — profile (black) and midcurve (red) overlaid using BRep topology |
+| `plot_shape(shape_dict, ax)` | Single shape: profile (black) and midcurve (red) overlaid using BRep topology |
 | `show_shape(shape_dict)` | Convenience wrapper: `plot_shape` + `plt.show()` |
 | `plot_shape_grid(shape_dicts, n_cols, cell_size, title)` | N×M grid of shapes for dataset-wide quality inspection |
 | `plot_prediction_comparison(shape_dict, predicted_midcurve_brep)` | Four-panel: profile \| actual midcurve \| predicted midcurve \| overlay |
@@ -252,7 +252,7 @@ plot_prediction_comparison(shape_dict, predicted_midcurve_brep)
 
 ---
 
-### `create_brep_csvs.py` — Dataset generator
+### `create_brep_csvs.py`: Dataset generator
 
 The only script you run to build the dataset.
 
@@ -280,10 +280,10 @@ originals (4) + variants (11196) = 11200 total shapes
     │
     ▼
 save_dataset()
-    ├── midcurve_brep.csv          (11200 rows — full dataset)
-    ├── midcurve_brep_train.csv    ( 8960 rows — 80%)
-    ├── midcurve_brep_test.csv     ( 1120 rows — 10%)
-    └── midcurve_brep_val.csv      ( 1120 rows — 10%)
+    ├── midcurve_brep.csv          (11200 rows: full dataset)
+    ├── midcurve_brep_train.csv    ( 8960 rows: 80%)
+    ├── midcurve_brep_test.csv     ( 1120 rows: 10%)
+    └── midcurve_brep_val.csv      ( 1120 rows: 10%)
 ```
 
 Splits use `random.seed(42)` for reproducibility.  The full dataset is
@@ -300,7 +300,7 @@ all three sets.
 | `Profile_brep` | JSON string | full BRep sub-dict |
 | `Midcurve_brep` | JSON string | full BRep sub-dict |
 
-Use `load_csv(filepath)` to read a CSV back — it deserialises all JSON
+Use `load_csv(filepath)` to read a CSV back: it deserialises all JSON
 columns automatically and returns a list of shape dicts.
 
 #### ShapeName convention
@@ -343,9 +343,9 @@ connectivity) so nothing needs to be inferred at runtime.
 
 | Key | Type | Meaning |
 |---|---|---|
-| `Points` | `[[x,y], ...]` | Coordinate list — updated by every transform |
-| `Lines` | `[[i,j], ...]` | Edges as pairs of point indices — **never changed** |
-| `Segments` | `[[line_idx,...], ...]` | Groups of lines forming a loop or chain — **never changed** |
+| `Points` | `[[x,y], ...]` | Coordinate list: updated by every transform |
+| `Lines` | `[[i,j], ...]` | Edges as pairs of point indices: **never changed** |
+| `Segments` | `[[line_idx,...], ...]` | Groups of lines forming a loop or chain: **never changed** |
 
 `Profile` and `Midcurve` at the top level are flat point lists kept for
 backward compatibility with the original `.dat`/`.mid` format.  They are
@@ -355,7 +355,7 @@ respectively, and are kept in sync by every transform.
 ### Why topology is never inferred
 
 `Lines` and `Segments` reference points by index.  All four supported
-transforms are bijections — they move points but never change their count or
+transforms are bijections: they move points but never change their count or
 order.  The index structure is therefore invariant under any transformation,
 so topology authored once (or generated by the converter) remains correct
 forever.
@@ -364,7 +364,7 @@ forever.
 
 ## The Four Shape Files
 
-### `I.json` — rectangular bar
+### `I.json`: rectangular bar
 
 | | Points | Lines | Segments |
 |---|---|---|---|
@@ -382,7 +382,7 @@ Profile (closed polygon)       Midcurve (chain)
   5,5  ──── 10,5                   7.5,5
 ```
 
-### `L.json` — L-shaped section
+### `L.json`: L-shaped section
 
 | | Points | Lines | Segments |
 |---|---|---|---|
@@ -400,10 +400,10 @@ Midcurve connectivity:
 
 > Note: `I.json` uses the original small-scale coordinates from the `.dat`/`.mid`
 > files.  `L.json`, `T.json`, and `Plus.json` use the larger-scale coordinates
-> from the Yogesh method files — ten times larger.  Both scales are valid inputs
+> from the Yogesh method files: ten times larger.  Both scales are valid inputs
 > to the pipeline.
 
-### `T.json` — T-shaped section
+### `T.json`: T-shaped section
 
 | | Points | Lines | Segments |
 |---|---|---|---|
@@ -413,7 +413,7 @@ Midcurve connectivity:
 Midcurve has two independent segments reflecting the Yogesh representation:
 a vertical stem `[0]→[1]` and a full-width crossbar `[2]→[3]`.  The stem
 endpoint `[1]` at `(125, 225)` lies geometrically on the crossbar but is not
-explicitly shared as a junction point in this topology — the crossbar is one
+explicitly shared as a junction point in this topology: the crossbar is one
 unbroken segment from right tip to left tip.
 
 ```
@@ -425,7 +425,7 @@ Midcurve connectivity:
   Lines: [0,1], [2,3]   Segments: [[0],[1]]
 ```
 
-### `Plus.json` — Plus / cross section
+### `Plus.json`: Plus / cross section
 
 | | Points | Lines | Segments |
 |---|---|---|---|
@@ -457,12 +457,12 @@ Midcurve connectivity:
 | Scale | 2.0 → 6.0 (excl.) | 0.25 | 16 |
 | Rotate | 1° → 180° (incl.) | 1° | 180 |
 | Translate X×Y | −50 → 50 (incl.) each axis | 2 | 51 × 51 = 2,601 |
-| Mirror X | — | — | 1 |
-| Mirror Y | — | — | 1 |
+| Mirror X | N/A | N/A | 1 |
+| Mirror Y | N/A | N/A | 1 |
 | **Total per shape** | | | **2,799** |
 | **Total for 4 shapes** | | | **11,196 variants + 4 originals = 11,200** |
 
-Translation varies X and Y independently — both axial (dx-only, dy-only) and
+Translation varies X and Y independently: both axial (dx-only, dy-only) and
 diagonal offsets are generated.
 
 ---
@@ -471,7 +471,7 @@ diagonal offsets are generated.
 
 ### Why JSON instead of `.dat` + `.mid` + `.topo` sidecar files
 
-The `.dat`/`.mid` pair carries only geometry — topology must come from
+The `.dat`/`.mid` pair carries only geometry: topology must come from
 somewhere else.  Encoding topology in a separate sidecar keeps the same
 fragmentation problem.  A single JSON per shape is self-contained: open one
 file and you have everything.  The flat `Profile` and `Midcurve` lists are
@@ -480,7 +480,7 @@ kept alongside the BRep for backward compatibility and convenient access.
 ### Why the converter extracts topology from the Yogesh txt rather than inferring it
 
 The Yogesh method txt explicitly lists each midcurve segment as a pair of
-points separated by blank lines, so the topology is directly readable — no
+points separated by blank lines, so the topology is directly readable: no
 geometric inference needed.  An earlier heuristic (angular-span detection of
 star vs chain) was considered but abandoned because it fails for shapes with
 multiple junctions, concentric rings (like "O"), or arbitrary tree structures.

@@ -283,7 +283,7 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Variable Size Encoder Decoder}
+\begin{frame}[fragile]\frametitle{Why Padding Fails in Geometry}
 
 	\begin{itemize}
 	\item OK for NLP, say Machine Translations, where padding values like ``-1'' can be added along with other words (vectors or indices)
@@ -291,6 +291,18 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
 	\item Because any value can represent a Valid Input, even though we don't want it to be the input.
 	\item Not all shapes can be serialised as sequences: Y-shapes and concentric rings (\textit{O}) cannot be traversed without lifting the pen, ruling out Seq2Seq models entirely
 	\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Three Phase Strategy}
+
+This trade-off motivates the \textbf{three-phase} strategy:
+		\begin{itemize}
+		\item \textbf{Phase I}: Raster Image $\rightarrow$ Image (encoder-decoder variants)
+		\item \textbf{Phase II}: BRep JSON via LLMs, exact coords, current best performer
+		\item \textbf{Phase III}: Geometry graph $\rightarrow$ graph, exact, native branches
+		\end{itemize}
 
 \end{frame}
 
@@ -310,7 +322,7 @@ Can Neural Networks ``learn'' the dimension reduction transformation?
     \end{column}
   \end{columns}
   \end{frame}
-
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{A Twist to the problem}
 
@@ -336,23 +348,91 @@ Problems of Geometric sequences
 \includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve24}
 \end{center}
 \end{frame}
-
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Dilution: Raster Approximation}
+\begin{frame}[fragile]\frametitle{Phase I: Raster Approximation}
 
 	\begin{itemize}
 	\item Images address both the \textbf{representation} and \textbf{variable-size} issues
 	\item \alert{Big dilution}: True geometric shapes are \textit{vector} data; images here are \textit{raster}, so approximation has crept in
 	\item Predicted output still needs post-processing to recover exact geometric (vector) form
-	\item This trade-off motivates the \textbf{three-phase} strategy:
-		\begin{itemize}
-		\item \textbf{Phase I}: Raster Image $\rightarrow$ Image (7 variants, UNet best)
-		\item \textbf{Phase II}: BRep JSON via LLMs, exact coords, current best performer
-		\item \textbf{Phase III}: Geometry graph $\rightarrow$ graph, exact, native branches
-		\end{itemize}
 	\end{itemize}
 
 \end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{For Deep Learning}
+	\begin{itemize}
+	\item Need lots of data
+	\item Had just few input output image pairs
+	\item How to augment/populate large variations \ldots
+	\end{itemize}
+\end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{Data: Profile and Midcurve Pairs}
+% \begin{center}
+% \includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve27}
+% \end{center}
+% \end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile]\frametitle{Data: Few Pairs to Start With}
+% \begin{center}
+% \includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve28}
+% \end{center}
+	% \begin{itemize}
+	% \item For each shape, one input-output pair --- that's it
+	% \item Must artificially multiply via geometric transformations
+	% \end{itemize}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Rasterization: Geometry to Image}
+	\begin{itemize}
+	\item Raw data is in vector format (list of $(x,y)$ points)
+	\item Converted to fixed-size $100\times100$ bitmap via DrawSVG rasterization
+	\end{itemize}
+\begin{center}
+\includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve29}
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Augmentation: Geometric Variations}
+
+  \begin{columns}[t]
+    \begin{column}[T]{0.4\linewidth}
+      \centering
+      \includegraphics[width=0.9\linewidth,keepaspectratio]{midcurve30}
+    \end{column}
+    \begin{column}[T]{0.6\linewidth}
+	\begin{itemize}
+	\item Base shapes: I, L, Plus, T
+	\item Operations applied to both profile and midcurve:
+	\begin{itemize}
+		\item Translated
+		\item Rotated
+		\item Mirrored
+		\item Mirrored + Translated
+		\item Mirrored + Rotated
+	\end{itemize}
+	\item Total: 896 image pairs
+	\end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Training Data Samples}
+\begin{center}
+\includegraphics[width=\linewidth,keepaspectratio]{midcurve31}
+\end{center}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Reuse Image Encoder Decoder}
@@ -368,11 +448,191 @@ Problems of Geometric sequences
 \end{center}
 \end{frame}
 
+% ── Phase II: LLM / Text-based approach (overview) ────────────────────────────
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{For Deep Learning}
-	\begin{itemize}
-	\item Need lots of data
-	\item Had just few input output image pairs
-	\item How to augment/populate large variations \ldots
-	\end{itemize}
+\begin{frame}[fragile]\frametitle{Phase II: Text as a Medium for Geometry}
+
+  \begin{itemize}
+    \item Phase I approximates geometry as pixel images: \alert{raster dilution}
+    \item Phase II takes a different route: serialize geometry as \textbf{structured JSON text}
+    \item LLMs can read and write JSON naturally: frame midcurve as \textbf{machine translation}:
+      \begin{itemize}
+        \item {\small Input: Profile geometry $\rightarrow$ BRep JSON text}
+        \item {\small Output: Midcurve geometry $\leftarrow$ predicted BRep JSON text}
+      \end{itemize}
+    \item \textbf{Advantage over Phase I}: output is \textit{exact point coordinates}, not noisy pixels: no raster post-processing needed
+    \item \textbf{Trade-off}: LLMs are probabilistic; output may occasionally need syntactic repair
+    \item Models explored: Qwen2.5-7B, Gemma, Mistral (QLoRA fine-tuning); Nemotron-Mini-4B; few-shot prompting
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{BRep: Boundary Representation in JSON}
+
+  \textbf{Geometry encoded as a 3-level hierarchy} (2D adaptation of solid-modelling B-rep):
+
+  \begin{columns}[t]
+    \begin{column}[T]{0.48\linewidth}
+      \begin{itemize}
+        \item \textbf{Points}: ordered list of $(x,y)$ coordinates
+        \item \textbf{Lines}: pairs of point indices: encodes \textit{connectivity}
+        \item \textbf{Segments}: chains of line indices: encodes \textit{continuous open curves}; \textbf{multiple Segments} represent junctions in T- and Plus-shapes
+      \end{itemize}
+      \vspace{0.5em}
+      {\small Key invariant: only \textit{coordinates} change under geometric transforms; topology (Lines, Segments) stays fixed}
+    \end{column}
+    \begin{column}[T]{0.52\linewidth}
+      {\footnotesize\textbf{I-shape Profile:}}\\[0.15em]
+      {\footnotesize
+        \texttt{Points:} $(5,5),(10,5),(10,20),(5,20)$\\
+        \texttt{Lines:}  $[0,1],[1,2],[2,3],[3,0]$\\
+        \texttt{Segs:}   $[0,1,2,3]$
+      }\\[0.6em]
+      {\footnotesize\textbf{I-shape Midcurve:}}\\[0.15em]
+      {\footnotesize
+        \texttt{Points:} $(7.5,5),(7.5,20)$\\
+        \texttt{Lines:}  $[0,1]$\\
+        \texttt{Segs:}   $[0]$
+      }\\[0.6em]
+      {\footnotesize\textbf{T-shape Midcurve (branched):}}\\[0.15em]
+      {\footnotesize
+        \texttt{Segs:} $[0],[1],[2]$ \quad (3 arms = 3 Segments)\\
+        \textit{Sequences cannot encode this; BRep can.}
+      }
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: How LLMs Predict Midcurves}
+
+  \begin{columns}[t]
+    \begin{column}[T]{0.55\linewidth}
+      \begin{itemize}
+        \item \textbf{Data}: 993 BRep examples: 4 base shapes (I, L, T, Plus) $\times$ geometric augmentations (rotate, scale, translate, mirror)
+        \item \textbf{Framing}: text-to-text machine translation
+          \begin{itemize}
+            \item {\small Input: \texttt{Profile\_brep} JSON string}
+            \item {\small Output: \texttt{Midcurve\_brep} JSON string}
+          \end{itemize}
+        \item \textbf{Sub-approaches}:
+          \begin{itemize}
+            \item {\small Few-shot prompting (ChatGPT, Bard, Claude)}
+            \item {\small QLoRA fine-tuning (4-bit quantised Low-Rank Adaptation, trains ${<}1\%$ of params): Qwen2.5-7B, Gemma, Mistral}
+            \item {\small Nemotron-Mini-4B: HF SFTTrainer / Unsloth / few-shot}
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}[T]{0.45\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,keepaspectratio]{chatgpt_lines_15dec2023_prompt}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase II: Results}
+
+  \begin{itemize}
+    \item \textbf{Qwen2.5-7B (QLoRA fine-tuning)}: \alert{current best performer}:
+      \begin{itemize}
+        \item MAE = 0.78, RMSE = 1.24, Hausdorff distance = 2.1
+        \item \textbf{PSR (Profile Shape Reconstruction) = 98\%} on 100-sample test set
+      \end{itemize}
+    \item \textbf{Nemotron-Mini-4B (2-shot, no fine-tuning)}:
+      \begin{itemize}
+        \item PSR = 85.7\%, topology accuracy = 0.83
+        \item Fits in $\sim$2\,GB VRAM: deployable on consumer hardware
+      \end{itemize}
+    \item \textbf{Key advantage}: output is exact \textit{point coordinates}: no pixel clean-up
+    \item \textbf{Limitation}: branched shapes (T, Plus) require well-formed multi-Segment JSON output
+  \end{itemize}
+
+\end{frame}
+
+% ── Phase III: Pure geometry / graph-based approach (overview) ─────────────────
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase III: Back to Pure Geometry: Graph to Graph}
+
+  \begin{columns}[t]
+    \begin{column}[T]{0.55\linewidth}
+      \begin{itemize}
+        \item Recall the ideal: input profile graph $\rightarrow$ output midcurve graph
+        \item Phase III implements this directly: \textbf{no pixels, no text tokens}
+        \item \textbf{Input}: polygon as graph: nodes = corner points with $(x,y)$; edges = adjacent corners
+        \item \textbf{Output}: midcurve as graph: different node/edge counts and positions
+        \item \textbf{Advantage}: exact coordinates, native branch handling, zero post-processing
+        \item Branches (T, Plus) are naturally captured in the graph topology
+      \end{itemize}
+    \end{column}
+    \begin{column}[T]{0.45\linewidth}
+      \centering
+      \includegraphics[width=\linewidth,keepaspectratio]{midcurve_as_graph}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Phase III: Graph Transformer Architecture}
+
+  \begin{itemize}
+    \item \textbf{Core challenge}: graph-to-graph translation with \textit{different} input/output topology: not standard node/link prediction
+    \item \textbf{Non-auto-regressive Graph Transformer} (trained from scratch):
+      \begin{itemize}
+        \item LaplacianPE positional encoding $\rightarrow$ TransformerConv layers $\rightarrow$ TopKPooling
+        \item TopKPooling acts as graph \textit{coarsening}: the geometric dimension-reduction step
+        \item Loss: Chamfer distance (point-cloud matching) + BCE (adjacency matrix)
+      \end{itemize}
+    \item \textbf{Second variant}: pretrained Graphormer (HuggingFace) fine-tuned in two phases (frozen head $\rightarrow$ joint fine-tuning)
+    \item Operates on raw $(x,y)$ coordinates: no rasterization, no JSON encoding
+    \item Status: \alert{implemented, evaluation ongoing}
+  \end{itemize}
+
+\end{frame}
+
+% ── Three-phase comparison + Conclusion ───────────────────────────────────────
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Three Phases: A Progression Toward the Ideal}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{2.0cm}p{2.4cm}p{2.4cm}p{2.4cm}@{}}
+\toprule
+ & \textbf{Phase I} & \textbf{Phase II} & \textbf{Phase III} \\
+ & Image-based      & LLM / Text        & Geometry           \\
+\midrule
+Medium       & Bitmap (raster)     & BRep JSON text      & Graph $(x,y)$      \\
+Exact coords & No (pixels)         & Yes                 & Yes                \\
+Branches     & No                  & Yes (Segments)      & Yes (native)       \\
+Best model   & CNN encoder-decoder & Qwen2.5-7B QLoRA    & Graph Transformer  \\
+Key metric   & Visual quality      & PSR = 98\%          & Ongoing eval.      \\
+Status       & Fully impl.         & \alert{Best performer}    & Implemented        \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Conclusion}
+
+  \begin{itemize}
+    \item Midcurve is a \textbf{geometric dimension-reduction} problem: 2D profile $\rightarrow$ 1D skeleton (graph $\rightarrow$ smaller graph)
+    \item \textbf{Phase I} (image-based): encoder-decoder on raster images --- feasible; CNN encoder-decoder is the best primary variant; rasterization trade-off limits precision
+    \item \textbf{Phase II} (LLM / text-based): BRep JSON + LLM fine-tuning: \alert{current best performer}: PSR = 98\%, exact coordinates, branching via Segments
+    \item \textbf{Phase III} (geometry-based): Graph Transformer on polygon graphs: the ideal formulation; no approximation, native branch handling; evaluation ongoing
+    \item \textbf{Next frontier}: generalise to arbitrary 2D thin polygons; extend the graph-to-graph paradigm toward 3D midsurface computation
+  \end{itemize}
+
+\begin{center}
+\alert{\large Graph-to-Graph is the ultimate goal for MidcurveNN.}
+\end{center}
+
 \end{frame}

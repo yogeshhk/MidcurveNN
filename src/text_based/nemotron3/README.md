@@ -1,4 +1,4 @@
-# nemotron3 — Midcurve Prediction with Nemotron-Mini-4B-Instruct
+# nemotron3: Midcurve Prediction with Nemotron-Mini-4B-Instruct
 
 Three class-based approaches for predicting 2D polygon midcurves using
 `nvidia/Nemotron-Mini-4B-Instruct` on the BRep JSON dataset.
@@ -11,7 +11,7 @@ Three class-based approaches for predicting 2D polygon midcurves using
 |---|---|---|
 | `hf_sft_trainer.py` | `HFSFTTrainer` | QLoRA fine-tuning via PEFT + HuggingFace SFTTrainer |
 | `unsloth_trainer.py` | `UnslothTrainer` | Unsloth-accelerated QLoRA (2-4x faster, 70% less VRAM); falls back to PEFT |
-| `fewshot_prompter.py` | `FewShotPrompter` | Few-shot prompting with the base model — no fine-tuning required |
+| `fewshot_prompter.py` | `FewShotPrompter` | Few-shot prompting with the base model: no fine-tuning required |
 
 All three share `config.py` (hyperparameters) and `dataset_loader.py` (CSV → HF Dataset).
 Evaluation utilities live in `evaluate.py` / `metrics.py` / `inference.py`.
@@ -25,14 +25,14 @@ cd src/text_based/nemotron3
 conda activate genai
 ```
 
-### Approach 1 — HuggingFace SFTTrainer QLoRA
+### Approach 1: HuggingFace SFTTrainer QLoRA
 
 ```bash
 python hf_sft_trainer.py
 # Saves adapter to: results/Midcurve-Nemotron-Mini-v1/
 ```
 
-### Approach 2 — Unsloth-accelerated QLoRA
+### Approach 2: Unsloth-accelerated QLoRA
 
 ```bash
 # Install Unsloth first (Windows CUDA 12.1):
@@ -42,7 +42,7 @@ python unsloth_trainer.py
 # Saves adapter to: results/Midcurve-Nemotron-Unsloth-v1/  (or -PEFT-v1 on fallback)
 ```
 
-### Approach 3 — Few-shot prompting (base model, no adapter)
+### Approach 3: Few-shot prompting (base model, no adapter)
 
 ```bash
 python fewshot_prompter.py
