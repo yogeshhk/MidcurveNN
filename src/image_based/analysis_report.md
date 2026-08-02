@@ -211,6 +211,16 @@ Issues:
   resolves to this very file (already in `sys.modules`), so nothing is imported.
   Harmless today only because `keras_gan_pix2pix.py` uses no config symbols.
 
+**Design-level caveat** (moved here from README.md's dead comment block, 2026-08-02, still
+relevant after the 2026-08-02 bug fixes above): in a GAN, the discriminator's role is to learn
+the cost function itself (what "looks right"), not to enforce an exact pixel-for-pixel match. For
+MidcurveNN, each input profile has one exact correct midcurve output, so a plain L1/L2 loss (as
+used by the plain encoder-decoders) is arguably a better-matched objective than an adversarial
+one. The bug fixes above make pix2pix *runnable and structurally correct*, but don't resolve this
+underlying question of whether a GAN is the right paradigm for an exact-output problem like this
+one; worth comparing pix2pix's results against the plain encoder-decoders' once both are
+evaluated on a leakage-free split (Rec 3).
+
 ### 7. img2img (PyTorch pix2pix)
 
 Architecture: classic PyTorch pix2pix; 8-down/8-up U-Net generator with tanh output,

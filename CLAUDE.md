@@ -298,6 +298,12 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 - **`pix2pix` and `img2img` results grids**: Both `main_pix2pix.py` and `main_img2img_pytorch.py` now call `save_results_grid_images` after training. Pix2Pix loads test data via `data_loader.load_data(batch_size=7, is_testing=True)`; img2img converts PyTorch tensors (B, C, H, W) in [-1,1] to grayscale numpy arrays via `_tensor_to_gray_list()`. Results go to `<approach>/results/results_grid.png`.
 
+- **Common Windows/conda environment errors** (moved here from README.md's dead comment block, 2026-08-02):
+  - `no library called "libcairo-2" was found`: install the GTK 3 runtime (needed by DrawSVG for rasterization) and add it to `PATH`.
+  - `Failed to create a directory: models/autoencoder_model.pkl\variables`: use a forward slash or `os.path.join(...)` for checkpoint/model paths instead of a literal backslash.
+  - Keras layer errors mentioning `*_constraint`: pass constraint arguments explicitly if using an older Keras layer API.
+  - `Could not load dynamic library 'cudart64_100.dll'`: CUDA toolkit version mismatch with the pinned TensorFlow version; verify the CUDA/cuDNN version matches what TensorFlow 2.13 expects.
+
 ## Code Analysis Reports
 
 Each of the three approach folders has a standalone `analysis_report.md` (bugs,

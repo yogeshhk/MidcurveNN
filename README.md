@@ -15,6 +15,19 @@ MidcurveNN is a project aimed at solving the challenging problem of finding the 
 
 If you are interested in working/contributing to this project voluntarily, do have a look at the [issues](https://github.com/yogeshhk/MidcurveNN/issues)
 
+## Publications/Talks
+- Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
+- ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
+- CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
+- CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
+- Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
+- Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve.
+- Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
+- ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models", presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
+- ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks", published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025.zip`)
+- Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md): describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
+- Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction", IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
+
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni
 
@@ -81,13 +94,13 @@ src/
 
 Each of `image_based/`, `geometry_based/`, and `text_based/` has an `analysis_report.md`
 documenting known bugs, design risks, and accuracy recommendations for that approach
-(no code changes applied yet).
+(pix2pix's 3 bugs in `image_based/` are fixed as of 2026-08-02; the rest remain open).
 
-Two other top-level folders sit alongside `src/`:
+One other top-level folder sits alongside `src/`:
 - `publications/` holds conference/journal submission archives, presentation sources, and
   supporting material for the papers and talks listed under [Publications/Talks](#publicationstalks)
-  below, including prior related research (e.g. the author's Midsurface PhD work).
-- `references/` holds locally-used prompt templates and research notes for this project.
+  below, including prior related research (e.g. the author's Midsurface PhD work) and the
+  prompt templates/research notes used while developing this project (`publications/prompts/`).
 
 ## Instructions to Run
 
@@ -218,19 +231,6 @@ Once we have this brep representations of both, profile and the corresponding mi
 
 One major advantage of text based method over image based method is that image output still has stray pixels, cleaning which will be a complex task. But text method has exact points. It may just give odd lines, which can be removed easily.
 
-## Publications/Talks
-- Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
-- ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
-- CAD Conference 2021, Barcelona, pages 223-225 http://www.cad-conference.net/files/CAD21/CAD21_223-225.pdf
-- CAD & Applications 2022 Journal paper 19(6) http://www.cad-journal.net/files/vol_19/CAD_19(6)_2022_1154-1161.pdf
-- Google Developers Dev Library https://devlibrary.withgoogle.com/products/ml/repos/yogeshhk-MidcurveNN
-- Medium story [Geometry, Graphs and GPT](https://medium.com/technology-hits/geometry-graphs-and-gpt-2862d6d24866) talks about using LLMs (Large Language Models) to see if geometry serialized as line-list can predict the midcurve.
-- Kaggle [LLM-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) and its Ludwig fine-tuning [Notebook](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig). The [Image-dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvenn) and its [Simple Encode Decoder](https://www.kaggle.com/code/yogeshkulkarni/simple-encode-decoder-for-midcurvenn)
-- ICONIEA 2024 (IIT Kharagpur) extended abstract: "Midcurve Computation using Large Language Models", presented at International Conference on Intelligent and Innovative Endeavors in Applied Research, 2024
-- ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks", published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025.zip`)
-- Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md): describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
-- Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction", IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
-
 ## Citations
 - [Boussuge, Flavien, & Marc, Raphaël. (2021, October 9). Mid-Curve Completion Using Convolutional Neural Network. 29th International Meshing Roundtable (IMR), Virtual Conference.](https://doi.org/10.5281/zenodo.5559223)
 
@@ -248,62 +248,6 @@ globally potentially requiring a high-resolution pixel grid for large models.
 in: Open Data Sci. Conf.,2019
 ```
 
-
-<!-- 
-
-## Prep training data with transformations
-- Represent 2D profiles in a file, ideal is vector format like SVG. List of points/lines/curves.
-- Once one shape is available, both input as well as output midcurve should go through transformations like translation, rotation, scaling, mirror, etc.
-- This should be done programmatic-ally to generate huge number of input-output pairs.
-- Initial polygon profile data should be from PhD .data fies, having similar scheme for closed and open loops
-- Using these .dat files generate vagarious bitmap 100x100 images programmatic-ally, both for input profile as well as midcurve profile. DrawSVG library can be used to rasterize the vector images
-- Manually: Plot the points of profile and/or midcurve in Excel as scatter line plot. Remove all background grid legends, etc. Copy and paste as image in Powerpoint. Resize it.
-- DrawSVG method is preferred as it puts lots of blank space around the object, which is needed in case of transformations.
-
-## Implementation Notes:
-- Keras (TBD: Moving from independant Keras to Tensorflow.Keras, so wait for update here)
-	- DON’T Conda install -c conda-forge keras DIRECTLY
-	- Keras installation cribbed that tensorflow is not present
-	- Reinstalled tensorflow by pip – U
-	- Got error saying not able to load tensorflow. Looking at https://github.com/ContinuumIO/anaconda-issues/issues/10034 installing conda install vs2013_runtime
-	- Go to Anaconda prompt and follow https://medium.com/@margaretmz/anaconda-jupyter-notebook-tensorflow-and-keras-b91f381405f8
-	- If you get QT error for matplotlib, use “import matplotlib;matplotlib.use('TKAgg')”
-	- Using https://blog.keras.io/building-autoencoders-in-keras.html to have a base code
-	
-- Pix2Pix
-	- Github Keras-GAN code https://github.com/eriklindernoren/Keras-GAN/tree/master/pix2pix
-	- Same Keras-GAN code in notebook format https://www.kaggle.com/vikramtiwari/pix-2-pix-model-using-tensorflow-and-keras/notebook
-	- Google Colab based code (different from Keras-GAN) https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/r2/tutorials/generative/pix2pix.ipynb
-
-## Why Pix2Pix may not be good
-- In midcurveNN problem, both input and output are black and white images with with pixel width. 
-- For given input image, exact and only one possible output is there. No other output would be correct.
-- So, Loss function of such learning systems would be exact and can be specified by simple distance formulas like L1, L2, etc.
-- Simple/Dense/CNN based Encoder Decoder have exact loss function.
-- In case of GANs, like conditional GAN or Pix2Pix, the purpose of Discriminator is actually to learn the Cost Function itself. (Ref: Phillip pod cast video regarding Pix2Pix). There "goodness" of the output is learnt in the Cost Function, and not the Exactness as specified in the examples above.
-- Thus, theoretically, GANs are not suitable for MidcurveNN problem. Comments?
-
-
-## Errors and Solutions
-- no library called "libcairo-2" was found
-  https://stackoverflow.com/questions/28211418/python-oserror-cannot-load-library-libcairo-so-2
-  Install GTK 3 runtime https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer and add to path
-- Failed to create a directory: models/autoencoder_model.pkl\variables; No such file or directory
-  use a forward slash with the checkpoint directory or os.paths.join("models","modelname")
-- If using Keras pass *_constraint arguments to layers.
-- Cuda lib error, https://www.joe0.com/2019/10/19/how-resolve-tensorflow-2-0-error-could-not-load-dynamic-library-cudart64_100-dll-dlerror-cudart64_100-dll-not-found/
-
-## Pending
-- Network 2 Network Encode Decoder (not graph, as graph is topological-connectivity based, and not spatial)
-- Different sizes of input and output
-- Closed->closed/open, Manifold->Manifold/Non-manifold
-
-## Why Me?
-- Directly matching MidcurveNN, my PhD topic, own work in image domain, already an own paper, IKIGAI and Specific Knowledge (actually no one else knows!!)
-- Favorite Graph algorithms from masters, Data Science (encoder-decoder), need in large graph databases (neo4j) or knowledge graphs
-- Pytorch Geometric, Geometric Deep Learning, enormous collaboration-research publications potential.
-- MidcurveNN brings geometric view of applying Skeletonization to profile or even solid geometry, into graph data science, real Geometric Deep Learning
- -->
 ## Disclaimer:
-Author (yogeshkulkarni@yahoo.com) gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all.
+Author gives no guarantee of the results of the program. It is just a fun script. Lot of improvements are still to be made. So, don’t depend on it at all. For questions or issues, please use the [GitHub Issues](https://github.com/yogeshhk/MidcurveNN/issues) page.
 	
