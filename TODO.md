@@ -130,3 +130,57 @@ bug-fixing here until the maintainer explicitly says to revisit it -- don't prop
 "next work" in the meantime.
 
 ### `src/text_based/analysis_report.md` -- in progress, started 2026-08-02
+
+Bigger and higher-stakes than `image_based` (QLoRA fine-tuning of a 7B model, not small
+Keras/PyTorch models) -- fixes here are code/logic-only and verified with synthetic data or
+static checks, NOT with real training runs (impractical in this session). Split into "safe to
+fix now" (pure code/logic, no training needed) vs. "needs a decision first" (dataset
+regeneration, or design choices about wiring up unused config).
+
+**Safe fixes -- done:**
+- [x] Bug B1 (HIGH) -- `run_pipeline.py --full`/`--train` called nonexistent `train_enhanced.py`
+      / referenced `inference_enhanced.py` -- fixed to `train.py`/`inference.py`; confirmed
+      `inference.py` genuinely accepts `--single`/`--num_samples`
+- [x] Bug B3 (HIGH) -- `metrics.py` MAE/RMSE were one-directional (not Chamfer-symmetric) for
+      mismatched point counts, letting degenerate short predictions score artificially low --
+      fixed (symmetric averaging, same approach as the existing `chamfer_distance`). Verified:
+      a 1-point prediction matching one of 3 true points went from a "perfect" MAE of 0.0 to a
+      correct 3.536.
+- [x] Bug B5 (MEDIUM) -- `finetuning/inference.py`'s repair connected components pairwise in
+      BFS-discovery order instead of by true nearest pair -- ported `nemotron3/inference.py`'s
+      proven MST-style greedy-nearest-pair algorithm. Verified: a synthetic 3-component case
+      dropped total connection length from ~137.9 (old) to 70.12 (new).
+- [x] Bug B6 (MEDIUM) -- `run_pipeline.py`'s error-analysis step used bare relative filenames
+      that only worked if manually copied into the CWD -- fixed to match `evaluate.py`'s and
+      `config.py`'s real paths.
+- [x] Bug B8 (LOW) -- `visualize.py::plot_results` always overwrote a stray `midcurve_result.png`
+      in the CWD -- added an optional `save_path` param, defaults to not saving internally at
+      all (the one real caller, `evaluate.py`, already does its own save+close). Verified: zero
+      stray files produced.
+- [x] Bug B9 (LOW) -- `data_validator.py::is_connected_graph` seeded BFS at a hardcoded node 0
+      (wrong if point 0 is unreferenced) and had no bounds-check on line indices (KeyError risk)
+      -- fixed both. Verified 3 synthetic cases (unreferenced-point-0, out-of-range index,
+      genuinely-disconnected) all now behave correctly.
+- [x] All 5 files syntax-checked; full suite re-run: `pytest text_based/testing/
+      test_text_based.py` -- 44/45 passed. The 1 failure
+      (`test_34_nemotron3_results_placeholder_exists`) is pre-existing and unrelated: the whole
+      `nemotron3/results/` directory doesn't exist on disk, and nothing in `nemotron3/` was
+      touched this session. Not fixed (out of today's scope).
+
+**Needs a decision before touching -- not yet started:**
+- [ ] Bugs A1, A2 (HIGH, dataset) -- `data/csvs/` is stale vs. the current generator, and the
+      split leaks near-duplicate variants. Regenerating needs a decision on capping the
+      translation grid first (naive regen would produce an 11,200-row, 93%-translation-dominated
+      dataset per the report's R1), and would invalidate any existing fine-tuned checkpoint.
+- [ ] Bug A3 (MEDIUM, dataset) -- only 4 topological families exist; expanding needs new shape
+      authoring (content creation, not a code fix).
+- [ ] Bug B2 (HIGH) -- `GeometricValidationCallback` runs a full generate() pass every epoch but
+      never records anything -- needs a decision: implement the metric logging properly, or just
+      remove the dead callback.
+- [ ] Bug B4 (MEDIUM) -- geometric-loss/curriculum/early-stopping config flags are defined but
+      entirely unused in `train.py` -- needs a decision: wire them up (real design/engineering
+      work) or strip them from `Config` to stop documenting behavior that doesn't exist.
+- [ ] Bug B7 (LOW) -- `combined_score` ignores MAE/RMSE/vertex_count_accuracy -- not yet
+      addressed (lower priority, left for a future pass).
+- [ ] Bug B10 (LOW) -- `nemotron3/run_demo.py` duplicates `fewshot_prompter.py` almost verbatim
+      -- not yet addressed (lower priority, left for a future pass).

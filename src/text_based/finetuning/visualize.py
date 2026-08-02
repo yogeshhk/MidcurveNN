@@ -2,8 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from metrics import GeometricMetrics
 
-def plot_results(input_str, target_str, pred_str, title="Midcurve Prediction"):
-    """Plots Input (Blue), Target (Green), and Prediction (Red Dashed)."""
+def plot_results(input_str, target_str, pred_str, title="Midcurve Prediction", save_path=None):
+    """Plots Input (Blue), Target (Green), and Prediction (Red Dashed).
+
+    If save_path is given, saves the figure there. Otherwise leaves the figure open
+    for the caller to save/close itself -- evaluate.py's visualize_predictions loop
+    already does its own plt.savefig()+plt.close() right after calling this, so the
+    old unconditional `plt.savefig('midcurve_result.png')` here was just a stray file
+    in the process's CWD, clobbered every iteration and never actually used (see
+    analysis_report.md Bug 8)."""
     
     def extract_lines(brep_str):
         try:
@@ -54,5 +61,6 @@ def plot_results(input_str, target_str, pred_str, title="Midcurve Prediction"):
     plt.title(title)
     plt.grid(True)
     plt.axis('equal')
-    plt.savefig('midcurve_result.png')
-    print("Plot saved to midcurve_result.png")
+    if save_path:
+        plt.savefig(save_path)
+        print(f"Plot saved to {save_path}")

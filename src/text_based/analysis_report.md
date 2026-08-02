@@ -323,7 +323,7 @@ component-specific.)
   `TrainerCallback.on_evaluate`, a combined loss term) or remove them from
   `Config` so the file documents actual behaviour.
 
-### B5 [Medium] `finetuning/inference.py` repair only connects BFS-discovered components pairwise, not by true nearest pair overall
+### B5 [Medium] ~~`finetuning/inference.py` repair only connects BFS-discovered components pairwise, not by true nearest pair overall~~ FIXED (2026-08-02)
 
 - `finetuning/inference.py:97-160` (`repair_connectivity`): after finding
   connected components via BFS, it connects component `i` to component
@@ -340,6 +340,13 @@ component-specific.)
   approach.
 - Fix: port `nemotron3/inference.py::_repair`'s algorithm (or the
   underlying idea) into `finetuning/inference.py`.
+- **Applied**: `repair_connectivity` now uses the same greedy-nearest-pair,
+  recompute-and-repeat approach as `nemotron3/inference.py::_repair`, keeping
+  the original method name/signature so no caller needed updating. Verified
+  with a synthetic 3-component case (A={0,1}, B={2,3} far away, C={4} close
+  to A) where discovery order (A, B, C) doesn't match proximity order (A, C,
+  B): the new algorithm correctly connects A-C first, totaling 70.12 length
+  added vs. the ~137.9 the old discovery-order algorithm would have produced.
 
 ### B6 [Medium] ~~`run_pipeline.py` error-analysis step reads paths relative to the wrong working directory~~ FIXED (2026-08-02)
 
@@ -376,7 +383,7 @@ component-specific.)
   sum, e.g. `0.3*distance + 0.25*topology + 0.25*connectivity +
   0.2*vertex_count_accuracy`.
 
-### B8 [Low] `visualize.py::plot_results` always overwrites a stray file in the current directory
+### B8 [Low] ~~`visualize.py::plot_results` always overwrites a stray file in the current directory~~ FIXED (2026-08-02)
 
 - `finetuning/visualize.py:57` unconditionally
   `plt.savefig('midcurve_result.png')` before returning, on top of whatever
@@ -392,8 +399,14 @@ component-specific.)
   double save).
 - Fix: accept an optional `save_path` parameter and only save once, at the
   caller's chosen location.
+- **Applied**: added an optional `save_path=None` parameter; `plot_results`
+  now only saves (and only when explicitly given a path) instead of always
+  writing a stray `midcurve_result.png`. `evaluate.py`'s call site needed no
+  change since it already does its own `plt.savefig()`+`plt.close()` right
+  after calling this. Verified: calling `plot_results` with no `save_path`
+  produces zero files on disk.
 
-### B9 [Low] `data_validator.py::is_connected_graph` starts BFS from a hardcoded node index that may not be part of the graph
+### B9 [Low] ~~`data_validator.py::is_connected_graph` starts BFS from a hardcoded node index that may not be part of the graph~~ FIXED (2026-08-02)
 
 - `finetuning/data_validator.py:71-73`: `queue = [0]; visited.add(0)`
   regardless of whether point index 0 is referenced by any `Line`. If a
@@ -411,6 +424,12 @@ component-specific.)
 - Fix: seed BFS from any point index that appears in `Lines`, bounds-check
   line indices, or iterate all unvisited indices as `connectivity_score`
   already does.
+- **Applied**: both fixes together -- BFS now seeds from any point actually
+  referenced by a `Line` (not a hardcoded 0), and out-of-range line indices
+  are skipped instead of raising `KeyError`. Verified 3 synthetic cases: an
+  unreferenced point 0 with the rest connected now correctly returns `True`
+  (was a false-negative bug before); an out-of-range line index no longer
+  crashes; a genuinely disconnected graph still correctly returns `False`.
 
 ### B10 [Low] `nemotron3/run_demo.py` and `nemotron3/fewshot_prompter.py` are near-duplicate implementations
 
@@ -568,19 +587,19 @@ reported numbers.
 
 | Item | Where | Severity |
 |---|---|---|
-| A1 `data/csvs/` stale vs. current `config.py`/`create_brep_csvs.py` | utils/create_brep_csvs.py + data/csvs/ | High |
-| A2 Train/val/test split leaks near-duplicate transformed variants | utils/create_brep_csvs.py:270-280 | High |
-| A3 Only 4 topological families exist anywhere in the dataset | data/brep/ | Medium |
-| B1 `run_pipeline.py --full` calls nonexistent `train_enhanced.py` | finetuning/run_pipeline.py:126-129,246 | High |
-| B2 `GeometricValidationCallback` is dead code, wastes a generate() pass/epoch | finetuning/train.py:28-91,163 | High |
-| B3 MAE/RMSE one-directional (not Chamfer-symmetric) for mismatched point counts | finetuning/metrics.py:53-84 | High |
-| B4 Geometric-loss/curriculum/early-stopping config flags entirely unused | finetuning/config.py:46-62 + train.py | Medium |
-| B5 `finetuning` repair connects components pairwise, not globally-nearest | finetuning/inference.py:97-160 | Medium |
-| B6 `run_pipeline.py` error-analysis step uses bare relative filenames | finetuning/run_pipeline.py:150-163 | Medium |
-| B7 `combined_score` ignores MAE/RMSE/vertex_count_accuracy | finetuning/metrics.py:242-256 | Low |
-| B8 `plot_results` always overwrites stray CWD file, never closes figure | finetuning/visualize.py:57 | Low |
-| B9 `is_connected_graph` BFS seeded at hardcoded node 0, no bounds check | finetuning/data_validator.py:64-73 | Low |
-| B10 `run_demo.py` duplicates `fewshot_prompter.py` almost verbatim | nemotron3/run_demo.py | Low |
+| A1 `data/csvs/` stale vs. current `config.py`/`create_brep_csvs.py` | utils/create_brep_csvs.py + data/csvs/ | High -- DEFERRED (needs a translation-grid-capping decision first) |
+| A2 Train/val/test split leaks near-duplicate transformed variants | utils/create_brep_csvs.py:270-280 | High -- DEFERRED (regenerate together with A1) |
+| A3 Only 4 topological families exist anywhere in the dataset | data/brep/ | Medium -- DEFERRED (needs new shape authoring) |
+| B1 `run_pipeline.py --full` calls nonexistent `train_enhanced.py` | finetuning/run_pipeline.py:126-129,246 | High -- FIXED 2026-08-02 |
+| B2 `GeometricValidationCallback` is dead code, wastes a generate() pass/epoch | finetuning/train.py:28-91,163 | High -- DEFERRED (needs a design decision: implement or remove) |
+| B3 MAE/RMSE one-directional (not Chamfer-symmetric) for mismatched point counts | finetuning/metrics.py:53-84 | High -- FIXED 2026-08-02, verified with a synthetic degenerate case |
+| B4 Geometric-loss/curriculum/early-stopping config flags entirely unused | finetuning/config.py:46-62 + train.py | Medium -- DEFERRED (needs a design decision) |
+| B5 `finetuning` repair connects components pairwise, not globally-nearest | finetuning/inference.py:97-160 | Medium -- FIXED 2026-08-02, verified via a synthetic 3-component case |
+| B6 `run_pipeline.py` error-analysis step uses bare relative filenames | finetuning/run_pipeline.py:150-163 | Medium -- FIXED 2026-08-02 |
+| B7 `combined_score` ignores MAE/RMSE/vertex_count_accuracy | finetuning/metrics.py:242-256 | Low -- not yet addressed |
+| B8 `plot_results` always overwrites stray CWD file, never closes figure | finetuning/visualize.py:57 | Low -- FIXED 2026-08-02, verified (zero stray files) |
+| B9 `is_connected_graph` BFS seeded at hardcoded node 0, no bounds check | finetuning/data_validator.py:64-73 | Low -- FIXED 2026-08-02, verified with 3 synthetic cases |
+| B10 `run_demo.py` duplicates `fewshot_prompter.py` almost verbatim | nemotron3/run_demo.py | Low -- not yet addressed |
 | R1 Regenerate/rebalance/regroup dataset; expand beyond 4 shape families | - | Priority 1 |
 | R2 Wire up geometric loss + curriculum + Hausdorff-based early stopping | - | Priority 1 |
 | R3 Symmetrize MAE/RMSE; enrich combined_score | - | Priority 2 |

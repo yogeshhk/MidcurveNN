@@ -59,31 +59,37 @@ class DataValidator:
         if len(lines) == 0:
             return False
         
-        # Build adjacency list
+        # Build adjacency list, skipping any line that references an out-of-range
+        # point index instead of raising a KeyError (see analysis_report.md Bug 9).
         adj = {i: [] for i in range(len(points))}
+        points_with_connections = set()
         for line in lines:
             p1, p2 = line[0], line[1]
+            if p1 >= len(points) or p2 >= len(points):
+                continue
             adj[p1].append(p2)
             adj[p2].append(p1)
-        
-        # BFS to check connectivity
+            points_with_connections.add(p1)
+            points_with_connections.add(p2)
+
+        if not points_with_connections:
+            return False
+
+        # BFS to check connectivity, seeded from a point actually referenced by a
+        # Line rather than a hardcoded index 0 (which may be an unreferenced or
+        # hallucinated point -- see analysis_report.md Bug 9).
+        start = next(iter(points_with_connections))
         visited = set()
-        queue = [0]
-        visited.add(0)
-        
+        queue = [start]
+        visited.add(start)
+
         while queue:
             node = queue.pop(0)
             for neighbor in adj[node]:
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append(neighbor)
-        
-        # Check if all points with connections are visited
-        points_with_connections = set()
-        for line in lines:
-            points_with_connections.add(line[0])
-            points_with_connections.add(line[1])
-        
+
         return len(visited) == len(points_with_connections)
     
     @staticmethod
