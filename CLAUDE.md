@@ -324,15 +324,35 @@ design risks, and accuracy recommendations):
   image_based/pix2pix/test_pix2pix.py image_based/img2img/test_img2img.py
   image_based/testing/test_image_based.py -v` (48/48 passing), plus real end-to-end
   training runs for a couple of the encoder-decoders.
-- `src/geometry_based/analysis_report.md` -- no code changes applied
-- `src/text_based/analysis_report.md` -- no code changes applied
+- `src/geometry_based/analysis_report.md` -- no code changes applied. **Hibernated as of
+  2026-08-02** per the maintainer (Phase III is "not ready at all" right now) -- do not
+  pick this up as "next work" until explicitly told to revisit it.
+- `src/text_based/analysis_report.md` -- as of 2026-08-02, 6 of the cataloged bugs are
+  fixed and verified with synthetic-data checks (real QLoRA training runs are
+  impractical to use for verification here): B1 (`run_pipeline.py` called a
+  nonexistent `train_enhanced.py`), B3 (MAE/RMSE were asymmetric, letting degenerate
+  short predictions score artificially low -- verified via a synthetic case going
+  from a "perfect" 0.0 to a correct 3.536), B5 (ported `nemotron3`'s proven MST-style
+  graph-repair algorithm into `finetuning/inference.py` -- verified ~50% shorter
+  repair connections on a synthetic 3-component case), B6 (a path bug in the same
+  `run_pipeline.py`), B8 (`visualize.py` always overwrote a stray file), and B9
+  (`data_validator.py`'s BFS seeded at a hardcoded, possibly-unreferenced node 0, no
+  index bounds-check). Confirmed via `python -m pytest text_based/testing/
+  test_text_based.py -v` (44/45 passing; the 1 failure,
+  `test_34_nemotron3_results_placeholder_exists`, is pre-existing/unrelated -- the
+  whole `nemotron3/results/` directory doesn't exist on disk). Remaining: A1/A2/A3
+  (dataset), B2, B4 (config), B7, B10 -- see `TODO.md` for status and, for A1/A2/B2/B4,
+  a set of decisions already made 2026-08-02 but not yet executed.
 
 All three flag the same root cause independently: augmented variants (rotate/
 scale/translate/mirror) of one base shape are shuffled flatly across
 train/test/val instead of being grouped by shape identity, so reported
 accuracy metrics likely reflect interpolation rather than generalization.
-Fix this dataset-splitting issue first: it affects the validity of headline
-numbers cited in Research Context below for all three phases.
+**Decided 2026-08-02 (not yet executed): split by base-shape identity
+(leave-one-shape-out)** -- see `TODO.md`'s "Decided, ready to execute next session"
+for the full writeup covering both `image_based` (Bugs 7/11) and `text_based`
+(Bugs A1/A2). This affects the validity of headline numbers cited in Research
+Context below for all three phases.
 
 ## Research Context
 

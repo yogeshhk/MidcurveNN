@@ -10,8 +10,8 @@ approach's own `analysis_report.md` and the root `README.md`'s "Pending" section
 | Phase | Folder | Status | Known issues / next steps |
 |---|---|---|---|
 | Phase I: Image-based | `src/image_based/` | Implemented, 7 encoder-decoder variants; all cataloged bugs fixed 2026-08-02 except the augmentation-leakage/dataset-regeneration pair (Bugs 7, 11), deliberately deferred as a larger task. 48/48 tests passing. | See [`src/image_based/analysis_report.md`](src/image_based/analysis_report.md) |
-| Phase II: Text/LLM-based | `src/text_based/` | Implemented with caveats: reported metrics (QLoRA Qwen2.5-7B: MAE=0.78, PSR=98%) reflect train/test data leakage (near-duplicate augmented variants of same 4 base shapes); see report for generalization concerns. Nemotron-Mini-4B few-shot also working. | See [`src/text_based/analysis_report.md`](src/text_based/analysis_report.md) |
-| Phase III: Geometry-based | `src/geometry_based/` | Implemented (from-scratch Graph Transformer + fine-tuned Graphormer variant); comprehensive evaluation still ongoing (preliminary status) | See [`src/geometry_based/analysis_report.md`](src/geometry_based/analysis_report.md) |
+| Phase II: Text/LLM-based | `src/text_based/` | Implemented with caveats: 6 code-level bugs fixed 2026-08-02 (B1, B3, B5, B6, B8, B9), 44/45 tests passing. Reported metrics (QLoRA Qwen2.5-7B: MAE=0.78, PSR=98%) still reflect train/test data leakage (near-duplicate augmented variants of same 4 base shapes) -- fix decided (leave-one-shape-out) but not yet executed. Nemotron-Mini-4B few-shot also working. | See [`src/text_based/analysis_report.md`](src/text_based/analysis_report.md) |
+| Phase III: Geometry-based | `src/geometry_based/` | Implemented (from-scratch Graph Transformer + fine-tuned Graphormer variant); comprehensive evaluation still ongoing (preliminary status). **Hibernated 2026-08-02 per the maintainer** -- not ready, not picking up bug-fixing until told to revisit. | See [`src/geometry_based/analysis_report.md`](src/geometry_based/analysis_report.md) |
 
 ## Open problems (from root README's "Pending" section)
 
@@ -119,9 +119,11 @@ real end-to-end training runs for `simple`/`dense` and a manual non-square check
 
 - [ ] Bug 7 (MEDIUM) -- augmentation-level leakage in all splits (shared root cause across all
       3 phases per the "Code Analysis Reports" note in `CLAUDE.md`) -- NOT fixed by Bug 6;
-      held-out samples can still be rotated/translated variants of a training shape. Deferred.
+      held-out samples can still be rotated/translated variants of a training shape. **Split
+      strategy decided 2026-08-02: leave-one-shape-out** -- see "Decided, ready to execute next
+      session" below.
 - [ ] Bug 11 (MEDIUM) -- `unet-splits/` cannot be regenerated from raw data -- related to Bug 7,
-      deferred alongside it
+      same decided fix applies (regenerate together, once execution starts)
 
 ### `src/geometry_based/analysis_report.md` -- HIBERNATED (2026-08-02)
 
@@ -167,20 +169,92 @@ regeneration, or design choices about wiring up unused config).
       `nemotron3/results/` directory doesn't exist on disk, and nothing in `nemotron3/` was
       touched this session. Not fixed (out of today's scope).
 
-**Needs a decision before touching -- not yet started:**
-- [ ] Bugs A1, A2 (HIGH, dataset) -- `data/csvs/` is stale vs. the current generator, and the
-      split leaks near-duplicate variants. Regenerating needs a decision on capping the
-      translation grid first (naive regen would produce an 11,200-row, 93%-translation-dominated
-      dataset per the report's R1), and would invalidate any existing fine-tuned checkpoint.
+**Still open, no decision yet:**
 - [ ] Bug A3 (MEDIUM, dataset) -- only 4 topological families exist; expanding needs new shape
-      authoring (content creation, not a code fix).
-- [ ] Bug B2 (HIGH) -- `GeometricValidationCallback` runs a full generate() pass every epoch but
-      never records anything -- needs a decision: implement the metric logging properly, or just
-      remove the dead callback.
-- [ ] Bug B4 (MEDIUM) -- geometric-loss/curriculum/early-stopping config flags are defined but
-      entirely unused in `train.py` -- needs a decision: wire them up (real design/engineering
-      work) or strip them from `Config` to stop documenting behavior that doesn't exist.
+      authoring (content creation, not a code fix). Not brainstormed 2026-08-02; revisit later.
 - [ ] Bug B7 (LOW) -- `combined_score` ignores MAE/RMSE/vertex_count_accuracy -- not yet
       addressed (lower priority, left for a future pass).
 - [ ] Bug B10 (LOW) -- `nemotron3/run_demo.py` duplicates `fewshot_prompter.py` almost verbatim
       -- not yet addressed (lower priority, left for a future pass).
+
+## Decided, ready to execute next session (brainstormed 2026-08-02, nothing executed yet)
+
+Four decisions made in a short brainstorm at the end of the 2026-08-02 session. Each is written
+here as a self-contained, executable instruction so a future session can act on it directly
+without re-deriving the reasoning or re-reading the full `analysis_report.md` entries.
+
+### 1. Dataset split strategy: leave-one-shape-out
+
+Applies to **both** `image_based` Bugs 7/11 and `text_based` Bugs A1/A2 -- the same underlying
+fix, since all three phases share the same 4 base shapes and the same augmented-variant-leakage
+failure mode (documented as a shared root cause in `CLAUDE.md`'s "Code Analysis Reports" note).
+
+- Decision: split train/test/val by **base shape identity**, not by a flat shuffle over
+  augmented variants. E.g. train on I/L/T, test entirely on Plus (or some rotation of which
+  shape is held out); no augmented variant of the held-out shape appears in training at all.
+- Rejected alternative: held-out transform ranges (e.g. reserve rotations 150-180 degrees) --
+  keeps all 4 shapes in both splits but still risks family-level overfitting since the model has
+  seen the shape itself, just not that exact transform. Leave-one-shape-out is the cleaner test
+  of true generalization.
+- To execute:
+  - `image_based`: regenerate `image-pairs/`, `unet-splits/`, `images-combo/` from
+    `utils/prepare_data.py`, grouping by base shape before splitting (fixes Bugs 7, 11).
+  - `text_based`: regenerate `data/csvs/` from `utils/create_brep_csvs.py`, grouping by base
+    shape before splitting (fixes Bug A2; do this together with item 2 below, which also touches
+    `create_brep_csvs.py`, so both land in the same regeneration pass -- fixes Bug A1 too).
+  - Caveat: with only 4 shapes total, leave-one-shape-out means holding out 1 of 4 (25% of
+    families) for test -- small, but the report's own alternative (transform-range holdout) is
+    weaker. Revisit if Bug A3 (more shape families) ever gets picked up -- more shapes make this
+    split more statistically meaningful.
+
+### 2. text_based Bug A1: thin the translation grid
+
+- Decision: reduce `TRANSLATE_X_START/STOP/STEP` and `TRANSLATE_Y_START/STOP/STEP` in
+  `text_based/utils/config.py` from the current 51x51 dense grid (-50..50 step 2 each axis) down
+  to a handful of qualitatively different offsets per axis (~5-10 each), per the report's R1
+  reasoning: translation invariance is nearly free for a coordinate-regression LLM to learn from
+  a few examples, so a dense grid buys little and drowns out rotation (the transform that
+  actually changes the BRep JSON non-trivially).
+- Rejected alternative: keep the dense config but randomly subsample translated variants at
+  CSV-build time in `create_brep_csvs.py` -- rejected in favor of just fixing the config directly
+  (simpler, and keeps `config.py`'s ranges honest about what actually gets generated).
+- To execute: edit `text_based/utils/config.py`'s translation range constants, then regenerate
+  `data/csvs/` (same pass as item 1's `text_based` split-by-shape change -- both are config/data
+  regeneration, do them together).
+- Note: regenerating `data/csvs/` invalidates any existing fine-tuned checkpoint's original
+  train/val/test split.
+
+### 3. text_based Bug B2: remove `GeometricValidationCallback`
+
+- Decision: delete the dead callback in `finetuning/train.py` (the per-epoch `try` block, roughly
+  `train.py:28-91`, that calls `model.generate()` on up to 10 samples every epoch but never
+  appends to `metrics_list`, so the `if metrics_list:` block never runs). Stops the wasted
+  compute (a full generation pass every epoch with no result) immediately.
+- Rejected alternative: implement it properly (wire to `GeometricMetrics.compute_all_metrics`) --
+  rejected for now as more work than justified today; revisit together with Bug B4 if/when
+  geometric-loss + curriculum learning ever gets implemented (R2), since a working per-epoch
+  geometric validation metric is a prerequisite for Hausdorff-based early stopping anyway.
+- To execute: delete the callback code in `train.py`; also check `train.py:163`'s
+  `use_cache=False if USE_GRADIENT_CHECKPOINTING else True` line, since that was disabling the KV
+  cache globally partly to support the (now-removed) per-epoch `generate()` calls -- confirm
+  whether it's still needed for anything else before deciding whether to touch it too.
+
+### 4. text_based Bug B4: strip unused config flags
+
+- Decision: remove `USE_GEOMETRIC_LOSS`, `GEOMETRIC_LOSS_WEIGHT`, `TOKEN_LOSS_WEIGHT`,
+  `USE_CURRICULUM`, `CURRICULUM_STAGES`, `EARLY_STOPPING_PATIENCE`, `EARLY_STOPPING_METRIC`, and
+  `CHECKPOINT_METRICS` from `finetuning/config.py` (`config.py:46-62`), since none of them are
+  referenced anywhere in `train.py` and they currently just document behavior that doesn't exist.
+  Also note `EARLY_STOPPING_METRIC = "hausdorff_distance"` doesn't even match the real metric key
+  name (`"hausdorff"`) `metrics.py` produces -- another reason not to leave it sitting there
+  unimplemented.
+- Rejected alternative: keep as an intentional documented roadmap marker -- rejected because it
+  currently reads as implemented behavior, not a roadmap note; misleading as-is.
+- Also rejected (for now): implementing it (wiring geometric loss + curriculum + Hausdorff-based
+  early stopping into `train.py`) -- real design/engineering work, explicitly deferred to a
+  future session, not stripped-and-forgotten. If that future work happens, do it together with
+  Bug B2 (implement properly instead of removing) rather than after removal.
+- To execute: delete the 8 unused config fields; grep `finetuning/` once more first to
+  double check `augmentation.py` (which does use `AUGMENTATION_NOISE_LEVEL`/
+  `AUGMENTATION_MULTIPLIER`, per the report -- those two are NOT part of this removal, only the
+  8 geometric-loss/curriculum/early-stopping ones are).

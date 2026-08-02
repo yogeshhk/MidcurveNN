@@ -94,9 +94,11 @@ src/
 
 Each of `image_based/`, `geometry_based/`, and `text_based/` has an `analysis_report.md`
 documenting known bugs, design risks, and accuracy recommendations for that approach
-(as of 2026-08-02, `image_based/`'s cataloged bugs are all fixed and test-verified
-except a deliberately-deferred dataset-leakage/regeneration task; `geometry_based/`
-and `text_based/` remain open).
+(as of 2026-08-02, `image_based/`'s cataloged bugs are all fixed and test-verified,
+`text_based/`'s code-level bugs are mostly fixed and test-verified, and
+`geometry_based/` is hibernated per the maintainer; a dataset-leakage/regeneration
+fix shared across all three phases has been decided but not yet executed -- see
+`TODO.md`).
 
 One other top-level folder sits alongside `src/`:
 - `publications/` holds conference/journal submission archives, presentation sources, and
