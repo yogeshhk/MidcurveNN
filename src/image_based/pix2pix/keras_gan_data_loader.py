@@ -60,7 +60,7 @@ class DataLoader():
         path = glob(os.path.join(DATA_DIR, data_type, '*'))
         self.n_batches = int(len(path) / batch_size)
 
-        for i in range(self.n_batches-1):
+        for i in range(self.n_batches):
             batch = path[i*batch_size:(i+1)*batch_size]
             imgs_A, imgs_B = [], []
             for img in batch:
@@ -93,4 +93,4 @@ class DataLoader():
 
 
     def imread(self, path):
-        return imageio.imread(path).astype(np.float)
+        return imageio.imread(path).astype(float)

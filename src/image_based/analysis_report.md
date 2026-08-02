@@ -278,15 +278,18 @@ runtime crashes because those tests intentionally skip on import failure.
 Severity: High = wrong results or crash on the documented path; Medium = degrades
 results or breaks a secondary path; Low = cosmetic/fragile.
 
-1. HIGH - pix2pix generator/data range mismatch. Generator ends in `sigmoid`
-   (`pix2pix/keras_gan_pix2pix.py:112`) while DataLoader normalizes to [-1,1]
-   (`pix2pix/keras_gan_data_loader.py:53-54,89-90`). Stroke targets (-1) are
-   unreachable; discriminator separates real/fake by value range; samples are
-   rescaled wrongly (`keras_gan_pix2pix.py:191`). The GAN cannot learn the task.
+1. ~~HIGH~~ FIXED (2026-08-02) - pix2pix generator/data range mismatch. Generator ended in
+   `sigmoid` (`pix2pix/keras_gan_pix2pix.py:112`) while DataLoader normalizes to [-1,1]
+   (`pix2pix/keras_gan_data_loader.py:53-54,89-90`). Stroke targets (-1) were
+   unreachable; discriminator separated real/fake by value range; samples were
+   rescaled wrongly. Fixed by changing the final activation to `tanh`, matching
+   the DataLoader's [-1,1] normalization and the existing `0.5*x+0.5` display
+   rescale in `sample_images` (which already assumed this range).
 
-2. HIGH - pix2pix crash: `astype(np.float)` (`pix2pix/keras_gan_data_loader.py:96`).
-   `np.float` was removed in numpy 1.24 and `src/environment.yml` pins
-   `numpy=1.24.*`. Every data load crashes.
+2. ~~HIGH~~ FIXED (2026-08-02) - pix2pix crash: `astype(np.float)`
+   (`pix2pix/keras_gan_data_loader.py:96`). `np.float` was removed in numpy 1.24 and
+   `src/environment.yml` pins `numpy=1.24.*`. Every data load crashed. Fixed by
+   using the builtin `float` instead.
 
 3. HIGH - img2img crash at import: `ImageFolder` pointed at flat directories
    `images-combo/train|test` which contain bare JPGs, no class subfolders
@@ -324,9 +327,10 @@ results or breaks a secondary path; Low = cosmetic/fragile.
    split (`cnnencoderdecoder/build_cnn_encoderdecoder_model.py:107-108`);
    best-weight restoration tracks overfitting, not generalization.
 
-10. MEDIUM - pix2pix `load_batch` off-by-one: `range(self.n_batches-1)`
-    (`pix2pix/keras_gan_data_loader.py:63`) drops one batch per epoch and yields
-    nothing at all when the folder has fewer than 2*batch_size images.
+10. ~~MEDIUM~~ FIXED (2026-08-02) - pix2pix `load_batch` off-by-one: `range(self.n_batches-1)`
+    (`pix2pix/keras_gan_data_loader.py:63`) dropped one batch per epoch and yielded
+    nothing at all when the folder had fewer than 2*batch_size images. Fixed to
+    `range(self.n_batches)`.
 
 11. MEDIUM - `utils/prepare_data.py` never writes `unet-splits/` although its
     docstring (line 8) and CLAUDE.md claim it does; `UNET_SPLITS_DIR` (line 48) is
@@ -468,7 +472,7 @@ Ordered by expected impact.
 | denseencoderdecoder | BCE / sigmoid | image-pairs 100x100 | Yes | class imbalance; saves last-epoch weights | Rec 1, 3, 10 |
 | denoiserencoderdecoder | BCE / sigmoid | stage-1 outputs | NO (stops after ~2 epochs, Bug 5) | broken EarlyStopping; adadelta lr; leakage | Rec 4, 1 |
 | unet | WBCE beta=0.1 / sigmoid | unet-splits 256x256 | Yes | no validation/best-checkpoint; dataset not regenerable | Rec 9, 8, 5 |
-| pix2pix (Keras) | LSGAN + 100*MAE / sigmoid (WRONG) | images-combo [-1,1] | NO (Bugs 1, 2) | output-range mismatch; np.float crash; batch drop | Rec 2 |
+| pix2pix (Keras) | LSGAN + 100*MAE / tanh (fixed 2026-08-02) | images-combo [-1,1] | Should now (Bugs 1, 2, 10 fixed; not yet re-run end-to-end) | was: output-range mismatch; np.float crash; batch drop | Rec 2 (done) |
 | img2img (PyTorch) | BCE-GAN + 100*L1 / tanh (correct) | images-combo [-1,1] | NO (Bugs 3, 4) | ImageFolder crash; missing import sys; init unused | Rec 11 |
 
 Overall: the UNet is the only approach whose loss matches the data statistics, which

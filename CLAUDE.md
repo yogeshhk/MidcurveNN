@@ -301,10 +301,13 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 ## Code Analysis Reports
 
 Each of the three approach folders has a standalone `analysis_report.md` (bugs,
-design risks, and accuracy recommendations, no code changes applied):
-- `src/image_based/analysis_report.md`
-- `src/geometry_based/analysis_report.md`
-- `src/text_based/analysis_report.md`
+design risks, and accuracy recommendations):
+- `src/image_based/analysis_report.md` -- as of 2026-08-02, pix2pix's 3 HIGH/MEDIUM
+  bugs (sigmoid/tanh range mismatch, `np.float` crash, `load_batch` off-by-one) are
+  fixed in code; the rest of the report (still no code changes applied) remains an
+  open findings list, not yet re-run end-to-end.
+- `src/geometry_based/analysis_report.md` -- no code changes applied
+- `src/text_based/analysis_report.md` -- no code changes applied
 
 All three flag the same root cause independently: augmented variants (rotate/
 scale/translate/mirror) of one base shape are shuffled flatly across

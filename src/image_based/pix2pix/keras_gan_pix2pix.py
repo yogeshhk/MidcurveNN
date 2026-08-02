@@ -108,8 +108,9 @@ class Pix2Pix():
         u6 = deconv2d(u5, d1, self.gf)
 
         u7 = tf.keras.layers.UpSampling2D(size=2)(u6)
-        # sigmoid keeps output in [0,1] to match the grayscale image targets loaded by DataLoader
-        output_img = tf.keras.layers.Conv2D(self.channels, kernel_size=4, strides=1, padding='same', activation='sigmoid')(u7)
+        # tanh keeps output in [-1,1] to match DataLoader's normalization (imgs/127.5 - 1);
+        # sample_images' 0.5*x+0.5 rescale for display already assumes this range
+        output_img = tf.keras.layers.Conv2D(self.channels, kernel_size=4, strides=1, padding='same', activation='tanh')(u7)
 
         return tf.keras.models.Model(d0, output_img)
 
