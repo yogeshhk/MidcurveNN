@@ -95,68 +95,55 @@ class MidcurveInference:
         return parsed, None
     
     def repair_connectivity(self, data: dict) -> dict:
-        """Attempt to repair disconnected graph"""
-        # This is a simplified repair - could be more sophisticated
+        """Repair a disconnected graph by greedily connecting the globally nearest
+        (visited, unvisited) point pair until everything is connected (Prim's-MST-
+        style), ported from nemotron3/inference.py::_repair. More robust than the
+        previous version, which only connected BFS-discovered components pairwise
+        in discovery order and could miss a closer pairing across non-adjacent
+        components (see analysis_report.md Bug 5)."""
         lines = data.get("Lines", [])
         points = np.array(data.get("Points", []))
-        
+
         if len(lines) == 0 or len(points) == 0:
             return data
-        
-        # Find connected components
-        adj = {i: [] for i in range(len(points))}
+
+        adj = {i: set() for i in range(len(points))}
         for line in lines:
             if len(line) >= 2:
                 p1, p2 = line[0], line[1]
                 if p1 < len(points) and p2 < len(points):
-                    adj[p1].append(p2)
-                    adj[p2].append(p1)
-        
-        # BFS to find components
-        visited = set()
-        components = []
-        
-        for start in range(len(points)):
-            if start not in visited:
-                component = []
-                queue = [start]
-                visited.add(start)
-                
-                while queue:
-                    node = queue.pop(0)
-                    component.append(node)
-                    for neighbor in adj[node]:
-                        if neighbor not in visited:
-                            visited.add(neighbor)
-                            queue.append(neighbor)
-                
-                components.append(component)
-        
-        # If multiple components, try to connect them
-        if len(components) > 1:
-            new_lines = lines.copy()
-            
-            # Connect each component to the next via nearest points
-            for i in range(len(components) - 1):
-                comp1_points = points[components[i]]
-                comp2_points = points[components[i + 1]]
-                
-                # Find nearest pair
-                min_dist = float('inf')
-                best_pair = None
-                
-                for p1_idx in components[i]:
-                    for p2_idx in components[i + 1]:
-                        dist = np.linalg.norm(points[p1_idx] - points[p2_idx])
-                        if dist < min_dist:
-                            min_dist = dist
-                            best_pair = (p1_idx, p2_idx)
-                
-                if best_pair:
-                    new_lines.append(list(best_pair))
-            
-            data["Lines"] = new_lines
-        
+                    adj[p1].add(p2)
+                    adj[p2].add(p1)
+
+        def component(start):
+            seen, queue = {start}, [start]
+            while queue:
+                node = queue.pop()
+                for neighbor in adj[node]:
+                    if neighbor not in seen:
+                        seen.add(neighbor)
+                        queue.append(neighbor)
+            return seen
+
+        all_nodes = set(range(len(points)))
+        visited = component(0)
+
+        if visited == all_nodes:
+            return data  # already fully connected
+
+        new_lines = lines.copy()
+        while visited != all_nodes:
+            unvisited = all_nodes - visited
+            v, u = min(
+                ((v, u) for v in visited for u in unvisited),
+                key=lambda vu: np.linalg.norm(points[vu[0]] - points[vu[1]])
+            )
+            new_lines.append([v, u])
+            adj[v].add(u)
+            adj[u].add(v)
+            visited = component(0)
+
+        data["Lines"] = new_lines
         return data
     
     def constrained_generation(self, profile_input: str, 

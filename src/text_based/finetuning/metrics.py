@@ -60,11 +60,14 @@ class GeometricMetrics:
         
         # If different number of points, use closest point matching
         if len(pred_points) != len(true_points):
-            # Use Chamfer-style matching
+            # Symmetric (Chamfer-style) matching: average BOTH directions, so a
+            # degenerate short prediction can't score artificially low by only being
+            # judged on the few points it emitted (see analysis_report.md Bug 3).
             dist_matrix = np.linalg.norm(pred_points[:, None] - true_points[None, :], axis=2)
-            min_dists = np.min(dist_matrix, axis=1)
-            return np.mean(min_dists)
-        
+            pred_to_true = np.mean(np.min(dist_matrix, axis=1))
+            true_to_pred = np.mean(np.min(dist_matrix, axis=0))
+            return (pred_to_true + true_to_pred) / 2
+
         return np.mean(np.abs(pred_points - true_points))
     
     @staticmethod
@@ -77,10 +80,12 @@ class GeometricMetrics:
             return 1000.0
         
         if len(pred_points) != len(true_points):
+            # Symmetric matching, same reasoning as mae_metric above.
             dist_matrix = np.linalg.norm(pred_points[:, None] - true_points[None, :], axis=2)
-            min_dists = np.min(dist_matrix, axis=1)
-            return np.sqrt(np.mean(min_dists ** 2))
-        
+            pred_to_true = np.mean(np.min(dist_matrix, axis=1) ** 2)
+            true_to_pred = np.mean(np.min(dist_matrix, axis=0) ** 2)
+            return np.sqrt((pred_to_true + true_to_pred) / 2)
+
         return np.sqrt(np.mean((pred_points - true_points) ** 2))
     
     @staticmethod

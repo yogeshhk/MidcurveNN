@@ -213,7 +213,7 @@ cosmetic/dead code.
 (A1-A3 above are dataset-level and apply to both pipelines; B1-B10 below are
 component-specific.)
 
-### B1 [High] `run_pipeline.py --full` / `--train` shells out to a script that does not exist
+### B1 [High] ~~`run_pipeline.py --full` / `--train` shells out to a script that does not exist~~ FIXED (2026-08-02)
 
 - `finetuning/run_pipeline.py:126-129` runs `python train_enhanced.py` (and
   the "next steps" banner at `:246` prints
@@ -231,6 +231,14 @@ component-specific.)
 - Fix: change the two `os.system()` calls to invoke `train.py` /
   `inference.py`, or add the missing `_enhanced` wrapper scripts if a
   distinct "enhanced" entry point was actually intended.
+- **Applied**: changed both `os.system()` references (`run_pipeline.py:127`'s
+  training step, and the `--single`/`--num_samples` lines in the "Next Steps"
+  banner) from `train_enhanced.py`/`inference_enhanced.py` to the real
+  `train.py`/`inference.py`. Confirmed `inference.py` genuinely accepts
+  `--single` and `--num_samples` (`inference.py:305-313`). Not runtime-verified
+  end-to-end (would require a full QLoRA fine-tuning run); the fix is a direct
+  string correction to match files that already exist and were already the
+  intended target per the surrounding code/docs.
 
 ### B2 [High] `GeometricValidationCallback` is dead code that still costs a full generation pass every epoch
 
@@ -253,7 +261,7 @@ component-specific.)
   callback until it does something; if kept, temporarily flip
   `model.config.use_cache = True` around the `generate()` calls.
 
-### B3 [High] `finetuning/metrics.py` MAE/RMSE degrade silently to a one-directional nearest-neighbour distance when point counts differ
+### B3 [High] ~~`finetuning/metrics.py` MAE/RMSE degrade silently to a one-directional nearest-neighbour distance when point counts differ~~ FIXED (2026-08-02)
 
 - `finetuning/metrics.py:53-84` (`mae_metric`, `rmse_metric`): when
   `len(pred_points) != len(true_points)`, the code computes
@@ -277,6 +285,13 @@ component-specific.)
 - Fix: symmetrize (`mean(min_dist(pred->true)) + mean(min_dist(true->pred))`,
   as `chamfer_distance` already does two functions above it in the same
   file), or report both directions separately.
+- **Applied**: both `mae_metric` and `rmse_metric` now average both matching
+  directions (pred->true and true->pred) for the mismatched-point-count case,
+  mirroring `chamfer_distance`'s existing symmetric approach. Verified with a
+  synthetic degenerate case (3-point true midcurve, 1-point prediction whose
+  single point exactly matches one true point): MAE went from 0.0 (a "perfect"
+  score despite missing 2 of 3 points) to 3.536, and RMSE from 0.0 to 6.455,
+  now correctly penalizing the under-generation.
 
 ### B4 [Medium] Config flags for geometric loss, curriculum learning, and metric-based early stopping are entirely unused
 
@@ -326,7 +341,7 @@ component-specific.)
 - Fix: port `nemotron3/inference.py::_repair`'s algorithm (or the
   underlying idea) into `finetuning/inference.py`.
 
-### B6 [Medium] `run_pipeline.py` error-analysis step reads paths relative to the wrong working directory
+### B6 [Medium] ~~`run_pipeline.py` error-analysis step reads paths relative to the wrong working directory~~ FIXED (2026-08-02)
 
 - `run_pipeline.py:150-163` checks `os.path.exists("evaluation_results.csv")`
   and then invokes
@@ -340,6 +355,11 @@ component-specific.)
   manually copied both files into the current working directory first.
 - Fix: use `Config`-derived absolute paths, consistent with how
   `evaluate.py --output_file` and `Config.TEST_FILE` are defined elsewhere.
+- **Applied**: replaced the bare filenames with `results/evaluation_results.csv`
+  and `../data/csvs/midcurve_llm_test.csv`, matching `evaluate.py`'s own
+  defaults (confirmed by reading `evaluate.py:343-347` and
+  `config.py:16-22`) for a process running from `finetuning/` (which every
+  other `run_command()` call in this file already assumes).
 
 ### B7 [Low] `metrics.py` `combined_score` ignores half the computed metrics
 

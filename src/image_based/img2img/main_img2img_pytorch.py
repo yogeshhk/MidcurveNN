@@ -1,5 +1,7 @@
 # Based on https://www.codespeedy.com/image-to-image-translation-in-pytorch/
 import os
+import sys
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -38,13 +40,31 @@ transform = transforms.Compose([transforms.Resize((256, 512)),
                                 transforms.ToTensor(),
                                 transforms.Normalize((0.5,), (0.5,)), ])
 
-load_Train = DataLoader(torchvision.datasets.ImageFolder(root=
-                                                         data_path_Train, transform=transform),
+
+class ComboImageDataset(torch.utils.data.Dataset):
+    """Loads bare *.jpg files directly from a flat images-combo/<split>/ directory.
+    torchvision.datasets.ImageFolder requires class subdirectories, which this data
+    layout doesn't have (it's unlabeled side-by-side profile|midcurve combo images)."""
+
+    def __init__(self, root, transform=None):
+        self.paths = sorted(glob.glob(os.path.join(root, '*.jpg')))
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.paths)
+
+    def __getitem__(self, idx):
+        img = Image.open(self.paths[idx]).convert('RGB')
+        if self.transform:
+            img = self.transform(img)
+        return img, 0  # dummy label to keep the (data, _) unpacking used below
+
+
+load_Train = DataLoader(ComboImageDataset(root=data_path_Train, transform=transform),
                         batch_size=batch_size,
                         shuffle=True, num_workers=num_workers)
 
-load_Test = DataLoader(torchvision.datasets.ImageFolder(root=
-                                                        data_path_Test, transform=transform),
+load_Test = DataLoader(ComboImageDataset(root=data_path_Test, transform=transform),
                        batch_size=batch_size,
                        shuffle=False, num_workers=num_workers)
 
@@ -191,12 +211,16 @@ BCE = nn.BCELoss()  # binary cross-entropy
 L1 = nn.L1Loss()
 
 # instance normalization
-Gen = Gen(inst_norm).to(device)
-Disc = Disc(inst_norm).to(device)
+# Note: instantiate into `generator`/`discriminator`, not `Gen`/`Disc` -- reusing the class
+# names here would shadow them at module level, breaking any later `from ... import Gen, Disc`.
+generator = Gen(inst_norm).to(device)
+discriminator = Disc(inst_norm).to(device)
+generator.apply(weights_init)
+discriminator.apply(weights_init)
 
 # optimizers
-Gen_optim = optim.Adam(Gen.parameters(), lr=2e-4, betas=(0.5, 0.999))
-Disc_optim = optim.Adam(Disc.parameters(), lr=2e-4, betas=(0.5, 0.999))
+Gen_optim = optim.Adam(generator.parameters(), lr=2e-4, betas=(0.5, 0.999))
+Disc_optim = optim.Adam(discriminator.parameters(), lr=2e-4, betas=(0.5, 0.999))
 
 
 def compare_batches(batch1, batch2, title1, title2, batch3=None, title3=None):
@@ -228,7 +252,7 @@ def model_training():
     fix_X, fix_y = split_image(fix_con)
 
     with torch.no_grad():
-        fk = Gen(fix_X)
+        fk = generator(fix_X)
     compare_batches(fix_X, fk, "input image", "prediction", fix_y, "ground truth")
 
     img_list = []
@@ -251,14 +275,14 @@ def model_training():
             f_masks = torch.zeros(size, 1, 30, 30).to(device)
 
             # disc
-            Disc.zero_grad()
+            discriminator.zero_grad()
             # real_patch
-            r_patch = Disc(y, x)
+            r_patch = discriminator(y, x)
             r_gan_loss = BCE(r_patch, r_masks)
 
-            fake = Gen(x)
+            fake = generator(x)
             # fake_patch
-            f_patch = Disc(fake.detach(), x)
+            f_patch = discriminator(fake.detach(), x)
             f_gan_loss = BCE(f_patch, f_masks)
 
             Disc_loss = r_gan_loss + f_gan_loss
@@ -266,8 +290,8 @@ def model_training():
             Disc_optim.step()
 
             # gen
-            Gen.zero_grad()
-            f_patch = Disc(fake, x)
+            generator.zero_grad()
+            f_patch = discriminator(fake, x)
             f_gan_loss = BCE(f_patch, r_masks)
 
             L1_loss = L1(fake, y)
@@ -278,8 +302,8 @@ def model_training():
 
             if (i + 1) % iter_per_plot == 0:
                 print(
-                    'Epoch [{}/{}], Step [{}/{}], disc_loss: {:.4f}, gen_loss: {:.4f},Disc(real): {:.2f},' + \
-                    'Disc(fake):{:.2f}, gen_loss_gan:{:.4f}, gen_loss_L1:{:.4f}'.format(
+                    ('Epoch [{}/{}], Step [{}/{}], disc_loss: {:.4f}, gen_loss: {:.4f},Disc(real): {:.2f},'
+                    'Disc(fake):{:.2f}, gen_loss_gan:{:.4f}, gen_loss_L1:{:.4f}').format(
                         ep, epochs, i + 1, len(load_Train), Disc_loss.item(), Gen_loss.item(), r_patch.mean(),
                         f_patch.mean(), f_gan_loss.item(), L1_loss.item()))
 
@@ -289,9 +313,9 @@ def model_training():
                 Gen_L1_losses.append(L1_loss.item())
 
                 with torch.no_grad():
-                    Gen.eval()
-                    fake = Gen(fix_X).detach().cpu()
-                    Gen.train()
+                    generator.eval()
+                    fake = generator(fix_X).detach().cpu()
+                    generator.train()
                 figs = plt.figure(figsize=(10, 10))
 
                 plt.subplot(1, 3, 1)
@@ -330,8 +354,8 @@ def main():
     t_x, t_y = split_image(t_batch, 256)
 
     with torch.no_grad():
-        Gen.eval()
-        fk_batch = Gen(t_x.to(device))
+        generator.eval()
+        fk_batch = generator(t_x.to(device))
     compare_batches(t_x, fk_batch, "input images", "predicted images", t_y, "ground truth")
     plt.close('all')
 

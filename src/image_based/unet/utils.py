@@ -7,19 +7,33 @@ Created on Wed Sep 25 13:51:30 2019
 
 import numpy as np
 import tensorflow as tf
+from functools import lru_cache
 
-def get_coord_layers(batch_size, img_res):
-    x_coord = np.zeros(shape=(img_res[0], img_res[1], 1), dtype=np.float32)
-    y_coord = np.zeros(shape=(img_res[0], img_res[1], 1), dtype=np.float32)
-    for i in range(0, img_res[0]):
+
+@lru_cache(maxsize=8)
+def _base_coord_layer(h, w):
+    """Coordinate channels for a single (h, w) image. Cached per resolution: these
+    don't depend on batch_size, but were previously recomputed with a Python loop on
+    every single batch (see analysis_report.md Bug 21)."""
+    x_coord = np.zeros(shape=(h, w, 1), dtype=np.float32)
+    y_coord = np.zeros(shape=(h, w, 1), dtype=np.float32)
+    for i in range(w):
         x_coord[:, i, 0] = i
+    for i in range(h):
         y_coord[i, :, 0] = i
     coords = np.append(x_coord, y_coord, axis=-1)
-    k = (img_res[0]-1)/2
-    coords = (coords - k)/k #Normalize [-1, 1]
-    coords = np.expand_dims(coords, 0)
-    
-    return np.tile(coords, (batch_size,1,1,1))
+    kx = (w - 1) / 2
+    ky = (h - 1) / 2
+    coords[..., 0] = (coords[..., 0] - kx) / kx  # normalize x to [-1, 1]
+    coords[..., 1] = (coords[..., 1] - ky) / ky  # normalize y to [-1, 1]
+    return np.expand_dims(coords, 0)
+
+
+def get_coord_layers(batch_size, img_res):
+    # img_res[0], img_res[1] = (h, w). The old version used img_res[0] for both axes'
+    # range and normalization, which is only correct for square images.
+    coords = _base_coord_layer(img_res[0], img_res[1])
+    return np.tile(coords, (batch_size, 1, 1, 1))
 
 def weighted_cross_entropy(beta, balanced=False):
     '''

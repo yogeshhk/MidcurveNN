@@ -13,7 +13,6 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from utils.metric_utils import MetricsHistory, print_best_metrics
 import numpy as np
-import random
 import sys
 
 class cnn_encoderdecoder:
@@ -104,8 +103,8 @@ class cnn_encoderdecoder:
 
             metrics_history = MetricsHistory()
             callbacks = [
-                EarlyStopping(monitor='loss', patience=10, restore_best_weights=True),
-                ReduceLROnPlateau(monitor='loss', factor=0.5, patience=5, min_lr=1e-6),
+                EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True),
+                ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5, min_lr=1e-6),
                 metrics_history
             ]
 
@@ -130,19 +129,10 @@ class cnn_encoderdecoder:
             test_profile_images = np.expand_dims(np.asarray(test_profile_images),axis=-1)
         encoded_imgs = self.cnn_autoencoder.predict(test_profile_images)
         return test_profile_images, encoded_imgs
-    
 
-if __name__ == "__main__":
-    profile_gray_objs, midcurve_gray_objs = get_training_data(size=(128,128))
-
-    endec = cnn_encoderdecoder()
-    endec.train(np.asarray(profile_gray_objs)/255., np.asarray(midcurve_gray_objs)/255.,100)
-    
-    test_gray_images = random.sample(profile_gray_objs,5)
-    original_profile_imgs,predicted_midcurve_imgs = endec.predict(np.asarray(test_gray_images)/255.)
-
-    print(np.max(predicted_midcurve_imgs))
-    print(np.min(predicted_midcurve_imgs))
-
-    plot_results(original_profile_imgs,predicted_midcurve_imgs,size=(128,128))
+# Run via main_cnn_encoderdecoder.py, not this module directly: that entry point holds
+# out a real test split before training. This file's own now-removed __main__ block was
+# broken (analysis_report.md Bug 14 -- used get_training_data/plot_results without
+# importing them, a guaranteed NameError; also passed 100 as the retrain_model boolean
+# arg) as well as leaky (trained on the same data it then "tested" on, Bug 6).
 

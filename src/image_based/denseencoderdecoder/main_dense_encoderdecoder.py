@@ -18,13 +18,22 @@ DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'image-pairs
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
 
+    # Held-out split: reserve n_test samples for evaluation only, exclude them from training
+    # (previously the "test" set was a literal subset of what got trained on -- see
+    # analysis_report.md Bug 6).
     n_test = min(7, len(profile_gray_objs))
-    test_indices = random.sample(range(len(profile_gray_objs)), n_test)
+    all_indices = list(range(len(profile_gray_objs)))
+    test_indices = random.sample(all_indices, n_test)
+    test_index_set = set(test_indices)
+    train_indices = [i for i in all_indices if i not in test_index_set]
+
     test_profiles_raw = [profile_gray_objs[i] for i in test_indices]
     test_gt_raw       = [midcurve_gray_objs[i] for i in test_indices]
+    train_profiles_raw = [profile_gray_objs[i] for i in train_indices]
+    train_midcurve_raw = [midcurve_gray_objs[i] for i in train_indices]
 
-    profile_gray_objs  = np.asarray(profile_gray_objs)  / 255.
-    midcurve_gray_objs = np.asarray(midcurve_gray_objs) / 255.
+    profile_gray_objs  = np.asarray(train_profiles_raw) / 255.
+    midcurve_gray_objs = np.asarray(train_midcurve_raw) / 255.
     test_gray_images   = np.asarray(test_profiles_raw)  / 255.
     test_gt_midcurves  = np.asarray(test_gt_raw)        / 255.
 

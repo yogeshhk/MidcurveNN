@@ -301,41 +301,75 @@ results or breaks a secondary path; Low = cosmetic/fragile.
    `src/environment.yml` pins `numpy=1.24.*`. Every data load crashed. Fixed by
    using the builtin `float` instead.
 
-3. HIGH - img2img crash at import: `ImageFolder` pointed at flat directories
-   `images-combo/train|test` which contain bare JPGs, no class subfolders
-   (`img2img/main_img2img_pytorch.py:41-49`). Script cannot start; its unit tests
-   silently skip.
+3. ~~HIGH~~ FIXED (2026-08-02) - img2img crash at import: `ImageFolder` pointed at flat
+   directories `images-combo/train|test` which contain bare JPGs, no class subfolders
+   (`img2img/main_img2img_pytorch.py:41-49`). Fixed by replacing `ImageFolder` with a
+   small custom `ComboImageDataset` that lists `*.jpg` in the split directory directly.
 
-4. HIGH - img2img `NameError: sys` in `main()`
-   (`img2img/main_img2img_pytorch.py:338`); `import sys` missing at top, so even
-   after fixing bug 3 the run dies before saving the results grid.
+4. ~~HIGH~~ FIXED (2026-08-02) - img2img `NameError: sys` in `main()`
+   (`img2img/main_img2img_pytorch.py:338`); `import sys` was missing at top. Added.
 
-5. HIGH - denoiser effectively untrained:
+25. ~~HIGH~~ FIXED (2026-08-02, found while verifying Bug 3's fix by actually running the
+    test suite, not previously cataloged) - img2img `Gen`/`Disc` class-name shadowing:
+    module-level code did `Gen = Gen(inst_norm).to(device)` and `Disc = Disc(inst_norm)
+    .to(device)`, reassigning the class names to pre-built instances at import time. Any
+    `from main_img2img_pytorch import Gen, Disc` (as `test_img2img.py` does) got an
+    instance, not the class, so instantiating "fresh" models in tests
+    (`Gen(inst_norm=False)`) actually called the instance's `forward()` with an invalid
+    kwarg. This bug was invisible before because Bug 3 crashed the module at import
+    before anyone could reach it. Fixed by renaming the instances to `generator`/
+    `discriminator` throughout the file, leaving `Gen`/`Disc` as importable classes.
+
+26. ~~MEDIUM~~ FIXED (2026-08-02, same discovery as Bug 25, not previously cataloged) -
+    `test_pix2pix.py`'s `sys.path` setup added `src/` and `image_based/` but never
+    `pix2pix/` itself, so `keras_gan_pix2pix.py`'s bare sibling imports (`from
+    keras_gan_data_loader import DataLoader`, `from config import *`) raised
+    `ModuleNotFoundError` when the test imported it as `pix2pix.keras_gan_pix2pix`.
+    Fixed by adding `sys.path.insert(0, _HERE)` in the test file.
+
+5. ~~HIGH~~ FIXED (2026-08-02) - denoiser effectively untrained:
    `EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1)` with default
    patience=0 (`denoiserencoderdecoder/build_denoiser_encoderdecoder_model.py:61`)
-   stops training after ~2 of 500 epochs because accuracy can never improve by 1.0.
+   stopped training after ~2 of 500 epochs because accuracy could never improve by
+   1.0. Fixed: `EarlyStopping(monitor='val_loss', mode='min', patience=20,
+   restore_best_weights=True)`, optimizer changed from default `adadelta` (lr=0.001,
+   far below the algorithm's intended 1.0) to `Adam(1e-3)`, per Rec 4. Construction/
+   shape-level tests pass; a full 500-epoch training run was not executed this
+   session (impractical to smoke-test).
 
-6. HIGH - evaluation on training data: all four encoder-decoder mains draw their
-   "test" images from the training arrays
+6. ~~HIGH~~ FIXED (2026-08-02) - evaluation on training data: all four encoder-decoder
+   mains drew their "test" images from the training arrays
    (`simpleencoderdecoder/main_simple_encoderdecoder.py:21`,
    `cnnencoderdecoder/main_cnn_encoderdecoder.py:25`,
    `denseencoderdecoder/main_dense_encoderdecoder.py:22`,
-   `denoiserencoderdecoder/main_denoiser_encoderdecoder.py:33`). Result grids and
-   any reported numbers overstate quality.
+   `denoiserencoderdecoder/main_denoiser_encoderdecoder.py:33`). Fixed in all four by
+   excluding the sampled test indices from the training arrays before training (for
+   the two-stage denoiser, applied to both stage-1 and stage-2 training). Note: this
+   fixes literal train/test overlap, not the separate augmentation-level leakage
+   (Bug 7) where a held-out sample can still be a rotated/translated variant of a
+   shape seen during training. `simpleencoderdecoder` verified via a full real
+   training run (100 epochs, ~66s, predicted cleanly on the now-genuinely-unseen 7
+   test samples); `denseencoderdecoder` verified partially (25/100 epochs, no errors,
+   stopped only for session time budget -- identical fix pattern to simple); `cnn`/
+   `denoiser` verified via passing construction/shape tests plus code review (full
+   runs not executed: cnn's own comment estimates ~23 min, denoiser trains two
+   models).
 
 7. MEDIUM - augmentation-level leakage in all splits: `generate_pix2pix_dataset`
    shuffles augmented variants before splitting (`utils/prepare_data.py:102-108`),
    and unet-splits was built the same way, so val/test are rotations/translations of
    training shapes. No held-out-shape evaluation exists anywhere in Phase I.
 
-8. MEDIUM - dense model saves last-epoch weights: EarlyStopping without
-   `restore_best_weights` and no ModelCheckpoint
-   (`denseencoderdecoder/build_dense_encoderdecoder_model.py:76,89`); saved model can
-   be up to 50 epochs past the best validation loss.
+8. ~~MEDIUM~~ FIXED (2026-08-02) - dense model saves last-epoch weights: EarlyStopping
+   without `restore_best_weights` and no ModelCheckpoint
+   (`denseencoderdecoder/build_dense_encoderdecoder_model.py:76,89`); saved model could
+   be up to 50 epochs past the best validation loss. Fixed by adding
+   `restore_best_weights=True`.
 
-9. MEDIUM - CNN callbacks monitor train loss (`monitor='loss'`) despite a validation
-   split (`cnnencoderdecoder/build_cnn_encoderdecoder_model.py:107-108`);
-   best-weight restoration tracks overfitting, not generalization.
+9. ~~MEDIUM~~ FIXED (2026-08-02) - CNN callbacks monitor train loss (`monitor='loss'`)
+   despite a validation split (`cnnencoderdecoder/build_cnn_encoderdecoder_model.py:
+   107-108`); best-weight restoration tracked overfitting, not generalization. Fixed:
+   both `EarlyStopping` and `ReduceLROnPlateau` now monitor `val_loss`.
 
 10. ~~MEDIUM~~ FIXED (2026-08-02) - pix2pix `load_batch` off-by-one: `range(self.n_batches-1)`
     (`pix2pix/keras_gan_data_loader.py:63`) dropped one batch per epoch and yielded
@@ -347,51 +381,114 @@ results or breaks a secondary path; Low = cosmetic/fragile.
     unused. The UNet train/test set (2100/900 PNGs) cannot be regenerated from raw
     data; changing raw data or augmentation cannot propagate to UNet.
 
-12. MEDIUM - denoiser stale `__main__`
-    (`denoiserencoderdecoder/build_denoiser_encoderdecoder_model.py:80-90`) trains
+12. ~~MEDIUM~~ FIXED (2026-08-02) - denoiser stale `__main__`
+    (`denoiserencoderdecoder/build_denoiser_encoderdecoder_model.py:80-90`) trained
     the stage-1 model on raw 0-255 arrays (invalid BCE targets > 1), contradicting
-    the documented requirement to normalize first.
+    the documented requirement to normalize first. Confirmed `main_denoiser_
+    encoderdecoder.py` already does this correctly (`/255.` before training); deleted
+    the stale duplicate `__main__` block and its now-unused imports
+    (`simple_encoderdecoder`, `get_training_data`, `plot_results`, `random`).
 
-13. MEDIUM - img2img `weights_init` never applied
+13. ~~MEDIUM~~ FIXED (2026-08-02) - img2img `weights_init` never applied
     (`img2img/main_img2img_pytorch.py:180-195`); DCGAN init is defined but models use
-    default init.
+    default init. Fixed: `generator.apply(weights_init)` /
+    `discriminator.apply(weights_init)` added right after instantiation.
 
-14. MEDIUM - CNN build-file `__main__` NameError: uses `get_training_data`/
-    `plot_results` without importing them
-    (`cnnencoderdecoder/build_cnn_encoderdecoder_model.py:136,147`); also passes
-    `100` as the boolean `retrain_model` argument (line 139).
+14. ~~MEDIUM~~ FIXED (2026-08-02) - CNN build-file `__main__` NameError: used
+    `get_training_data`/`plot_results` without importing them
+    (`cnnencoderdecoder/build_cnn_encoderdecoder_model.py:136,147`); also passed
+    `100` as the boolean `retrain_model` argument (line 139). Fixed by deleting the
+    whole stale, superseded `__main__` block (same treatment as Bug 12/denoiser and
+    the newly-found equivalent blocks in `simpleencoderdecoder`/`denseencoderdecoder`
+    -- all four build files had a redundant, leaky debug entry point duplicating what
+    their real `main_*.py` files already do correctly).
 
-15. LOW - pix2pix `binarize` only thresholds the dark side (values 193-254 kept)
-    and uses a per-pixel Python loop (`pix2pix/keras_gan_data_loader.py:15-21`).
+15. ~~LOW~~ FIXED (2026-08-02) - pix2pix `binarize` only thresholded the dark side
+    (values 193-254 kept) and used a per-pixel Python loop
+    (`pix2pix/keras_gan_data_loader.py:15-21`). Fixed: vectorized two-sided
+    `np.where(image <= threshold, 0, 255)`.
 
-16. LOW - pix2pix `load_data` samples test images WITH replacement
-    (`pix2pix/keras_gan_data_loader.py:26`); results grid can show duplicates.
+16. ~~LOW~~ FIXED (2026-08-02) - pix2pix `load_data` sampled test images WITH
+    replacement (`pix2pix/keras_gan_data_loader.py:26`); results grid could show
+    duplicates. Fixed: `replace=False`, capped at `len(path)` to avoid an error when
+    `batch_size` exceeds the split size.
 
-17. LOW - `pix2pix/config.py:4` self-import: running scripts from inside `pix2pix/`
-    resolves `config` to this file itself, importing nothing.
+17. ~~LOW~~ FIXED (2026-08-02) - `pix2pix/config.py:4` self-import: running scripts
+    from inside `pix2pix/` resolved `config` to this file itself, importing nothing
+    (harmless only because nothing read a config symbol). Root cause: it only walked
+    up 2 directories (to `image_based/`, which has no `config.py`) instead of 3 (to
+    `src/`), using the self-import-prone `from config import *` pattern instead of
+    `unet/config.py`'s safer `importlib`-based re-export. Fixed by mirroring
+    `unet/config.py`'s exact pattern (load `src/config.py` under a unique
+    `sys.modules` name, then populate this module's globals from it).
 
-18. LOW - UNet `Adam(decay=0.0001)` (`unet/train.py:28,58,101`): fine on pinned
-    keras 2.13, raises on Keras 3 (rest of repo is already Keras-3 hardened).
+18. ~~LOW~~ FIXED (2026-08-02) - UNet `Adam(decay=0.0001)` (`unet/train.py:28,58,101`):
+    fine on pinned keras 2.13, raises on Keras 3 (rest of repo is already Keras-3
+    hardened). Fixed with a `_make_adam()` helper using
+    `InverseTimeDecay(decay_steps=1, decay_rate=0.0001)`, which reproduces the exact
+    same per-iteration decay schedule (`lr_t = lr_0 / (1 + decay*step)`) via a
+    non-deprecated API. Verified via `pytest image_based/unet/test_unet.py` (12/12
+    passed, up from 9/12 -- see Bugs 27, 28 below, found while investigating the
+    other 3 failures during this verification).
 
-19. LOW - `unet/datagenerator.py:29-31` wrap logic uses config `TRAIN_SIZE` (2100)
-    while train entry points override `TRAIN_SIZE` only in the train module (320);
-    IndexError if config TRAIN_SIZE ever exceeds the file count; file order is
-    shuffled once, never per epoch.
+27. ~~LOW~~ FIXED (2026-08-02, new, found while verifying Bug 18) -
+    `unet/test_unet.py` import ordering: its own module-level `sys.path.insert(0,
+    _SRC)` then `sys.path.insert(0, _HERE)` put `_SRC` (src/) ahead of `_HERE`
+    (unet/) despite the comment's stated intent; separately, `setUpClass`'s `from
+    unet import unet_stage1, unet_stage2` transitively imports `unet/config.py`,
+    which inserts `src/` onto `sys.path` *again*, re-pushing it above `unet/`. Net
+    effect: `from utils import get_coord_layers` (etc.) in `TestUNetModel` found
+    `src/utils/` (the package) instead of `unet/utils.py`, a `unet/test.py`-style
+    import-ordering bug (see the documented gotcha in `CLAUDE.md`) that had gone
+    unnoticed because these 3 tests were never run to completion before. Fixed by
+    re-asserting `unet/`'s `sys.path` priority and evicting the cached `utils`
+    module immediately before each affected test's import, mirroring `unet/test.py`'s
+    established fix pattern.
 
-20. LOW - img2img progress print formats only half the message
-    (`img2img/main_img2img_pytorch.py:281-284`); epoch/loss values never shown.
+28. ~~LOW~~ FIXED (2026-08-02, new, found while verifying Bug 18/27) -
+    `unet/test_unet.py::test_09_coordconv_importable` asserted `from utils import
+    get_coord_layers, CoordConv`, but `unet/utils.py` has never defined a `CoordConv`
+    symbol -- `get_coord_layers()` itself is the CoordConv implementation (generates
+    the coordinate channels to concatenate). The test was asserting an import that
+    never existed in the source, just silently masked by Bug 27's import-ordering
+    issue (which made the test fail with a *different*, misleading error first).
+    Fixed by correcting the test to import only `get_coord_layers`.
 
-21. LOW - `unet/utils.py:14-16` `get_coord_layers` uses `img_res[0]` for both axes
-    (breaks for non-square inputs) and is rebuilt every batch.
+19. ~~LOW~~ FIXED (2026-08-02) - `unet/datagenerator.py:29-31` wrap logic used config
+    `TRAIN_SIZE` (2100) while train entry points override `TRAIN_SIZE` only in the
+    train module (320); IndexError if config TRAIN_SIZE ever exceeded the file count;
+    file order was shuffled once, never per epoch. Fixed: uses the real `len(files)`
+    as the wrap-around bound (decoupled from config entirely) and reshuffles at the
+    start of every epoch, not just once at generator creation.
 
-22. LOW - `img2img/test_img2img.py:37-39` broken, unused `_load_models` helper
-    (`mod = importlib.util.load_from_spec = spec`).
+20. ~~LOW~~ FIXED (2026-08-02) - img2img progress print formats only half the message
+    (`img2img/main_img2img_pytorch.py:281-284`); epoch/loss values never shown. Fixed by
+    parenthesizing the concatenated string before calling `.format()` on it.
 
-23. LOW - `utils/metric_utils.py:92-98` KeyError on empty `best_metrics` if no
-    epoch ever produced a `val_loss` improvement.
+21. ~~LOW~~ FIXED (2026-08-02) - `unet/utils.py:14-16` `get_coord_layers` used
+    `img_res[0]` for both axes (breaks for non-square inputs) and was rebuilt every
+    batch. Fixed: separate x/y ranges and normalization for `(h, w)`, plus an
+    `lru_cache`-backed `_base_coord_layer(h, w)` helper so the per-pixel coordinate
+    grid is computed once per resolution instead of on every batch. Verified correct
+    for a non-square case: `get_coord_layers(2, (100, 60))` -> shape `(2, 100, 60, 2)`,
+    both channels correctly normalized to [-1, 1].
 
-24. LOW - pairing by independent sorts in `utils/prepare_data.py:288-289` silently
-    misaligns X/Y pairs if a shape ever has an unpaired Profile/Midcurve file.
+22. ~~LOW~~ FIXED (2026-08-02) - `img2img/test_img2img.py:37-39` broken, unused
+    `_load_models` helper (`mod = importlib.util.load_from_spec = spec`). Deleted (dead
+    code, never called by any test).
+
+23. ~~LOW~~ FIXED (2026-08-02) - `utils/metric_utils.py:92-98` KeyError on empty
+    `best_metrics` if no epoch ever produced a `val_loss` improvement. Fixed with an
+    early-return guard that prints a graceful message instead of crashing.
+
+24. ~~LOW~~ FIXED (2026-08-02) - pairing by independent sorts in
+    `utils/prepare_data.py:288-289` silently misaligned X/Y pairs if a shape ever had
+    an unpaired Profile/Midcurve file. Fixed: pairs explicitly by deriving each
+    profile's expected midcurve filename via substitution and only keeping pairs
+    where both files exist (warns and skips orphans), instead of trusting two
+    independently-sorted lists to stay aligned. Verified via
+    `pytest image_based/testing/test_image_based.py::TestPrepareData` (both tests
+    pass, including a fresh-run of `test_read_dat_files`).
 
 ---
 
@@ -477,13 +574,13 @@ Ordered by expected impact.
 
 | Approach | Loss / activation | Data | Trains OK? | Main problems | Priority fixes |
 |---|---|---|---|---|---|
-| simpleencoderdecoder | BCE / sigmoid | image-pairs 100x100 (fg under 1%) | Yes | class imbalance; eval on train set | Rec 1, 3 |
-| cnnencoderdecoder | BCE / sigmoid | image-pairs upscaled to 128 | Yes | class imbalance; callbacks on train loss; nearest resize | Rec 1, 3, 10 |
-| denseencoderdecoder | BCE / sigmoid | image-pairs 100x100 | Yes | class imbalance; saves last-epoch weights | Rec 1, 3, 10 |
-| denoiserencoderdecoder | BCE / sigmoid | stage-1 outputs | NO (stops after ~2 epochs, Bug 5) | broken EarlyStopping; adadelta lr; leakage | Rec 4, 1 |
-| unet | WBCE beta=0.1 / sigmoid | unet-splits 256x256 | Yes | no validation/best-checkpoint; dataset not regenerable | Rec 9, 8, 5 |
-| pix2pix (Keras) | LSGAN + 100*MAE / tanh (fixed 2026-08-02) | images-combo [-1,1] | Should now (Bugs 1, 2, 10 fixed; not yet re-run end-to-end) | was: output-range mismatch; np.float crash; batch drop | Rec 2 (done) |
-| img2img (PyTorch) | BCE-GAN + 100*L1 / tanh (correct) | images-combo [-1,1] | NO (Bugs 3, 4) | ImageFolder crash; missing import sys; init unused | Rec 11 |
+| simpleencoderdecoder | BCE / sigmoid | image-pairs 100x100 (fg under 1%) | Yes (Bug 6 fixed 2026-08-02, verified via full real training run) | class imbalance; was: eval on train set | Rec 1, 3 (done) |
+| cnnencoderdecoder | BCE / sigmoid | image-pairs upscaled to 128 | Yes (Bugs 6, 9, 14 fixed 2026-08-02, construction tests pass, full run not executed) | class imbalance; nearest resize; was: eval on train set; callbacks on train loss; broken __main__ | Rec 1, 3 (done), 10 (done) |
+| denseencoderdecoder | BCE / sigmoid | image-pairs 100x100 | Yes (Bugs 6, 8 fixed 2026-08-02, verified via partial real training run) | class imbalance; was: eval on train set; saved last-epoch weights | Rec 1, 3 (done), 10 (done) |
+| denoiserencoderdecoder | BCE / sigmoid | stage-1 outputs | Should now (Bugs 5, 6, 12 fixed 2026-08-02; construction-level tests pass, full training run not executed) | class imbalance; was: broken EarlyStopping; adadelta lr; eval on train set (both stages) | Rec 4 (done), 1 |
+| unet | WBCE beta=0.1 / sigmoid | unet-splits 256x256 | Yes (Bug 18 fixed 2026-08-02, verified via `pytest ... test_unet.py`, 12/12) | no validation/best-checkpoint; dataset not regenerable (Bug 11); was: Keras-3-incompatible optimizer | Rec 9, 8, 5 |
+| pix2pix (Keras) | LSGAN + 100*MAE / tanh (fixed 2026-08-02) | images-combo [-1,1] | Yes (Bugs 1, 2, 10, 15, 16, 17, 26 fixed 2026-08-02, verified via real pytest run) | was: output-range mismatch; np.float crash; batch drop; one-sided binarize; sampling w/ replacement; config self-import | Rec 2 (done) |
+| img2img (PyTorch) | BCE-GAN + 100*L1 / tanh (correct) | images-combo [-1,1] | Yes (Bugs 3, 4, 13, 20, 25 fixed 2026-08-02, verified via real pytest run) | was: ImageFolder crash; missing import sys; init unused; Gen/Disc shadowing | Rec 11 (done) |
 
 Overall: the UNet is the only approach whose loss matches the data statistics, which
 is consistent with it being the documented Phase I best. The fastest route to better

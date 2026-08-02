@@ -12,8 +12,12 @@ import os, sys, unittest, json, datetime
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _SRC  = os.path.dirname(os.path.dirname(_HERE))
-sys.path.insert(0, _HERE)   # unet/ so `from config import *` resolves
 sys.path.insert(0, _SRC)
+sys.path.insert(0, _HERE)   # unet/ inserted last so it takes priority over src/utils/
+                            # for `from utils import ...` (this file always wants
+                            # unet/utils.py's get_coord_layers/CoordConv/
+                            # weighted_cross_entropy, never the src/ package -- see
+                            # analysis_report.md's unet test-import-ordering note)
 
 RESULTS_DIR = os.path.join(_HERE, 'results')
 os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -71,11 +75,33 @@ class TestUNetModel(unittest.TestCase):
         self.assertEqual(poly_input.shape[1], IMG_SHAPE[0])
         self.assertEqual(poly_input.shape[2], IMG_SHAPE[1])
 
+    @staticmethod
+    def _evict_cached_utils():
+        # setUpClass's `from unet import unet_stage1, unet_stage2` triggers
+        # unet/config.py, which inserts src/ onto sys.path AGAIN at position 0,
+        # pushing unet/ (inserted at module load time, above) back down -- so by
+        # the time these tests run, `from utils import ...` finds src/utils/ (the
+        # package) again regardless of the module-level ordering. Re-assert unet/'s
+        # priority and evict the cached module so it re-resolves fresh. Same class
+        # of issue as the documented unet/test.py import-ordering gotcha in
+        # CLAUDE.md.
+        if _HERE in sys.path:
+            sys.path.remove(_HERE)
+        sys.path.insert(0, _HERE)
+        for _mod in list(sys.modules):
+            if _mod == 'utils' or _mod.startswith('utils.'):
+                sys.modules.pop(_mod, None)
+
     def test_09_coordconv_importable(self):
-        from utils import get_coord_layers, CoordConv
-        self.assertIsNotNone(CoordConv)
+        # unet/utils.py has no standalone CoordConv class -- get_coord_layers() IS the
+        # CoordConv implementation (generates the coordinate channels to concatenate).
+        # This test previously imported a symbol that never existed.
+        self._evict_cached_utils()
+        from utils import get_coord_layers
+        self.assertIsNotNone(get_coord_layers)
 
     def test_10_coord_layers_shape(self):
+        self._evict_cached_utils()
         from utils import get_coord_layers
         from config import IMG_SHAPE
         coords = get_coord_layers(2, IMG_SHAPE)
@@ -83,6 +109,7 @@ class TestUNetModel(unittest.TestCase):
         self.assertEqual(coords.shape[3], 2)
 
     def test_11_weighted_loss_callable(self):
+        self._evict_cached_utils()
         from utils import weighted_cross_entropy
         loss_fn = weighted_cross_entropy(beta=0.1, balanced=False)
         self.assertTrue(callable(loss_fn))

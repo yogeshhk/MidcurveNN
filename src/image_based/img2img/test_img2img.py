@@ -29,18 +29,6 @@ class TestImg2Img(unittest.TestCase):
         except ImportError:
             raise unittest.SkipTest("PyTorch not installed")
 
-    def _load_models(self):
-        """Import Gen/Disc from main_img2img_pytorch without executing training."""
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "main_img2img_pytorch",
-            os.path.join(_HERE, "main_img2img_pytorch.py"))
-        mod = importlib.util.load_from_spec = spec
-        # Import selectively to avoid triggering DataLoader at module level
-        sys.path.insert(0, _HERE)
-        from main_img2img_pytorch import Gen, Disc
-        return Gen, Disc
-
     def test_01_torch_available(self):
         self.assertIsNotNone(self.torch)
 

@@ -86,7 +86,15 @@ def print_best_metrics(history, model_name='Model'):
     best_metrics = history['best_metrics']
     best_epoch = history['best_epoch']
     training_time = history.get('training_time', 0)
-    
+
+    if not best_metrics:
+        # Happens if training ran zero epochs, or val_loss never improved from its
+        # float('inf') initial value (e.g. NaN val_loss every epoch) -- see
+        # analysis_report.md Bug 23.
+        print(f"\n{model_name} - No epoch ever improved val_loss; best_metrics is "
+              f"empty, skipping metrics summary.")
+        return
+
     print(f"\n{model_name} - Best Model Metrics (Epoch {best_epoch + 1}):\n")
     print("Training Metrics:")
     print(f"  Loss:     {best_metrics['loss']:.4f}")

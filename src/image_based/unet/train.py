@@ -16,16 +16,29 @@ import numpy as np
 from tensorflow.keras.losses import binary_crossentropy, MeanAbsoluteError as _MAE
 mean_absolute_error = _MAE()
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers.schedules import InverseTimeDecay
 from datagenerator import datagen
 from tqdm import tqdm
 import os
+
+
+def _make_adam(initial_learning_rate=0.001, decay=0.0001):
+    """Adam with the same effective schedule as the old `Adam(decay=...)` kwarg
+    (lr_t = lr_0 / (1 + decay * step)), which Keras 3 removed from the optimizer
+    constructor -- see analysis_report.md Bug 18. `decay_steps=1` reproduces the
+    per-iteration decay exactly."""
+    schedule = InverseTimeDecay(initial_learning_rate=initial_learning_rate,
+                                decay_steps=1, decay_rate=decay)
+    return Adam(learning_rate=schedule)
+
+
 def init():
     loss = {'bce': binary_crossentropy,
             'mae': mean_absolute_error,
             'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
             'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED)}
 
-    optimizer = Adam(decay=0.0001)
+    optimizer = _make_adam()
     loss_weights = [1E1, 1]
 
     generator_1 = unet_stage1()
@@ -55,7 +68,7 @@ def train_stage1(gen_model, epochs, batch_size, weight_path, loss_path, data_gen
                     'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
                     'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED)}
         gen_model.compile(loss=[loss_fns[STAGE1_LOSS], loss_fns[STAGE1_LOSS]],
-                          optimizer=Adam(decay=0.0001), loss_weights=[1E1, 1])
+                          optimizer=_make_adam(), loss_weights=[1E1, 1])
 
     for num_epochs in range(1 + load_at, epochs + load_at + 1):
         loss = []  # Save loss for each epoch separately
@@ -98,7 +111,7 @@ def train_stage2(generator_stage1, generator_stage2, epochs, batch_size, weight_
                     'wbce_stage1': weighted_cross_entropy(STAGE1_WBCE_BETA, STAGE1_BALANCED),
                     'wbce_stage2': weighted_cross_entropy(STAGE2_WBCE_BETA, STAGE2_BALANCED)}
         generator_stage2.compile(loss=[loss_fns[STAGE2_LOSS], loss_fns[STAGE2_LOSS]],
-                                 optimizer=Adam(decay=0.0001), loss_weights=[1E1, 1])
+                                 optimizer=_make_adam(), loss_weights=[1E1, 1])
 
     for num_epochs in range(1 + load_at, epochs + load_at + 1):
         loss = []  # Save loss for each epoch separately

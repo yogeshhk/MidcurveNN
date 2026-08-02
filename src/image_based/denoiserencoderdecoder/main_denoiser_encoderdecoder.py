@@ -17,24 +17,33 @@ DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'data', 'image-pairs
 
 if __name__ == "__main__":
     profile_gray_objs, midcurve_gray_objs = get_training_data(datafolder=DATA_FOLDER)
-    profile_gray_objs  = np.asarray(list(profile_gray_objs))  / 255.
-    midcurve_gray_objs = np.asarray(list(midcurve_gray_objs)) / 255.
+
+    # Held-out split: reserve n_test samples for evaluation, excluded from BOTH stage-1
+    # (simple encoder-decoder) and stage-2 (denoiser) training (previously both stages
+    # trained on the full set and then "tested" on a subset of the same data -- see
+    # analysis_report.md Bug 6).
+    n_test = min(7, len(profile_gray_objs))
+    all_indices = list(range(len(profile_gray_objs)))
+    test_indices = random.sample(all_indices, n_test)
+    test_index_set = set(test_indices)
+    train_indices = [i for i in all_indices if i not in test_index_set]
+
+    train_profile_objs  = np.asarray([profile_gray_objs[i] for i in train_indices])  / 255.
+    train_midcurve_objs = np.asarray([midcurve_gray_objs[i] for i in train_indices]) / 255.
+    test_profile_objs   = np.asarray([profile_gray_objs[i] for i in test_indices])   / 255.
+    test_midcurve_objs  = np.asarray([midcurve_gray_objs[i] for i in test_indices])  / 255.
 
     endec = simple_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-    original_profile_images, noisy_predicted_midcurve_images = endec.predict(profile_gray_objs)
+    endec.train(train_profile_objs, train_midcurve_objs)
+    _, train_noisy_predicted = endec.predict(train_profile_objs)
+    _, test_noisy_predicted  = endec.predict(test_profile_objs)
 
     denoiser = denoiser_encoderdecoder()
     retrain_model = True
-    denoiser.train(noisy_predicted_midcurve_images, midcurve_gray_objs, retrain_model)
+    denoiser.train(train_noisy_predicted, train_midcurve_objs, retrain_model)
 
-    # Sample 5 by index to keep noisy-input / GT / denoised aligned
-    n_test = min(7, len(noisy_predicted_midcurve_images))
-    test_indices = random.sample(range(len(noisy_predicted_midcurve_images)), n_test)
-    sample_noisy = [noisy_predicted_midcurve_images[i] for i in test_indices]
-    sample_gt    = np.asarray([midcurve_gray_objs[i] for i in test_indices])
-
-    original_noisy_imgs, clean_predicted_imgs = denoiser.predict(sample_noisy)
+    original_noisy_imgs, clean_predicted_imgs = denoiser.predict(test_noisy_predicted)
+    sample_gt = test_midcurve_objs
 
     RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
     os.makedirs(RESULTS_DIR, exist_ok=True)

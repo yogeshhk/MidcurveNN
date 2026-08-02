@@ -4,14 +4,11 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Conv2DTr
 from tensorflow.keras import backend as K
 from tensorflow.keras import regularizers
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
 
-from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
-from utils.prepare_data import get_training_data
-from utils.prepare_plots import plot_results
 import os
 import sys
 import numpy as np
-import random
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -46,7 +43,7 @@ class denoiser_encoderdecoder:
 
         self.denoiser_autoencoder = Model(input_img, decoded)
         self.denoiser_autoencoder.compile(
-            optimizer='adadelta', loss='binary_crossentropy', metrics=['accuracy'])
+            optimizer=Adam(1e-3), loss='binary_crossentropy', metrics=['accuracy'])
 
     def process_images(self, grayobjs):
         flat_objs = [x.reshape(self.input_dim, self.input_dim, 1) for x in grayobjs]
@@ -58,7 +55,8 @@ class denoiser_encoderdecoder:
         if not os.path.exists(self.denoiser_autoencoder_model_pkl) or retrain_mdodel:
             self.x = self.process_images(noisy_images_objs)
             self.y = self.process_images(clean_images_objs)
-            es = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1)
+            es = EarlyStopping(monitor='val_loss', mode='min', patience=20,
+                               restore_best_weights=True)
 
             self.denoiser_autoencoder.fit(self.x, self.y,
                                           epochs=self.epochs,
@@ -75,16 +73,6 @@ class denoiser_encoderdecoder:
         denoised_imgs = self.denoiser_autoencoder.predict(png_profile_images)
         return test_noisy_images, denoised_imgs.squeeze(axis=-1)
 
-
-if __name__ == "__main__":
-    profile_gray_objs, midcurve_gray_objs = get_training_data()
-    endec = simple_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-    original_profile_images, noisy_predicted_midcurve_images = endec.predict(profile_gray_objs)
-    plot_results(original_profile_images[:5], noisy_predicted_midcurve_images[:5])
-
-    denoiser = denoiser_encoderdecoder()
-    denoiser.train(noisy_predicted_midcurve_images, midcurve_gray_objs)
-    sample_noisy_midcurve_images = random.sample(noisy_predicted_midcurve_images, 5)
-    original_noisy_midcurve_images, clean_predicted_midcurve_images = denoiser.predict(sample_noisy_midcurve_images)
-    plot_results(original_noisy_midcurve_images, clean_predicted_midcurve_images)
+# Run via main_denoiser_encoderdecoder.py, not this module directly: that entry point
+# normalizes images to [0,1] before training (BCE targets must be in [0,1]), which this
+# file's own now-removed __main__ block did not do (see analysis_report.md Bug 12).

@@ -19,17 +19,23 @@ def datagen(batch, h, w):
     train_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'unet-splits', 'train')
     files = os.listdir(train_path)
     shuffle(files)
-    
+    # Use the actual file count, not config TRAIN_SIZE, as the wrap-around bound: config's
+    # TRAIN_SIZE is overridden locally in some entry points (e.g. train.py's __main__ sets
+    # 320 for quick runs) but that override never reaches this module's own `from config
+    # import *`, so trusting TRAIN_SIZE here risked an IndexError if it ever exceeded the
+    # real file count (see analysis_report.md Bug 19).
+    n_files = len(files)
+
     i = 0
     while 1:
         poly_list = []
         midcurve_list = []
-        
+
         limit = i + batch
-        if i + batch > TRAIN_SIZE:
-            limit = TRAIN_SIZE
-            i = TRAIN_SIZE-batch
-        
+        if i + batch > n_files:
+            limit = n_files
+            i = max(n_files - batch, 0)
+
         for j in range(i,limit):
             path = os.path.join(train_path , files[j])
             img = cv2.imread(path , cv2.IMREAD_GRAYSCALE)
@@ -53,6 +59,7 @@ def datagen(batch, h, w):
         midcurve_list = np.expand_dims(midcurve_list, -1)
 
         i = i + batch
-        if limit == TRAIN_SIZE:
+        if limit == n_files:
             i = 0
+            shuffle(files)  # reshuffle for the next epoch, not just once at generator creation
         yield (poly_list, midcurve_list)

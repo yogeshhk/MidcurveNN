@@ -12,6 +12,9 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 _SRC  = os.path.dirname(os.path.dirname(_HERE))
 sys.path.insert(0, _SRC)
 sys.path.insert(0, os.path.dirname(_HERE))
+# keras_gan_pix2pix.py does bare sibling imports (`from keras_gan_data_loader import ...`,
+# `from config import *`) that assume pix2pix/ itself is on sys.path, not just image_based/.
+sys.path.insert(0, _HERE)
 
 RESULTS_DIR = os.path.join(_HERE, 'results')
 os.makedirs(RESULTS_DIR, exist_ok=True)

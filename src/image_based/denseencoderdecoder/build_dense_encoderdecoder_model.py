@@ -1,6 +1,5 @@
 import os
 import sys
-import random
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
@@ -11,8 +10,6 @@ from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 from utils.metric_utils import MetricsHistory, print_best_metrics
-from utils.prepare_data import get_training_data
-from utils.prepare_plots import plot_results
 import numpy as np
 
 class dense_encoderdecoder:
@@ -73,7 +70,8 @@ class dense_encoderdecoder:
 
             metrics_history = MetricsHistory()
             callbacks = [
-                EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50),
+                EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50,
+                              restore_best_weights=True),
                 metrics_history
             ]
 
@@ -102,17 +100,6 @@ class dense_encoderdecoder:
         decoded_imgs = decoded_imgs.reshape(-1, 100, 100)  # Reshape to original image dimensions
         return test_profile_images, decoded_imgs
 
-
-if __name__ == "__main__":
-    profile_gray_objs, midcurve_gray_objs = get_training_data()
-    test_gray_images = random.sample(profile_gray_objs, 5)
-
-    profile_gray_objs = np.asarray(profile_gray_objs) / 255.
-    midcurve_gray_objs = np.asarray(midcurve_gray_objs) / 255.
-    test_gray_images = np.asarray(test_gray_images) / 255.
-
-    endec = dense_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-
-    original_profile_imgs, predicted_midcurve_imgs = endec.predict(test_gray_images)
-    plot_results(original_profile_imgs, predicted_midcurve_imgs)
+# Run via main_dense_encoderdecoder.py, not this module directly: that entry point holds
+# out a real test split before training (this file's own now-removed __main__ block
+# trained on the same data it then "tested" on -- see analysis_report.md Bug 6).

@@ -1,7 +1,5 @@
-import random
 import sys
 import os
-import tensorflow as tf
 from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Dropout
 from tensorflow.keras.models import Model, load_model
@@ -12,8 +10,6 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
 from utils.metric_utils import MetricsHistory, print_best_metrics
-from utils.prepare_data import get_training_data
-from utils.prepare_plots import plot_results
 import numpy as np
 from pathlib import Path
 
@@ -120,23 +116,7 @@ class simple_encoderdecoder:
         return test_profile_images, decoded_imgs
 
 
-if __name__ == "__main__":
-    tf.keras.mixed_precision.set_global_policy('mixed_float16')
-    
-    gpus = tf.config.list_physical_devices('GPU')
-    if gpus:
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-    
-    profile_gray_objs, midcurve_gray_objs = get_training_data()
-    test_gray_images = random.sample(profile_gray_objs, 5)
-
-    profile_gray_objs = np.asarray(profile_gray_objs, dtype=np.float32) / 255.
-    midcurve_gray_objs = np.asarray(midcurve_gray_objs, dtype=np.float32) / 255.
-    test_gray_images = np.asarray(test_gray_images, dtype=np.float32) / 255.
-
-    endec = simple_encoderdecoder()
-    endec.train(profile_gray_objs, midcurve_gray_objs)
-
-    original_profile_imgs, predicted_midcurve_imgs = endec.predict(test_gray_images)
-    plot_results(original_profile_imgs, predicted_midcurve_imgs)
+# Run via main_simple_encoderdecoder.py, not this module directly: that entry point holds
+# out a real test split before training (this file's own now-removed __main__ block
+# trained on the same data it then "tested" on -- see analysis_report.md Bug 6) and does
+# not enable mixed_float16, which risks NaN losses with sigmoid-saturated BCE.

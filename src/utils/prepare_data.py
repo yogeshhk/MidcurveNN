@@ -274,19 +274,31 @@ def translate_images(pngfilenames, dx=1, dy=1):
 
 
 def read_input_image_pairs(datafolder):
-    profile_pngs = []
-    midcurve_pngs = []
+    profile_set = set()
+    midcurve_set = set()
     for file in os.listdir(datafolder):
         fullpath = os.path.join(datafolder, file)
         if os.path.isdir(fullpath):
             continue
         if file.endswith(".png"):
             if file.find("Profile") != -1:
-                profile_pngs.append(fullpath)
+                profile_set.add(fullpath)
             if file.find("Midcurve") != -1:
-                midcurve_pngs.append(fullpath)
-    profile_pngs = sorted(profile_pngs)
-    midcurve_pngs = sorted(midcurve_pngs)
+                midcurve_set.add(fullpath)
+
+    # Pair explicitly by filename substitution rather than independently sorting the
+    # two lists (which silently misaligns X/Y pairs if any shape ever has an unpaired
+    # Profile/Midcurve file -- see analysis_report.md Bug 24).
+    profile_pngs = []
+    midcurve_pngs = []
+    for profile_path in sorted(profile_set):
+        expected_midcurve = profile_path.replace("Profile", "Midcurve")
+        if expected_midcurve in midcurve_set:
+            profile_pngs.append(profile_path)
+            midcurve_pngs.append(expected_midcurve)
+        else:
+            print(f"Warning: no matching Midcurve file for {profile_path}, skipping")
+
     return profile_pngs, midcurve_pngs
 
 

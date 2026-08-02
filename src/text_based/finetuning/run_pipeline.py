@@ -124,7 +124,7 @@ Examples:
     # Step 3: Model Training
     if args.full or args.train:
         if run_command(
-            "python train_enhanced.py",
+            "python train.py",
             "Model Training"
         ):
             steps_completed.append("Model Training")
@@ -148,18 +148,24 @@ Examples:
     
     # Step 5: Error Analysis
     if args.full or args.analyze:
-        if os.path.exists("evaluation_results.csv"):
+        # These paths match evaluate.py's own defaults (results/evaluation_results.csv
+        # relative to finetuning/, and Config.TEST_FILE at ../data/csvs/...) -- the old
+        # bare filenames only worked if both files had been manually copied into the
+        # current working directory first (see analysis_report.md Bug 6).
+        results_file = os.path.join("results", "evaluation_results.csv")
+        test_file = os.path.join("..", "data", "csvs", "midcurve_llm_test.csv")
+        if os.path.exists(results_file):
             if run_command(
-                "python error_analysis.py "
-                "--results_file evaluation_results.csv "
-                "--test_file midcurve_llm_test.csv",
+                f"python error_analysis.py "
+                f"--results_file {results_file} "
+                f"--test_file {test_file}",
                 "Error Analysis"
             ):
                 steps_completed.append("Error Analysis")
             else:
                 steps_failed.append("Error Analysis")
         else:
-            print("\n⚠️  Skipping Error Analysis: evaluation_results.csv not found")
+            print(f"\n⚠️  Skipping Error Analysis: {results_file} not found")
             print("   Run evaluation first with --evaluate")
     
     # Step 6: Model Comparison
@@ -243,8 +249,8 @@ Examples:
     print("   python run_pipeline.py --serve")
     
     print("\n7. Run inference:")
-    print("   python inference_enhanced.py --single")
-    print("   python inference_enhanced.py --num_samples 10")
+    print("   python inference.py --single")
+    print("   python inference.py --num_samples 10")
     
     print("\n" + "="*80)
     print()

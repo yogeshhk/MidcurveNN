@@ -94,7 +94,9 @@ src/
 
 Each of `image_based/`, `geometry_based/`, and `text_based/` has an `analysis_report.md`
 documenting known bugs, design risks, and accuracy recommendations for that approach
-(pix2pix's 3 bugs in `image_based/` are fixed as of 2026-08-02; the rest remain open).
+(as of 2026-08-02, `image_based/`'s cataloged bugs are all fixed and test-verified
+except a deliberately-deferred dataset-leakage/regeneration task; `geometry_based/`
+and `text_based/` remain open).
 
 One other top-level folder sits alongside `src/`:
 - `publications/` holds conference/journal submission archives, presentation sources, and

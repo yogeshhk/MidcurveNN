@@ -308,10 +308,22 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 Each of the three approach folders has a standalone `analysis_report.md` (bugs,
 design risks, and accuracy recommendations):
-- `src/image_based/analysis_report.md` -- as of 2026-08-02, pix2pix's 3 HIGH/MEDIUM
-  bugs (sigmoid/tanh range mismatch, `np.float` crash, `load_batch` off-by-one) are
-  fixed in code; the rest of the report (still no code changes applied) remains an
-  open findings list, not yet re-run end-to-end.
+- `src/image_based/analysis_report.md` -- as of 2026-08-02, every cataloged bug is
+  fixed except Bugs 7/11 (augmentation-level dataset leakage + `unet-splits/` not
+  regenerable), deliberately deferred together as a larger task (requires splitting
+  by base shape and regenerating all 3 Phase I datasets from scratch). That includes
+  pix2pix (3 bugs), img2img (5 bugs, plus 2 more -- a `Gen`/`Disc` class-shadowing bug
+  and a `test_pix2pix.py` sys.path bug -- found while verifying the img2img fix),
+  denoiser (broken EarlyStopping + a stale unnormalized `__main__`), all 4 plain
+  encoder-decoders evaluating on their own training data, dense/CNN callback and
+  checkpoint bugs, and several UNet/shared-utils issues (Keras-3-incompatible
+  optimizer, non-square CoordConv support, a `unet/test_unet.py` import-ordering bug
+  and a stale `CoordConv` test assertion found while verifying that fix, a fragile
+  Profile/Midcurve file-pairing scheme, and a `print_best_metrics` KeyError on empty
+  history). Confirmed via `python -m pytest image_based/unet/test_unet.py
+  image_based/pix2pix/test_pix2pix.py image_based/img2img/test_img2img.py
+  image_based/testing/test_image_based.py -v` (48/48 passing), plus real end-to-end
+  training runs for a couple of the encoder-decoders.
 - `src/geometry_based/analysis_report.md` -- no code changes applied
 - `src/text_based/analysis_report.md` -- no code changes applied
 

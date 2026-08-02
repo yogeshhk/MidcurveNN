@@ -12,18 +12,18 @@ class DataLoader():
         self.dataset_name = dataset_name
         self.img_res = img_res
         
-    def binarize(self, image):
-        h, w = image.shape
-        for i in range(h):
-          for j in range(w):
-              if image[i][j] <= 192:
-                image[i][j] = 0
-        return image
+    def binarize(self, image, threshold=192):
+        # Vectorized, two-sided threshold: values <= threshold -> 0 (stroke), else -> 255
+        # (background). The old version only zeroed the dark side and left near-white
+        # JPEG compression artifacts (193-254) untouched.
+        return np.where(image <= threshold, 0, 255).astype(image.dtype)
 
     def load_data(self, batch_size=1, is_testing=False):
         data_type = "train" if not is_testing else "test"
         path = glob(os.path.join(DATA_DIR, data_type, '*'))
-        batch_images = np.random.choice(path, size=batch_size)
+        # Sample without replacement so the results grid can't show duplicate images;
+        # cap at len(path) so a batch_size larger than the split doesn't raise.
+        batch_images = np.random.choice(path, size=min(batch_size, len(path)), replace=False)
 
         imgs_A = []
         imgs_B = []
