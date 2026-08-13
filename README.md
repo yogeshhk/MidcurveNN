@@ -15,6 +15,26 @@ MidcurveNN is a project aimed at solving the challenging problem of finding the 
 
 If you are interested in working/contributing to this project voluntarily, do have a look at the [issues](https://github.com/yogeshhk/MidcurveNN/issues)
 
+> **Status (August 2026): active development has paused; the project is open for collaborators.**
+>
+> All three phases are implemented. Everything still outstanding in Phase I (image) and Phase II
+> (text/LLM) has been written up as GitHub issues rather than left as stale TODOs — each states what
+> a complete fix has to include.
+>
+> **Phase III (geometry) is now offered as an MS/PhD research topic.** Its blocker was never a bug
+> list, it was architectural: the model learns *where* midcurve points belong but does not learn
+> *how they connect* (adjacency cross-entropy ~1.15, indistinguishable from chance). The open
+> questions are set prediction without known output size or node correspondence, topology as a
+> first-class prediction target, long-range geometric reasoning across a polygon, and honest
+> generalization from only four base shapes.
+> See the [two-page topic proposal](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.pdf).
+> Students and co-supervisors are welcome to open an issue.
+>
+> **Caveat on all reported numbers:** every headline accuracy figure in this repository was measured
+> under train/test leakage — augmented variants of the same four base shapes were shuffled flatly
+> across splits. They reflect interpolation, not generalization. This is documented in each phase's
+> `analysis_report.md`, and the fix (leave-one-shape-out) is filed as an issue.
+
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
 - ODSC proposal https://confengine.com/odsc-india-2019/proposal/10090/midcurvenn-encoder-decoder-neural-network-for-computing-midcurve-of-a-thin-polygon
@@ -27,6 +47,7 @@ If you are interested in working/contributing to this project voluntarily, do ha
 - ICCCIT 2025: "Computing Midcurve with Multi-Layer and Convolutional Neural Networks", published in IEEE Xplore (`publications/MidcurveNN_ICCCIT2025.zip`)
 - Medium blog [Nemotron-Mini-4B for Midcurve](publications/MediumBlogs/nemotron3_midcurve_blog.md): describes the 3-approach Nemotron pipeline (HF SFTTrainer, Unsloth, few-shot), results (PSR=85.7%, topology=0.83), and deployment on consumer hardware
 - Journal paper (in preparation): "MidcurveNN: A Tri-Paradigm Neural Framework for Geometric Dimension Reduction", IEEEtran format covering all 3 phases (`publications/Midcurve_LaTeX/Main_Paper_MidcurveNN_Comprehensive.tex`)
+- Research topic proposal (2026): "Learning the Medial Axis: Geometry-Native Neural Networks for Midcurve Extraction" — a two-page brief for prospective MS/PhD students ([PDF](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.pdf)), with a matching 12-slide [LinkedIn carousel](publications/Midcurve_LaTeX/Main_Carousel_MidcurveNN_GeometryResearch.pdf)
 
 <!---
 Copyright (C) 2019 Yogesh H Kulkarni

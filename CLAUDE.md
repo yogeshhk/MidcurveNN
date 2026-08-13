@@ -5,10 +5,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Status: closed for active development (2026-08-13)
 
 Remaining Phase I and Phase II work was converted into GitHub issues rather than fixed; the drafts
-are in `reports/github_issues_2026-08-13.md`. Phase III was promoted from a hibernated bug list to
+are in `src/github_issues_2026-08-13.md`. Phase III was promoted from a hibernated bug list to
 a written MS/PhD research topic
-(`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`, 2 pages, plus a
-LinkedIn draft in `reports/linkedin_post_2026-08-13.md`).
+(`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`, 2 pages; a 12-slide
+square LinkedIn carousel in `Main_Carousel_MidcurveNN_GeometryResearch.tex`; and an announcement
+draft in `publications/linkedin_post_2026-08-13.md`).
+
+Build gotcha for the carousel: beamer has **no** `aspectratio=11` option (tried; 100 errors, no
+PDF). The square page comes from re-invoking `\geometry{papersize={128mm,128mm}}` *after* the class
+loads, since beamer loads `geometry` itself. The `t` class option is also load-bearing — without it
+beamer vertically centres each frame and leaves a gap under the title.
 
 Practical consequences for a future session:
 

@@ -9,15 +9,19 @@ repo root gives a global picture without digging through every subfolder.
 GitHub issue or promoted to a research proposal. Nothing was left half-done on disk.
 
 - **Phase I and Phase II remaining work: filed as GitHub issues.** Seven issue bodies are written
-  out in [`reports/github_issues_2026-08-13.md`](reports/github_issues_2026-08-13.md), ready to
+  out in [`src/github_issues_2026-08-13.md`](src/github_issues_2026-08-13.md), ready to
   paste. They cover the Phase II dataset/metric items (A1, A2, A3, B7, B10, plus the long-standing
   `nemotron3/results/` test failure) and the Phase I leakage pair (Bugs 7, 11). Each says
   explicitly why it was parked and what a complete fix has to include.
 - **Phase III is now a supervised research topic, not a bug list.** Its blocker was always
   architectural rather than a defect. It is written up as a two-page proposal for MS/PhD students:
   [`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex)
-  (compiles to exactly 2 pages, for back-to-back printing). A matching LinkedIn announcement draft
-  is in [`reports/linkedin_post_2026-08-13.md`](reports/linkedin_post_2026-08-13.md).
+  (compiles to exactly 2 pages, for back-to-back printing). Three companion pieces:
+  a 12-slide 1:1 LinkedIn carousel
+  ([`Main_Carousel_MidcurveNN_GeometryResearch.tex`](publications/Midcurve_LaTeX/Main_Carousel_MidcurveNN_GeometryResearch.tex),
+  upload the PDF directly as a document post), an announcement draft in
+  [`publications/linkedin_post_2026-08-13.md`](publications/linkedin_post_2026-08-13.md), and a status
+  banner on `README.md`.
 - **Nothing was regenerated or retrained.** See issue 7 in the issues file for why regenerating the
   Phase I datasets without also retraining would have left the repo in a worse state than it is in
   now.
