@@ -591,9 +591,9 @@ reported numbers.
 | A2 Train/val/test split leaks near-duplicate transformed variants | utils/create_brep_csvs.py:270-280 | High -- DEFERRED (regenerate together with A1) |
 | A3 Only 4 topological families exist anywhere in the dataset | data/brep/ | Medium -- DEFERRED (needs new shape authoring) |
 | B1 `run_pipeline.py --full` calls nonexistent `train_enhanced.py` | finetuning/run_pipeline.py:126-129,246 | High -- FIXED 2026-08-02 |
-| B2 `GeometricValidationCallback` is dead code, wastes a generate() pass/epoch | finetuning/train.py:28-91,163 | High -- DEFERRED (needs a design decision: implement or remove) |
+| B2 `GeometricValidationCallback` is dead code, wastes a generate() pass/epoch | finetuning/train.py:28-91,163 | High -- FIXED 2026-08-07, decision was "remove": callback class and its registration deleted; `TrainerCallback` import dropped. `use_cache` at what was line 163 deliberately left as-is, since the callback held the only `generate()` call in the file and that line is really about gradient checkpointing |
 | B3 MAE/RMSE one-directional (not Chamfer-symmetric) for mismatched point counts | finetuning/metrics.py:53-84 | High -- FIXED 2026-08-02, verified with a synthetic degenerate case |
-| B4 Geometric-loss/curriculum/early-stopping config flags entirely unused | finetuning/config.py:46-62 + train.py | Medium -- DEFERRED (needs a design decision) |
+| B4 Geometric-loss/curriculum/early-stopping config flags entirely unused | finetuning/config.py:46-62 + train.py | Medium -- FIXED 2026-08-07, decision was "remove": 9 constants deleted (the 8 listed plus `VALIDATION_SAMPLES`, which only the B2 callback consumed), with a comment in `config.py` recording what went and why |
 | B5 `finetuning` repair connects components pairwise, not globally-nearest | finetuning/inference.py:97-160 | Medium -- FIXED 2026-08-02, verified via a synthetic 3-component case |
 | B6 `run_pipeline.py` error-analysis step uses bare relative filenames | finetuning/run_pipeline.py:150-163 | Medium -- FIXED 2026-08-02 |
 | B7 `combined_score` ignores MAE/RMSE/vertex_count_accuracy | finetuning/metrics.py:242-256 | Low -- not yet addressed |

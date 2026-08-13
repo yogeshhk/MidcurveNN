@@ -2,6 +2,23 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Status: closed for active development (2026-08-13)
+
+Remaining Phase I and Phase II work was converted into GitHub issues rather than fixed; the drafts
+are in `reports/github_issues_2026-08-13.md`. Phase III was promoted from a hibernated bug list to
+a written MS/PhD research topic
+(`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`, 2 pages, plus a
+LinkedIn draft in `reports/linkedin_post_2026-08-13.md`).
+
+Practical consequences for a future session:
+
+- **Do not regenerate the Phase I datasets casually.** `drawsvg` is absent from the current `genai`
+  environment, the three dataset directories are 4,344 *git-tracked* files, and regenerating
+  without also retraining all seven image variants leaves datasets and committed results silently
+  disagreeing. See issue 7 in the issues file for the full sequence a correct fix requires.
+- **Every headline metric in this repo was measured under train/test leakage.** Treat all quoted
+  accuracy figures as interpolation over 4 base shapes, not generalization.
+
 ## Project Overview
 
 **MidcurveNN** computes the midcurve (medial axis/skeleton) of 2D closed polygons using neural networks. It is a research project with three approach families:

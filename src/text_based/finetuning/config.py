@@ -37,29 +37,28 @@ class Config:
     # Advanced Training Settings
     USE_GRADIENT_CHECKPOINTING = True
     USE_FLASH_ATTENTION_2 = True
-    EARLY_STOPPING_PATIENCE = 3
-    EARLY_STOPPING_METRIC = "hausdorff_distance"
     LR_SCHEDULER = "cosine_with_restarts"
     MIXED_PRECISION = "bf16"  # or "fp16"
     SEED = 42
-
-    # Geometric Loss Settings
-    USE_GEOMETRIC_LOSS = True
-    GEOMETRIC_LOSS_WEIGHT = 0.1
-    TOKEN_LOSS_WEIGHT = 0.9
-
-    # Curriculum Learning
-    USE_CURRICULUM = True
-    CURRICULUM_STAGES = ["simple", "moderate", "complex"]
 
     # Data Augmentation
     AUGMENTATION_NOISE_LEVEL = 0.01  # 1% coordinate noise
     AUGMENTATION_MULTIPLIER = 5  # Generate 5x training data
 
     # Validation & Checkpointing
-    VALIDATION_SAMPLES = 10
     SAVE_TOP_K_CHECKPOINTS = 3
-    CHECKPOINT_METRICS = ["hausdorff_distance", "json_validity", "combined_score"]
+
+    # NOTE (2026-08-07): nine constants were removed from this block because nothing referenced
+    # them, and leaving them here read as documentation of behaviour that does not exist.
+    # Removed: USE_GEOMETRIC_LOSS, GEOMETRIC_LOSS_WEIGHT, TOKEN_LOSS_WEIGHT (no geometric-loss
+    # term is implemented in train.py); USE_CURRICULUM, CURRICULUM_STAGES (no curriculum logic);
+    # EARLY_STOPPING_PATIENCE, EARLY_STOPPING_METRIC (no early-stopping callback is registered,
+    # and the metric name did not even match the "hausdorff" key metrics.py actually produces);
+    # CHECKPOINT_METRICS (checkpoint selection is driven by TrainingArguments'
+    # metric_for_best_model="eval_loss"); and VALIDATION_SAMPLES, whose only consumer was the
+    # dead GeometricValidationCallback deleted from train.py in the same pass. If geometric loss,
+    # curriculum learning or metric-based early stopping ever get built, reintroduce the flags
+    # alongside the code that reads them.
 
     # Inference Settings
     MAX_NEW_TOKENS = 512

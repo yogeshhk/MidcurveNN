@@ -1,17 +1,38 @@
 # TODO.md: Repo-Level Index
 
 Index only, not a duplicate: points at where the real plans/status live so "what's next" from the
-repo root gives a global picture without digging through every subfolder. First TODO.md for this
-repo; no prior per-folder TODOs existed to link to, so entries below are grounded in each
-approach's own `analysis_report.md` and the root `README.md`'s "Pending" section instead.
+repo root gives a global picture without digging through every subfolder.
+
+## Close-out -- 2026-08-13
+
+**Active development on this repo has stopped.** Everything still open was either converted to a
+GitHub issue or promoted to a research proposal. Nothing was left half-done on disk.
+
+- **Phase I and Phase II remaining work: filed as GitHub issues.** Seven issue bodies are written
+  out in [`reports/github_issues_2026-08-13.md`](reports/github_issues_2026-08-13.md), ready to
+  paste. They cover the Phase II dataset/metric items (A1, A2, A3, B7, B10, plus the long-standing
+  `nemotron3/results/` test failure) and the Phase I leakage pair (Bugs 7, 11). Each says
+  explicitly why it was parked and what a complete fix has to include.
+- **Phase III is now a supervised research topic, not a bug list.** Its blocker was always
+  architectural rather than a defect. It is written up as a two-page proposal for MS/PhD students:
+  [`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex)
+  (compiles to exactly 2 pages, for back-to-back printing). A matching LinkedIn announcement draft
+  is in [`reports/linkedin_post_2026-08-13.md`](reports/linkedin_post_2026-08-13.md).
+- **Nothing was regenerated or retrained.** See issue 7 in the issues file for why regenerating the
+  Phase I datasets without also retraining would have left the repo in a worse state than it is in
+  now.
+
+The standing caveat, unchanged and still important: **every headline accuracy figure in this repo
+was measured under train/test leakage** and reflects interpolation over 4 base shapes rather than
+generalization. This is documented consistently across all three `analysis_report.md` files.
 
 ## By approach (long-term research project, three parallel phases)
 
 | Phase | Folder | Status | Known issues / next steps |
 |---|---|---|---|
-| Phase I: Image-based | `src/image_based/` | Implemented, 7 encoder-decoder variants; all cataloged bugs fixed 2026-08-02 except the augmentation-leakage/dataset-regeneration pair (Bugs 7, 11), deliberately deferred as a larger task. 48/48 tests passing. | See [`src/image_based/analysis_report.md`](src/image_based/analysis_report.md) |
-| Phase II: Text/LLM-based | `src/text_based/` | Implemented with caveats: 6 code-level bugs fixed 2026-08-02 (B1, B3, B5, B6, B8, B9), 44/45 tests passing. Reported metrics (QLoRA Qwen2.5-7B: MAE=0.78, PSR=98%) still reflect train/test data leakage (near-duplicate augmented variants of same 4 base shapes) -- fix decided (leave-one-shape-out) but not yet executed. Nemotron-Mini-4B few-shot also working. | See [`src/text_based/analysis_report.md`](src/text_based/analysis_report.md) |
-| Phase III: Geometry-based | `src/geometry_based/` | Implemented (from-scratch Graph Transformer + fine-tuned Graphormer variant); comprehensive evaluation still ongoing (preliminary status). **Hibernated 2026-08-02 per the maintainer** -- not ready, not picking up bug-fixing until told to revisit. | See [`src/geometry_based/analysis_report.md`](src/geometry_based/analysis_report.md) |
+| Phase I: Image-based | `src/image_based/` | Implemented, 7 encoder-decoder variants; all cataloged bugs fixed 2026-08-02 except the augmentation-leakage/dataset-regeneration pair (Bugs 7, 11). 48/48 tests passing. **Bugs 7/11 filed as issue 7, 2026-08-13** -- blocked on a missing `drawsvg` dependency, 4,344 git-tracked data files, and the retraining that would have to accompany regeneration. | See [`src/image_based/analysis_report.md`](src/image_based/analysis_report.md) |
+| Phase II: Text/LLM-based | `src/text_based/` | Implemented with caveats: 6 code-level bugs fixed 2026-08-02 (B1, B3, B5, B6, B8, B9), 44/45 tests passing. Reported metrics (QLoRA Qwen2.5-7B: MAE=0.78, PSR=98%) still reflect train/test leakage; fix decided (leave-one-shape-out), **filed as issues 1-6, 2026-08-13**, not executed. Nemotron-Mini-4B few-shot also working. | See [`src/text_based/analysis_report.md`](src/text_based/analysis_report.md) |
+| Phase III: Geometry-based | `src/geometry_based/` | Implemented (from-scratch Graph Transformer + fine-tuned Graphormer variant). Node positions roughly learned; **topology not learned at all** (adjacency BCE ~1.15, i.e. chance). Hibernated 2026-08-02; **promoted 2026-08-13 to a written MS/PhD research topic** rather than a bug-fixing effort. | Proposal: [`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex); technical detail: [`src/geometry_based/analysis_report.md`](src/geometry_based/analysis_report.md) |
 
 ## Open problems (from root README's "Pending" section)
 
@@ -173,11 +194,28 @@ regeneration, or design choices about wiring up unused config).
 - [ ] Bug A3 (MEDIUM, dataset) -- only 4 topological families exist; expanding needs new shape
       authoring (content creation, not a code fix). Not brainstormed 2026-08-02; revisit later.
 - [ ] Bug B7 (LOW) -- `combined_score` ignores MAE/RMSE/vertex_count_accuracy -- not yet
-      addressed (lower priority, left for a future pass).
+      addressed. Not purely mechanical: it needs a weighting decision on how much each metric
+      should count, which is a modelling judgement rather than a bug fix.
 - [ ] Bug B10 (LOW) -- `nemotron3/run_demo.py` duplicates `fewshot_prompter.py` almost verbatim
       -- not yet addressed (lower priority, left for a future pass).
 
-## Decided, ready to execute next session (brainstormed 2026-08-02, nothing executed yet)
+## Decided, ready to execute (brainstormed 2026-08-02; items 3 and 4 executed 2026-08-07)
+
+**Status: 3 and 4 are done. 1 and 2 remain, and are a session of their own.** Items 3 and 4 were
+pure deletions verifiable against the test suite, so they were taken first: the dead callback and
+nine unused config constants are gone, `pytest text_based/testing/test_text_based.py` still reports
+44 passed with the one pre-existing `nemotron3/results/` failure, unchanged from before the edit.
+Two details worth carrying forward: the open question about `use_cache` is answered (leave it, the
+removed callback held the only `generate()` call in `train.py`, so that line is purely about
+gradient checkpointing), and `VALIDATION_SAMPLES` had to go too, which the original decision did
+not list, since the deleted callback was its only consumer.
+
+Items 1 and 2 are deliberately not started. They regenerate `image-pairs/`, `unet-splits/`,
+`images-combo/` and `data/csvs/`, which invalidates any existing checkpoint's split and means the
+headline QLoRA figures (MAE 0.78, PSR 98%) have to be re-measured afterwards, most likely coming
+out worse since they currently benefit from the leakage being removed. That is the point of the
+fix, but it is not a tail-end job.
+
 
 Four decisions made in a short brainstorm at the end of the 2026-08-02 session. Each is written
 here as a self-contained, executable instruction so a future session can act on it directly
@@ -224,7 +262,7 @@ failure mode (documented as a shared root cause in `CLAUDE.md`'s "Code Analysis 
 - Note: regenerating `data/csvs/` invalidates any existing fine-tuned checkpoint's original
   train/val/test split.
 
-### 3. text_based Bug B2: remove `GeometricValidationCallback`
+### 3. text_based Bug B2: remove `GeometricValidationCallback` -- DONE 2026-08-07
 
 - Decision: delete the dead callback in `finetuning/train.py` (the per-epoch `try` block, roughly
   `train.py:28-91`, that calls `model.generate()` on up to 10 samples every epoch but never
@@ -239,7 +277,7 @@ failure mode (documented as a shared root cause in `CLAUDE.md`'s "Code Analysis 
   cache globally partly to support the (now-removed) per-epoch `generate()` calls -- confirm
   whether it's still needed for anything else before deciding whether to touch it too.
 
-### 4. text_based Bug B4: strip unused config flags
+### 4. text_based Bug B4: strip unused config flags -- DONE 2026-08-07
 
 - Decision: remove `USE_GEOMETRIC_LOSS`, `GEOMETRIC_LOSS_WEIGHT`, `TOKEN_LOSS_WEIGHT`,
   `USE_CURRICULUM`, `CURRICULUM_STAGES`, `EARLY_STOPPING_PATIENCE`, `EARLY_STOPPING_METRIC`, and

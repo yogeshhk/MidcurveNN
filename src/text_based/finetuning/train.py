@@ -4,8 +4,7 @@ from transformers import (
     AutoTokenizer, 
     AutoModelForCausalLM, 
     BitsAndBytesConfig, 
-    TrainingArguments,
-    TrainerCallback
+    TrainingArguments
 )
 from peft import LoraConfig, get_peft_model
 from trl import SFTTrainer
@@ -24,71 +23,6 @@ try:
 except ImportError:
     WANDB_AVAILABLE = False
     print("wandb not available. Install with: pip install wandb")
-
-class GeometricValidationCallback(TrainerCallback):
-    """Custom callback for geometric validation during training"""
-    
-    def __init__(self, eval_dataset, tokenizer, validation_samples=10):
-        self.eval_dataset = eval_dataset
-        self.tokenizer = tokenizer
-        self.validation_samples = validation_samples
-        self.best_metric = float('inf')
-    
-    def on_epoch_end(self, args, state, control, model, **kwargs):
-        """Run geometric validation at epoch end"""
-        print("\n" + "="*60)
-        print(f"Running Geometric Validation (Epoch {state.epoch})")
-        print("="*60)
-        
-        model.eval()
-        metrics_list = []
-        
-        # Sample random examples
-        indices = np.random.choice(
-            len(self.eval_dataset), 
-            min(self.validation_samples, len(self.eval_dataset)),
-            replace=False
-        )
-        
-        for idx in indices:
-            try:
-                example = self.eval_dataset[int(idx)]
-                text = example['text']
-                
-                # Extract profile and ground truth from formatted text
-                # This is simplified - in practice, need proper parsing
-                inputs = self.tokenizer([text], return_tensors="pt").to(model.device)
-                
-                with torch.no_grad():
-                    outputs = model.generate(
-                        inputs.input_ids,
-                        max_new_tokens=256,
-                        do_sample=False,
-                        temperature=0.1
-                    )
-                
-                # Decode and compute metrics
-                # This is a placeholder - actual implementation needs proper extraction
-                
-            except Exception as e:
-                print(f"Error in validation sample {idx}: {e}")
-                continue
-        
-        if metrics_list:
-            avg_metrics = {
-                key: np.mean([m[key] for m in metrics_list if key in m])
-                for key in metrics_list[0].keys()
-            }
-            
-            print("\nValidation Metrics:")
-            for key, value in avg_metrics.items():
-                print(f"  {key}: {value:.4f}")
-            
-            # Log to wandb if available
-            if WANDB_AVAILABLE and Config.USE_WANDB:
-                wandb.log({f"val_{k}": v for k, v in avg_metrics.items()})
-        
-        model.train()
 
 def setup_wandb():
     """Initialize Weights & Biases logging"""
@@ -227,8 +161,7 @@ def train():
         dataset_text_field="text",
         max_seq_length=Config.MAX_SEQ_LENGTH,
         tokenizer=tokenizer,
-        args=training_args,
-        callbacks=[GeometricValidationCallback(val_dataset, tokenizer, Config.VALIDATION_SAMPLES)]
+        args=training_args
     )
     
     # 8. Train

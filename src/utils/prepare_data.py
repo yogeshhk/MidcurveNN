@@ -48,6 +48,66 @@ IMAGE_PAIRS_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'image-pairs')
 UNET_SPLITS_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'unet-splits')
 IMAGES_COMBO_DIR = os.path.join(SRC_DIR, 'image_based', 'data', 'images-combo')
 
+# ---------------------------------------------------------------------------
+# Leave-one-shape-out split configuration (analysis_report.md Bugs 7 and 11)
+# ---------------------------------------------------------------------------
+# Splitting by a flat shuffle over augmented variants leaks: a held-out sample
+# can be a rotated/translated variant of a training shape, so reported accuracy
+# measures interpolation rather than generalization. Splitting by BASE SHAPE
+# identity instead means no variant of a held-out shape is ever seen in
+# training.
+#
+# Rotate which shape is held out by editing TEST_SHAPES / VAL_SHAPES. With only
+# four base shapes this is necessarily coarse -- holding out one shape removes
+# 25% of all topological families, and using a second for validation leaves
+# just two for training. That is a real limitation of the current dataset, not
+# of the split strategy; it improves as more shape families are added.
+BASE_SHAPES = ('I', 'L', 'T', 'Plus')
+TEST_SHAPES = ('Plus',)
+VAL_SHAPES = ('T',)
+
+
+def base_shape_from_filename(path):
+    """Return the base shape name encoded in a generated PNG filename.
+
+    Generated files are named ``<Shape>_<Profile|Midcurve>[_<transform>...].png``
+    (e.g. ``Plus_Midcurve_mirrored_0_rotated_120.png``), so the base shape is
+    the segment before the first underscore. Returns None if it is not one of
+    the known BASE_SHAPES, so callers can decide how to treat strays.
+    """
+    stem = os.path.basename(path).split('.')[0]
+    candidate = stem.split('_')[0]
+    return candidate if candidate in BASE_SHAPES else None
+
+
+def split_indices_by_base_shape(paths, test_shapes=TEST_SHAPES, val_shapes=VAL_SHAPES):
+    """Group indices of `paths` into (train, val, test) by base shape identity.
+
+    Returns three lists of indices into `paths`. Files whose base shape cannot
+    be determined are put in train and reported, rather than silently dropped
+    or silently leaked into the held-out sets.
+    """
+    train_idx, val_idx, test_idx, unknown = [], [], [], []
+    for i, p in enumerate(paths):
+        shape = base_shape_from_filename(p)
+        if shape is None:
+            unknown.append(os.path.basename(p))
+            train_idx.append(i)
+        elif shape in test_shapes:
+            test_idx.append(i)
+        elif shape in val_shapes:
+            val_idx.append(i)
+        else:
+            train_idx.append(i)
+
+    if unknown:
+        print(f"Warning: {len(unknown)} file(s) had an unrecognized base shape "
+              f"and were assigned to train, e.g. {unknown[:3]}")
+    if not test_idx:
+        print(f"Warning: no files matched TEST_SHAPES={test_shapes}; test split is empty")
+
+    return train_idx, val_idx, test_idx
+
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -98,14 +158,26 @@ def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
 
     combo_pngs = [combine_images(p, m) for p, m in zip(profile_pngs_gray_objs, midcurve_pngs_gray_objs)]
 
-    # shufle them
-    shuffle(combo_pngs)
-    train_size = int(len(combo_pngs) * 0.6)
-    val_size = int(len(combo_pngs) * 0.2)
+    # Split by base shape identity, NOT by a flat shuffle over augmented
+    # variants (analysis_report.md Bug 7). `profile_pngs` is index-aligned with
+    # `combo_pngs`, so its filenames give each combo image its base shape.
+    train_idx, val_idx, test_idx = split_indices_by_base_shape(profile_pngs)
 
-    train_combo_files = combo_pngs[:train_size]
-    val_combo_files = combo_pngs[train_size:train_size + val_size]
-    test_combo_files = combo_pngs[train_size + val_size:]
+    train_combo_files = [combo_pngs[i] for i in train_idx]
+    val_combo_files = [combo_pngs[i] for i in val_idx]
+    test_combo_files = [combo_pngs[i] for i in test_idx]
+
+    # Shuffle WITHIN each split only. This keeps batch order random without
+    # moving any sample across a split boundary.
+    shuffle(train_combo_files)
+    shuffle(val_combo_files)
+    shuffle(test_combo_files)
+
+    print(f"images-combo split by base shape -> "
+          f"train={len(train_combo_files)} (shapes: "
+          f"{sorted(set(BASE_SHAPES) - set(TEST_SHAPES) - set(VAL_SHAPES))}), "
+          f"val={len(val_combo_files)} (shapes: {list(VAL_SHAPES)}), "
+          f"test={len(test_combo_files)} (shapes: {list(TEST_SHAPES)})")
 
     if os.path.exists(pix2pixdatafolder):
         shutil.rmtree(pix2pixdatafolder, ignore_errors=True)
@@ -136,7 +208,81 @@ def generate_pix2pix_dataset(inputdatafolder=None, pix2pixdatafolder=None):
     return train_combo_files, val_combo_files, test_combo_files
 
 
-def get_training_data(datafolder=None, size=(100, 100)):
+def generate_unet_splits(inputdatafolder=None, unetsplitsfolder=None, size=(256, 256)):
+    """Generate the UNet train/test split PNGs from the image pairs.
+
+    Fixes analysis_report.md Bug 11: `unet-splits/` existed on disk but nothing
+    regenerated it, so the split could not be reproduced from raw data. Note
+    that `unet/test_unet.py` already tells the user to "run utils/prepare_data.py"
+    when the directory is missing -- until now that advice was wrong, because
+    `__main__` never created it.
+
+    Output matches what `unet/datagenerator.py` consumes: one PNG per sample,
+    profile on the left half and midcurve on the right half, split at `size[0]`
+    and read via `cv2.IMREAD_GRAYSCALE`.
+
+    Two deliberate differences from the legacy committed files:
+
+    - Splits are grouped by base shape (see `split_indices_by_base_shape`)
+      rather than flat-shuffled, so no augmented variant of a held-out shape
+      appears in training. This is the Bug 7 fix applied here too.
+    - Files are written as single-channel 'L' PNGs. The legacy files are RGBA
+      carrying the shape in the alpha channel, which `cv2.IMREAD_GRAYSCALE`
+      does not read; grayscale is what the consumer actually wants.
+
+    Only train/ and test/ are produced, matching the existing layout -- the
+    UNet pipeline has no val/ directory.
+    """
+    if not _TF_AVAILABLE:
+        raise ImportError("TensorFlow is required for generate_unet_splits(). "
+                          "Install it or use a geometry/text-based approach.")
+    if inputdatafolder is None:
+        inputdatafolder = IMAGE_PAIRS_DIR
+    if unetsplitsfolder is None:
+        unetsplitsfolder = UNET_SPLITS_DIR
+
+    profile_pngs, midcurve_pngs = read_input_image_pairs(inputdatafolder)
+
+    profile_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size))[:, :, 3]
+                    for f in profile_pngs]
+    midcurve_objs = [img_to_array(load_img(f, color_mode='rgba', target_size=size))[:, :, 3]
+                     for f in midcurve_pngs]
+
+    combos = [combine_images(p, m) for p, m in zip(profile_objs, midcurve_objs)]
+
+    # val indices fold into train: the UNet layout has no val/ directory.
+    train_idx, val_idx, test_idx = split_indices_by_base_shape(profile_pngs)
+    train_idx = train_idx + val_idx
+
+    if os.path.exists(unetsplitsfolder):
+        shutil.rmtree(unetsplitsfolder, ignore_errors=True)
+    for phase in ("train", "test"):
+        os.makedirs(os.path.join(unetsplitsfolder, phase))
+
+    for phase, indices in (("train", train_idx), ("test", test_idx)):
+        for counter, i in enumerate(indices):
+            img = PIL.Image.fromarray(combos[i].astype('uint8'), mode='L')
+            img.save(os.path.join(unetsplitsfolder, phase, f"C{counter}.png"))
+
+    print(f"unet-splits split by base shape -> "
+          f"train={len(train_idx)}, test={len(test_idx)} "
+          f"(test shapes: {list(TEST_SHAPES)})")
+
+    return train_idx, test_idx
+
+
+def get_training_data(datafolder=None, size=(100, 100), return_shapes=False):
+    """Load Profile/Midcurve PNG pairs as grayscale arrays.
+
+    By default returns ``(profiles, midcurves)`` shuffled together, which is the
+    long-standing signature every caller relies on.
+
+    Pass ``return_shapes=True`` to also get a per-sample base shape label, as
+    ``(profiles, midcurves, shapes)``. Callers that want a leave-one-shape-out
+    split (analysis_report.md Bug 7) need that label: a flat shuffle here means
+    a held-out sample can be a rotated variant of a training shape. See
+    ``split_indices_by_base_shape`` for the grouping helper.
+    """
     if not _TF_AVAILABLE:
         raise ImportError("TensorFlow is required for get_training_data(). "
                           "Install it or use a geometry/text-based approach.")
@@ -156,11 +302,15 @@ def get_training_data(datafolder=None, size=(100, 100)):
     #     profile_pngs_gray_objs = [np.where(x>128, 0, 1) for x in profile_pngs_gray_objs]
     #     midcurve_pngs_gray_objs =[np.where(x>128, 0, 1) for x in midcurve_pngs_gray_objs]
 
-    # shufle them
-    zipped_profiles_midcurves = [(p, m) for p, m in zip(profile_pngs_gray_objs, midcurve_pngs_gray_objs)]
-    shuffle(zipped_profiles_midcurves)
-    profile_pngs_gray_objs, midcurve_pngs_gray_objs = zip(*zipped_profiles_midcurves)
+    # Shuffle profiles, midcurves and their base shape labels together, so the
+    # three stay aligned however the caller splits them afterwards.
+    shapes = [base_shape_from_filename(f) for f in profile_pngs]
+    zipped = list(zip(profile_pngs_gray_objs, midcurve_pngs_gray_objs, shapes))
+    shuffle(zipped)
+    profile_pngs_gray_objs, midcurve_pngs_gray_objs, shapes = zip(*zipped)
 
+    if return_shapes:
+        return profile_pngs_gray_objs, midcurve_pngs_gray_objs, shapes
     return profile_pngs_gray_objs, midcurve_pngs_gray_objs
 
 
@@ -483,6 +633,13 @@ if __name__ == "__main__":
     generate_pix2pix_dataset(
         inputdatafolder=IMAGE_PAIRS_DIR,
         pix2pixdatafolder=IMAGES_COMBO_DIR
+    )
+
+    # Generate UNet train/test split PNGs (previously missing here — Bug 11)
+    print("Generating unet-splits dataset...")
+    generate_unet_splits(
+        inputdatafolder=IMAGE_PAIRS_DIR,
+        unetsplitsfolder=UNET_SPLITS_DIR
     )
 
     # Generate sequence JSON for text-based approaches
