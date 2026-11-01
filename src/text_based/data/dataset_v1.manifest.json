@@ -1,0 +1,11 @@
+{
+  "path": "dataset_v1.jsonl",
+  "n_rows": 524,
+  "sha256_16": "0deac1f73a6b9009",
+  "counts": {
+    "train": 400,
+    "val": 40,
+    "test": 80
+  },
+  "gold": 4
+}

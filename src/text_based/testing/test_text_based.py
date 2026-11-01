@@ -260,6 +260,50 @@ class TestCsvDatasets(unittest.TestCase):
             self.assertGreater(len(df), 0, f"{fname} is empty")
 
 
+class TestCsvEncoding(unittest.TestCase):
+    """CSV brep cells must be single-encoded JSON (dict), and parse_brep must unwrap strings."""
+
+    @staticmethod
+    def _load_metrics(path):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('_enc_metrics_' + str(abs(hash(path))), path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_45_csv_cells_are_single_encoded(self):
+        try:
+            import pandas as pd
+        except ImportError:
+            self.skipTest("pandas not installed")
+        for fname in _CSV_FILES:
+            path = os.path.join(_CSVS_DIR, fname)
+            if not os.path.isfile(path):
+                continue
+            df = pd.read_csv(path, dtype=str, nrows=20)
+            for col in ('Profile_brep', 'Midcurve_brep'):
+                for cell in df[col]:
+                    self.assertIsInstance(json.loads(cell), dict, f"{fname}:{col} is double-encoded")
+
+    def test_46_parse_brep_unwraps_double_encoded(self):
+        try:
+            import numpy  # noqa: F401
+            import scipy  # noqa: F401
+        except ImportError:
+            self.skipTest("numpy/scipy missing")
+        brep = {"Points": [[0.0, 0.0], [1.0, 0.0]], "Lines": [[0, 1]], "Segments": [[0]]}
+        once = json.dumps(brep)
+        twice = json.dumps(once)
+        for rel in ('finetuning', 'nemotron3'):
+            mod = self._load_metrics(os.path.join(_TEXT_BASED, rel, 'metrics.py'))
+            for s in (once, twice):
+                data, pts = mod.GeometricMetrics.parse_brep(s)
+                self.assertIsInstance(data, dict, rel)
+                self.assertEqual(len(pts), 2, rel)
+            data, pts = mod.GeometricMetrics.parse_brep(json.dumps("just text"))
+            self.assertIsNone(data, rel)
+
+
 # ---------------------------------------------------------------------------
 # Utils imports smoke test  (no model weights, no GPU)
 # ---------------------------------------------------------------------------

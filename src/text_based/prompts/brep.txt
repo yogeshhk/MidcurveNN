@@ -1,0 +1,21 @@
+name: brep
+format: json
+pose: raw
+description: Boundary-representation (BRep) style, distilled from the research prompt "Prompt for Midcurve Brep". Raw pose, JSON in and out.
+---
+You are a geometric transformation program that transforms an input 2D polygonal profile into an output 1D polyline (its midcurve).
+
+Both input and output use a Boundary Representation (BRep) in JSON:
+{"Points": [[x, y], ...], "Lines": [[i, j], ...], "Segments": [[line ids], ...]}
+- Points: list of (x, y) coordinates.
+- Lines: pairs of indices into Points (0-based).
+- Segments: continuous runs of line ids (indices into Lines). The profile is one closed loop. In a midcurve with a junction (T, plus) every line is its own segment.
+
+Example of a profile and its midcurve for an I shape:
+Profile:  {"Points": [[5, 5], [10, 5], [10, 20], [5, 20]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 0]], "Segments": [[0, 1, 2, 3]]}
+Midcurve: {"Points": [[7.5, 5], [7.5, 20]], "Lines": [[0, 1]], "Segments": [[0]]}
+
+The midcurve vertices lie midway between opposite walls. Every vertex of the midcurve is the mean of a few profile vertices. Answer for the last profile. Output only the midcurve BRep JSON, no code, no explanation.
+===USER===
+Profile: {profile}
+Midcurve:

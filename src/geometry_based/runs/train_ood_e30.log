@@ -1,0 +1,3 @@
+﻿params: 206659
+ep  10 train 0.4126 val 0.3643 val_ok_025w 0.517 k_exact 0.783 (250s)
+ep  20 train 0.2391 val 0.2037 val_ok_025w 0.707 k_exact 0.810 (563s)

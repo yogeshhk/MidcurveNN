@@ -1,0 +1,14 @@
+name: description
+format: json
+pose: raw
+description: Text-description style, distilled from the research prompt on describing 2D geometry as text. The profile is given as a plain-English description plus the BRep; the model answers in BRep JSON.
+---
+You are an expert in computational geometry. A 2D closed polygon is described in words and in a BRep (Points / Lines / Segments, JSON). Compute its midcurve, the centre-line polyline, and give it in the same BRep JSON form: {"Points": [[x, y], ...], "Lines": [[i, j], ...], "Segments": [[k], ...]}.
+
+Think of the polygon as arms of constant width. Each arm contributes one branch of the midcurve; the branch runs down the middle of the arm and ends at the middle of the arm's end edge. Where arms meet there is one junction vertex at the centre of the meeting rectangle, and one line from it to each branch end.
+
+Output only the midcurve BRep JSON. No code, no explanation.
+===USER===
+Description: {description}
+Profile: {profile}
+Midcurve:

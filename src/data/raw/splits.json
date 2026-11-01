@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "note": "Shared split convention for all three approaches (image_based, text_based, geometry_based). Splits are by base-shape NAME, never by file. 'pose' = every shape in train and test with different augmentation poses (pose-level only, NOT shape generalisation; label results accordingly). 'default' matches the legacy utils/prepare_data.py TEST_SHAPES=('Plus',), VAL_SHAPES=('T',). 'loso' = leave-one-shape-out folds.",
+  "shapes": ["I", "L", "T", "Plus"],
+  "edges_files": "<Shape>.edges next to <Shape>.mid: one 'i j' pair per line, 0-based indices into the .mid points",
+  "pose": {"train": ["I", "L", "T", "Plus"], "val": ["I", "L", "T", "Plus"], "test": ["I", "L", "T", "Plus"]},
+  "default": {"train": ["I", "L"], "val": ["T"], "test": ["Plus"]},
+  "loso": [
+    {"holdout": "I",    "train": ["L", "T", "Plus"], "test": ["I"]},
+    {"holdout": "L",    "train": ["I", "T", "Plus"], "test": ["L"]},
+    {"holdout": "T",    "train": ["I", "L", "Plus"], "test": ["T"]},
+    {"holdout": "Plus", "train": ["I", "L", "T"],    "test": ["Plus"]}
+  ],
+  "seeds": {"train": 0, "val": 1, "test": 2}
+}

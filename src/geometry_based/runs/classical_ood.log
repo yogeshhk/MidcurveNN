@@ -1,0 +1,29 @@
+﻿--- real4 ---
+
+I     nodes 2 edges 1  H/w 0.000  chamfer_raw 0.000  hausdorff_raw 0.000  ok_025w True
+
+L     nodes 3 edges 2  H/w 0.000  chamfer_raw 0.000  hausdorff_raw 0.000  ok_025w True
+
+T     nodes 4 edges 3  H/w 0.000  chamfer_raw 0.000  hausdorff_raw 0.000  ok_025w True
+
+Plus  nodes 5 edges 4  H/w 0.000  chamfer_raw 0.000  hausdorff_raw 0.000  ok_025w True
+
+--- synth test_in (n=1000) ---
+
+k_exact 0.822 deg_seq 0.821 H<=0.25w 0.981 ok_025w 0.821 edge_f1 0.897  H/w median 0.004
+
+--- synth test (n=1000) ---
+
+k_exact 0.763 deg_seq 0.751 H<=0.25w 0.915 ok_025w 0.751 edge_f1 0.922  H/w median 0.000
+
+--- synth test_deg4_subset (n=1000) ---
+
+k_exact 0.763 deg_seq 0.751 H<=0.25w 0.915 ok_025w 0.751 edge_f1 0.922  H/w median 0.000
+
+P3_synthetic_test False
+
+P4_real4_all_ok True
+
+P5_real_plus_5nodes_4edges True
+
+

@@ -16,7 +16,17 @@ class GeometricMetrics:
                     data = ast.literal_eval(json_str)
             else:
                 data = json_str
-                
+
+            # Unwrap double-encoded JSON (a JSON string that wraps the JSON), max 2 times
+            for _ in range(2):
+                if isinstance(data, str):
+                    try:
+                        data = json.loads(data)
+                    except json.JSONDecodeError:
+                        data = ast.literal_eval(data)
+            if not isinstance(data, dict):
+                return None, np.array([])
+
             # Extract coordinates from points list
             points = np.array(data.get("Points", []))
             return data, points

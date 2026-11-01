@@ -27,8 +27,12 @@ except ImportError:
                     data = json.loads(s) if isinstance(s, str) else s
                 except (json.JSONDecodeError, ValueError):
                     data = ast.literal_eval(s)
-                if isinstance(data, str):
-                    data = json.loads(data)
+                for _ in range(2):  # unwrap double-encoded JSON strings
+                    if isinstance(data, str):
+                        try:
+                            data = json.loads(data)
+                        except (json.JSONDecodeError, ValueError):
+                            data = ast.literal_eval(data)
                 if not isinstance(data, dict):
                     return None, np.array([])
                 raw_pts = data.get("Points", [])

@@ -39,20 +39,21 @@ _eval_spec.loader.exec_module(_eval_mod)
 _make_results_grid = _eval_mod.make_results_grid
 
 
-_FEW_SHOT = [
-    {
-        "profile":  ('{"Points": [[-3.21, 6.3], [-1.67, 11.06], [-15.93, 15.69], [-17.48, 10.94]],'
-                     ' "Lines": [[0, 1], [1, 2], [2, 3], [3, 0]], "Segments": [[0, 1, 2, 3]]}'),
-        "midcurve": '{"Points": [[-2.44, 8.68], [-16.7, 13.31]], "Lines": [[0, 1]], "Segments": [[0]]}',
-    },
-    {
-        "profile":  ('{"Points": [[33.0, 33.0], [38.0, 33.0], [38.0, 58.0], [63.0, 58.0],'
-                     ' [63.0, 63.0], [33.0, 63.0]], "Lines": [[0, 1], [1, 2], [2, 3], [3, 4],'
-                     ' [4, 5], [5, 0]], "Segments": [[0, 1, 2, 3, 4, 5]]}'),
-        "midcurve": ('{"Points": [[35.5, 33.0], [35.5, 60.5], [63.0, 60.5]],'
-                     ' "Lines": [[0, 1], [1, 2]], "Segments": [[0, 1]]}'),
-    },
-]
+def _load_gold_few_shot():
+    """Build 4 gold examples (I, L, T, Plus) at runtime from data/brep/*.json."""
+    brep_dir = os.path.join(_HERE, "..", "data", "brep")
+    shots = []
+    for name in ("I", "L", "T", "Plus"):
+        with open(os.path.join(brep_dir, name + ".json"), "r", encoding="utf-8") as fh:
+            d = json.load(fh)
+        shots.append({
+            "profile":  json.dumps(d["Profile_brep"]),
+            "midcurve": json.dumps(d["Midcurve_brep"]),
+        })
+    return shots
+
+
+_FEW_SHOT = _load_gold_few_shot()
 
 _SYSTEM_PROMPT = (
     "You are a CAD geometry assistant specialised in computing midcurves.\n"
@@ -74,7 +75,7 @@ _SYSTEM_PROMPT = (
 class FewShotPrompter:
     """Base-model few-shot inference for midcurve prediction (no fine-tuning required)."""
 
-    def __init__(self, config=None, n_samples=7, max_new_tokens=128, max_input_len=512):
+    def __init__(self, config=None, n_samples=40, max_new_tokens=768, max_input_len=4096):
         self.cfg = config or Config
         self.n_samples = n_samples
         self.max_new_tokens = max_new_tokens
@@ -157,18 +158,19 @@ class FewShotPrompter:
         except Exception:
             prompt = _SYSTEM_PROMPT + "\n\n" + messages[1]["content"]
 
-        inputs = self.tokenizer(
-            prompt, return_tensors="pt", truncation=True, max_length=self.max_input_len
-        ).to(self.model.device)
+        # No truncation: truncating the prompt cuts off the generation prompt.
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
+        if inputs["input_ids"].shape[1] >= self.max_input_len:
+            print(f"WARNING: prompt has {inputs['input_ids'].shape[1]} tokens "
+                  f"(>= max_input_len {self.max_input_len}); NOT truncated.")
 
         with torch.no_grad():
+            # Greedy decoding; no repetition_penalty (it corrupts repeated digits/brackets).
             out_ids = self.model.generate(
                 **inputs,
                 max_new_tokens=self.max_new_tokens,
                 do_sample=False,
-                temperature=1.0,
                 pad_token_id=self.tokenizer.eos_token_id,
-                repetition_penalty=1.1,
             )
         new_ids = out_ids[0][inputs["input_ids"].shape[1]:]
         return self.tokenizer.decode(new_ids, skip_special_tokens=True).strip()
@@ -234,6 +236,19 @@ class FewShotPrompter:
 
     # ── Batch evaluation ──────────────────────────────────────────────────────
 
+    @staticmethod
+    def _stratified_sample(df, n):
+        """Pick up to n rows, balanced across shape families (I, L, T, Plus)."""
+        fam = df["ShapeName"].astype(str).str.split("_").str[0]
+        groups = [df[fam == f] for f in sorted(fam.unique())]
+        per = max(1, n // max(1, len(groups)))
+        parts = [g.head(per) for g in groups]
+        out = pd.concat(parts)
+        if len(out) < n:  # top up from the remainder
+            rest = df.drop(out.index)
+            out = pd.concat([out, rest.head(n - len(out))])
+        return out.head(n)
+
     def evaluate(self, output_dir=None):
         """Run on N test samples, compute metrics, save CSV and results grid."""
         if self.model is None:
@@ -242,7 +257,7 @@ class FewShotPrompter:
         results_dir = Path(output_dir) if output_dir else Path(self.cfg.BASE_DIR) / "results"
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        df = pd.read_csv(self.cfg.TEST_FILE).head(self.n_samples)
+        df = self._stratified_sample(pd.read_csv(self.cfg.TEST_FILE), self.n_samples)
         print(f"Loaded {len(df)} test samples from {self.cfg.TEST_FILE}\n")
 
         records = []
