@@ -3,6 +3,27 @@
 Index only, not a duplicate: points at where the real plans/status live so "what's next" from the
 repo root gives a global picture without digging through every subfolder.
 
+## Current plan -- 2026-11-02
+
+Work has resumed as three independent tracks, each driven by its own `run.py`
+(`prepare | train | eval | baseline`), env `genai`. The live plan is
+[`src/proposal/06_EXECUTION_PLAN.md`](src/proposal/06_EXECUTION_PLAN.md); per-track task lists are
+`src/image_based/TODO.md`, `src/geometry_based/TODO.md`, `src/text_based/TODO.md`. Tick items in both
+places as they finish.
+
+| Track | Status | Results |
+|---|---|---|
+| Image | Code, dataset, tests done; experiments partial. Next: confirm test vs val block, 1-channel default, full-schedule runs, ablations, leave-one-shape-out | [RESULTS_image.md](src/proposal/RESULTS_image.md) |
+| Graph | Code and tests done; reduced-budget runs, P3 narrowly missed. Next: longer training, seeds, `ood_size`, 3-shape negative control | [RESULTS_graph.md](src/proposal/RESULTS_graph.md) |
+| Text | Built, NOT RUN. Next: LM Studio timing probe (Session 3) | none |
+
+Pending decisions needing the user, one at a time: legacy folder moves to `_legacy/`, publications
+moves and zip, GPU QLoRA. Legacy numbers are leaked; the earlier image UNet 0.998 used a leaky
+3-channel input and is being re-measured with 1-channel input.
+
+The sections below are the 2026-08 legacy state and are kept for history. The "Close-out" below is
+superseded for new work.
+
 ## Close-out -- 2026-08-13
 
 **Active development on this repo has stopped.** Everything still open was either converted to a

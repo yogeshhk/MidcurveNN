@@ -15,9 +15,20 @@ MidcurveNN is a project aimed at solving the challenging problem of finding the 
 
 If you are interested in working/contributing to this project voluntarily, do have a look at the [issues](https://github.com/yogeshhk/MidcurveNN/issues)
 
-> **Status (August 2026): active development has paused; the project is open for collaborators.**
+> **Status (November 2026): work has resumed as three independent tracks, each with its own `run.py`.**
 >
-> All three phases are implemented. Everything still outstanding in Phase I (image) and Phase II
+> | Track | Folder | Status | Results |
+> |---|---|---|---|
+> | Image | `src/image_based/` | New code, dataset and tests done; experiments partial | [RESULTS_image.md](src/proposal/RESULTS_image.md) |
+> | Graph | `src/geometry_based/` | New code and tests done; reduced-budget experiments, one criterion narrowly missed | [RESULTS_graph.md](src/proposal/RESULTS_graph.md) |
+> | Text/LLM | `src/text_based/` | Code and tests done; NOT RUN, no results | none |
+>
+> The live plan is [`src/proposal/06_EXECUTION_PLAN.md`](src/proposal/06_EXECUTION_PLAN.md). Numbers are
+> kept in the RESULTS files and are not repeated here. The earlier UNet figure of 0.998 used a leaky
+> 3-channel input (it included the distance transform, whose ridge is the midcurve) and is being
+> re-measured with the 1-channel outline input.
+>
+> The August 2026 text below still applies to the legacy code. All three phases were implemented there. Everything still outstanding in Phase I (image) and Phase II
 > (text/LLM) has been written up as GitHub issues rather than left as stale TODOs — each states what
 > a complete fix has to include.
 >
@@ -30,10 +41,11 @@ If you are interested in working/contributing to this project voluntarily, do ha
 > See the [two-page topic proposal](publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.pdf).
 > Students and co-supervisors are welcome to open an issue.
 >
-> **Caveat on all reported numbers:** every headline accuracy figure in this repository was measured
-> under train/test leakage — augmented variants of the same four base shapes were shuffled flatly
-> across splits. They reflect interpolation, not generalization. This is documented in each phase's
-> `analysis_report.md`, and the fix (leave-one-shape-out) is filed as an issue.
+> **Caveat on all legacy numbers:** every headline accuracy figure from the legacy code (including the
+> paper and blog figures such as MAE 0.78 and PSR 98%) was measured under train/test leakage -- augmented
+> variants of the same four base shapes were shuffled flatly across splits. They reflect interpolation,
+> not generalization. This is documented in each phase's `analysis_report.md`. The new tracks use pose
+> and leave-one-shape-out splits; even those rest on only four real shapes.
 
 ## Publications/Talks
 - Vixra paper MidcurveNN: Encoder-Decoder Neural Network for Computing Midcurve of a Thin Polygon, viXra.org e-Print archive, viXra:1904.0429 http://vixra.org/abs/1904.0429 
@@ -61,6 +73,20 @@ of the License, or any later version.
 
 
 ## Repository Structure
+
+New per-track layout (each track is independent; only `src/data/raw/` is shared):
+
+```
+src/
+├── data/raw/                  # .dat/.mid, plus .edges and splits.json (shared)
+├── proposal/                  # plans, 06_EXECUTION_PLAN.md (live), RESULTS_*.md
+├── image_based/   run.py  prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.npz   runs/
+├── geometry_based/ run.py prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.json  runs/
+└── text_based/    run.py  prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.jsonl runs/
+```
+
+Each `runs/<model>__<split>__<tag>/` holds `metrics.json`, `grid.png`, `log.csv`, `args.json` and a
+git-ignored `best.pt`. The legacy layout is below; those folders still exist beside the new files.
 
 ```
 src/
@@ -128,6 +154,40 @@ One other top-level folder sits alongside `src/`:
   prompt templates/research notes used while developing this project (`publications/prompts/`).
 
 ## Instructions to Run
+
+### New workflow (per-track `run.py`)
+
+The working environment is the conda env `genai` (the `midcurvenn` env from `environment.yml` is not
+currently built; a buildable `environment.yml` is a planned item). Launch with `conda run`:
+
+```bash
+# Image track
+cd src/image_based
+conda run -n genai python run.py prepare
+conda run -n genai python run.py train --model unet --split pose --tag h1 --epochs 30 --steps 100
+conda run -n genai python run.py eval  --model unet --split pose --tag h1 --tta
+
+# Graph track
+cd src/geometry_based
+conda run -n genai python run.py prepare
+conda run -n genai python run.py baseline --model classical --split iid --tag t1
+conda run -n genai python run.py train --model set_transformer --split iid --tag e100 --epochs 100 --threads 2
+
+# Text track (NOT RUN, no results yet)
+cd src/text_based
+conda run -n genai python run.py prepare
+
+# Tests, per track
+cd src
+conda run -n genai python -m pytest image_based/tests geometry_based/tests text_based/tests -q
+```
+
+Run one heavy training job at a time. See each track's `README.md` and `TODO.md`.
+
+### Legacy workflow
+
+Do not run `utils/prepare_data.py` casually: it deletes `images-combo/` and `unet-splits/`, and the
+legacy numbers it feeds are leaked.
 
 ```bash
 cd src
@@ -221,7 +281,7 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 		- Prepapre instruct-based fine-tuning [dataset](https://www.kaggle.com/datasets/yogeshkulkarni/midcurvellm) which can be used using [Ludwig](https://www.kaggle.com/code/yogeshkulkarni/midcurvellm-finetune-ludwig) or classical Hugging Face way of fine-tuning
 
 - **Phase I** is fully implemented with 7 encoder-decoder variants. Four are the primary focus: Simple AE, Dense AE, CNN AE (CoordConv, stride-2 skip connections), and Denoising AE (2-stage training). UNet (2-stage, CoordConv, weighted BCE) is the strongest but an extended variant.
-- **Phase II** is **implemented and currently the best performer** (`text_based/`): QLoRA fine-tuning of Qwen2.5-7B achieves **MAE=0.78, PSR=98%, Hausdorff=2.1** on the 4-shape benchmark. Nemotron-Mini-4B in a 2-shot setting achieves PSR=85.7%, topology accuracy=0.83, fitting in ~2 GB VRAM. BRep JSON with explicit `Lines`/`Segments` topology solves the branching serialization problem.
+- **Phase II** is **implemented** (`text_based/`): QLoRA fine-tuning of Qwen2.5-7B was reported at MAE=0.78, PSR=98%, Hausdorff=2.1, and Nemotron-Mini-4B 2-shot at PSR=85.7%, topology accuracy=0.83. These legacy figures were measured under train/test leakage and the "best performer" claim is withdrawn until the new text track is run (status: NOT RUN). BRep JSON with explicit `Lines`/`Segments` topology addresses the branching serialization problem.
 - **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`). Comprehensive evaluation is ongoing (preliminary status).
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:

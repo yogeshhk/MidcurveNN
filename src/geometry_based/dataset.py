@@ -17,9 +17,24 @@ def load_gold():
     return pdata.load_gold()
 
 
-def build_splits(split, n_train=20000, n_val=2000, n_test=1000, seeds=(0, 1, 2)):
-    """Return dict name -> list of samples. Synthetic data only; real4 is added by the caller."""
+def build_splits(split, n_train=20000, n_val=2000, n_test=1000, seeds=(0, 1, 2), holdout=None):
+    """Return dict name -> list of samples. Synthetic data only; real4 is added by the caller.
+
+    split "loso_real" (negative control): train/val = the 3 REAL shapes other than `holdout`
+    (each repeated n_train / n_val times; the loader's augmentation makes the copies differ),
+    test = the held-out real shape. The reported real4 block then contains 3 seen + 1 unseen shape.
+    """
     s_tr, s_va, s_te = seeds
+    if split == "loso_real":
+        if holdout is None:
+            raise ValueError("loso_real needs --holdout I|L|T|Plus")
+        gold = load_gold()
+        rest = [g for g in gold if g["shape"] != holdout]
+        held = [g for g in gold if g["shape"] == holdout]
+        if len(rest) != 3 or len(held) != 1:
+            raise ValueError("unknown holdout shape %r" % holdout)
+        rep = lambda n: [rest[i % 3] for i in range(n)]
+        return dict(train=rep(n_train), val=rep(n_val), test=held)
     if split == "iid":
         return dict(train=pdata.make_dataset(n_train, s_tr),
                     val=pdata.make_dataset(n_val, s_va),

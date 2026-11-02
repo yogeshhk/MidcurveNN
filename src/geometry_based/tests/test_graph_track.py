@@ -147,3 +147,31 @@ def test_classical_matches_gold():
         n, e = classical_midcurve(s["profile"])
         m = ev.graph_metrics(n, e, s["nodes"], s["edges"], s["w"])
         assert m["ok_025w"], (s["shape"], m)
+
+
+def test_loso_real_split_holds_out_one_shape():
+    sp = D.build_splits("loso_real", n_train=9, n_val=6, n_test=1, holdout="Plus")
+    assert [s["shape"] for s in sp["test"]] == ["Plus"]
+    assert {s["shape"] for s in sp["train"]} == {"I", "L", "T"}
+    assert len(sp["train"]) == 9 and len(sp["val"]) == 6
+    with pytest.raises(ValueError):
+        D.build_splits("loso_real", 3, 3, 1)
+
+
+def test_resume_continues_training(tmp_path):
+    import types
+    from models import set_transformer as st
+    sp = D.build_splits("iid", 64, 32, 10)
+    cfg = types.SimpleNamespace(seed=0, device="cpu", threads=1, d=16, enc_layers=1, dec_layers=1,
+                                batch_size=32, lr=1e-3, epochs=2, resume=False)
+    st.fit(cfg, str(tmp_path), sp)
+    # simulate a crash after epoch 1: checkpoint says epoch 1, log still has rows 1-2
+    ck = torch.load(str(tmp_path / "last.pt"), weights_only=False)
+    ck["epoch"] = 1
+    ck["sched"]["_step_count"] = ck["sched"]["_step_count"] // 2
+    ck["sched"]["last_epoch"] = ck["sched"]["last_epoch"] // 2
+    torch.save(ck, str(tmp_path / "last.pt"))
+    cfg.resume = True
+    st.fit(cfg, str(tmp_path), sp)
+    rows = (tmp_path / "log.csv").read_text().strip().splitlines()
+    assert [r.split(",")[0] for r in rows[1:]] == ["1", "2"]

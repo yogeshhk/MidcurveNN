@@ -16,6 +16,16 @@ models/
 *.keras
 *.pt
 *.pth
+# The new per-track network code lives in src/<track>/models/ and must be committed.
+# Legacy weight folders (src/image_based/<approach>/models/) stay ignored by the rule above.
+!src/image_based/models/
+!src/geometry_based/models/
+!src/text_based/models/
+# Per-track experiment outputs (metrics.json, grid.png, log.csv, args.json, checkpoints, logs).
+# Results are summarised in src/proposal/RESULTS_*.md instead.
+src/image_based/runs/
+src/geometry_based/runs/
+src/text_based/runs/
 
 # Training artefacts
 **/losses/

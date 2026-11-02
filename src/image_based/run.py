@@ -50,7 +50,10 @@ def parse(argv=None):
     p.add_argument("--dice-w", type=float, default=1.0)
     p.add_argument("--tol", type=float, default=2.0)
     p.add_argument("--tta", action="store_true")
-    p.add_argument("--in-ch", type=int, default=3, choices=[1, 3])
+    p.add_argument("--in-ch", type=int, default=1, choices=[1, 3],
+                   help="1 = outline only (headline default); 3 = outline + filled mask + distance transform "
+                        "(ablation abl_in3; the distance-transform ridge nearly equals the midcurve)")
+    p.add_argument("--skip-done", action="store_true", help="train: do nothing if metrics.json already exists")
     p.add_argument("--no-aug", action="store_true", help="train on the stored fixed poses only")
     p.add_argument("--base", type=int, default=None)
     p.add_argument("--depth", type=int, default=None)
@@ -80,8 +83,15 @@ def get_device(a):
     return torch.device(a.device)
 
 
+def data_in_ch(a):
+    """Channel mode used by the dataset. The non-learned skeleton baseline needs the filled-mask channel."""
+    return 3 if a.model == "skeleton" else a.in_ch
+
+
 def model_cfg(a):
-    cfg = {"size": prep.SIZE, "in_ch": a.in_ch}
+    # The dataset always yields a [3,H,W] tensor; with --in-ch 1 channels 1 and 2 are ZEROED (so the
+    # network sees only the outline). Networks are therefore always built for 3 input channels.
+    cfg = {"size": prep.SIZE, "in_ch": 3}
     if a.base:
         cfg["base"] = a.base
     if a.depth:
@@ -155,10 +165,13 @@ def do_train(a):
         print("dataset missing, building ...")
         prep.build()
     out = os.path.join(a.out, run_name(a))
+    if a.skip_done and os.path.exists(os.path.join(out, "metrics.json")):
+        print("SKIP %s (metrics.json exists)" % run_name(a))
+        return
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "args.json"), "w") as f:
         json.dump(vars(a), f, indent=1)
-    parts = ds.make_datasets(a.split, a.steps * a.bs, a.in_ch, aug=not a.no_aug)
+    parts = ds.make_datasets(a.split, a.steps * a.bs, data_in_ch(a), aug=not a.no_aug)
     trl, val, tel = loaders(parts, a)
     mod = get_module(a.model)
     model = mod.build_model(model_cfg(a)).to(dev)
@@ -198,6 +211,7 @@ def do_train(a):
     write_final(a, model, val, tel, dev, pre, out, "metrics.json", "grid.png",
                 extra=dict(params=n_params(model), epochs=a.epochs, steps_per_epoch=len(trl),
                            best_epoch=best_ep, sec_per_epoch=float(np.mean(secs)) if secs else 0.0,
+                           sec_per_epoch_median=float(np.median(secs)) if secs else 0.0,
                            train_time_s=train_time, device=str(dev)))
 
 
@@ -206,7 +220,9 @@ def write_final(a, model, val, tel, dev, pre, out, mname, gname, extra=None):
     thr = 0.5 if a.model == "skeleton" else ev.tune_threshold(cv, a.tol)
     ct = ev.collect(model, tel, dev, a.tta, pre)
     res = dict(model=a.model, split=a.split, tag=a.tag, tta=bool(a.tta), thr=thr, tol=a.tol,
-               val_seen_shapes_new_poses=ev.score(cv, thr, a.tol), test=ev.score(ct, thr, a.tol))
+               blocks="val = validation poses (threshold tuned here); test = held-out test poses "
+                      "(split pose) or the held-out shape (split loso:*). Headline = test.",
+               val=ev.score(cv, thr, a.tol), test=ev.score(ct, thr, a.tol))
     res.update(extra or {})
     with open(os.path.join(out, mname), "w") as f:
         json.dump(res, f, indent=1)
@@ -226,7 +242,7 @@ def do_eval(a):
         ra = argparse.Namespace(**json.load(f))
     ra.tta, ra.stage1, ra.out = a.tta, a.stage1 or getattr(ra, "stage1", None), a.out
     model = load_model_from_run(out, dev)
-    parts = ds.make_datasets(ra.split, 1, ra.in_ch, aug=False)
+    parts = ds.make_datasets(ra.split, 1, data_in_ch(ra), aug=False)
     _, val, tel = loaders(parts, ra)
     pre = make_pre(ra, dev)
     suffix = "_tta" if a.tta else ""

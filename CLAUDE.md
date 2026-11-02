@@ -2,7 +2,41 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Status: closed for active development (2026-08-13)
+## Status: resumed as three independent tracks (2026-11-02)
+
+The 2026-08-13 close-out (below) is superseded for new work. The live plan is
+`src/proposal/06_EXECUTION_PLAN.md` (read `src/proposal/HANDOFF.md` first for the state at 2026-11-01).
+Tick items in that file and in the matching per-track `TODO.md` as soon as they finish.
+
+### New per-track workflow
+
+Each of `src/image_based/`, `src/geometry_based/`, `src/text_based/` is independent (only
+`src/data/raw/` with `.edges` and `splits.json` is shared) and has one driver:
+
+- `run.py` with subcommands: image `prepare | train | eval`; graph `prepare | train | eval | baseline`;
+  text `prepare | eval | check-model | train`.
+- Layout: `prepare_data.py`, `dataset.py`, `evaluate.py`, `models/` (REGISTRY), `tests/`,
+  `data/dataset_v1.*` (npz, json, jsonl), `runs/<model>__<split>__<tag>/` with `metrics.json`,
+  `grid.png`, `log.csv`, `args.json` and a git-ignored `best.pt`.
+- Environment: conda env `genai` only (`midcurvenn` does not exist; shapely fails to import and drawsvg
+  is missing, the new code uses neither). Launch from the track folder:
+  `conda run -n genai python run.py train --model unet --split pose --tag h1`.
+- Splits: `pose`, `default`, `loso:<Shape>` (image); `iid`, `ood_deg4`, `ood_size` (graph).
+- Track status: image = code done, experiments partial ([RESULTS_image.md](src/proposal/RESULTS_image.md));
+  graph = code done, reduced-budget results ([RESULTS_graph.md](src/proposal/RESULTS_graph.md));
+  text = built but NOT RUN, no results. Do not quote figures that are not in a RESULTS file or a
+  `metrics.json`.
+- Legacy headline numbers were measured under train/test leakage. The earlier image UNet 0.998 used a
+  leaky 3-channel input (outline, mask, distance transform) and a cut schedule; it is being re-measured
+  with 1-channel input.
+- Rules for agents: one heavy training job per resource at a time (image owns the GPU; graph runs
+  CPU-only with `--threads 2`); never run `src/utils/prepare_data.py` (it deletes `images-combo/` and
+  `unet-splits/`); no file moves, zips or legacy-folder moves without the user's confirmation; no CI,
+  no CODE_OF_CONDUCT, no issue templates.
+
+The notes below describe the legacy code and remain true for it.
+
+## Status (legacy): closed for active development (2026-08-13)
 
 Remaining Phase I and Phase II work was converted into GitHub issues rather than fixed; the drafts
 are in `src/github_issues_2026-08-13.md`. Phase III was promoted from a hibernated bug list to
@@ -18,11 +52,13 @@ beamer vertically centres each frame and leaves a gap under the title.
 
 Practical consequences for a future session:
 
-- **Do not regenerate the Phase I datasets casually.** `drawsvg` is absent from the current `genai`
+- **Do not regenerate the legacy Phase I datasets casually** (this concerns `image-pairs/`,
+  `unet-splits/`, `images-combo/`; the new `image_based/data/dataset_v1.npz` is separate and cheap to
+  rebuild with `run.py prepare`). `drawsvg` is absent from the current `genai`
   environment, the three dataset directories are 4,344 *git-tracked* files, and regenerating
   without also retraining all seven image variants leaves datasets and committed results silently
   disagreeing. See issue 7 in the issues file for the full sequence a correct fix requires.
-- **Every headline metric in this repo was measured under train/test leakage.** Treat all quoted
+- **Every headline metric from the legacy code was measured under train/test leakage.** Treat all quoted
   accuracy figures as interpolation over 4 base shapes, not generalization.
 
 ## Project Overview
@@ -108,6 +144,9 @@ src/
 ```
 
 ## Environment Setup
+
+Current reality: use the conda env `genai` (see the new workflow above). The `midcurvenn` env below
+is the legacy recipe and does not currently exist; a buildable `environment.yml` is a planned item.
 
 ```bash
 cd src
@@ -380,7 +419,7 @@ Context below for all three phases.
 ## Research Context
 
 - **Phase I** limitation: raster approximation loses exact geometry; post-processing needed to extract clean polylines from bitmaps. Four in-scope variants: Simple AE, Dense AE, CNN AE, Denoising AE.
-- **Phase II** (`text_based/`) is the **current best performer on the 4-shape benchmark**: QLoRA fine-tuning of Qwen2.5-7B achieves MAE=0.78, RMSE=1.24, Hausdorff=2.1, PSR=98% on the 100-sample test set. Nemotron-Mini-4B in 2-shot setting: PSR=85.7%, topology accuracy=0.83, ~2 GB VRAM.
+- **Phase II** (`text_based/`) legacy claims (leaked, not verified under a clean split; do not call it the best performer): QLoRA Qwen2.5-7B reported MAE=0.78, RMSE=1.24, Hausdorff=2.1, PSR=98% on the 100-sample test set; Nemotron-Mini-4B 2-shot PSR=85.7%, topology accuracy=0.83, ~2 GB VRAM. The new text track is NOT RUN.
 - **Phase III** (`graph_transformer/`) operates directly on polygon graphs: exact coordinates, branching native. Comprehensive evaluation ongoing (preliminary status); target architecture for future work.
 - **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning from pretrained Graphormer.
 - BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology

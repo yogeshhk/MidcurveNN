@@ -31,7 +31,9 @@ def parse(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("command", choices=["prepare", "train", "eval", "baseline"])
     p.add_argument("--model", default="set_transformer")
-    p.add_argument("--split", default="iid", choices=["iid", "ood_deg4", "ood_size"])
+    p.add_argument("--split", default="iid", choices=["iid", "ood_deg4", "ood_size", "loso_real"])
+    p.add_argument("--holdout", default=None, help="loso_real only: held-out real shape (I|L|T|Plus)")
+    p.add_argument("--resume", action="store_true", help="continue from runs/<run>/last.pt if present")
     p.add_argument("--tag", default="t")
     p.add_argument("--quick", action="store_true")
     p.add_argument("--epochs", type=int, default=100)
@@ -144,7 +146,9 @@ def main(argv=None):
         print_summary(out)
         return 0
     mod = REGISTRY[cfg.model]
-    splits = D.build_splits(cfg.split, cfg.n_train, cfg.n_val, cfg.n_test)
+    # seed 0 keeps the historical data seeds; other seeds redraw train/val data, test set stays fixed
+    splits = D.build_splits(cfg.split, cfg.n_train, cfg.n_val, cfg.n_test,
+                            seeds=(100 * cfg.seed, 100 * cfg.seed + 1, 2), holdout=cfg.holdout)
     if cfg.command == "train":
         ev.save_json(os.path.join(rd, "args.json"), vars(cfg))
         t0 = time.time()
