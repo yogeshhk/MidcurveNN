@@ -6,6 +6,66 @@ need to re-derive anything.
 
 ## Live status log (newest first; updated by the coordinating session)
 
+- 19:40 FINAL SYNC: all three agents have finished. Status loop stopped.
+  - GRAPH: `RESULTS_graph.md` written (read it). P1 PASS, P2 PASS, P3 FAIL (close: iid k_exact
+    0.895, ok_025w 0.865 at 80 epochs, vs classical 0.813; looks under-trained, 8000 samples),
+    P4 PASS (all 4 real shapes), P5 PASS for the real Plus (30-epoch run) BUT the model collapses
+    on synthetic degree-4-only shapes (ok_025w 0.155), so P5 is weak evidence. Rerun ood_deg4 at
+    80+ epochs, add seeds, run ood_size and the 3-shape negative control.
+  - IMAGE: `RESULTS_image.md` PARTIAL (see the 19:36 entry). Run the 1-channel ablation before
+    quoting 0.998. A leftover queue (cnn_ae run with empty log) may still be running; check
+    `src/image_based/runs/` and the scratchpad `run_all2.log` before starting anything.
+  - TEXT: NO RESULTS_text.md and no Gemma numbers. The check-model run was hung (no output after
+    ~5 h wall time; LM Studio was reachable). Next session: restart with one prompt style, one
+    shot, one shape to measure time per request, then widen. Text code + 32 new tests are in place.
+  - Still to do (all [CONFIRM] one at a time): legacy folder moves, publications moves/zip,
+    GPU QLoRA, docs updates (README/CLAUDE.md/TODO.md). See "Next steps" below.
+
+- 19:36: Image agent final (partial) report received; `RESULTS_image.md` now exists, marked
+  PARTIAL. The text agent finished WITHOUT RESULTS_text.md and with no run folder (Gemma check
+  process gone); graph 80-epoch ood_deg4 process is no longer running either.
+  - Image tests: new suite 25/25, legacy image suite 24/24. Dataset: `data/dataset_v1.npz`
+    (1408 samples).
+  - Image numbers so far (pose split, test, F1@2px): skeleton baseline 0.850; unet (8 epochs x 100
+    steps) 0.998 (chamfer 0.144, hausdorff 0.72 raw). Smoke runs of 10 steps only (NOT results):
+    pix2pix 0.91, denoiser 0.88, cnn_ae 0.19, simple_ae 0.14, dense_ae 0.09.
+  - CAUTION: the distance-transform input channel nearly gives the answer away (unet val F1 above
+    0.99 after ~5 epochs). The 1-channel ablation is NOT run yet, so 0.998 is not a fair
+    comparison with the legacy models or with the other tracks. Run the 1-channel ablation before
+    quoting any image number.
+  - The agent killed the 40-epoch UNet plan because the GPU was shared with other jobs (a
+    llama-server process and the other agents' training; epochs went from 30 s to 145-190 s) and
+    restarted with 4-8 epoch runs. This explains the earlier security warning.
+  - A queue script (scratchpad/run_all.ps1, log scratchpad/run_all2.log) was left running; it was on
+    cnn_ae with an EMPTY log.csv. Remaining in that queue: simple_ae, dense_ae, pix2pix, unet+TTA,
+    ablations (plain BCE, 1-channel), leave-one-shape-out (unet, cnn_ae), denoiser. Collect
+    results with `conda run -n genai python <scratchpad>/table.py`.
+
+- 19:32: wall clock jumped 4 h since the 15:28 entry (the PC probably slept; nothing was written
+  between 15:32 and 19:32). Still no RESULTS_*.md. LM Studio reachable (HTTP 200).
+  - Graph: `set_transformer__iid__e80` DONE (metrics.json, grid.png). `ood_deg4__e30` done.
+    `ood_deg4__e80` running (epoch 13 of 80, resumed after the sleep). Classical baselines done.
+    RESULTS_graph.md NOT written.
+  - Image: `unet__pose__base` DONE (short 8 x 100 schedule; metrics.json + grid.png at 15:30).
+    `cnn_ae__pose__base` started 15:30 but its log.csv is EMPTY (0 bytes) after 4 h wall time:
+    stalled or very slow. dense/simple/denoiser/pix2pix not started. RESULTS_image.md NOT written.
+  - Text: Gemma `check-model` has run 289 min wall time; its console log (scratchpad
+    check_gemma.log) is 0 bytes and no run folder exists: treat as HUNG/stalled. Needs the user to
+    decide (restart with a smaller `--n`/fewer prompt styles, or use a faster model; Gemma took
+    ~19 s for a 5-token reply). Eval run and RESULTS_text.md NOT done.
+  - Suggested restart order for the next session: finish graph e80 + RESULTS_graph.md; rerun
+    cnn_ae with `--quick` first to see why log.csv stays empty; restart the text check with a
+    single prompt style and 1 shot on I only to measure time.
+
+- 15:28: still no RESULTS_*.md. LM Studio reachable (HTTP 200).
+  - Graph: `set_transformer` iid e30 and ood_deg4 e30 both have metrics.json; iid e80 at epoch 73
+    of 80 (running); classical baselines done. The agent still has to write RESULTS_graph.md.
+  - Image: `unet__pose__base` (short schedule, 8 epochs x 100 steps) at epoch 7 of 8; skeleton
+    baseline done. cnn/dense/simple/pix2pix not started.
+  - Text: the Gemma check-model run is at 45 min with no output folder yet in
+    `text_based/runs/`; Gemma is slow, but if still nothing at the next sync it may be hung
+    (per-request timeout is 240 s). Eval run and RESULTS_text.md pending.
+
 - 15:08: Harness raised a security warning on the image agent ("Interfere With Workloads", details
   not given). Observed: its earlier 40-epoch `unet__pose__base` run (epoch 18) disappeared and
   was replaced by a SHORT run (`--epochs 8 --steps 100`). Graph runs and the Gemma check were
