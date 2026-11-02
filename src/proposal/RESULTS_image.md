@@ -1,68 +1,72 @@
-## Image track: implementation and results (PARTIAL, experiments still running)
+## Image track: implementation and results (2026-11-02, leave-one-shape-out NOT finished)
 
-Status date 2026-11-01. The code, dataset and tests are complete. The experiment queue was still
-running when this file was written (the GPU was shared with other jobs, 30 s/epoch became about 145
-s/epoch, so the schedule was cut to 4-8 epochs of 100 steps). Only the rows listed in the table below are
-measured; every other row is NOT yet measured. Re-generate the full table with the command at the end.
+Status: code, dataset, tests and all pose-split experiments are done. The leave-one-shape-out (loso)
+runs, the TTA eval and the final test counts were NOT completed (session closed). Numbers below come from
+`src/image_based/collect_results.py` reading every `runs/*/metrics.json` on 2026-11-02. Re-generate with:
+
+```
+cd src/image_based
+conda run -n genai python collect_results.py
+```
 
 ## What was built (all under `src/image_based/`, legacy folders untouched)
 
-- `run.py` one driver: `prepare | train | eval`
-- `prepare_data.py` raw `.dat/.mid/.edges` + `splits.json` to `data/dataset_v1.npz` (OpenCV rasteriser)
-- `dataset.py` loads the one file, optional on-the-fly pose augmentation, 3 channels (outline, filled mask, distance transform)
-- `evaluate.py` pixel F1/precision/recall at 2 px after threshold + skeletonise, Chamfer and Hausdorff in px and raw units, topology check, results grid PNG
-- `losses.py` soft Gaussian target, pos-weighted BCE, Dice, focal option, plain BCE option
-- `models/` `__init__.py` (REGISTRY), `_blocks.py`, `skeleton.py`, `simple_ae.py`, `dense_ae.py`, `cnn_ae.py`, `denoiser_ae.py`, `unet.py`, `pix2pix.py` (GroupNorm only)
-- `tests/test_image_track.py` 25 tests, all pass (about 50 s CPU)
-- `data/dataset_v1.npz` (1,408 samples: 4 shapes x (256 train + 32 val + 64 test) poses, 1.5 MB)
-- `runs/<model>__<split>__<tag>/` outputs per run
+- `run.py` one driver: `prepare | train | eval` (`--in-ch 1|3`, `--loss`, `--no-aug`, `--tta`, `--skip-done`).
+- `prepare_data.py` raw `.dat/.mid/.edges` + `splits.json` to `data/dataset_v1.npz` (1,408 samples, OpenCV rasteriser).
+- `dataset.py`, `losses.py`, `evaluate.py` (pixel F1 at 2 px, Chamfer, Hausdorff, topology check, results grid), `collect_results.py`.
+- `models/`: skeleton, simple_ae, dense_ae, cnn_ae, denoiser_ae, unet, pix2pix (GroupNorm only).
+- `tests/test_image_track.py`; runs go to `runs/<model>__<split>__<tag>/`.
 
-## How to run (from `src/image_based`)
+## Results: pose split, test part, 1-channel outline input unless noted
 
-```
-conda run -n genai python run.py prepare
-conda run -n genai python run.py train --model unet --split pose --tag base --epochs 8 --steps 100
-conda run -n genai python run.py eval  --model unet --split pose --tag base --tta
-conda run -n genai python run.py train --model cnn_ae --split loso:Plus --tag base
-conda run -n genai python run.py train --model unet --split pose --tag abl_in1 --in-ch 1
-conda run -n genai python run.py train --model unet --split pose --tag abl_bce --loss bce
-```
-Models: skeleton simple_ae dense_ae cnn_ae denoiser_ae unet pix2pix. Splits: pose, default, loso:<Shape>.
-Tests: `cd src; conda run -n genai python -m pytest image_based/tests/test_image_track.py -q`.
+Schedule 30 epochs x 100 steps (tag `h1`) except where stated. Seconds/epoch measured on the 2 GB MX570 GPU
+while other jobs were mostly absent (the `base` rows are the old shared-GPU, short-schedule runs).
 
-## Results measured so far (test part, F1 at 2 px, thr tuned on val)
-
-| model | split | F1@2px | precision | recall | chamfer (raw) | hausdorff (raw) | sec/epoch |
+| model | in_ch | schedule | sec/epoch | test F1@2px | chamfer (raw) | hausdorff (raw) | topology ok |
 |---|---|---|---|---|---|---|---|
-| skeleton (no learning) | pose | 0.850 | 0.818 | 0.890 | 0.361 | 2.44 | n/a |
-| unet (8 ep x 100 steps) | pose | 0.998 | 1.000 | 0.997 | 0.144 | 0.72 | about 145 (shared GPU; about 30 alone) |
+| skeleton (no learning) | 1 | n/a | n/a | 0.850 | 0.361 | 2.44 | 0.09 |
+| simple_ae | 1 | 30 x 100 | 5.2 | 0.722 | 0.871 | 4.35 | 0.10 |
+| dense_ae | 1 | 30 x 100 | 7.2 | 0.556 | 1.393 | 6.42 | 0.20 |
+| denoiser_ae | 1 | 30 x 100 | 19.0 | 0.997 | 0.160 | 0.74 | 0.90 |
+| cnn_ae | 1 | 30 x 100 | 18.0 | 0.999 | 0.142 | 0.64 | 0.99 |
+| pix2pix | 1 | 30 x 100 | 25.1 | 0.999 | 0.147 | 0.68 | 0.96 |
+| unet | 1 | 30 x 100 | 20.7 | 0.999 | 0.132 | 0.69 | 0.98 |
 
-Smoke runs (10 steps only, not results): unet 0.92, pix2pix 0.91, denoiser on skeleton 0.88, cnn_ae 0.19,
-simple_ae 0.14, dense_ae 0.09.
+UNet ablations (pose split, 30 epochs): 3-channel input (`abl_in3`) F1 0.999, topology 0.99; plain BCE
+(`abl_bce`) F1 0.999, chamfer 0.118, topology 0.80; no augmentation (`abl_noaug`, 30 x 64) F1 0.999, topology 0.98.
+Old short runs (8 x 100, 3-channel, tag `base`): unet 0.998, cnn_ae 0.996, simple_ae 0.761.
 
-NOT yet measured: simple_ae, dense_ae, cnn_ae, pix2pix full runs; unet with TTA; ablations (plain BCE,
-1-channel input); leave-one-shape-out for unet and cnn_ae; denoiser. The queue is
-`scratchpad/run_all.ps1` (log `run_all2.log`); finished runs appear in `runs/`.
-Collect them with `scratchpad/table.py` (reads every `runs/*/metrics.json`).
+Per-shape test F1 / topology ok for the 1-channel headline runs:
 
-## Comparison with the skeleton baseline
+| run | I | L | T | Plus |
+|---|---|---|---|---|
+| unet h1 | 0.999 / 1.00 | 0.998 / 0.95 | 0.999 / 1.00 | 0.999 / 0.98 |
+| cnn_ae h1 | 0.999 / 1.00 | 0.999 / 0.95 | 1.000 / 1.00 | 0.999 / 1.00 |
+| pix2pix h1 | 0.999 / 1.00 | 0.998 / 0.86 | 0.999 / 1.00 | 0.999 / 0.98 |
+| denoiser_ae h1 | 0.996 / 0.91 | 0.998 / 0.97 | 0.994 / 0.73 | 0.999 / 1.00 |
+| dense_ae h1 | 0.711 / 0.44 | 0.410 / 0.03 | 0.488 / 0.05 | 0.614 / 0.27 |
+| skeleton | 0.672 / 0.02 | 0.923 / 0.08 | 0.858 / 0.11 | 0.946 / 0.16 |
 
-The skeleton of the filled mask already scores F1 0.85, with spurs at corners and ends visible in its grid.
-The unet beats it clearly (0.998), mainly through precision (no spurs) and slightly higher recall.
+## What the numbers say
+
+- The distance-transform channel is NOT what made the earlier 0.998 easy: the 1-channel UNet scores the same
+  F1 (0.999) as the 3-channel one. With only four shapes the pose task is easy for any conv model.
+- UNet, cnn_ae, pix2pix and denoiser are all at the ceiling (0.997-0.999 F1) on the pose split, so this split
+  cannot rank them. Differences are only in topology (cnn_ae 0.99, unet 0.98, pix2pix 0.96, denoiser 0.90) and
+  in plain-BCE UNet topology dropping to 0.80 (the Dice term helps topology).
+- simple_ae and dense_ae are clearly worse than the no-learning skeleton baseline on F1 (0.72 and 0.56 against 0.85) and have very poor topology.
+- The skeleton baseline has high F1 on L and Plus (0.92, 0.95) but fails on I (0.67); it scores topology 0.02-0.16 because of spurs.
 
 ## Caveats (honest)
 
-- Only 4 shapes. The `pose` split is pose-level interpolation, not shape generalisation.
-- The 3-channel input includes a distance transform whose ridge is the midcurve. The task is therefore
-  close to trivial for a conv net (validation F1 was above 0.99 after 5 epochs). The 1-channel ablation
-  is needed to know how much comes from the input representation; it has not run yet.
-- The earlier unet run (40 epochs) was stopped at epoch 17 and discarded, so only the short run is reported.
-- Epoch times are inflated by GPU sharing; do not quote them as model cost.
-- Leave-one-shape-out: Plus held out has the only 4-way junction, expect it to be worst (not measured).
+- Only 4 shapes. The `pose` split tests new poses of the SAME shapes: this is interpolation, not shape generalisation.
+- NOT measured: leave-one-shape-out for unet and cnn_ae (the only generalisation test; a `unet loso-I h1` run was at epoch 8 of 30 when the session closed), TTA, and the final test counts for the new and legacy image suites.
+- Single seed everywhere; differences of 0.001 F1 are noise.
+- The first `h1` runs in this table were run one at a time on the 2 GB GPU; do not read seconds/epoch as a model cost comparison across different batch/GPU states.
 
 ## Left to do
 
-- Let the queue finish, regenerate the table, fill in the missing rows, add the ablation and loso tables.
-- Optional [CONFIRM], not done: move legacy folders (`simpleencoderdecoder/` ... `img2img/`, `kaggle/`) to `image_based/_legacy/`.
-- Add `runs/` to `.gitignore` (user manages git); update `image_based/README.md` after the layout is confirmed.
-- More shape families (proposal 01 section 5.6) before any generalisation claim.
+- Run the loso folds (`run.py train --model unet --split loso:Plus --tag h1 --skip-done`, same for I, L, T and for cnn_ae), then re-run `collect_results.py`.
+- Run the image tests: `cd src; conda run -n genai python -m pytest image_based/tests/test_image_track.py -q` and the legacy `image_based/testing`.
+- Optional [CONFIRM]: move legacy folders (`simpleencoderdecoder/` ... `img2img/`, `kaggle/`) to `image_based/_legacy/`.
+- More shape families before any generalisation claim (Session 2 in `06_EXECUTION_PLAN.md`).

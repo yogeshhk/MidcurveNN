@@ -1,4 +1,19 @@
-## Graph track results (geometry_based), 2026-11-01
+## Graph track results (geometry_based), 2026-11-01, updated 2026-11-02
+
+UPDATE 2026-11-02 (read this first): a larger run finished: `set_transformer__iid__e100` (20000 training
+samples, 100 epochs, CPU 2 threads, about 33 s/epoch). On the 1000-sample synthetic test: k_exact 0.905,
+deg-seq 0.904, Hausdorff <= 0.25w rate 0.981, ok_025w 0.893, edge F1 0.934 (mean), every predicted graph
+connected and a tree. P3 still FAILS, on `k_exact` only (0.905 against the 0.95 bar; deg-seq and the Hausdorff rate now
+pass). The 4x larger budget gained only about 0.01 in `k_exact` over the 80-epoch run (0.895), so the
+shortfall looks like a model/representation limit, not simple under-training. Real shapes (P4), as reported by
+the graph agent and not re-read by me: all four ok, Hausdorff/w I 0.007, L 0.016, T 0.020, Plus 0.023.
+Deg-4 subset (n=65): k_exact 0.846, Hausdorff rate 1.0.
+
+NOT finished at close: `ood_deg4` at 100 epochs (was at epoch 57 of 100; P5 evidence is still the weak 30-epoch
+run), seeds 1 and 2, `ood_size`, and the four `loso_real` negative-control folds (implemented and smoke-tested,
+not run). Resume with `--resume`; commands in `src/geometry_based/README.md`. Test counts for this session were
+not recorded (only the 2 new tests were run and passed). The sections below are the 2026-11-01 text and
+remain accurate except where this paragraph supersedes them.
 
 Scope: the new template in `src/geometry_based/` (legacy `graph_transformer/`, `finetuned_graph_transformer/`, `gnnencoderdecoder/`, `testing/`, `data/raw` untouched). The model learns the midcurve NODE SET only (12 query slots, existence flag, Hungarian loss); edges come from an inside-polygon MST. No shapely, no PyG.
 

@@ -38,8 +38,7 @@ The notes below describe the legacy code and remain true for it.
 
 ## Status (legacy): closed for active development (2026-08-13)
 
-Remaining Phase I and Phase II work was converted into GitHub issues rather than fixed; the drafts
-are in `src/github_issues_2026-08-13.md`. Phase III was promoted from a hibernated bug list to
+Remaining Phase I and Phase II work was converted into GitHub issues rather than fixed. Phase III was promoted from a hibernated bug list to
 a written MS/PhD research topic
 (`publications/Midcurve_LaTeX/Main_TwoPager_MidcurveNN_GeometryResearch.tex`, 2 pages; a 12-slide
 square LinkedIn carousel in `Main_Carousel_MidcurveNN_GeometryResearch.tex`; and an announcement
@@ -57,7 +56,7 @@ Practical consequences for a future session:
   rebuild with `run.py prepare`). `drawsvg` is absent from the current `genai`
   environment, the three dataset directories are 4,344 *git-tracked* files, and regenerating
   without also retraining all seven image variants leaves datasets and committed results silently
-  disagreeing. See issue 7 in the issues file for the full sequence a correct fix requires.
+  disagreeing. See GitHub issue 7 for the full sequence a correct fix requires.
 - **Every headline metric from the legacy code was measured under train/test leakage.** Treat all quoted
   accuracy figures as interpolation over 4 base shapes, not generalization.
 

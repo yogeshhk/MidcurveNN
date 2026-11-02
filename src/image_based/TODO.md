@@ -6,7 +6,7 @@ Table: `conda run -n genai python collect_results.py`
 - [x] I1.1 test vs val blocks confirmed; evaluate path writes labelled `val` and `test` blocks
 - [x] I1.2 `--in-ch 1` is the default; 3-channel runs are ablation `abl_in3`
 - [x] I1.3 h1 runs (30 ep x 100 steps, pose, 1-channel): unet, cnn_ae, skeleton, simple_ae, dense_ae, denoiser_ae, pix2pix
-- [ ] I1.4 unet ablations: abl_in3, abl_bce, abl_noaug
+- [x] I1.4 unet ablations: abl_in3, abl_bce, abl_noaug
 - [ ] I1.5 leave-one-shape-out (I, L, T, Plus) for unet and cnn_ae
 - [ ] I1.6 TTA eval of best model; collect_results.py (done); rewrite RESULTS_image.md
 - [ ] I1.7 test counts

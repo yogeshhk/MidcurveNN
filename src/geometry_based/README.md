@@ -46,7 +46,9 @@ conda run -n genai python run.py baseline --model classical --split iid --tag t1
 conda run -n genai python run.py train --model set_transformer --split iid --tag e100 --epochs 100 --n-train 20000 --n-val 1000 --threads 2
 ```
 
-Splits: `iid`, `ood_deg4` (train without degree-4 nodes), `ood_size`. Graph jobs are CPU-only and small;
+Splits: `iid`, `ood_deg4` (train without degree-4 nodes), `ood_size`, and `loso_real` (negative control:
+train on three real shapes, test on the held-out one; pass `--holdout I|L|T|Plus`). Add `--resume` to
+continue a run from its `last.pt`. Graph jobs are CPU-only and small;
 run one at a time and use `--threads 2` while an image job owns the machine.
 
 ## Results

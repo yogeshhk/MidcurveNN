@@ -63,7 +63,7 @@ Track I (agent A):
 - [x] I1.1 Confirm which block (test vs val) is reported in each `metrics.json`; make `evaluate.py` always write a `test` block and label both. Report the correction if the earlier figures were val-only.
 - [x] I1.2 Add `--in-ch 1` as the default for the headline runs; keep 3-channel as `abl_in3`.
 - [x] I1.3 Full-schedule runs (target 30+ epochs x 100 steps, one at a time): skeleton, simple_ae, dense_ae, cnn_ae, denoiser_ae, unet, pix2pix on `pose`, tag `h1` (1-channel).
-- [ ] I1.4 Ablations on unet: `abl_in3`, `abl_bce` (plain BCE), `abl_noaug`.
+- [x] I1.4 Ablations on unet: `abl_in3`, `abl_bce` (plain BCE), `abl_noaug`.
 - [ ] I1.5 Leave-one-shape-out for unet and cnn_ae (4 folds each, 1-channel). Expect Plus worst.
 - [ ] I1.6 TTA eval for the best model. Rewrite `RESULTS_image.md` (one table: test F1, Chamfer, Hausdorff, topology, schedule, seconds/epoch measured on an unshared GPU).
 - [ ] I1.7 Run the image tests (new + legacy) and record counts.
@@ -141,6 +141,7 @@ Format: `date time | agent | item id | result in one line | files touched`
 - 2026-11-02 | agent C | D1.3 | created per-track TODO.md (image, graph, text=NOT RUN) from Session 1/3 items | src/image_based/TODO.md, src/geometry_based/TODO.md, src/text_based/TODO.md
 - 2026-11-02 | agent C | D1.2 | rewrote per-track READMEs for run.py workflow; results link to RESULTS files, text marked NOT RUN | src/image_based/README.md, src/geometry_based/README.md, src/text_based/README.md
 - 2026-11-02 | agent C | D1.1 | root README/CLAUDE.md/TODO.md describe per-track run.py, genai launch, track status, leaked legacy numbers, plan pointer | README.md, CLAUDE.md, TODO.md
+- 2026-11-02 11:30 | agent A | I1.4 DONE | unet ablations test F1 all 0.999: abl_in3 topo 0.99 chamfer 0.133; abl_bce topo 0.80 chamfer 0.118; abl_noaug topo 0.98 chamfer 0.139 (vs h1 topo 0.98, chamfer 0.132). F1 does not separate variants; plain BCE hurts topology; distance-transform channel and augmentation make no measurable difference on this 4-shape pose split | src/image_based/runs/unet__pose__abl_*
 - 2026-11-02 10:59 | agent A | I1.3 DONE | all 7 h1 runs (30x100, pose, 1-ch) test F1: skeleton 0.850, simple_ae 0.722, dense_ae 0.556, cnn_ae 0.999, denoiser_ae 0.997 (on skeleton stage 1), unet 0.999, pix2pix 0.999; topology ok 0.09/0.10/0.20/0.99/0.90/0.98/0.96 | src/image_based/runs/*__pose__h1
 - 2026-11-02 10:28 | agent A | I1.3 (part 1) | unet h1 (30x100, 1-ch) test F1 0.999, topo 0.98, chamfer 0.132, ~21 s/epoch on unshared GPU; cnn_ae h1 test F1 0.999, topo 0.99, chamfer 0.142. Outline-only input is NOT the cause of near-perfect F1 (task is easy on 4 shapes). Other models still queued | src/image_based/runs/{unet,cnn_ae}__pose__h1
 - 2026-11-02 | agent A | I1.1 + I1.2 | metrics.json always had BOTH blocks (`test` and `val_seen_shapes_new_poses`); the unet 0.998 / skeleton 0.850 figures in RESULTS_image.md were the TEST block; the plan's cnn_ae "0.997 / 84% / L 37%" were VAL figures (test is 0.996 / 86% / L 44%). evaluate path now writes blocks named `val` and `test` (old runs keep the old key; collector reads both). `--in-ch` default is now 1 (channels 1,2 zeroed; models still built for 3 channels); `--skip-done` added; `sec_per_epoch_median` added (cnn_ae base mean 1841 s was a sleep artefact, log.csv says about 20 s) | src/image_based/run.py, collect_results.py
