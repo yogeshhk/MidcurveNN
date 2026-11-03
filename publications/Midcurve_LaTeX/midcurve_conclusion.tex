@@ -19,7 +19,7 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase I: Results}
+\begin{frame}[fragile]\frametitle{Phase I: Results (Legacy)}
 
 \begin{center}
 \small
@@ -39,6 +39,9 @@ CNN AE     & $128\times128$ & Low    & High & \texttimes \\
 \item All variants lose exact geometry (rasterisation trade-off)
 \item None can represent branched midcurves (T, Plus) natively
 \end{itemize}
+
+\vspace{2pt}
+{\footnotesize \textbf{Legacy, leaked, not re-measured.} Measured with train/test leakage on four base shapes; the 10$\times$ figure has no current source. Do not quote.}
 \end{frame}
 
 % ── merged from midcurve_conclusion_llm.tex (Phase II summary) ─────────────────
@@ -53,13 +56,16 @@ CNN AE     & $128\times128$ & Low    & High & \texttimes \\
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase II: Findings}
+\begin{frame}[fragile]\frametitle{Phase II: Findings (Legacy)}
     \begin{itemize}
         \item BRep JSON representation solves the branching serialization problem for T- and Plus-shapes.
         \item QLoRA fine-tuning of Qwen2.5-7B achieves \textbf{PSR = 98\%, MAE = 0.78} on the 4-shape benchmark.
         \item Nemotron-Mini-4B (2-shot, no fine-tuning): PSR = 85.7\%, topology accuracy = 0.83, fits in $\sim$2\,GB VRAM.
         \item Key challenge: coordinates are text tokens --- digit arithmetic is harder for LLMs than neural regression.
     \end{itemize}
+
+    \vspace{2pt}
+    {\footnotesize \textbf{Legacy, leaked, not re-measured.} The PSR, MAE and topology figures come from the earlier runs with train/test leakage on four base shapes and were never reproduced under a clean split. Do not quote.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,21 +101,24 @@ Input type      & Bitmap (100--256px) & BRep JSON text & Graph $(x,y)$ \\
 Output type     & Bitmap             & BRep JSON text & Graph $(x,y)$ \\
 Exact coords    & No                 & Yes            & Yes \\
 Branches        & No                 & Yes (BRep)     & Yes (native) \\
-Best model      & CNN encoder-decoder & Qwen2.5-7B QLoRA / Nemotron-Mini-4B & Graph Transformer \\
+Legacy best*    & CNN encoder-decoder & Qwen2.5-7B QLoRA / Nemotron-Mini-4B & Graph Transformer \\
 Sub-variants    & 7 variants         & Prompt, CodeT5, QLoRA, Nemotron3  & GT + Graphormer FT \\
 Key limitation  & Rasterisation loss & Token arithmetic; repair needed & TopK fixes node count \\
 Status          & Fully impl.        & Implemented    & Implemented \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\vspace{2pt}
+{\footnotesize *Legacy, leaked, not re-measured: these were the best of the earlier runs, not verified rankings. Phase III here is the earlier Graph Transformer; its current status is in the geometry section.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]\frametitle{Conclusions}
 	\begin{itemize}
 	\item Midcurve computation is a \textbf{dimension-reduction problem}: 2D $\rightarrow$ 1D, graph-to-graph
-	\item \textbf{Phase I} (image): encoder-decoder with UNet achieves good results; rasterisation trade-off is the key limitation
-	\item \textbf{Phase II} (LLM): BRep JSON representation works; GPT-4 solves simple shapes via prompting; Nemotron-Mini-4B achieves 85.7\% valid JSON + 0.83 topology accuracy base-model; QLoRA fine-tuning (Qwen, Gemma, Nemotron) shows promise but needs more data
+	\item \textbf{Phase I} (image, legacy numbers, not re-measured): encoder-decoder with UNet achieves good results; rasterisation trade-off is the key limitation
+	\item \textbf{Phase II} (LLM, legacy numbers, leaked, not re-measured): BRep JSON representation works; GPT-4 solves simple shapes via prompting; Nemotron-Mini-4B achieves 85.7\% valid JSON + 0.83 topology accuracy base-model; QLoRA fine-tuning (Qwen, Gemma, Nemotron) shows promise but needs more data
 	\item \textbf{Phase III} (geometry): Graph Transformer operates directly on polygon coordinates, handles branches natively, and outputs a clean polyline graph without post-processing
 	\end{itemize}
 \end{frame}

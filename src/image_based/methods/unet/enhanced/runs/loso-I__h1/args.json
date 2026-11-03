@@ -25,5 +25,5 @@
  "seed": 0,
  "device": "auto",
  "workers": 0,
- "out": "D:\\Yogesh\\GitHub\\MidcurveNN\\src\\image_based\\runs"
+ "out": null
 }

@@ -41,7 +41,7 @@ non-orthogonal shapes, holes and small-data regimes, none of which has been meas
    the polygon (checked, not guaranteed). This is the only option here with a by-construction argument for holes;
    it has not been tested on any hole data. Output slots are anchored to input cells, which avoids the collapse in item 3 (section 5).
 5. **The representation passes its no-learning check; the network is unproven.** A decoder given ground-truth labels
-   reproduced the graphs exactly on 404 of 404 samples. **No trained EquiCollapse result exists.**
+   reproduced the graphs exactly on 404 of 404 samples. (Written before training. Trained results: `RESULTS_gdl.md`.)
 6. **A bug was found in the existing ground truth.** About 10% of synthetic samples contain a spurious node in the
    middle of a straight arm, at a position that cannot be inferred from the profile. All synthetic graph numbers in
    `RESULTS_graph.md` are affected, and its "model or representation limit" reading of the `k_exact` plateau is
@@ -139,7 +139,7 @@ not be a publishable result.
 Plotting the misses showed that many are not bends: they are nodes in the middle of a straight arm, including K=3
 "straight strips" whose profile is a plain rectangle.
 
-Cause, confirmed in the second pass by reading `prepare_data.py:98-111` (`sample_skeleton`): collinear merging
+Cause, confirmed in the second pass by reading `common/prepare_data.py:98-111` (`sample_skeleton`; the file was `prepare_data.py` before the 2026-11-03 reorganisation): collinear merging
 compares raw lattice vectors, `(a-u) == (u-b)`. On a straight run of lattice nodes 0-1-2-3, merging node 1 links 0
 to 2; node 2 then has neighbours at lattice distance 2 and 1, so `(a-u) != (u-b)` and node 2 survives (the same
 happens in the other merge order). The test only works for unit spacing. The surviving node sits at a lattice

@@ -27,8 +27,11 @@ Each of `src/image_based/`, `src/geometry_based/`, `src/text_based/` is independ
   text = built but NOT RUN, no results. Do not quote figures that are not in a RESULTS file or a
   `metrics.json`.
 - Legacy headline numbers were measured under train/test leakage. The earlier image UNet 0.998 used a
-  leaky 3-channel input (outline, mask, distance transform) and a cut schedule; it is being re-measured
-  with 1-channel input.
+  3-channel input (outline, mask, distance transform) and a cut schedule. Re-measured 2026-11-02 with
+  1-channel input: UNet F1 0.999 on the `pose` split, the same as with 3 channels (`RESULTS_image.md`);
+  the pose split is interpolation over 4 shapes, so only leave-one-shape-out says anything about generalisation.
+- Text track: built, NOT RUN; `src/proposal/RESULTS_text.md` says so and gives the restart recipe.
+- `src/environment_genai.yml` is a curated, untested recipe for the `genai` env (the legacy `src/environment.yml` is not buildable).
 - Rules for agents: one heavy training job per resource at a time (image owns the GPU; graph runs
   CPU-only with `--threads 2`); never run `src/utils/prepare_data.py` (it deletes `images-combo/` and
   `unet-splits/`); no file moves, zips or legacy-folder moves without the user's confirmation (the 2026-11-03 reorganisation was done on the user's explicit instruction, task by task; it does not lift this rule for future work); no CI,
@@ -101,7 +104,7 @@ Methods:
 - image_based: simple_encoder_decoder (+ kaggle/), dense_encoder_decoder, cnn_encoder_decoder, denoiser_encoder_decoder,
   unet, pix2pix (+ img2img/ PyTorch variant), skeleton (classical baseline, model.py only). `--model` names unchanged:
   simple_ae dense_ae cnn_ae denoiser_ae unet pix2pix skeleton.
-- geometry_based: set_transformer, classical_voronoi (`--model classical`); graph_transformer (frozen negative result),
+- geometry_based: set_transformer, classical_voronoi (`--model classical`), equi_collapse (2026-11-03; results in `src/proposal/RESULTS_gdl.md`); graph_transformer (frozen negative result),
   finetuned_graph_transformer and gnn_encoder_decoder (retired), all three old code kept in place.
 - text_based: fewshot_prompt, lmstudio_prompt (model.py only); qwen_qlora (top level = former `finetuning/`),
   nemotron_qlora (top level = former `nemotron3/`), each with enhanced/; code_t5, ludwig, manual_prompt (former `prompt/`).

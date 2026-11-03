@@ -175,3 +175,12 @@ def test_resume_continues_training(tmp_path):
     st.fit(cfg, str(tmp_path), sp)
     rows = (tmp_path / "log.csv").read_text().strip().splitlines()
     assert [r.split(",")[0] for r in rows[1:]] == ["1", "2"]
+
+
+def test_generator_has_no_collinear_degree2_nodes():
+    """Regression: the generator's merge once missed collinear nodes whose two neighbours were at different distances."""
+    rng = np.random.default_rng(123)
+    for _ in range(400):
+        s = pdata.make_sample(rng)
+        nodes2, _ = geom.remove_collinear_nodes(s["nodes"], s["edges"])
+        assert len(nodes2) == len(s["nodes"])

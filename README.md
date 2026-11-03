@@ -97,7 +97,7 @@ src/
 | approach | methods (folder names) |
 |---|---|
 | `image_based` | simple_encoder_decoder, dense_encoder_decoder, cnn_encoder_decoder, denoiser_encoder_decoder, unet, pix2pix (+ `img2img/`), skeleton |
-| `geometry_based` | set_transformer, classical_voronoi, graph_transformer (frozen negative result), finetuned_graph_transformer and gnn_encoder_decoder (retired) |
+| `geometry_based` | set_transformer, classical_voronoi, equi_collapse, graph_transformer (frozen negative result), finetuned_graph_transformer and gnn_encoder_decoder (retired) |
 | `text_based` | fewshot_prompt, lmstudio_prompt, qwen_qlora, nemotron_qlora, code_t5, ludwig, manual_prompt |
 
 Each method folder has its own `README.md`. Each run folder `methods/<method>/[enhanced/]runs/<split>__<tag>/` holds

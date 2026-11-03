@@ -63,7 +63,7 @@ out = Conv2D(1, (1,1), activation='sigmoid')(d1)
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase I: Results Comparison}
+\begin{frame}[fragile]\frametitle{Phase I: Results Comparison (Legacy)}
 
 \begin{center}
 \small
@@ -85,6 +85,9 @@ CNN AE     & 128$\times$128 & Low    & High & \texttimes \\
 \item[\tiny$\blacktriangleright$] All image models lose exact geometry (rasterisation)
 \item[\tiny$\blacktriangleright$] None can represent branched midcurves (T, Plus) natively
 \end{itemize}
+
+\vspace{2pt}
+{\footnotesize \textbf{Legacy, leaked, not re-measured.} Train/test leakage on four base shapes; the 10$\times$ figure has no current source. Do not quote.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

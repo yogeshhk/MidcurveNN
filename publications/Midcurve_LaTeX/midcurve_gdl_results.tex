@@ -1,0 +1,56 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EquiCollapse measured results. Numbers: src/proposal/RESULTS_gdl.md (single seed 0; seeds 1 and 2 pending there).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{EquiCollapse: Rotation and Data Efficiency}
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Correct graph within $0.25w$} & \textbf{Classical} & \textbf{Set transf.\ control} & \textbf{EquiCollapse} \\
+\midrule
+iid, corrected labels & 0.862 & 0.896 & 1.000 \\
+Rotated 15$^\circ$ & 0.880 & 0.880 & 1.000 \\
+Rotated 45$^\circ$ & 0.880 & 0.877 & 1.000 \\
+Degree-4 shapes, never trained on & 0.841 & 0.798 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{4pt}
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{iid, published labels} & 500 shapes & 2000 shapes & 8000 shapes \\
+\midrule
+Set transformer control & 0.299 & 0.559 & 0.810 \\
+EquiCollapse & 0.901 & 0.904 & 0.904 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+{\footnotesize 1000 test shapes, one seed, trained before the generator fix. About 10\% of published labels carry the spurious node, so 0.904 is the ceiling there. The control has the same cleaned training labels and continuous rotation augmentation.}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{EquiCollapse: Limits}
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Test-time jitter} & 0.01$w$ & 0.02$w$ & 0.05$w$ & 0.1$w$ \\
+\midrule
+Classical & 0.293 & 0.200 & 0.073 & 0.003 \\
+Set transformer control & 0.000 & 0.000 & 0.000 & 0.000 \\
+EquiCollapse & 0.683 & 0.510 & 0.217 & 0.083 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Best of the three under noise, but it still degrades quickly; no model saw noise in training.
+\item Larger-than-training shapes (\texttt{ood\_size}): 0.836 against 0.293 for the control.
+\item The data are hole-free rectilinear trees where the classical rule already scores 0.86. A perfect score here does \textbf{not} show generalisation to curved, thick or holed shapes: those are untested.
+\item Four real shapes only; one seed so far.
+\end{itemize}
+\end{frame}

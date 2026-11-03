@@ -70,6 +70,10 @@ Per-shape test F1 / topology ok for the 1-channel headline runs:
 
 ## Left to do
 
+- 2026-11-03: a UNet leave-one-shape-out queue (folds I, L, T, Plus) was started and stopped by the user after about 15 epochs of
+  fold I. The folder `methods/unet/enhanced/runs/loso-I__h1` is a PARTIAL run (best.pt, log.csv, no metrics.json): ignore it.
+  No leave-one-shape-out result exists; the image track has no shape-generalisation number.
+
 - Run the loso folds (`run.py train --model unet --split loso:Plus --tag h1 --skip-done`, same for I, L, T and for cnn_ae), then re-run `collect_results.py`.
 - Image tests: `cd src/image_based; conda run -n genai python -m pytest -q` (49 passed on 2026-11-03: 25 new + 24 legacy cross-method).
 - The legacy-folder move was done differently: no `_legacy/`; the old code sits at the top of each `methods/<method>/` (2026-11-03).

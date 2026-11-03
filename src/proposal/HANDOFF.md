@@ -4,6 +4,23 @@ Read this first, then `00_MASTER_PLAN.md` (v2, three independent tracks) and
 `05_publications_triage.md`. The sub-reports `01`-`04` hold the detailed reasoning; you do not
 need to re-derive anything.
 
+## PARKED 2026-11-03 (read this first when resuming)
+
+The user is parking the project after a git sync. State: EquiCollapse closed out at agreed quality (see
+`RESULTS_gdl.md`, one seed, pre-fix generator); the label generator is fixed; nothing is training; no background jobs.
+Resume order: (1) re-run EquiCollapse and the control on the fixed generator, seeds 0-2, then G1.2-G1.5 (list in
+`geometry_based/TODO.md`); (2) image track: 1-channel ablation first, then full-schedule UNet and leave-one-shape-out
+(`image_based/TODO.md`); (3) text track: LM Studio timing probe (one style, one shot, shape I), then few-shot on
+leave-one-shape-out (`text_based/TODO.md`); (4) [CONFIRM] items one at a time: publications moves and zips (P4.2),
+`publications/prompts/` move, GPU QLoRA, seminar deck Phase I/III inputs (P4.3). Papers, `benchmark.py`, README/CITATION and
+`environment.yml` come last (06_EXECUTION_PLAN.md sections W5 and R6). Outside this repo: `D:\Yogesh\GitHub\CLAUDE.md` still
+says MidcurveNN is absent locally (the user's file; update it yourself).
+
+SHELVED later the same day (2026-11-03): the user stopped the UNet leave-one-shape-out run and shelved the project. No
+background jobs. Close-out files added: `RESULTS_text.md` (built, not run), `src/environment_genai.yml` (untested recipe).
+Decisions taken: graph re-runs, publications moves/zips, and the three new papers stay tracked TODO; the seminar deck keeps
+the Image slides off (`\showImagefalse`); image loso, text probes and QLoRA are open, none started.
+
 ## Live status log (newest first; updated by the coordinating session)
 
 - 19:40 FINAL SYNC: all three agents have finished. Status loop stopped.

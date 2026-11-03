@@ -101,7 +101,9 @@ def sample_skeleton(rng, n_edges, allow_deg4=True, jitter=True, gap_range=(0.7, 
         for u in list(adj):
             if len(adj[u]) == 2:
                 a, b = sorted(adj[u])
-                if (a[0] - u[0], a[1] - u[1]) == (u[0] - b[0], u[1] - b[1]):
+                va, vb = (a[0] - u[0], a[1] - u[1]), (b[0] - u[0], b[1] - u[1])
+                # collinear: parallel (zero cross product) and pointing opposite ways; integer lattice, so exact
+                if va[0] * vb[1] - va[1] * vb[0] == 0 and va[0] * vb[0] + va[1] * vb[1] < 0:
                     adj[a].discard(u)
                     adj[b].discard(u)
                     adj[a].add(b)

@@ -1,0 +1,25 @@
+# Minimal environment for the three new tracks (image_based, geometry_based, text_based prompting).
+# Derived 2026-11-03 from the working `genai` env; NOT yet tested by building it from scratch.
+# Versions marked (genai) are the ones installed there; the rest are unpinned because they were not checked.
+# The legacy src/environment.yml (midcurvenn, TensorFlow 2.13) is for the old code only and is not buildable today.
+# Not included: drawsvg and TensorFlow (legacy code only), the QLoRA stack (peft, trl, bitsandbytes, accelerate) and
+# transformers, which only the GPU fine-tuning methods need.
+name: genai
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=2.2            # (genai) 2.2.6
+  - scipy=1.15           # (genai) 1.15.3, Delaunay in equi_collapse
+  - pandas
+  - matplotlib-base=3.10 # (genai) 3.10.8
+  - pillow=11            # (genai) 11.3.0
+  - opencv               # (genai) 4.11.0, image rasteriser
+  - scikit-image
+  - pytest=9             # (genai) 9.0.2
+  - pip
+  - pip:
+      # (genai) torch 2.7.1+cu118; swap the index for .../whl/cpu on a machine without CUDA
+      - --extra-index-url https://download.pytorch.org/whl/cu118
+      - torch==2.7.1
+      - openai   # text_based: client for the OpenAI-compatible LM Studio server

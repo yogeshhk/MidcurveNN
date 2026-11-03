@@ -207,8 +207,8 @@ def degrees(n, edges):
 def remove_collinear_nodes(nodes, edges, tol=1e-9):
     """Drop degree-2 nodes lying on a straight line between their neighbours; returns (nodes, edges).
 
-    Used by run.py --clean-labels. The generator's own merge misses these nodes (see 07_GDL_RESEARCH_REPORT.md,
-    section 3.3); that generator bug is deliberately left unfixed for now.
+    Used by run.py --clean-labels and the extended evaluation. The generator's merge missed these nodes before
+    2026-11-03 (see 07_GDL_RESEARCH_REPORT.md, section 3.3); it is fixed now, so --clean-labels is a no-op on new data.
     """
     nodes = np.asarray(nodes, dtype=float).reshape(-1, 2)
     adj = {i: set() for i in range(len(nodes))}

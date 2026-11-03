@@ -23,7 +23,11 @@ Source of truth: `src/proposal/06_EXECUTION_PLAN.md` (Session 1, Track G). Resul
 - [ ] State when the session closed (2026-11-03): 9 of 14 runs have `metrics.json`; `set_transformer/ood_size__clrot_n8000_e80` was at about epoch 75 of 80; seeds s1 and s2 (4 runs) not started. Results not evaluated, no results slides. `\showGDLResults` is set to false in `midcurve_switches.tex` so the deck can compile without the missing results file; set it back to true once `midcurve_gdl_results.tex` exists.
 - [ ] Then run `methods/equi_collapse/evaluate_extended.py`, write `src/proposal/RESULTS_gdl.md`, the method README and notebook, and `publications/Midcurve_LaTeX/midcurve_gdl_results.tex` (required by the deck while `\showGDLResultstrue`), reporting the results at whatever quality they have. Compile both drivers, run /verify-pdf, and update paths in `07_GDL_RESEARCH_REPORT.md` (`prepare_data.py` is now `common/prepare_data.py`).
 
-## PENDING: finish EquiCollapse (restart checklist, written 2026-11-03; run in this order)
+## EquiCollapse closed out 2026-11-03 (late) at agreed quality
+Done: extended eval, `RESULTS_gdl.md`, method README + notebook, deck results slides (`midcurve_gdl_results.tex`, `\showGDLResultstrue`), both decks compiled and verified, geometry README / CLAUDE.md / README method lists, report paths, generator fix + regression test (45 passed, 2 skipped). Not done: seeds 1 and 2 (stopped on purpose), items below. CheatSheet note: the results table is tight in its narrow column (pages 10-11), not fixed.
+Still to do when resumed, in order: (a) re-run EquiCollapse and the control on the fixed generator (`--clean-labels` becomes a no-op), seeds 0-2; (b) release G1.2-G1.5 (`ood_deg4`, seeds, `ood_size`, `loso_real`) on the fixed generator; (c) refresh `RESULTS_gdl.md`, `RESULTS_graph.md` and the deck slides with those numbers.
+
+## (Historical) PENDING checklist as written before close-out (steps 1-9 below are DONE except the seeds in step 1)
 Env: `conda run -n genai python ...` from `src/geometry_based`. One heavy job at a time. No git (the user syncs). Do not quote figures that are not in a `metrics.json` or RESULTS file.
 
 1. [ ] Check the training queue. Runs live in `methods/<method>/runs/<split>__<tag>/`; a run is finished when it has `metrics.json`. As of closing: 9 of 14 done. Done: equi iid n8000/n500/n2000, equi ood_deg4 n8000, equi ood_size n8000; ST (set_transformer) iid clrot n8000/n500/n2000, ST ood_deg4 clrot n8000. Unfinished: ST `ood_size__clrot_n8000_e80` (was at epoch ~75 of 80, `--resume` it), then equi and ST `iid` with `--seed 1` and `--seed 2` (tags `n8000_e80_s1`, `n8000_e80_s2`, `clrot_n8000_e80_s1`, `clrot_n8000_e80_s2`). Commands are in the "Approved" item above. Skip any run that already has `metrics.json`. If time is short, the seed runs may be dropped: say so in RESULTS.
@@ -36,7 +40,9 @@ Env: `conda run -n genai python ...` from `src/geometry_based`. One heavy job at
 8. [ ] Run the geometry tests (`cd src/geometry_based; conda run -n genai python -m pytest -q`): expect 33+ passed plus the equi_collapse tests, 2 skipped. Confirm no non-ignored file over 50 MB (weights *.pt are git-ignored).
 9. [ ] Tick this file and `src/proposal/06_EXECUTION_PLAN.md` (GDL / EquiCollapse ledger line). Write a final summary for the user.
 
-Open decisions (user's, not for the agent): fix the label generator bug (`common/prepare_data.py`, spurious collinear nodes in ~10% of samples) and then release the held G1.2 to G1.5 runs; stale note in `D:\Yogesh\GitHub\CLAUDE.md` saying MidcurveNN is absent locally.
+UPDATE 2026-11-03 (late): generator fixed (`common/prepare_data.py` collinear merge; regression test added; geometry tests 45 passed, 2 skipped). The seed queue was stopped at epoch ~16 of `equi_collapse` s1 (no seed run finished). All runs listed above were trained on the OLD generator with `--clean-labels`; the iid test labels still carry the artefact. They need a re-run on the fixed generator to be consistent: see the re-run decision. `RESULTS_gdl.md` and `midcurve_gdl_results.tex` describe the old-generator runs.
+
+Superseded decision (done): fix the label generator bug (`common/prepare_data.py`, spurious collinear nodes in ~10% of samples) and then release the held G1.2 to G1.5 runs; stale note in `D:\Yogesh\GitHub\CLAUDE.md` saying MidcurveNN is absent locally.
 
 ## Later
 - Learned adjacency head only if the MST is shown to fail (it has not).

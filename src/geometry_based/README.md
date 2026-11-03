@@ -39,6 +39,7 @@ Reorganised on 2026-11-03 (plan: `../proposal/08_REORG_PLAN.md`); `geom.py`, `da
 |---|---|---|
 | [set_transformer](methods/set_transformer/README.md) | set_transformer | new; reduced-budget results |
 | [classical_voronoi](methods/classical_voronoi/README.md) | classical | new; non-learned baseline |
+| [equi_collapse](methods/equi_collapse/README.md) | equi_collapse | new (2026-11-03); equivariant dual-graph model; results in `../proposal/RESULTS_gdl.md` |
 | [graph_transformer](methods/graph_transformer/README.md) | (script) | old implementation, frozen negative result |
 | [finetuned_graph_transformer](methods/finetuned_graph_transformer/README.md) | (script) | old, retired |
 | [gnn_encoder_decoder](methods/gnn_encoder_decoder/README.md) | (script) | old stub, retired |
@@ -62,7 +63,9 @@ run one at a time and use `--threads 2` while an image job owns the machine.
 
 ## Results
 
-See `../proposal/RESULTS_graph.md`.
+See `../proposal/RESULTS_graph.md` (set transformer, classical) and `../proposal/RESULTS_gdl.md` (EquiCollapse and its
+rotation-augmented control). Neither is final: the label-generator bug (about 10% of synthetic samples carry a spurious
+collinear node) is still open; new runs use `--clean-labels`.
 
 ## Tests
 

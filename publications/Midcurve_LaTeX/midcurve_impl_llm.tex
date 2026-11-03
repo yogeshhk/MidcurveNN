@@ -191,6 +191,9 @@ Most models fail; only GPT-4 gives a correct answer. Results from various models
 \item \textbf{Key insight}: the flat line-sequence representation has limitations for complex shapes; a richer structure (BRep JSON) is needed
 \item \textbf{Solution}: switch to BRep JSON + fine-tuning $\Rightarrow$ Qwen2.5-7B achieves MAE\,=\,0.78, PSR\,=\,98\%
 \end{itemize}
+
+\vspace{2pt}
+{\footnotesize \textbf{Legacy, leaked, not re-measured.} Do not quote these figures.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -350,7 +353,7 @@ model.save_pretrained("Midcurve-Qwen-Coder-v1")
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]\frametitle{Phase II: Results Comparison}
+\begin{frame}[fragile]\frametitle{Phase II: Results Comparison (Legacy)}
 
 \begin{center}
 \small
@@ -372,6 +375,9 @@ Few-shot (BRep)  & Nemotron-Mini-4B   & 85.7     & N/A  & 0.83\,\textit{(prelim.
 \item[\tiny$\blacktriangleright$] Nemotron-Mini-4B: 2\,GB VRAM, no fine-tuning, 85.7\% valid JSON — \textit{preliminary}
 \item[\tiny$\blacktriangleright$] BRep JSON format successfully encodes branched midcurves for all models
 \end{itemize}
+
+\vspace{2pt}
+{\footnotesize \textbf{Legacy, leaked, not re-measured.} Train/test leakage on four base shapes; never reproduced under a clean split. Do not quote.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
