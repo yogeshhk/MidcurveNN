@@ -15,18 +15,18 @@ not run). Resume with `--resume`; commands in `src/geometry_based/README.md`. Te
 not recorded (only the 2 new tests were run and passed). The sections below are the 2026-11-01 text and
 remain accurate except where this paragraph supersedes them.
 
-Scope: the new template in `src/geometry_based/` (legacy `graph_transformer/`, `finetuned_graph_transformer/`, `gnnencoderdecoder/`, `testing/`, `data/raw` untouched). The model learns the midcurve NODE SET only (12 query slots, existence flag, Hungarian loss); edges come from an inside-polygon MST. No shapely, no PyG.
+Scope: the new template in `src/geometry_based/` (old code now at `methods/graph_transformer/`, `methods/finetuned_graph_transformer/`, `methods/gnn_encoder_decoder/`; `data/raw` untouched). The model learns the midcurve NODE SET only (12 query slots, existence flag, Hungarian loss); edges come from an inside-polygon MST. No shapely, no PyG.
 
 ## What was built
 
-All under `src/geometry_based/`:
+All under `src/geometry_based/` (layout of 2026-11-03: shared code in `common/`, one folder per method in `methods/`):
 
 - `run.py`: the one driver (`prepare | train | eval | baseline`).
-- `prepare_data.py`: raw to `data/dataset_v1.json` (4 gold graphs: profile ring incl. closing edge, midcurve nodes + edges from `.edges`, split roles from `splits.json`), plus the procedural generator (lattice tree, union of flat-capped boxes, regenerated from a seed; only a 20-sample preview `data/synthetic_sample_v1.json` is written).
-- `geom.py`: point-in-polygon, segment-inside-polygon, union of axis-aligned boxes by grid-cell tracing, normalize, densify, `edges_from_nodes` (scipy MST), snapping.
-- `dataset.py`, `losses.py` (Hungarian set loss), `evaluate.py` (metric set), `models/__init__.py` (REGISTRY, `build_model(cfg)`), `models/classical.py` (Voronoi baseline), `models/set_transformer.py` (206,659 parameters).
+- `common/prepare_data.py`: raw to `data/dataset_v1.json` (4 gold graphs: profile ring incl. closing edge, midcurve nodes + edges from `.edges`, split roles from `splits.json`), plus the procedural generator (lattice tree, union of flat-capped boxes, regenerated from a seed; only a 20-sample preview `data/synthetic_sample_v1.json` is written).
+- `common/geom.py`: point-in-polygon, segment-inside-polygon, union of axis-aligned boxes by grid-cell tracing, normalize, densify, `edges_from_nodes` (scipy MST), snapping.
+- `common/dataset.py`, `common/losses.py` (Hungarian set loss), `common/evaluate.py` (metric set), `methods/__init__.py` (REGISTRY, `build_model(cfg)`), `methods/classical_voronoi/model.py` (Voronoi baseline), `methods/set_transformer/model.py` (206,659 parameters).
 - `tests/test_graph_track.py` (18 tests).
-- Runs: `runs/<model>__<split>__<tag>/{metrics.json, grid.png, log.csv, best.pt, args.json}`.
+- Runs: `methods/<method>/runs/<split>__<tag>/{metrics.json, grid.png, log.csv, best.pt, args.json}` (were `runs/<model>__<split>__<tag>/`; run names in the tables below keep the old form).
 
 ## Commands
 
@@ -69,13 +69,13 @@ Other numbers (synthetic test sets, n=1000 unless noted):
 
 The Voronoi baseline (not tuned) is exact on all four real shapes (Hausdorff 0). On synthetic iid it gets ok_025w 0.813; its failures are node-count errors (k_exact 0.816), while geometry is good (H<=0.25w for 97.4%). The 80-epoch network beats it on ok_025w (0.865 vs 0.813) and on k_exact (0.895 vs 0.816), but not on the Hausdorff-only rate (0.947 vs 0.974). The classical baseline is therefore a strong floor, as the proposal's caveat predicted: for clean thin rectilinear shapes a rule already works.
 
-![set_transformer iid grid](../geometry_based/runs/set_transformer__iid__e80/grid.png)
+![set_transformer iid grid](../geometry_based/methods/set_transformer/runs/iid__e80/grid.png)
 
-*Image file: ../geometry_based/runs/set_transformer__iid__e80/grid.png*
+*Image file: ../geometry_based/methods/set_transformer/runs/iid__e80/grid.png*
 
-![classical grid](../geometry_based/runs/classical__iid__t1/grid.png)
+![classical grid](../geometry_based/methods/classical_voronoi/runs/iid__t1/grid.png)
 
-*Image file: ../geometry_based/runs/classical__iid__t1/grid.png*
+*Image file: ../geometry_based/methods/classical_voronoi/runs/iid__t1/grid.png*
 
 ## Feasibility verdict (variable-size graph-to-graph)
 
@@ -87,7 +87,7 @@ Important nuance on P5: the real Plus passes, but on the synthetic degree-4-only
 
 - Training budget was cut because the CPU was shared with the other tracks' jobs (epochs took 20 to 90 s): 8000 training samples, 80 epochs (iid) and 30 epochs (ood_deg4), instead of the planned 20000 and 100. P3 is not met at this budget; no longer training was tried beyond 30 to 80 epochs, so I do not claim it would pass.
 - The `ood_deg4` run is the 30-epoch one. An 80-epoch rerun was started and was stopped by the system for low memory; I did not restart it. So the P5 and OOD numbers come from the weaker budget.
-- A first 100-epoch, 20000-sample iid run (`runs/set_transformer__iid__t1`) was started before I measured speed. I could not stop it (kill denied). It may still be running or may have died; its `metrics.json` exists only if it finished. Not used in any number above.
+- A first 100-epoch, 20000-sample iid run (`methods/set_transformer/runs/iid__t1`) was started before I measured speed. I could not stop it (kill denied). It may still be running or may have died; its `metrics.json` exists only if it finished. Not used in any number above.
 - Real-shape tests are 4 samples, all width 5 and axis aligned; real P4 passes are weak evidence statistically. Single seed everywhere.
 - Synthetic ground truth and the classical algorithm both assume thin rectilinear flat-capped shapes. Curved, noisy, non-orthogonal or hole-containing profiles are out of scope (the `PhDdata` shapes).
 - Edge post-processing snaps predicted nodes into the polygon and forces a connected tree (`force_connected`), so predicted graphs are always trees; failures show up as wrong node count or position, not as disconnected graphs.
@@ -100,8 +100,8 @@ Important nuance on P5: the real Plus passes, but on the synthetic degree-4-only
 - Run `ood_size` and the 3-shape negative control.
 - Rung 2b (learned adjacency head) only if the MST is shown to fail; rung 2c/2d (noisy, curved profiles, holes) where rules fail and a network might earn its place.
 - Docs: `src/geometry_based/README.md` and `analysis_report.md` were not edited.
-- OPTIONAL, needs your confirmation [CONFIRM], NOT done: retire `finetuned_graph_transformer/` and `gnnencoderdecoder/` to `geometry_based/_legacy/` (plus the matching test classes and `benchmark.py` branch).
+- Done differently on 2026-11-03: no `_legacy/`; `finetuned_graph_transformer` and `gnn_encoder_decoder` stay under `geometry_based/methods/`, marked retired in their READMEs.
 
 ## Test status
 
-New tests (`python -m pytest tests -q` in `src/geometry_based`): 18 passed. Legacy (`python -m pytest geometry_based/testing -q` from `src`): 13 passed, 2 skipped.
+New tests (`python -m pytest -q` in `src/geometry_based`; tests/ now also holds the legacy cross-method suite): 33 passed, 2 skipped on 2026-11-03 (20 new + 13 legacy passed, 2 legacy skipped).

@@ -22,19 +22,28 @@ not copied here). Task list: `TODO.md`.
 ```
 geometry_based/
   run.py            one driver: prepare | train | eval | baseline
-  prepare_data.py   raw -> data/dataset_v1.json (4 gold graphs) + procedural shape generator
-  geom.py           point-in-polygon, box unions, normalise, MST edges, snapping (no shapely)
-  dataset.py        gold + synthetic samples
-  losses.py         Hungarian set loss
-  evaluate.py       node-count, degree-sequence, Chamfer, Hausdorff, edge F1, grid
-  models/           classical (Voronoi baseline), set_transformer
-  tests/            test_graph_track.py
+  pytest.ini conftest.py
+  common/           prepare_data.py (raw -> data/dataset_v1.json, generator), geom.py (point-in-polygon, MST edges,
+                    snapping; no shapely), dataset.py, losses.py (Hungarian set loss), evaluate.py (node count,
+                    degree sequence, Chamfer, Hausdorff, edge F1, grid)
+  methods/          one folder per method (below); REGISTRY in methods/__init__.py
+  tests/            test_graph_track.py (contract tests), test_legacy_geometry_based.py (old suite)
   data/             dataset_v1.json, synthetic preview
-  runs/             <model>__<split>__<tag>/ with metrics.json, grid.png, log.csv, args.json, best.pt
+  docs/             analysis_report.md
 ```
 
-Legacy folders `graph_transformer/`, `finetuned_graph_transformer/`, `gnnencoderdecoder/` and
-`testing/` are untouched. Retiring two of them to `_legacy/` is a pending decision (see `TODO.md`).
+Reorganised on 2026-11-03 (plan: `../proposal/08_REORG_PLAN.md`); `geom.py`, `dataset.py`, `losses.py`, `evaluate.py` and
+`prepare_data.py` moved to `common/`. Run folders live in `methods/<method>/runs/<split>__<tag>/`.
+
+| method folder | `--model` | state |
+|---|---|---|
+| [set_transformer](methods/set_transformer/README.md) | set_transformer | new; reduced-budget results |
+| [classical_voronoi](methods/classical_voronoi/README.md) | classical | new; non-learned baseline |
+| [graph_transformer](methods/graph_transformer/README.md) | (script) | old implementation, frozen negative result |
+| [finetuned_graph_transformer](methods/finetuned_graph_transformer/README.md) | (script) | old, retired |
+| [gnn_encoder_decoder](methods/gnn_encoder_decoder/README.md) | (script) | old stub, retired |
+
+The old implementations stay in place with their files, checkpoints and tests, unchanged apart from paths.
 
 ## Run
 
@@ -59,9 +68,8 @@ See `../proposal/RESULTS_graph.md`.
 
 ```
 cd src/geometry_based
-conda run -n genai python -m pytest tests -q
-cd ..
-conda run -n genai python -m pytest geometry_based/testing -q   # legacy
+conda run -n genai python -m pytest -q        # tests/ (contract + legacy cross-method suite)
+cd .. && conda run -n genai python run_all_tests.py   # all three approaches, one process each
 ```
 
 ## Caveats

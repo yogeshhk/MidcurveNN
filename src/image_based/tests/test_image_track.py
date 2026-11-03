@@ -1,5 +1,5 @@
-"""Tests for the new image track (CPU only, no TF). Run from src/:
-    conda run -n genai python -m pytest image_based/tests/test_image_track.py -q
+"""Tests for the new image track (CPU only, no TF). Run from src/image_based:
+    conda run -n genai python -m pytest -q
 """
 import os
 import sys
@@ -13,11 +13,11 @@ IMG = os.path.dirname(HERE)
 if IMG not in sys.path:
     sys.path.insert(0, IMG)
 
-import dataset as ds            # noqa: E402
-import evaluate as ev           # noqa: E402
-import losses as L              # noqa: E402
-import prepare_data as prep     # noqa: E402
-from models import REGISTRY, build_model   # noqa: E402
+from common import dataset as ds            # noqa: E402
+from common import evaluate as ev           # noqa: E402
+from common import losses as L              # noqa: E402
+from common import prepare_data as prep     # noqa: E402
+from methods import REGISTRY, build_model   # noqa: E402
 
 CPU = torch.device("cpu")
 

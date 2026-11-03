@@ -17,23 +17,32 @@ same shapes. Treat them as leaked, not as generalisation.
 
 ## What is built (new track)
 
+Reorganised on 2026-11-03 (plan: `../proposal/08_REORG_PLAN.md`); same template as `image_based/` and `geometry_based/`.
+
 ```
 text_based/
   run.py            driver: prepare | eval | check-model | train
-  prepare_data.py   raw -> data/dataset_v1.jsonl (524 rows)
-  dataset.py        views of each row; splits from src/data/raw/splits.json
-  formats.py        serialisations: json, mcv1, mcv2, lines
-  canonical.py      canonical pose handling
-  prompts.py        prompt builders; prompts/*.txt (brep, description, fewshot, pointlist)
-  recipes.py        prompt/format recipes
-  evaluate.py       geometric and validity metrics
-  models/           lmstudio_prompt, fewshot_prompt, qwen_qlora, nemotron_qlora, sft_common
-  tests/            test_text_track.py (32 tests reported passing at handoff; re-run to confirm)
-  data/csvs/        legacy CSVs (the double-encoding bug was fixed; backup in data/csvs/_backup_double_encoded/)
+  pytest.ini conftest.py
+  common/           prepare_data.py (raw -> data/dataset_v1.jsonl, 524 rows), dataset.py, formats.py (json, mcv1,
+                    mcv2, lines), canonical.py, prompts.py + prompt_templates/*.txt (was prompts/), recipes.py,
+                    evaluate.py, sft_common.py, utils/ (old BRep CSV pipeline)
+  data/             dataset_v1.jsonl, brep/, csvs/ (legacy CSVs; double-encoding bug fixed, backup in data/csvs/_backup_double_encoded/)
+  docs/             analysis_report.md
+  tests/            test_text_track.py (32), test_legacy_text_based.py (old suite)
+  methods/          REGISTRY in methods/__init__.py
 ```
 
-Legacy folders still present: `finetuning/`, `nemotron3/`, `codeT5/`, `ludwig/`, `prompt/`, `utils/`,
-`testing/`. The legacy suite had one pre-existing failure (`test_34`, missing `nemotron3/results/`).
+| method folder | `--model` | old implementation (top level) | enhanced version |
+|---|---|---|---|
+| [fewshot_prompt](methods/fewshot_prompt/README.md) | fewshot_prompt | none | `model.py` |
+| [lmstudio_prompt](methods/lmstudio_prompt/README.md) | lmstudio_prompt | none | `model.py` |
+| [qwen_qlora](methods/qwen_qlora/README.md) | qwen_qlora | former `finetuning/` | [enhanced](methods/qwen_qlora/enhanced/README.md) |
+| [nemotron_qlora](methods/nemotron_qlora/README.md) | nemotron_qlora | former `nemotron3/` | [enhanced](methods/nemotron_qlora/enhanced/README.md) |
+| [code_t5](methods/code_t5/README.md) | (notebooks) | former `codeT5/` | none |
+| [ludwig](methods/ludwig/README.md) | (notebooks) | former `ludwig/` | none |
+| [manual_prompt](methods/manual_prompt/README.md) | (manual) | former `prompt/` | none |
+
+The legacy suite has one pre-existing failure (`test_34`, missing `nemotron3/results/` sample CSV).
 
 ## Run (from `src/text_based`, env `genai`)
 
@@ -55,9 +64,9 @@ None. Will be written to `../proposal/RESULTS_text.md` in Session 3.
 ## Tests
 
 ```
-cd src
-conda run -n genai python -m pytest text_based/tests -q
-conda run -n genai python -m pytest text_based/testing/test_text_based.py -q   # legacy
+cd src/text_based
+conda run -n genai python -m pytest -q                      # tests/ (new + legacy suite)
+cd .. && conda run -n genai python run_all_tests.py         # all three approaches, one process each
 ```
 
 ## Key challenge

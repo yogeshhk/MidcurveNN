@@ -1,18 +1,13 @@
 """
-conftest.py — pytest root configuration for MidcurveNN.
+conftest.py -- pytest root configuration for MidcurveNN (src/).
 
-Adds src/ and the image_based/ sub-tree to sys.path so that cross-approach
-imports (e.g. `from utils.prepare_data import ...`) resolve correctly for
-all three approach test suites when running `python -m pytest` from src/.
+Since the 2026-11-03 reorganisation each approach has its own conftest.py and pytest.ini and its own `common` /
+`methods` packages, so the suites run in separate processes (see run_all_tests.py). This file only puts src/ on
+sys.path for ad-hoc imports such as `from utils.prepare_data import ...`.
 """
-import sys
 import os
+import sys
 
 _SRC = os.path.dirname(os.path.abspath(__file__))
-
-for _p in [
-    _SRC,
-    os.path.join(_SRC, "image_based"),
-]:
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
+if _SRC not in sys.path:
+    sys.path.insert(0, _SRC)

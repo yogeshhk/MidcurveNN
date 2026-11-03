@@ -23,10 +23,16 @@ _SRC = os.path.dirname(_HERE)
 if _SRC not in sys.path:
     sys.path.insert(0, _SRC)
 
-from text_based import dataset, evaluate, prompts  # noqa: E402
-from text_based.models import REGISTRY, ServerUnavailable, build_model  # noqa: E402
+from text_based.common import dataset, evaluate, prompts  # noqa: E402
+from text_based.methods import REGISTRY, ServerUnavailable, build_model, runs_dir  # noqa: E402
 
-RUNS = os.path.join(_HERE, "runs")
+# Run folders live in methods/<method>/[enhanced/]runs/ (see methods.runs_dir); check-model runs go with lmstudio_prompt.
+# RUNS, when set (tests do this), overrides the runs root for every method.
+RUNS = None
+
+
+def _runs(name):
+    return RUNS if RUNS else runs_dir(name)
 
 
 def _safe(name):
@@ -37,7 +43,7 @@ def _load_or_build(path=None):
     path = path or dataset.DEFAULT_PATH
     if os.path.isfile(path):
         return dataset.load_rows(path)
-    from text_based import prepare_data
+    from text_based.common import prepare_data
     print("NOTE: %s not found; building rows in memory (run 'python run.py prepare' to save them)" % path)
     return prepare_data.build_rows()
 
@@ -48,7 +54,7 @@ def _model_cfg(a):
 
 
 def cmd_prepare(a):
-    from text_based import prepare_data
+    from text_based.common import prepare_data
     return prepare_data.main(["--seed", str(a.seed), "--n-train", str(a.n_train), "--n-val", str(a.n_val),
                               "--n-test", str(a.n_test)])
 
@@ -63,7 +69,7 @@ CHECK_STYLES = [  # (label, style, format, pose)
 
 
 def cmd_check_model(a):
-    from text_based.models.lmstudio_prompt import LMStudioPrompt, probe_server, DEFAULT_URL
+    from text_based.methods.lmstudio_prompt.model import LMStudioPrompt, probe_server, DEFAULT_URL
     base_url = a.base_url or DEFAULT_URL
     try:
         ids = probe_server(base_url, timeout=3.0)
@@ -100,7 +106,7 @@ def cmd_check_model(a):
         print("check-model: " + str(exc))
         return 2
     stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H%M")
-    run_dir = os.path.join(RUNS, "check_%s__%s" % (_safe(model_id), stamp))
+    run_dir = os.path.join(_runs("lmstudio_prompt"), "check_%s__%s" % (_safe(model_id), stamp))
     cfg = dict(command="check-model", model=model_id, base_url=base_url, temperature=0.0,
                max_tokens=a.max_tokens, shots=a.shots, shot_policy="other gold shapes (leave-self-out)",
                dataset_rows=len(rows))
@@ -127,7 +133,7 @@ def cmd_eval(a):
         print("eval: no rows for fold=%s split=%s" % (a.fold, a.split))
         return 2
     if a.model == "lmstudio_prompt":
-        from text_based.models.lmstudio_prompt import probe_server, DEFAULT_URL
+        from text_based.methods.lmstudio_prompt.model import probe_server, DEFAULT_URL
         try:
             probe_server(a.base_url or DEFAULT_URL, timeout=3.0)
         except ServerUnavailable as exc:
@@ -145,7 +151,7 @@ def cmd_eval(a):
              "baseline: nearest_train_copy": evaluate.baseline_results("nearest_train_copy", test, pool),
              "baseline: empty": evaluate.baseline_results("empty", test, pool)}
     tag = a.tag or "%s_%s_%dshot_%s_%s" % (a.format, a.style, a.shots, a.fold, a.split)
-    run_dir = os.path.join(RUNS, "%s__%s" % (_safe(a.model_id or a.model), _safe(tag)))
+    run_dir = os.path.join(_runs(a.model), "%s__%s" % (_safe(a.model_id or a.model), _safe(tag)))
     cfg = dict(command="eval", model=a.model, model_id=a.model_id, format=a.format, pose=a.pose, style=a.style,
                shots=a.shots, fold=a.fold, split=a.split, n=len(test), base_url=a.base_url)
     notes = ["Fold `%s`, split `%s`, n=%d. Fold `pose` means every shape is also in training (pose-level only, "
@@ -167,7 +173,7 @@ def cmd_train(a):
     if not a.confirm_gpu:
         print("train: this needs a GPU and a model download. Re-run with --confirm-gpu when you are ready.")
         return 2
-    out = os.path.join(RUNS, "%s__%s" % (a.model, a.tag or a.format))
+    out = os.path.join(_runs(a.model), "%s__%s" % (a.model, a.tag or a.format))
     cfg = dict(model_id=a.model_id, fmt=a.format, pose=a.pose, style=a.style, fold=a.fold, out_dir=out,
                max_steps=a.max_steps if a.max_steps else -1, dataset=a.dataset)
     print("train: ->", mod.train(cfg))

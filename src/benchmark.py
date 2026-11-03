@@ -12,6 +12,11 @@ Metrics
                   midcurve point clouds.
   Text-based   : Placeholder (Phase II not yet implemented).
 
+Note (2026-11-03): each approach now has its own `common` and `methods` packages, so the three
+suites must not share one pytest process (use run_all_tests.py). This script keeps the old CLI
+approach names; the folders moved to <approach>/methods/<method>/. It was not re-run in the
+reorganisation (it needs TF / torch_geometric).
+
 Usage
 -----
     cd src
@@ -73,7 +78,10 @@ def benchmark_image(approach: str = 'unet', n_samples: int = 5) -> dict:
     Run inference on `n_samples` test images for one image-based approach.
     Returns dict with mean IoU, MSE, and inference time.
     """
-    data_dir = os.path.join(_SRC, 'image_based', approach, 'data')
+    # Reorganised 2026-11-03: approach folders moved to image_based/methods/<snake_case>/ (CLI names unchanged).
+    _folder = {'simpleencoderdecoder': 'simple_encoder_decoder', 'cnnencoderdecoder': 'cnn_encoder_decoder',
+               'denseencoderdecoder': 'dense_encoder_decoder', 'denoiserencoderdecoder': 'denoiser_encoder_decoder'}
+    data_dir = os.path.join(_SRC, 'image_based', 'methods', _folder.get(approach, approach), 'data')
     if not os.path.isdir(data_dir):
         return {"approach": approach, "status": "SKIP — data not found",
                 "iou": None, "mse": None, "time_s": None}
@@ -92,19 +100,19 @@ def benchmark_image(approach: str = 'unet', n_samples: int = 5) -> dict:
     # Load approach-specific model
     try:
         if approach == 'simpleencoderdecoder':
-            from simpleencoderdecoder.build_simple_encoderdecoder_model import simple_encoderdecoder
+            from methods.simple_encoder_decoder.build_simple_encoderdecoder_model import simple_encoderdecoder
             model = simple_encoderdecoder()
         elif approach == 'cnnencoderdecoder':
-            from cnnencoderdecoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
+            from methods.cnn_encoder_decoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
             model = cnn_encoderdecoder(input_shape=(128, 128, 3))
         elif approach == 'denseencoderdecoder':
-            from denseencoderdecoder.build_dense_encoderdecoder_model import dense_encoderdecoder
+            from methods.dense_encoder_decoder.build_dense_encoderdecoder_model import dense_encoderdecoder
             model = dense_encoderdecoder()
         elif approach == 'denoiserencoderdecoder':
-            from denoiserencoderdecoder.build_denoiser_encoderdecoder_model import denoiser_encoderdecoder
+            from methods.denoiser_encoder_decoder.build_denoiser_encoderdecoder_model import denoiser_encoderdecoder
             model = denoiser_encoderdecoder()
         elif approach == 'unet':
-            sys.path.insert(0, os.path.join(_SRC, 'image_based', 'unet'))
+            sys.path.insert(0, os.path.join(_SRC, 'image_based', 'methods', 'unet'))
             from train import init as unet_init
             models = unet_init()
             model = models[0]
@@ -159,7 +167,7 @@ def benchmark_geometry(approach: str = 'graph_transformer') -> dict:
         return {"approach": approach, "status": "SKIP — torch_geometric not installed",
                 "chamfer": None, "time_s": None}
 
-    sys.path.insert(0, os.path.join(_SRC, 'geometry_based', approach))
+    sys.path.insert(0, os.path.join(_SRC, 'geometry_based', 'methods', approach))
 
     try:
         from graph_dataset import MidcurveGraphDataset
@@ -173,7 +181,7 @@ def benchmark_geometry(approach: str = 'graph_transformer') -> dict:
             from graph_transformer import MidcurveGraphTransformer, chamfer_loss
             model = MidcurveGraphTransformer(node_in=2, edge_in=1, hidden=64,
                                              ratio=0.6, num_layers=3, heads=4, lpe_k=4)
-            ckpt = os.path.join(_SRC, 'geometry_based', 'graph_transformer',
+            ckpt = os.path.join(_SRC, 'geometry_based', 'methods', 'graph_transformer',
                                 'checkpoints', 'best_model.pt')
             if os.path.isfile(ckpt):
                 state = torch.load(ckpt, map_location='cpu')
@@ -201,11 +209,11 @@ def benchmark_geometry(approach: str = 'graph_transformer') -> dict:
                 "time_s":  elapsed / max(1, len(dataset))}
 
     elif approach == 'finetuned_graph_transformer':
-        sys.path.insert(0, os.path.join(_SRC, 'geometry_based', 'finetuned_graph_transformer'))
+        sys.path.insert(0, os.path.join(_SRC, 'geometry_based', 'methods', 'finetuned_graph_transformer'))
         try:
             from model import MidcurveFinetuned
-            from geometry_based.graph_transformer.graph_transformer import chamfer_loss
-            ckpt = os.path.join(_SRC, 'geometry_based', 'finetuned_graph_transformer',
+            from geometry_based.methods.graph_transformer.graph_transformer import chamfer_loss
+            ckpt = os.path.join(_SRC, 'geometry_based', 'methods', 'finetuned_graph_transformer',
                                 'checkpoints', 'best_model.pt')
             if not os.path.isfile(ckpt):
                 return {"approach": approach,
@@ -247,7 +255,7 @@ def benchmark_text() -> dict:
     Validate the Phase II (LLM / text-based) data pipeline.
     Checks that all CSV splits exist and reports row counts.
     Model inference requires a fine-tuned checkpoint and a GPU;
-    run text_based/finetuning/evaluate.py for full evaluation.
+    run text_based/methods/qwen_qlora/evaluate.py for full evaluation.
     """
     csvs_dir = os.path.join(_SRC, 'text_based', 'data', 'csvs')
     brep_dir = os.path.join(_SRC, 'text_based', 'data', 'brep')
@@ -279,12 +287,12 @@ def benchmark_text() -> dict:
         return {"approach": "text_based (Phase II)",
                 "status": "WARN — " + "; ".join(issues),
                 "csv_counts": csv_counts,
-                "note": "Run: cd src/text_based/utils && python create_brep_csvs.py"}
+                "note": "Run: cd src/text_based/common/utils && python create_brep_csvs.py"}
 
     note = (f"Data OK: train={csv_counts.get('midcurve_llm_train.csv', '?')} rows, "
             f"test={csv_counts.get('midcurve_llm_test.csv', '?')} rows, "
             f"val={csv_counts.get('midcurve_llm_val.csv', '?')} rows. "
-            "For model eval run: cd src/text_based/finetuning && python evaluate.py")
+            "For model eval run: cd src/text_based/methods/qwen_qlora && python evaluate.py")
     return {"approach": "text_based (Phase II)", "status": "OK",
             "csv_counts": csv_counts, "note": note}
 

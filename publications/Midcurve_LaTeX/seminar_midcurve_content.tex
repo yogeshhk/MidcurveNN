@@ -1,15 +1,31 @@
+\input{midcurve_switches}
+
 \section[Intro]{Introduction}
 \input{midcurve_intro}
 
-% \section[Phase I]{Phase I: Image-Based}
-% \input{midcurve_impl_ann}
-% \input{midcurve_impl_cnn}
+\ifshowImage
+\section[Phase I]{Phase I: Image-Based}
+\input{midcurve_impl_ann}
+\input{midcurve_impl_cnn}
+\fi
 
+\ifshowText
 \section[Phase II]{Phase II: Text / LLM-Based}
 \input{midcurve_impl_llm}
+\fi
 
-% \section[Phase III]{Phase III: Geometry-Based}
-% \input{midcurve_impl_geometry}
+\ifshowGraph
+\section[Phase III]{Phase III: Geometry-Based}
+\input{midcurve_impl_geometry}
+\fi
+
+\ifshowGDL
+\section[GDL]{Geometric Deep Learning}
+\input{midcurve_gdl_method}
+\ifshowGDLResults
+\input{midcurve_gdl_results}
+\fi
+\fi
 
 \section[End]{Conclusion}
 \input{midcurve_conclusion}

@@ -1,4 +1,4 @@
-"""Tests for the geometry (graph) track. Run from src/geometry_based:  python -m pytest tests -q
+"""Tests for the geometry (graph) track. Run from src/geometry_based:  conda run -n genai python -m pytest -q
 
 P1: inside-polygon MST reproduces the .edges of the 4 gold shapes and >= 500 synthetic samples.
 P2: the generator reproduces the 4 gold .dat profiles exactly.
@@ -15,20 +15,20 @@ while ROOT in sys.path:
     sys.path.remove(ROOT)
 sys.path.insert(0, ROOT)
 # generic module names (evaluate, dataset, models, ...) may already be cached by legacy tests
-for _n in ["geom", "dataset", "evaluate", "losses", "prepare_data", "models"]:
+for _n in ["common", "methods"]:
     _m = sys.modules.get(_n)
     if _m is not None and not os.path.abspath(getattr(_m, "__file__", "") or "").startswith(ROOT):
         for _k in [k for k in sys.modules if k == _n or k.startswith(_n + ".")]:
             sys.modules.pop(_k, None)
 
-import geom  # noqa: E402
-import prepare_data as pdata  # noqa: E402
-import evaluate as ev  # noqa: E402
+from common import geom  # noqa: E402
+from common import prepare_data as pdata  # noqa: E402
+from common import evaluate as ev  # noqa: E402
 
 torch = pytest.importorskip("torch")
-import dataset as D  # noqa: E402
-import losses  # noqa: E402
-from models.set_transformer import MidcurveSetNet  # noqa: E402
+from common import dataset as D  # noqa: E402
+from common import losses  # noqa: E402
+from methods.set_transformer.model import MidcurveSetNet  # noqa: E402
 
 GOLD = pdata.load_gold()
 
@@ -142,7 +142,7 @@ def test_hungarian_loss_zero_on_permuted_gt():
 
 
 def test_classical_matches_gold():
-    from models.classical import classical_midcurve
+    from methods.classical_voronoi.model import classical_midcurve
     for s in GOLD:
         n, e = classical_midcurve(s["profile"])
         m = ev.graph_metrics(n, e, s["nodes"], s["edges"], s["w"])
@@ -160,7 +160,7 @@ def test_loso_real_split_holds_out_one_shape():
 
 def test_resume_continues_training(tmp_path):
     import types
-    from models import set_transformer as st
+    from methods.set_transformer import model as st
     sp = D.build_splits("iid", 64, 32, 10)
     cfg = types.SimpleNamespace(seed=0, device="cpu", threads=1, d=16, enc_layers=1, dec_layers=1,
                                 batch_size=32, lr=1e-3, epochs=2, resume=False)

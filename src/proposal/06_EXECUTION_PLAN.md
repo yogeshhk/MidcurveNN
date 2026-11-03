@@ -101,7 +101,7 @@ The 4-shape dataset is the limit of every claim. Build a shared procedural shape
 
 ### Session 4: repo hygiene with the user present  [CONFIRM each, one at a time]
 
-- [ ] P4.1 Move legacy image folders to `image_based/_legacy/`; retire `finetuned_graph_transformer/` and `gnnencoderdecoder/` to `geometry_based/_legacy/`; archive legacy text folders to `text_based/_legacy/`. Dry run, list destination before/after, confirm counts and sizes. Update imports/tests/`benchmark.py`.
+- [x] P4.1 DONE 2026-11-03, with a different layout than first written here (user decision): no `_legacy/` folders. Each approach now has `common/`, `methods/<method>/` (old code at the method's top level, `enhanced/` for the standard version), `docs/`, `tests/`. Plan, dry-run manifest, move log, rollback: `08_REORG_PLAN.md`, `08_moves.csv`, `08_moves_done.csv`, `08_rollback.py`. Imports, tests, `run.py`, `collect_results.py` and `benchmark.py` paths updated; `benchmark.py` itself was not executed. Moving the publications items stays in P4.2.
 - [ ] P4.2 Publications triage moves from `05_publications_triage.md` (zip `Midsurface_PhDThesis/`, move `MediumBlogs/`, `IntroToGeoMod/`, the LinkedIn post, `prompts/` to `text_based/prompts/research/`, KaggleNotebooks distribution, TopoVal zip). Verify zip entry count before any delete; never delete without asking.
 - [ ] P4.3 Seminar deck: decide whether the Phase I and III `\input` lines should come back; rebuild only after the new results exist; run `/verify-pdf`.
 
@@ -137,6 +137,9 @@ The 4-shape dataset is the limit of every claim. Build a shared procedural shape
 
 Format: `date time | agent | item id | result in one line | files touched`
 
+- 2026-11-03 | reorg agent | P4.1 | reorganised image_based, geometry_based, text_based into one template (common/, methods/<method>/[enhanced/], docs/, tests/); 96 folder-level moves logged in 08_moves_done.csv, no files deleted, no training, label bug NOT fixed; test results equal to the pre-move baseline (pre-existing failures unchanged, see 08_REORG_PLAN.md); checkpoints load in 6 image methods and set_transformer | src/*/methods, src/*/common, src/proposal/08_*
+- 2026-11-03 | coordinator | GDL report | research report written, proposes EquiCollapse; found a collinear-node label bug in `prepare_data.py:104` affecting about 10% of synthetic samples, so hold G1.2-G1.5 until it is fixed; no code changed, no results for the new method | src/proposal/07_GDL_RESEARCH_REPORT.md, src/proposal/images/gdl_dual_complex.png
+- 2026-11-03 | coordinator | EquiCollapse | PARTIAL: `methods/equi_collapse/` implemented and tested; 9 of 14 training runs done, training queue stopped by the user (resume with `--resume`); results not yet evaluated, no RESULTS_gdl.md, deck results slides not written, deck not compiled. Pending checklist: `src/geometry_based/TODO.md` section "PENDING: finish EquiCollapse" | src/geometry_based/methods/equi_collapse, publications/Midcurve_LaTeX/midcurve_gdl_method.tex
 - 2026-11-02 | agent C | D1.4 | .gitignore: best.pt already covered by existing `*.pt`; added a comment only, no duplicate pattern | .gitignore
 - 2026-11-02 | agent C | D1.3 | created per-track TODO.md (image, graph, text=NOT RUN) from Session 1/3 items | src/image_based/TODO.md, src/geometry_based/TODO.md, src/text_based/TODO.md
 - 2026-11-02 | agent C | D1.2 | rewrote per-track READMEs for run.py workflow; results link to RESULTS files, text marked NOT RUN | src/image_based/README.md, src/geometry_based/README.md, src/text_based/README.md
@@ -151,7 +154,9 @@ Format: `date time | agent | item id | result in one line | files touched`
 
 ## 7. Where things live
 
-- Image results: `src/image_based/runs/*/metrics.json`, summary `src/proposal/RESULTS_image.md`.
-- Graph results: `src/geometry_based/runs/*/metrics.json`, summary `src/proposal/RESULTS_graph.md`.
-- Text results: none yet; `src/proposal/RESULTS_text.md` will be created in Session 3.
-- Table helper for images: `scratchpad/table.py` is session-local; if missing, write `src/image_based/collect_results.py` that reads every `runs/*/metrics.json` (Session 1, item I1.6).
+- Image results: `src/image_based/methods/<method>/[enhanced/]runs/<split>__<tag>/metrics.json`, summary `src/proposal/RESULTS_image.md`.
+- Graph results: `src/geometry_based/methods/<method>/runs/<split>__<tag>/metrics.json`, summary `src/proposal/RESULTS_graph.md`.
+- Text results: none yet; runs will go to `src/text_based/methods/<method>/[enhanced/]runs/`; `src/proposal/RESULTS_text.md` will be created in Session 3.
+- Table helper for images: `src/image_based/common/collect_results.py` (scans all method run folders).
+- Layout, move log and rollback: `src/proposal/08_REORG_PLAN.md`; tests: `src/run_all_tests.py` (one process per approach).
+- New methods (for example the GDL / EquiCollapse method) go in `src/<approach>/methods/<name>/` with their own README, model.py, runs/, tests/.

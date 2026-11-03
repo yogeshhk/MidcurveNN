@@ -17,7 +17,8 @@ been run. Legacy headline numbers (MAE 0.78, PSR 98%) were measured under train/
 
 ## Pending decisions
 
-- [ ] [CONFIRM] archive legacy folders to `_legacy/`; move `publications/prompts/` to `prompts/research/` (P4.1, P4.2).
+- [x] P4.1 layout reorganised 2026-11-03: `common/`, `methods/<method>/` (old code at the method top level, no `_legacy/`), `docs/`, `tests/`; tests equal to baseline.
+- [ ] [CONFIRM] move `publications/prompts/` to `prompts/research/` (P4.2).
 - [ ] Legacy items still open: analysis_report A3, B7, B10, and the failing `test_34`.
 
 ## Next step

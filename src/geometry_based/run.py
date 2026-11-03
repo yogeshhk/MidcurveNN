@@ -5,7 +5,7 @@
   python run.py train    --model set_transformer --split iid --tag t [--epochs 100] [--quick]
   python run.py eval     --model set_transformer --split iid --tag t
 
-Run from this directory (src/geometry_based). Outputs go to runs/<model>__<split>__<tag>/
+Run from this directory (src/geometry_based). Outputs go to methods/<method>/runs/<split>__<tag>/
 {metrics.json, grid.png, log.csv, best.pt, args.json}. Real shapes (I, L, T, Plus) are evaluation
 only and are never trained on.
 """
@@ -21,10 +21,11 @@ if HERE not in sys.path:
 
 import numpy as np
 
-import dataset as D
-import evaluate as ev
-import prepare_data as pdata
-from models import REGISTRY
+from common import dataset as D
+from common import evaluate as ev
+from common import geom
+from common import prepare_data as pdata
+from methods import REGISTRY, runs_dir
 
 
 def parse(argv=None):
@@ -33,7 +34,7 @@ def parse(argv=None):
     p.add_argument("--model", default="set_transformer")
     p.add_argument("--split", default="iid", choices=["iid", "ood_deg4", "ood_size", "loso_real"])
     p.add_argument("--holdout", default=None, help="loso_real only: held-out real shape (I|L|T|Plus)")
-    p.add_argument("--resume", action="store_true", help="continue from runs/<run>/last.pt if present")
+    p.add_argument("--resume", action="store_true", help="continue from methods/<method>/runs/<run>/last.pt if present")
     p.add_argument("--tag", default="t")
     p.add_argument("--quick", action="store_true")
     p.add_argument("--epochs", type=int, default=100)
@@ -46,6 +47,11 @@ def parse(argv=None):
     p.add_argument("--d", type=int, default=64)
     p.add_argument("--enc-layers", type=int, default=3, dest="enc_layers")
     p.add_argument("--dec-layers", type=int, default=2, dest="dec_layers")
+    p.add_argument("--layers", type=int, default=6, help="equi_collapse: message-passing layers")
+    p.add_argument("--clean-labels", action="store_true", dest="clean_labels",
+                   help="remove collinear degree-2 nodes from train and val labels; test labels are not changed")
+    p.add_argument("--rot-aug", action="store_true", dest="rot_aug",
+                   help="set_transformer: add uniform random rotation to the training augmentation")
     p.add_argument("--device", default="cpu")
     p.add_argument("--threads", type=int, default=4, help="torch CPU threads (shared machine)")
     a = p.parse_args(argv)
@@ -55,7 +61,7 @@ def parse(argv=None):
 
 
 def run_dir_for(cfg):
-    d = os.path.join(HERE, "runs", "%s__%s__%s" % (cfg.model, cfg.split, cfg.tag))
+    d = os.path.join(runs_dir(cfg.model), "%s__%s" % (cfg.split, cfg.tag))
     os.makedirs(d, exist_ok=True)
     return d
 
@@ -149,6 +155,13 @@ def main(argv=None):
     # seed 0 keeps the historical data seeds; other seeds redraw train/val data, test set stays fixed
     splits = D.build_splits(cfg.split, cfg.n_train, cfg.n_val, cfg.n_test,
                             seeds=(100 * cfg.seed, 100 * cfg.seed + 1, 2), holdout=cfg.holdout)
+    if cfg.clean_labels:
+        for name in ("train", "val"):
+            cleaned = []
+            for s in splits[name]:
+                nodes, edges = geom.remove_collinear_nodes(s["nodes"], s["edges"])
+                cleaned.append(dict(s, nodes=nodes, edges=edges))
+            splits[name] = cleaned
     if cfg.command == "train":
         ev.save_json(os.path.join(rd, "args.json"), vars(cfg))
         t0 = time.time()

@@ -2,20 +2,24 @@
 
 Status: code, dataset, tests and all pose-split experiments are done. The leave-one-shape-out (loso)
 runs, the TTA eval and the final test counts were NOT completed (session closed). Numbers below come from
-`src/image_based/collect_results.py` reading every `runs/*/metrics.json` on 2026-11-02. Re-generate with:
+`src/image_based/common/collect_results.py` reading every `runs/*/metrics.json` on 2026-11-02. Re-generate with:
 
 ```
 cd src/image_based
-conda run -n genai python collect_results.py
+conda run -n genai python common/collect_results.py
 ```
 
-## What was built (all under `src/image_based/`, legacy folders untouched)
+Layout note (2026-11-03): the folders were reorganised. Run folders moved from `runs/<model>__<split>__<tag>/` to
+`methods/<method>/enhanced/runs/<split>__<tag>/` (`methods/skeleton/runs/` for the baseline); the run names in the tables below are
+unchanged (`<model>__<split>__<tag>` is still what `collect_results.py` prints). Results did not change.
+
+## What was built (all under `src/image_based/`; old per-method code now sits at the top of `methods/<method>/`)
 
 - `run.py` one driver: `prepare | train | eval` (`--in-ch 1|3`, `--loss`, `--no-aug`, `--tta`, `--skip-done`).
 - `prepare_data.py` raw `.dat/.mid/.edges` + `splits.json` to `data/dataset_v1.npz` (1,408 samples, OpenCV rasteriser).
-- `dataset.py`, `losses.py`, `evaluate.py` (pixel F1 at 2 px, Chamfer, Hausdorff, topology check, results grid), `collect_results.py`.
-- `models/`: skeleton, simple_ae, dense_ae, cnn_ae, denoiser_ae, unet, pix2pix (GroupNorm only).
-- `tests/test_image_track.py`; runs go to `runs/<model>__<split>__<tag>/`.
+- `common/`: `prepare_data.py`, `dataset.py`, `losses.py`, `evaluate.py` (pixel F1 at 2 px, Chamfer, Hausdorff, topology check, results grid), `blocks.py`, `collect_results.py`.
+- `methods/<method>/enhanced/model.py` (skeleton: `methods/skeleton/model.py`): skeleton, simple_ae, dense_ae, cnn_ae, denoiser_ae, unet, pix2pix (GroupNorm only).
+- `tests/test_image_track.py`; runs go to `methods/<method>/enhanced/runs/<split>__<tag>/`.
 
 ## Results: pose split, test part, 1-channel outline input unless noted
 
@@ -67,6 +71,6 @@ Per-shape test F1 / topology ok for the 1-channel headline runs:
 ## Left to do
 
 - Run the loso folds (`run.py train --model unet --split loso:Plus --tag h1 --skip-done`, same for I, L, T and for cnn_ae), then re-run `collect_results.py`.
-- Run the image tests: `cd src; conda run -n genai python -m pytest image_based/tests/test_image_track.py -q` and the legacy `image_based/testing`.
-- Optional [CONFIRM]: move legacy folders (`simpleencoderdecoder/` ... `img2img/`, `kaggle/`) to `image_based/_legacy/`.
+- Image tests: `cd src/image_based; conda run -n genai python -m pytest -q` (49 passed on 2026-11-03: 25 new + 24 legacy cross-method).
+- The legacy-folder move was done differently: no `_legacy/`; the old code sits at the top of each `methods/<method>/` (2026-11-03).
 - More shape families before any generalisation claim (Session 2 in `06_EXECUTION_PLAN.md`).

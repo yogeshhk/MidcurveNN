@@ -19,8 +19,8 @@ _SRC = os.path.dirname(os.path.dirname(_HERE))
 if _SRC not in sys.path:
     sys.path.insert(0, _SRC)
 
-from text_based import canonical, dataset, evaluate, formats, prepare_data, prompts, recipes  # noqa: E402
-from text_based.formats import Graph  # noqa: E402
+from text_based.common import canonical, dataset, evaluate, formats, prepare_data, prompts, recipes  # noqa: E402
+from text_based.common.formats import Graph  # noqa: E402
 
 SHAPES = ["I", "L", "T", "Plus"]
 
@@ -241,7 +241,7 @@ class StubTok:
 
 
 def test_prompt_builder_identical_for_train_and_inference(rows):
-    from text_based.models import sft_common
+    from text_based.common import sft_common
     src = inspect.getsource(sft_common.build_examples)
     assert "prompts.build_messages" in src
     r = dataset.select(rows, "pose", "train")[0]
@@ -325,8 +325,8 @@ def stub():
 
 
 def test_lmstudio_client_against_stub(stub):
-    from text_based.models import build_model
-    from text_based.models.lmstudio_prompt import probe_server
+    from text_based.methods import build_model
+    from text_based.methods.lmstudio_prompt.model import probe_server
     assert probe_server(stub, timeout=3) == ["stub-model", "text-embedding-x"]
     m = build_model({"name": "lmstudio_prompt", "base_url": stub})  # no model id: first non-embedding
     msgs = [{"role": "system", "content": "S"}, {"role": "user", "content": "U"}]
@@ -338,7 +338,7 @@ def test_lmstudio_client_against_stub(stub):
 
 
 def test_lmstudio_client_merges_system_when_rejected(stub):
-    from text_based.models import build_model
+    from text_based.methods import build_model
     _Stub.reject_system = True
     m = build_model({"name": "lmstudio_prompt", "base_url": stub, "model_id": "stub-model"})
     out = m.generate([{"role": "system", "content": "SYS"}, {"role": "user", "content": "U"}])
@@ -347,14 +347,14 @@ def test_lmstudio_client_merges_system_when_rejected(stub):
 
 
 def test_unreachable_server_is_friendly():
-    from text_based.models import ServerUnavailable
-    from text_based.models.lmstudio_prompt import probe_server
+    from text_based.methods import ServerUnavailable
+    from text_based.methods.lmstudio_prompt.model import probe_server
     with pytest.raises(ServerUnavailable):
         probe_server("http://127.0.0.1:9/v1", timeout=1)
 
 
 def test_registry_lists_all_models():
-    from text_based.models import REGISTRY
+    from text_based.methods import REGISTRY
     assert set(REGISTRY) == {"lmstudio_prompt", "fewshot_prompt", "qwen_qlora", "nemotron_qlora"}
 
 

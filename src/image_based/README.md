@@ -19,23 +19,35 @@ not copied here so they cannot go stale). Task list: `TODO.md`.
 
 ## Layout
 
+Reorganised on 2026-11-03 (plan: `../proposal/08_REORG_PLAN.md`). One folder per method; the same template is used by
+`geometry_based/` and `text_based/`.
+
 ```
 image_based/
-  run.py            one driver: prepare | train | eval
-  prepare_data.py   raw .dat/.mid/.edges + splits.json -> data/dataset_v1.npz
-  dataset.py        loads the npz, optional pose augmentation
-  losses.py         soft target, weighted BCE, Dice, focal, plain BCE
-  evaluate.py       F1 at 2 px, Chamfer, Hausdorff, topology check, results grid
-  models/           skeleton, simple_ae, dense_ae, cnn_ae, denoiser_ae, unet, pix2pix
-  tests/            test_image_track.py
-  data/             dataset_v1.npz (small, generated)
-  runs/             <model>__<split>__<tag>/ with metrics.json, grid.png, log.csv, args.json, best.pt
+  run.py            one driver: prepare | train | eval   (--model keeps the old names)
+  pytest.ini conftest.py
+  common/           prepare_data.py, dataset.py, losses.py, evaluate.py, blocks.py, collect_results.py
+  data/             approach data (dataset_v1.npz, image-pairs/, unet-splits/, images-combo/)
+  docs/             analysis_report.md
+  tests/            test_image_track.py (contract tests), test_legacy_image_based.py (old cross-method suite)
+  methods/
+    __init__.py     REGISTRY: --model name -> module
+    <method>/       README.md; OLD implementation at the top level (code, notebooks, weights, results, old tests)
+      enhanced/     standard PyTorch version: model.py, README.md, notebook.ipynb, runs/<split>__<tag>/
 ```
 
-The folders `simpleencoderdecoder/`, `cnnencoderdecoder/`, `denseencoderdecoder/`,
-`denoiserencoderdecoder/`, `unet/`, `pix2pix/`, `img2img/`, `kaggle/` and `testing/` are the legacy
-implementation. They still work but their numbers are leaked. Moving them to `_legacy/` is a pending
-decision (see `TODO.md`).
+| method folder | `--model` | old implementation (top level) | enhanced version |
+|---|---|---|---|
+| [simple_encoder_decoder](methods/simple_encoder_decoder/README.md) | simple_ae | Keras, notebooks, `kaggle/` | [enhanced](methods/simple_encoder_decoder/enhanced/README.md) |
+| [dense_encoder_decoder](methods/dense_encoder_decoder/README.md) | dense_ae | Keras | [enhanced](methods/dense_encoder_decoder/enhanced/README.md) |
+| [cnn_encoder_decoder](methods/cnn_encoder_decoder/README.md) | cnn_ae | Keras | [enhanced](methods/cnn_encoder_decoder/enhanced/README.md) |
+| [denoiser_encoder_decoder](methods/denoiser_encoder_decoder/README.md) | denoiser_ae | Keras | [enhanced](methods/denoiser_encoder_decoder/enhanced/README.md) |
+| [unet](methods/unet/README.md) | unet | Keras, 8-level, weights | [enhanced](methods/unet/enhanced/README.md) |
+| [pix2pix](methods/pix2pix/README.md) | pix2pix | Keras GAN, `img2img/` (PyTorch variant) | [enhanced](methods/pix2pix/enhanced/README.md) |
+| [skeleton](methods/skeleton/README.md) | skeleton | none (classical baseline) | `model.py` at the top |
+
+The old implementations still work but their numbers were measured under leakage. Run folders live in
+`methods/<method>/[enhanced/]runs/<split>__<tag>/`.
 
 ## Run
 
@@ -63,10 +75,13 @@ See `../proposal/RESULTS_image.md` (single source of truth for the table).
 ## Tests
 
 ```
-cd src
-conda run -n genai python -m pytest image_based/tests/test_image_track.py -q
-conda run -n genai python -m pytest image_based/testing/test_image_based.py -q   # legacy
+cd src/image_based
+conda run -n genai python -m pytest -q                      # tests/ (contract + legacy cross-method suite)
+cd .. && conda run -n genai python run_all_tests.py         # all three approaches, one process each
 ```
+
+Method-local legacy suites (for example `methods/unet/test_unet.py`) are run one file per process; `run_all_tests.py`
+lists them.
 
 ## Caveats
 

@@ -1,0 +1,18 @@
+﻿params: 206659
+ep  10 train 0.4126 val 0.3643 val_ok_025w 0.517 k_exact 0.783 (250s)
+ep  20 train 0.2391 val 0.2037 val_ok_025w 0.707 k_exact 0.810 (563s)
+ep  30 train 0.1845 val 0.1532 val_ok_025w 0.753 k_exact 0.863 (792s)
+--- real4 ---
+I     nodes 2 edges 1  H/w 0.007  chamfer_raw 0.018  hausdorff_raw 0.037  ok_025w True
+L     nodes 3 edges 2  H/w 0.059  chamfer_raw 0.166  hausdorff_raw 0.295  ok_025w True
+T     nodes 4 edges 3  H/w 0.072  chamfer_raw 0.138  hausdorff_raw 0.361  ok_025w True
+Plus  nodes 5 edges 4  H/w 0.055  chamfer_raw 0.117  hausdorff_raw 0.274  ok_025w True
+--- synth test_in (n=1000) ---
+k_exact 0.837 deg_seq 0.829 H<=0.25w 0.795 ok_025w 0.714 edge_f1 0.814  H/w median 0.082
+--- synth test (n=1000) ---
+k_exact 0.242 deg_seq 0.217 H<=0.25w 0.545 ok_025w 0.155 edge_f1 0.525  H/w median 0.230
+--- synth test_deg4_subset (n=1000) ---
+k_exact 0.242 deg_seq 0.217 H<=0.25w 0.545 ok_025w 0.155 edge_f1 0.525  H/w median 0.230
+P3_synthetic_test False
+P4_real4_all_ok True
+P5_real_plus_5nodes_4edges True

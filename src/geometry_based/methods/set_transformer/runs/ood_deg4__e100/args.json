@@ -1,0 +1,21 @@
+{
+ "command": "train",
+ "model": "set_transformer",
+ "split": "ood_deg4",
+ "holdout": null,
+ "resume": true,
+ "tag": "e100",
+ "quick": false,
+ "epochs": 100,
+ "n_train": 20000,
+ "n_val": 2000,
+ "n_test": 1000,
+ "batch_size": 128,
+ "lr": 0.001,
+ "seed": 0,
+ "d": 64,
+ "enc_layers": 3,
+ "dec_layers": 2,
+ "device": "cpu",
+ "threads": 2
+}

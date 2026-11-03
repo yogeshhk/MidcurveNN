@@ -17,8 +17,11 @@ places as they finish.
 | Graph | Code and tests done; reduced-budget runs, P3 narrowly missed. Next: longer training, seeds, `ood_size`, 3-shape negative control | [RESULTS_graph.md](src/proposal/RESULTS_graph.md) |
 | Text | Built, NOT RUN. Next: LM Studio timing probe (Session 3) | none |
 
-Pending decisions needing the user, one at a time: legacy folder moves to `_legacy/`, publications
-moves and zip, GPU QLoRA. Legacy numbers are leaked; the earlier image UNet 0.998 used a leaky
+2026-11-03: the three approach folders were reorganised into one template (`common/`, `methods/<method>/`,
+`docs/`, `tests/`; old code stays at each method's top level, standard versions in `enhanced/`). Plan, move log and
+rollback: `src/proposal/08_REORG_PLAN.md`. This closes the `_legacy/` decision: there is no `_legacy/` folder.
+
+Pending decisions needing the user, one at a time: publications moves and zip, GPU QLoRA. Legacy numbers are leaked; the earlier image UNet 0.998 used a leaky
 3-channel input and is being re-measured with 1-channel input.
 
 The sections below are the 2026-08 legacy state and are kept for history. The "Close-out" below is
@@ -98,10 +101,10 @@ verified with a real test/script run where possible, not just a syntax check.
 ### `src/image_based/analysis_report.md`
 
 - [x] Bugs 1, 2, 10 (pix2pix: range mismatch, `np.float` crash, off-by-one) -- fixed earlier
-      2026-08-02, verified via `pytest image_based/pix2pix/test_pix2pix.py` (6/6 passed)
+      2026-08-02, verified via `pytest image_based/methods/pix2pix/test_pix2pix.py` (6/6 passed)
 - [x] Bugs 3, 4, 13, 20 (img2img: `ImageFolder` crash, missing `import sys`, unused
       `weights_init`, broken progress-print format) -- fixed, verified via
-      `pytest image_based/img2img/test_img2img.py` (6/6 passed)
+      `pytest image_based/methods/pix2pix/img2img/test_img2img.py` (6/6 passed)
 - [x] Bug 22 (dead `_load_models` helper in `test_img2img.py`) -- deleted
 - [x] Bug 25 (new, found while verifying Bug 3: img2img `Gen`/`Disc` class-name shadowing) --
       fixed by renaming instances to `generator`/`discriminator`
@@ -138,8 +141,8 @@ verified with a real test/script run where possible, not just a syntax check.
 - [x] Bug 28 (new, found while verifying Bug 18/27) -- `test_unet.py` asserted a `CoordConv`
       import that never existed in `unet/utils.py` -- fixed the test
 - [x] All of image_based's HIGH/MEDIUM bugs and most LOW ones verified via
-      `pytest image_based/unet/test_unet.py image_based/pix2pix/test_pix2pix.py
-      image_based/img2img/test_img2img.py image_based/testing/test_image_based.py` (green)
+      `pytest image_based/methods/unet/test_unet.py image_based/methods/pix2pix/test_pix2pix.py
+      image_based/methods/pix2pix/img2img/test_img2img.py image_based/testing/test_image_based.py` (green)
 - [x] Bug 19 (LOW) -- `unet/datagenerator.py` TRAIN_SIZE coupling + file order shuffled once --
       fixed (uses real `len(files)`, reshuffles every epoch)
 - [x] Bug 21 (LOW) -- `unet/utils.py get_coord_layers` assumed square images, rebuilt per batch --
@@ -152,8 +155,8 @@ verified with a real test/script run where possible, not just a syntax check.
 **All of `src/image_based/analysis_report.md` is now resolved except Bugs 7 and 11**, both
 deferred as a single larger, separate task (bigger infra change: split by base shape, regenerate
 `image-pairs/`, `unet-splits/`, `images-combo/` from scratch). Every fix verified via
-`pytest image_based/unet/test_unet.py image_based/pix2pix/test_pix2pix.py
-image_based/img2img/test_img2img.py image_based/testing/test_image_based.py` (48/48 passed), plus
+`pytest image_based/methods/unet/test_unet.py image_based/methods/pix2pix/test_pix2pix.py
+image_based/methods/pix2pix/img2img/test_img2img.py image_based/testing/test_image_based.py` (48/48 passed), plus
 real end-to-end training runs for `simple`/`dense` and a manual non-square check for
 `get_coord_layers`.
 
@@ -267,7 +270,7 @@ failure mode (documented as a shared root cause in `CLAUDE.md`'s "Code Analysis 
 ### 2. text_based Bug A1: thin the translation grid
 
 - Decision: reduce `TRANSLATE_X_START/STOP/STEP` and `TRANSLATE_Y_START/STOP/STEP` in
-  `text_based/utils/config.py` from the current 51x51 dense grid (-50..50 step 2 each axis) down
+  `text_based/common/utils/config.py` from the current 51x51 dense grid (-50..50 step 2 each axis) down
   to a handful of qualitatively different offsets per axis (~5-10 each), per the report's R1
   reasoning: translation invariance is nearly free for a coordinate-regression LLM to learn from
   a few examples, so a dense grid buys little and drowns out rotation (the transform that
@@ -275,7 +278,7 @@ failure mode (documented as a shared root cause in `CLAUDE.md`'s "Code Analysis 
 - Rejected alternative: keep the dense config but randomly subsample translated variants at
   CSV-build time in `create_brep_csvs.py` -- rejected in favor of just fixing the config directly
   (simpler, and keeps `config.py`'s ranges honest about what actually gets generated).
-- To execute: edit `text_based/utils/config.py`'s translation range constants, then regenerate
+- To execute: edit `text_based/common/utils/config.py`'s translation range constants, then regenerate
   `data/csvs/` (same pass as item 1's `text_based` split-by-shape change -- both are config/data
   regeneration, do them together).
 - Note: regenerating `data/csvs/` invalidates any existing fine-tuned checkpoint's original

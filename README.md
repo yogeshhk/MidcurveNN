@@ -78,66 +78,32 @@ New per-track layout (each track is independent; only `src/data/raw/` is shared)
 
 ```
 src/
-├── data/raw/                  # .dat/.mid, plus .edges and splits.json (shared)
-├── proposal/                  # plans, 06_EXECUTION_PLAN.md (live), RESULTS_*.md
-├── image_based/   run.py  prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.npz   runs/
-├── geometry_based/ run.py prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.json  runs/
-└── text_based/    run.py  prepare_data.py  dataset.py  evaluate.py  models/  tests/  data/dataset_v1.jsonl runs/
+├── config.py  benchmark.py  run_all_tests.py  environment.yml
+├── data/raw/                   # .dat/.mid, plus .edges and splits.json (shared by all)
+├── utils/                      # shared legacy data prep / plotting (do not run prepare_data.py: it deletes datasets)
+├── proposal/                   # plans, 06_EXECUTION_PLAN.md (live), 08_REORG_PLAN.md, RESULTS_*.md
+│
+├── image_based/                # Phase I   | the same template in all three approaches
+├── geometry_based/             # Phase III |
+└── text_based/                 # Phase II  |
+    ├── README.md  TODO.md  run.py  pytest.ini  conftest.py
+    ├── common/                 # shared code: prepare_data, dataset, evaluate, losses, blocks / geom / prompts ...
+    ├── data/                   # approach data (image_based/data/ has image-pairs, unet-splits, images-combo)
+    ├── docs/                   # analysis_report.md
+    ├── tests/                  # approach-level tests
+    └── methods/<method>/       # README.md; old implementation at the top level; enhanced/ = standard version + runs/
 ```
 
-Each `runs/<model>__<split>__<tag>/` holds `metrics.json`, `grid.png`, `log.csv`, `args.json` and a
-git-ignored `best.pt`. The legacy layout is below; those folders still exist beside the new files.
+| approach | methods (folder names) |
+|---|---|
+| `image_based` | simple_encoder_decoder, dense_encoder_decoder, cnn_encoder_decoder, denoiser_encoder_decoder, unet, pix2pix (+ `img2img/`), skeleton |
+| `geometry_based` | set_transformer, classical_voronoi, graph_transformer (frozen negative result), finetuned_graph_transformer and gnn_encoder_decoder (retired) |
+| `text_based` | fewshot_prompt, lmstudio_prompt, qwen_qlora, nemotron_qlora, code_t5, ludwig, manual_prompt |
 
-```
-src/
-├── config.py                         # Global configuration
-├── data/raw/                         # Raw .dat/.mid coordinate files (shared by all)
-├── utils/                            # Shared data prep, plotting, metrics
-│
-├── image_based/                      # Phase I: raster/bitmap approaches
-│   ├── data/                         # Shared generated image data (one copy, no duplication)
-│   │   ├── image-pairs/              # PNG pairs, used by simple/cnn/dense/denoiser
-│   │   ├── unet-splits/train|test/   # UNet split PNGs
-│   │   └── images-combo/train|val|test/  # Side-by-side JPGs for pix2pix/img2img
-│   ├── simpleencoderdecoder/         # Dense baseline
-│   ├── cnnencoderdecoder/            # CNN encoder-decoder
-│   ├── denseencoderdecoder/          # Fully connected
-│   ├── denoiserencoderdecoder/       # Denoising autoencoder
-│   ├── unet/                         # UNet 2-stage (best image model)
-│   ├── pix2pix/                      # Pix2Pix GAN (Keras)
-│   ├── img2img/                      # Pix2Pix (PyTorch)
-│   └── kaggle/                       # Kaggle notebooks
-│
-├── geometry_based/                   # Phase III: graph/geometric approaches
-│   ├── graph_transformer/            # Non-auto-regressive Graph Transformer ← primary
-│   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurves
-│   └── gnnencoderdecoder/            # Legacy GNN stub (reference)
-│
-├── text_based/                       # Phase II: LLM/seq2seq (implemented)
-│   ├── data/brep/                    # 4 base BRep JSON shapes (I, L, T, Plus)
-│   ├── data/csvs/                    # CSV train/test/val splits (993 rows)
-│   ├── utils/                        # BRep data pipeline (generate CSVs, visualize)
-│   ├── finetuning/                   # QLoRA fine-tuning pipeline (Qwen/Gemma/Mistral)
-│   │   └── results/                  # evaluation_results.csv (output of evaluate.py)
-│   ├── codeT5/                       # CodeT5 notebooks
-│   │   └── results/                  # evaluation CSV (populated after training)
-│   ├── ludwig/                       # Ludwig framework notebooks
-│   ├── prompt/                       # Few-shot prompting + LLM comparison
-│   └── nemotron3/                    # Nemotron-Mini-4B: HF SFTTrainer / Unsloth / few-shot
-│       ├── hf_sft_trainer.py         # HFSFTTrainer: QLoRA via HuggingFace SFTTrainer
-│       ├── unsloth_trainer.py        # UnslothTrainer: Unsloth-accelerated QLoRA
-│       ├── fewshot_prompter.py       # FewShotPrompter: 2-shot inference, no fine-tuning
-│       ├── train.py / train_unsloth.py  # Entry-point wrappers
-│       └── run_demo.py               # Quick end-to-end demo
-│
-├── image_based/testing/              # Phase I tests
-│   └── test_image_based.py
-├── geometry_based/testing/           # Phase III tests
-│   └── test_geometry_based.py
-├── text_based/testing/               # Phase II tests
-│   └── test_text_based.py
-└── benchmark.py                      # Cross-approach benchmark (image / geometry / text)
-```
+Each method folder has its own `README.md`. Each run folder `methods/<method>/[enhanced/]runs/<split>__<tag>/` holds
+`metrics.json`, `grid.png`, `log.csv`, `args.json` and a git-ignored `best.pt`. The older per-method code (Keras scripts,
+notebooks, `finetuning/`, `nemotron3/`) stays at the top of its method folder; its figures were measured under leakage.
+The reorganisation of 2026-11-03 is logged in `src/proposal/08_REORG_PLAN.md`.
 
 Each of `image_based/`, `geometry_based/`, and `text_based/` has an `analysis_report.md`
 documenting known bugs, design risks, and accuracy recommendations for that approach
@@ -179,7 +145,7 @@ conda run -n genai python run.py prepare
 
 # Tests, per track
 cd src
-conda run -n genai python -m pytest image_based/tests geometry_based/tests text_based/tests -q
+conda run -n genai python run_all_tests.py   # one pytest process per approach
 ```
 
 Run one heavy training job at a time. See each track's `README.md` and `TODO.md`.
@@ -199,23 +165,23 @@ conda activate midcurvenn
 python utils/prepare_data.py
 
 # --- Image-based (Phase I) ---
-python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
+python image_based/methods/simple_encoder_decoder/main_simple_encoderdecoder.py
 
 # Best image model (UNet)
-cd image_based/unet && python train.py && python test.py
+cd image_based/methods/unet && python train.py && python test.py
 # Each approach saves a results/results_grid.png (3 rows × 7 cols: Input | GT | Predicted)
 
 # --- Geometry-based (Phase III) ---
-cd geometry_based/graph_transformer
+cd geometry_based/methods/graph_transformer
 python main_graph_transformer.py
 
 # Fine-tune pretrained Graphormer (Phase III-b)
-cd geometry_based/finetuned_graph_transformer
+cd geometry_based/methods/finetuned_graph_transformer
 pip install transformers>=4.35
 python train.py
 
 # --- Text-based / LLM (Phase II) ---
-cd text_based/utils
+cd text_based/common/utils
 python create_brep_csvs.py          # regenerate CSV dataset from base shapes
 
 cd ../finetuning
@@ -225,17 +191,17 @@ python run_pipeline.py --full       # full pipeline in one command
 python model_server.py --port 8000  # serve via FastAPI
 
 # --- Nemotron-Mini-4B (Phase II, nemotron3) ---
-cd text_based/nemotron3
+cd text_based/methods/nemotron_qlora
 python hf_sft_trainer.py            # Approach 1: HuggingFace SFTTrainer QLoRA
 python unsloth_trainer.py           # Approach 2: Unsloth-accelerated QLoRA (PEFT fallback)
 python fewshot_prompter.py          # Approach 3: few-shot base-model inference (no fine-tuning)
 
 # --- Tests & Benchmark ---
 cd src
-python -m pytest                                              # all 3 approach suites (via pytest.ini)
-python -m pytest image_based/testing/test_image_based.py -v  # Phase I only
-python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase III only
-python -m pytest text_based/testing/test_text_based.py -v    # Phase II only
+python run_all_tests.py                                       # all 3 approach suites, one process each
+cd src/image_based && python -m pytest -q   # Phase I only
+cd src/geometry_based && python -m pytest -q   # Phase III only
+cd src/text_based && python -m pytest -q   # Phase II only
 python benchmark.py                                   # cross-approach benchmark
 ```
 
@@ -282,7 +248,7 @@ Graph Summarization/Dimension-Reduction/Compression: Reducing a large graph to a
 
 - **Phase I** is fully implemented with 7 encoder-decoder variants. Four are the primary focus: Simple AE, Dense AE, CNN AE (CoordConv, stride-2 skip connections), and Denoising AE (2-stage training). UNet (2-stage, CoordConv, weighted BCE) is the strongest but an extended variant.
 - **Phase II** is **implemented** (`text_based/`): QLoRA fine-tuning of Qwen2.5-7B was reported at MAE=0.78, PSR=98%, Hausdorff=2.1, and Nemotron-Mini-4B 2-shot at PSR=85.7%, topology accuracy=0.83. These legacy figures were measured under train/test leakage and the "best performer" claim is withdrawn until the new text track is run (status: NOT RUN). BRep JSON with explicit `Lines`/`Segments` topology addresses the branching serialization problem.
-- **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/finetuned_graph_transformer/`). Comprehensive evaluation is ongoing (preliminary status).
+- **Phase III** is implemented as a **non-auto-regressive Graph Transformer** trained from scratch (`geometry_based/methods/graph_transformer/`), and a second variant **fine-tunes a pretrained Graphormer** HuggingFace model (`geometry_based/methods/finetuned_graph_transformer/`). Comprehensive evaluation is ongoing (preliminary status).
 
 [Paper: "Talk like a graph: encoding graphs for large language models"](https://arxiv.org/pdf/2310.04560.pdf) surveys graph-to-text representations. We leverage a geometry representation similar to 3D B-rep (Boundary representation), in 2D:
 ```

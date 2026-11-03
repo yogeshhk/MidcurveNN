@@ -5,9 +5,10 @@
   python run.py eval  --model unet --split pose --tag base --tta
   python run.py train --model cnn_ae --split loso:Plus --tag base
 
-Models: skeleton simple_ae dense_ae cnn_ae denoiser_ae unet pix2pix
+Models: skeleton simple_ae dense_ae cnn_ae denoiser_ae unet pix2pix   (method folders: see methods/__init__.py)
 Splits: pose | default | loso:<Shape>     (by shape NAME, from data/dataset_v1.npz / splits.json)
-Run folder: runs/<model>__<split>__<tag>/{metrics.json, grid.png, log.csv, best.pt, args.json}
+Run folder: methods/<method>/[enhanced/]runs/<split>__<tag>/{metrics.json, grid.png, log.csv, best.pt, args.json}
+            (--out DIR overrides the runs root; the run folder is then DIR/<split>__<tag>)
 """
 import argparse
 import csv
@@ -24,13 +25,11 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-import dataset as ds
-import evaluate as ev
-import prepare_data as prep
-from losses import seg_loss
-from models import REGISTRY, get_module
-
-DEFAULT_RUNS = os.path.join(HERE, "runs")
+from common import dataset as ds
+from common import evaluate as ev
+from common import prepare_data as prep
+from common.losses import seg_loss
+from methods import REGISTRY, get_module, runs_dir
 
 
 def parse(argv=None):
@@ -64,7 +63,7 @@ def parse(argv=None):
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--device", default="auto")
     p.add_argument("--workers", type=int, default=0)
-    p.add_argument("--out", default=DEFAULT_RUNS)
+    p.add_argument("--out", default=None, help="runs root (default: the method's own runs/ folder)")
     a = p.parse_args(argv)
     if a.quick:
         a.epochs, a.steps, a.bs, a.adv_warmup, a.adv_ramp = 2, 5, 4, 0, 1
@@ -74,7 +73,12 @@ def parse(argv=None):
 
 
 def run_name(a):
-    return "%s__%s__%s" % (a.model, a.split.replace(":", "-"), a.tag)
+    return "%s__%s" % (a.split.replace(":", "-"), a.tag)
+
+
+def run_dir(a):
+    """methods/<method>/[enhanced/]runs/<split>__<tag> (or <--out>/<split>__<tag>)."""
+    return os.path.join(a.out or runs_dir(a.model), run_name(a))
 
 
 def get_device(a):
@@ -164,9 +168,9 @@ def do_train(a):
     if not os.path.exists(prep.DATASET):
         print("dataset missing, building ...")
         prep.build()
-    out = os.path.join(a.out, run_name(a))
+    out = run_dir(a)
     if a.skip_done and os.path.exists(os.path.join(out, "metrics.json")):
-        print("SKIP %s (metrics.json exists)" % run_name(a))
+        print("SKIP %s %s (metrics.json exists)" % (a.model, run_name(a)))
         return
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "args.json"), "w") as f:
@@ -177,8 +181,8 @@ def do_train(a):
     model = mod.build_model(model_cfg(a)).to(dev)
     pre = make_pre(a, dev)
     trainable = n_params(model) > 0
-    print("run %s | device %s | params %d | train shapes %s | val %s | test %s" % (
-        run_name(a), dev, n_params(model), parts["shapes"][0], parts["shapes"][1], parts["shapes"][2]))
+    print("run %s %s | device %s | params %d | train shapes %s | val %s | test %s" % (
+        a.model, run_name(a), dev, n_params(model), parts["shapes"][0], parts["shapes"][1], parts["shapes"][2]))
     secs, best_ep, best = [], -1, -1.0
     t_start = time.time()
     if trainable:
@@ -235,7 +239,7 @@ def write_final(a, model, val, tel, dev, pre, out, mname, gname, extra=None):
 
 def do_eval(a):
     dev = get_device(a)
-    out = os.path.join(a.out, run_name(a))
+    out = run_dir(a)
     if not os.path.isdir(out):
         raise SystemExit("run folder %s not found; train first" % out)
     with open(os.path.join(out, "args.json")) as f:

@@ -1,0 +1,324 @@
+{
+ "args": {
+  "command": "train",
+  "model": "equi_collapse",
+  "split": "iid",
+  "holdout": null,
+  "resume": true,
+  "tag": "n2000_e80",
+  "quick": false,
+  "epochs": 80,
+  "n_train": 2000,
+  "n_val": 1000,
+  "n_test": 1000,
+  "batch_size": 64,
+  "lr": 0.002,
+  "seed": 0,
+  "d": 64,
+  "enc_layers": 3,
+  "dec_layers": 2,
+  "layers": 6,
+  "clean_labels": true,
+  "rot_aug": false,
+  "device": "cpu",
+  "threads": 4
+ },
+ "synth": {
+  "test": {
+   "n": 1000,
+   "chamfer_raw_mean": 0.001049987438236138,
+   "chamfer_raw_median": 0.0005829897026345871,
+   "hausdorff_raw_mean": 0.003154740573141213,
+   "hausdorff_raw_median": 0.0012654207856660892,
+   "chamfer_over_w_mean": 0.0024645782298388747,
+   "chamfer_over_w_median": 0.0013605695109721134,
+   "hausdorff_over_w_mean": 0.007440228631186992,
+   "hausdorff_over_w_median": 0.0030299442290539227,
+   "chamfer_node_mean": 0.013904759516500196,
+   "chamfer_node_median": 0.0004703796578216108,
+   "edge_precision_mean": 0.9608166666666667,
+   "edge_precision_median": 1.0,
+   "edge_recall_mean": 0.9478499999999999,
+   "edge_recall_median": 1.0,
+   "edge_f1_mean": 0.953428354978355,
+   "edge_f1_median": 1.0,
+   "branch_recall_mean": 1.0,
+   "branch_recall_median": 1.0,
+   "k_exact_rate": 0.904,
+   "deg_seq_match_rate": 0.904,
+   "connected_rate": 1.0,
+   "is_tree_rate": 1.0,
+   "ok_025w_rate": 0.904,
+   "k_err_mean": -0.098,
+   "hausdorff_le_025w_rate": 1.0
+  },
+  "test_deg4_subset": {
+   "n": 65,
+   "chamfer_raw_mean": 0.0010740476181218498,
+   "chamfer_raw_median": 0.0007118452228195222,
+   "hausdorff_raw_mean": 0.0032151690751886144,
+   "hausdorff_raw_median": 0.001321932503618579,
+   "chamfer_over_w_mean": 0.002425400341946952,
+   "chamfer_over_w_median": 0.0016017937392085381,
+   "hausdorff_over_w_mean": 0.0074674504176537315,
+   "hausdorff_over_w_median": 0.002967348423981383,
+   "chamfer_node_mean": 0.01718139998915917,
+   "chamfer_node_median": 0.0005746828046757208,
+   "edge_precision_mean": 0.9623076923076923,
+   "edge_precision_median": 1.0,
+   "edge_recall_mean": 0.9394871794871794,
+   "edge_recall_median": 1.0,
+   "edge_f1_mean": 0.9496503496503497,
+   "edge_f1_median": 1.0,
+   "branch_recall_mean": 1.0,
+   "branch_recall_median": 1.0,
+   "k_exact_rate": 0.8461538461538461,
+   "deg_seq_match_rate": 0.8461538461538461,
+   "connected_rate": 1.0,
+   "is_tree_rate": 1.0,
+   "ok_025w_rate": 0.8461538461538461,
+   "k_err_mean": -0.15384615384615385,
+   "hausdorff_le_025w_rate": 1.0
+  }
+ },
+ "real4": {
+  "I": {
+   "metrics": {
+    "chamfer_raw": 0.004622241546367821,
+    "hausdorff_raw": 0.009109854698181152,
+    "chamfer_over_w": 0.0009244483092735641,
+    "hausdorff_over_w": 0.0018219709396362304,
+    "chamfer_node": 0.009109854698181152,
+    "k_err": 0,
+    "k_exact": true,
+    "deg_seq_match": true,
+    "branch_recall": 1.0,
+    "connected": true,
+    "is_tree": true,
+    "edge_precision": 1.0,
+    "edge_recall": 1.0,
+    "edge_f1": 1.0,
+    "ok_025w": true,
+    "shape": "I",
+    "deg_max": 1
+   },
+   "pred_nodes": [
+    [
+     7.5,
+     5.009109854698181
+    ],
+    [
+     7.5,
+     19.99089014530182
+    ]
+   ],
+   "pred_edges": [
+    [
+     0,
+     1
+    ]
+   ],
+   "n_nodes_pred": 2,
+   "n_edges_pred": 1
+  },
+  "L": {
+   "metrics": {
+    "chamfer_raw": 0.002724890455165692,
+    "hausdorff_raw": 0.004866856756350854,
+    "chamfer_over_w": 0.0005449780910331384,
+    "hausdorff_over_w": 0.0009733713512701707,
+    "chamfer_node": 0.004817022093864227,
+    "k_err": 0,
+    "k_exact": true,
+    "deg_seq_match": true,
+    "branch_recall": 1.0,
+    "connected": true,
+    "is_tree": true,
+    "edge_precision": 1.0,
+    "edge_recall": 1.0,
+    "edge_f1": 1.0,
+    "ok_025w": true,
+    "shape": "L",
+    "deg_max": 2
+   },
+   "pred_nodes": [
+    [
+     7.503335826453708,
+     32.49666424060152
+    ],
+    [
+     7.498561878999073,
+     5.004649527145155
+    ],
+    [
+     34.99535065166877,
+     32.50143812100093
+    ]
+   ],
+   "pred_edges": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ]
+   ],
+   "n_nodes_pred": 3,
+   "n_edges_pred": 2
+  },
+  "T": {
+   "metrics": {
+    "chamfer_raw": 0.02062445528120342,
+    "hausdorff_raw": 0.06219137543268754,
+    "chamfer_over_w": 0.004124891056240684,
+    "hausdorff_over_w": 0.012438275086537508,
+    "chamfer_node": 0.008396078191763275,
+    "k_err": 0,
+    "k_exact": true,
+    "deg_seq_match": true,
+    "branch_recall": 1.0,
+    "connected": true,
+    "is_tree": true,
+    "edge_precision": 1.0,
+    "edge_recall": 1.0,
+    "edge_f1": 1.0,
+    "ok_025w": true,
+    "shape": "T",
+    "deg_max": 3
+   },
+   "pred_nodes": [
+    [
+     12.499999988076667,
+     22.48746470610301
+    ],
+    [
+     25.009219381544327,
+     22.50045581658681
+    ],
+    [
+     -0.009219381544324334,
+     22.50045581658681
+    ],
+    [
+     12.500000187258708,
+     0.0025877334453436873
+    ]
+   ],
+   "pred_edges": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ]
+   ],
+   "n_nodes_pred": 4,
+   "n_edges_pred": 3
+  },
+  "Plus": {
+   "metrics": {
+    "chamfer_raw": 0.03580017084650544,
+    "hausdorff_raw": 0.11140857353302347,
+    "chamfer_over_w": 0.007160034169301088,
+    "hausdorff_over_w": 0.022281714706604692,
+    "chamfer_node": 0.0018858090766900842,
+    "k_err": 0,
+    "k_exact": true,
+    "deg_seq_match": true,
+    "branch_recall": 1.0,
+    "connected": true,
+    "is_tree": true,
+    "edge_precision": 1.0,
+    "edge_recall": 1.0,
+    "edge_f1": 1.0,
+    "ok_025w": true,
+    "shape": "Plus",
+    "deg_max": 4
+   },
+   "pred_nodes": [
+    [
+     -0.004669984181721931,
+     22.500000136085646
+    ],
+    [
+     12.499999999960309,
+     22.499999977284702
+    ],
+    [
+     12.499999999999998,
+     45.000044407667936
+    ],
+    [
+     12.499999779336434,
+     -4.4407667937340634e-05
+    ],
+    [
+     25.0046702226003,
+     22.5
+    ]
+   ],
+   "pred_edges": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     3
+    ],
+    [
+     1,
+     4
+    ]
+   ],
+   "n_nodes_pred": 5,
+   "n_edges_pred": 4
+  }
+ },
+ "real4_summary": {
+  "n": 4,
+  "chamfer_raw_mean": 0.015942939532310595,
+  "chamfer_raw_median": 0.012623348413785622,
+  "hausdorff_raw_mean": 0.04689416510506075,
+  "hausdorff_raw_median": 0.03565061506543435,
+  "chamfer_over_w_mean": 0.0031885879064621186,
+  "chamfer_over_w_median": 0.002524669682757124,
+  "hausdorff_over_w_mean": 0.00937883302101215,
+  "hausdorff_over_w_median": 0.00713012301308687,
+  "chamfer_node_mean": 0.006052191015124684,
+  "chamfer_node_median": 0.006606550142813751,
+  "edge_precision_mean": 1.0,
+  "edge_precision_median": 1.0,
+  "edge_recall_mean": 1.0,
+  "edge_recall_median": 1.0,
+  "edge_f1_mean": 1.0,
+  "edge_f1_median": 1.0,
+  "branch_recall_mean": 1.0,
+  "branch_recall_median": 1.0,
+  "k_exact_rate": 1.0,
+  "deg_seq_match_rate": 1.0,
+  "connected_rate": 1.0,
+  "is_tree_rate": 1.0,
+  "ok_025w_rate": 1.0,
+  "k_err_mean": 0.0,
+  "hausdorff_le_025w_rate": 1.0
+ },
+ "P5_real_plus_5nodes_4edges": true,
+ "P4_real4_all_ok": true,
+ "P3_synthetic_test": false,
+ "eval_seconds": 3.6,
+ "train_seconds": 448.0,
+ "nparams": 169013
+}

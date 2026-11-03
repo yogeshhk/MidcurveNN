@@ -13,11 +13,11 @@ Tick items in that file and in the matching per-track `TODO.md` as soon as they 
 Each of `src/image_based/`, `src/geometry_based/`, `src/text_based/` is independent (only
 `src/data/raw/` with `.edges` and `splits.json` is shared) and has one driver:
 
-- `run.py` with subcommands: image `prepare | train | eval`; graph `prepare | train | eval | baseline`;
+- `run.py` (in the approach folder) with subcommands: image `prepare | train | eval`; graph `prepare | train | eval | baseline`;
   text `prepare | eval | check-model | train`.
-- Layout: `prepare_data.py`, `dataset.py`, `evaluate.py`, `models/` (REGISTRY), `tests/`,
-  `data/dataset_v1.*` (npz, json, jsonl), `runs/<model>__<split>__<tag>/` with `metrics.json`,
-  `grid.png`, `log.csv`, `args.json` and a git-ignored `best.pt`.
+- Layout (since 2026-11-03): `run.py`, `common/` (prepare_data, dataset, evaluate, losses, blocks), `methods/<method>/`
+  (old code at the top, `enhanced/` with `model.py` and `runs/<split>__<tag>/`), `tests/`, `docs/`, `data/`.
+  Each method keeps its own `README.md`; see Directory Structure below.
 - Environment: conda env `genai` only (`midcurvenn` does not exist; shapely fails to import and drawsvg
   is missing, the new code uses neither). Launch from the track folder:
   `conda run -n genai python run.py train --model unet --split pose --tag h1`.
@@ -31,7 +31,7 @@ Each of `src/image_based/`, `src/geometry_based/`, `src/text_based/` is independ
   with 1-channel input.
 - Rules for agents: one heavy training job per resource at a time (image owns the GPU; graph runs
   CPU-only with `--threads 2`); never run `src/utils/prepare_data.py` (it deletes `images-combo/` and
-  `unet-splits/`); no file moves, zips or legacy-folder moves without the user's confirmation; no CI,
+  `unet-splits/`); no file moves, zips or legacy-folder moves without the user's confirmation (the 2026-11-03 reorganisation was done on the user's explicit instruction, task by task; it does not lift this rule for future work); no CI,
   no CODE_OF_CONDUCT, no issue templates.
 
 The notes below describe the legacy code and remain true for it.
@@ -72,75 +72,43 @@ Input: 2D closed polygon (`.dat` file = profile points). Output: midcurve polyli
 
 ## Directory Structure
 
+Reorganised on 2026-11-03 into one template for all three approaches (plan and move log:
+`src/proposal/08_REORG_PLAN.md`, `08_moves.csv`, `08_moves_done.csv`; rollback: `08_rollback.py`).
+
 ```
 src/
-├── config.py                    # Global config (IMG_SHAPE, TRAIN_SIZE, loss settings)
-├── environment.yml
-├── data/raw/                    # Raw .dat/.mid coordinate files: shared by ALL approaches
-├── utils/                       # Shared utilities (data prep, plotting, metrics)
+├── config.py, environment.yml, benchmark.py, run_all_tests.py, pytest.ini, conftest.py
+├── data/raw/                    # raw .dat/.mid/.edges shared by ALL approaches (do not move)
+├── utils/                       # shared legacy utilities (prepare_data.py deletes images-combo/ and unet-splits/: never run)
+├── proposal/                    # plans, reports, RESULTS_*.md
 │
-├── image_based/                 # Phase I: raster/bitmap approaches
-│   ├── data/                    # Shared generated image data (one copy, no duplication)
-│   │   ├── image-pairs/         # PNG pairs (Profile+Midcurve): used by simple/cnn/dense/denoiser
-│   │   ├── unet-splits/         # UNet train/test split PNGs
-│   │   │   ├── train/
-│   │   │   └── test/
-│   │   └── images-combo/        # Side-by-side combo JPGs: used by pix2pix and img2img
-│   │       ├── train/
-│   │       ├── val/
-│   │       └── test/
-│   ├── simpleencoderdecoder/    # 1 dense hidden layer (baseline)
-│   ├── cnnencoderdecoder/       # 4-level Conv2D encoder-decoder
-│   ├── denseencoderdecoder/     # Fully connected (flattened 10K dims)
-│   ├── denoiserencoderdecoder/  # Denoising autoencoder variant
-│   ├── unet/                    # 8-level UNet with 2-stage training (BEST)
-│   ├── pix2pix/                 # Pix2Pix GAN (Keras)
-│   ├── img2img/                 # Image-to-image (PyTorch)
-│   └── kaggle/                  # Kaggle notebooks / dataset exports
-│
-├── geometry_based/              # Phase III: graph/geometric approaches
-│   ├── data/                    # Graph datasets
-│   ├── graph_transformer/       # Non-auto-regressive Graph Transformer (primary)
-│   ├── finetuned_graph_transformer/  # Pretrained Graphormer fine-tuned on midcurve data
-│   └── gnnencoderdecoder/       # Legacy GNN stub (reference only)
-│
-├── text_based/                  # Phase II: LLM/sequence approaches (implemented)
-│   ├── data/
-│   │   ├── sequences.json       # Legacy flat-coord dataset (from src/utils/prepare_data.py)
-│   │   ├── brep/                # 4 base BRep JSON shapes (I, L, T, Plus)
-│   │   ├── csvs/                # CSV train/test/val splits (993 rows, 80/10/10)
-│   │   └── shapes2brep.csv      # Ludwig framework training data
-│   ├── utils/                   # BRep data pipeline: config, prepare_data, create_brep_csvs, ...
-│   ├── finetuning/              # QLoRA fine-tuning: train, inference, evaluate, metrics, server
-│   │   └── results/             # evaluation_results.csv (populated by evaluate.py)
-│   ├── codeT5/                  # CodeT5 fine-tuning notebooks (Gdrive + Kaggle)
-│   │   └── results/             # evaluation_results_sample.csv (populated after training)
-│   ├── ludwig/                  # Ludwig framework notebooks
-│   ├── prompt/                  # Few-shot prompting scripts + LLM comparison screenshots
-│   └── nemotron3/               # Nemotron-Mini-4B: 3 class-based approach files + shared utils
-│       ├── hf_sft_trainer.py    # HFSFTTrainer: PEFT + HuggingFace SFTTrainer QLoRA
-│       ├── unsloth_trainer.py   # UnslothTrainer: Unsloth-accelerated QLoRA (PEFT fallback)
-│       ├── fewshot_prompter.py  # FewShotPrompter: base model + 2-shot prompting, no fine-tuning
-│       ├── train.py             # Entry-point wrapper: delegates to hf_sft_trainer or unsloth_trainer
-│       ├── train_unsloth.py     # Standalone Unsloth training script (alternative entry point)
-│       ├── run_demo.py          # Quick end-to-end demo: load adapter → infer → print result
-│       ├── config.py            # Config class (MODEL_ID, LoRA, training hyperparameters)
-│       ├── dataset_loader.py    # MidcurveDataset: CSV → chat-formatted HF Dataset
-│       ├── inference.py         # NemotronInference: load adapter + predict + repair
-│       ├── evaluate.py          # NemotronEvaluator: test-set evaluation + results grid
-│       ├── metrics.py           # GeometricMetrics: Chamfer, Hausdorff, topology, connectivity
-│       └── results/             # evaluation_results.csv, results_grid.png (populated at runtime)
-│
-├── image_based/testing/         # Phase I unit tests
-│   └── test_image_based.py
-├── geometry_based/testing/      # Phase III unit tests
-│   └── test_geometry_based.py
-├── text_based/testing/          # Phase II smoke tests
-│   └── test_text_based.py
-├── benchmark.py                 # Cross-approach benchmark (image / geometry / text)
-├── conftest.py                  # Pytest sys.path setup (auto-loaded by pytest)
-└── pytest.ini                   # Test discovery config: maps `pytest` to all 3 test dirs
+└── <approach>/                  # image_based | geometry_based | text_based: identical template
+    ├── README.md  TODO.md  run.py  pytest.ini  conftest.py
+    ├── common/                  # shared code of the approach (dataset, evaluate, losses, prepare_data, geom/blocks, prompts ...)
+    ├── data/                    # approach data (stays in place; image_based/data has 4,344 git-tracked files)
+    ├── docs/                    # analysis_report.md
+    ├── tests/                   # approach-level tests (new contract tests + test_legacy_<approach>.py)
+    └── methods/
+        ├── __init__.py          # REGISTRY: --model name -> module
+        └── <method>/            # snake_case; README.md; OLD implementation at the top level (code, notebooks,
+            │                    #   weights, results, old tests); no legacy/ folder
+            ├── enhanced/        # standard version: model.py, README.md, notebook.ipynb, runs/<split>__<tag>/
+            └── model.py, runs/  # methods with no old implementation keep these at the top instead
 ```
+
+Methods:
+
+- image_based: simple_encoder_decoder (+ kaggle/), dense_encoder_decoder, cnn_encoder_decoder, denoiser_encoder_decoder,
+  unet, pix2pix (+ img2img/ PyTorch variant), skeleton (classical baseline, model.py only). `--model` names unchanged:
+  simple_ae dense_ae cnn_ae denoiser_ae unet pix2pix skeleton.
+- geometry_based: set_transformer, classical_voronoi (`--model classical`); graph_transformer (frozen negative result),
+  finetuned_graph_transformer and gnn_encoder_decoder (retired), all three old code kept in place.
+- text_based: fewshot_prompt, lmstudio_prompt (model.py only); qwen_qlora (top level = former `finetuning/`),
+  nemotron_qlora (top level = former `nemotron3/`), each with enhanced/; code_t5, ludwig, manual_prompt (former `prompt/`).
+  `common/` holds canonical, formats, recipes, prompts (+ `prompt_templates/`, was `prompts/`), sft_common, utils/.
+
+Run folders: `methods/<method>/[enhanced/]runs/<split>__<tag>/` (metrics.json, grid.png, log.csv, args.json committed;
+best.pt ignored). Smoke runs are `runs/smoke__<split>/` and git-ignored.
 
 ## Environment Setup
 
@@ -155,7 +123,7 @@ conda activate midcurvenn
 # Extra dependency for finetuned_graph_transformer
 pip install transformers>=4.35
 
-# Extra dependencies for text_based/finetuning (QLoRA pipeline)
+# Extra dependencies for text_based/methods/qwen_qlora (QLoRA pipeline)
 pip install peft>=0.7.0 trl>=0.7.0 bitsandbytes>=0.41.0 accelerate>=0.25.0 fastapi uvicorn pydantic
 ```
 
@@ -178,27 +146,27 @@ Reads ASCII coordinate files from `src/data/raw/`, rasterizes via DrawSVG with a
 ### Train: Image-based (Phase I)
 ```bash
 # Best performer (UNet, 2-stage training)
-cd src/image_based/unet
+cd src/image_based/methods/unet
 python train.py
 
 # Simpler baselines (run from src/)
-python image_based/simpleencoderdecoder/main_simple_encoderdecoder.py
-python image_based/cnnencoderdecoder/main_cnn_encoderdecoder.py
-python image_based/denseencoderdecoder/main_dense_encoderdecoder.py
-python image_based/denoiserencoderdecoder/main_denoiser_encoderdecoder.py
-python image_based/pix2pix/main_pix2pix.py
-python image_based/img2img/main_img2img_pytorch.py
+python image_based/methods/simple_encoder_decoder/main_simple_encoderdecoder.py
+python image_based/methods/cnn_encoder_decoder/main_cnn_encoderdecoder.py
+python image_based/methods/dense_encoder_decoder/main_dense_encoderdecoder.py
+python image_based/methods/denoiser_encoder_decoder/main_denoiser_encoderdecoder.py
+python image_based/methods/pix2pix/main_pix2pix.py
+python image_based/methods/pix2pix/img2img/main_img2img_pytorch.py
 ```
 
 ### Train: Geometry-based (Phase III)
 ```bash
 # Non-auto-regressive Graph Transformer (trained from scratch)
-cd src/geometry_based/graph_transformer
+cd src/geometry_based/methods/graph_transformer
 python main_graph_transformer.py
 python main_graph_transformer.py --epochs 300 --quick   # smoke test
 
 # Fine-tuned pretrained Graphormer
-cd src/geometry_based/finetuned_graph_transformer
+cd src/geometry_based/methods/finetuned_graph_transformer
 python train.py
 python train.py --quick --no-pretrained                 # offline / CI
 ```
@@ -206,11 +174,11 @@ python train.py --quick --no-pretrained                 # offline / CI
 ### Train: Text-based / LLM (Phase II)
 ```bash
 # Regenerate BRep CSV datasets from base shapes
-cd src/text_based/utils
+cd src/text_based/common/utils
 python create_brep_csvs.py
 
 # Validate CSV data, then fine-tune with QLoRA
-cd src/text_based/finetuning
+cd src/text_based/methods/qwen_qlora
 python data_validator.py
 python train.py
 python evaluate.py --model_path Midcurve-Qwen-Coder-v1 --visualize
@@ -224,7 +192,7 @@ python model_server.py --host 0.0.0.0 --port 8000
 
 ### Train / Infer: Nemotron-Mini-4B (Phase II, nemotron3)
 ```bash
-cd src/text_based/nemotron3
+cd src/text_based/methods/nemotron_qlora
 conda activate genai
 
 # Approach 1: HuggingFace SFTTrainer QLoRA fine-tuning
@@ -246,26 +214,29 @@ python inference.py --single
 ### Test / Infer
 ```bash
 # UNet
-cd src/image_based/unet && python test.py
+cd src/image_based/methods/unet && python test.py
 
 # Graph Transformer
-cd src/geometry_based/graph_transformer && python evaluate.py
+cd src/geometry_based/methods/graph_transformer && python evaluate.py
 
 # Fine-tuned Graphormer
-cd src/geometry_based/finetuned_graph_transformer && python test.py
+cd src/geometry_based/methods/finetuned_graph_transformer && python test.py
 
 # LLM inference (after fine-tuning)
-cd src/text_based/finetuning && python inference.py --single
+cd src/text_based/methods/qwen_qlora && python inference.py --single
 ```
 
 ### Run tests
 ```bash
 cd src
-python -m pytest                                              # all 3 suites (auto-discovered via pytest.ini)
-python -m pytest image_based/testing/test_image_based.py -v  # Phase I
-python -m pytest geometry_based/testing/test_geometry_based.py -v  # Phase III
-python -m pytest text_based/testing/test_text_based.py -v    # Phase II
+conda run -n genai python run_all_tests.py                   # every suite, one pytest process each
+cd image_based    && conda run -n genai python -m pytest -q  # Phase I   (tests/)
+cd geometry_based && conda run -n genai python -m pytest -q  # Phase III (tests/)
+cd text_based     && conda run -n genai python -m pytest -q  # Phase II  (tests/)
 ```
+Each approach has its own `common` and `methods` packages, so the three suites must not share one pytest process.
+Method-local legacy suites (`methods/unet/test_unet.py`, `methods/pix2pix/test_pix2pix.py`, ...) run one file per
+process; `run_all_tests.py` lists them. Known pre-existing failures are in `src/proposal/08_REORG_PLAN.md` (baseline).
 
 ### Run benchmark
 ```bash
@@ -279,7 +250,7 @@ python benchmark.py --geometry-approach graph_transformer
 
 ### Configuration
 - `src/config.py`: global config: `IMG_SHAPE`, `TRAIN_SIZE`/`TEST_SIZE`, `TWO_STAGE`, `COORD_CONV`, loss functions
-- `src/image_based/unet/config.py`: re-exports src/config.py for unet's local imports
+- `src/image_based/methods/unet/config.py`: re-exports src/config.py for unet's local imports
 
 ### Data pipeline (`src/utils/`)
 - `prepare_data.py`: reads `.dat`/`.mid` → DrawSVG rasterization → PNG pairs + sequences.json
@@ -328,7 +299,7 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 - **`src/utils/prepare_data.py` lazy imports**: TensorFlow and matplotlib are imported lazily (try/except at the top) so that geometry and text tests can import the module without those heavy deps installed. Do not move them to unconditional top-level imports: CI jobs will break.
 
-- **`config` module name collision**: `src/config.py` and `src/text_based/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase II `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing: do not remove that guard.
+- **`config` module name collision**: `src/config.py` and `src/text_based/common/utils/config.py` both register as `config` in `sys.modules`. When the full test suite runs, Phase I tests cache `src/config.py`; Phase II `create_brep_csvs` then picks up the wrong config. Test 24 (`test_24_create_brep_csvs_importable`) clears the stale cache entry before importing: do not remove that guard.
 
 - **Image model `_build()` pattern**: All four image encoder-decoder classes (`simple`, `cnn`, `dense`, `denoiser`) build their Keras sub-models in `_build()` called from `__init__()`, not inside `train()`. This is required for `predict()` to work without training first (e.g. in tests). Do not inline model construction back into `train()`.
 
@@ -369,7 +340,7 @@ Shapes: I, L, T, Plus (simple); and many complex shapes under `PhDdata/` subdire
 
 Each of the three approach folders has a standalone `analysis_report.md` (bugs,
 design risks, and accuracy recommendations):
-- `src/image_based/analysis_report.md` -- as of 2026-08-02, every cataloged bug is
+- `src/image_based/docs/analysis_report.md` -- as of 2026-08-02, every cataloged bug is
   fixed except Bugs 7/11 (augmentation-level dataset leakage + `unet-splits/` not
   regenerable), deliberately deferred together as a larger task (requires splitting
   by base shape and regenerating all 3 Phase I datasets from scratch). That includes
@@ -381,14 +352,14 @@ design risks, and accuracy recommendations):
   optimizer, non-square CoordConv support, a `unet/test_unet.py` import-ordering bug
   and a stale `CoordConv` test assertion found while verifying that fix, a fragile
   Profile/Midcurve file-pairing scheme, and a `print_best_metrics` KeyError on empty
-  history). Confirmed via `python -m pytest image_based/unet/test_unet.py
-  image_based/pix2pix/test_pix2pix.py image_based/img2img/test_img2img.py
-  image_based/testing/test_image_based.py -v` (48/48 passing), plus real end-to-end
+  history). Confirmed via `python -m pytest image_based/methods/unet/test_unet.py
+  image_based/methods/pix2pix/test_pix2pix.py image_based/methods/pix2pix/img2img/test_img2img.py
+  image_based/tests/test_legacy_image_based.py -v` (48/48 passing), plus real end-to-end
   training runs for a couple of the encoder-decoders.
-- `src/geometry_based/analysis_report.md` -- no code changes applied. **Hibernated as of
+- `src/geometry_based/docs/analysis_report.md` -- no code changes applied. **Hibernated as of
   2026-08-02** per the maintainer (Phase III is "not ready at all" right now) -- do not
   pick this up as "next work" until explicitly told to revisit it.
-- `src/text_based/analysis_report.md` -- as of 2026-08-02, 6 of the cataloged bugs are
+- `src/text_based/docs/analysis_report.md` -- as of 2026-08-02, 6 of the cataloged bugs are
   fixed and verified with synthetic-data checks (real QLoRA training runs are
   impractical to use for verification here): B1 (`run_pipeline.py` called a
   nonexistent `train_enhanced.py`), B3 (MAE/RMSE were asymmetric, letting degenerate
@@ -398,8 +369,7 @@ design risks, and accuracy recommendations):
   repair connections on a synthetic 3-component case), B6 (a path bug in the same
   `run_pipeline.py`), B8 (`visualize.py` always overwrote a stray file), and B9
   (`data_validator.py`'s BFS seeded at a hardcoded, possibly-unreferenced node 0, no
-  index bounds-check). Confirmed via `python -m pytest text_based/testing/
-  test_text_based.py -v` (44/45 passing; the 1 failure,
+  index bounds-check). Confirmed via `python -m pytest text_based/tests/test_legacy_text_based.py -v` (44/45 passing; the 1 failure,
   `test_34_nemotron3_results_placeholder_exists`, is pre-existing/unrelated -- the
   whole `nemotron3/results/` directory doesn't exist on disk). Remaining: A1/A2/A3
   (dataset), B2, B4 (config), B7, B10 -- see `TODO.md` for status and, for A1/A2/B2/B4,
@@ -423,8 +393,8 @@ Context below for all three phases.
 - **Phase III-b** (`finetuned_graph_transformer/`) adds transfer learning from pretrained Graphormer.
 - BRep JSON format solves the serialization challenge for branched midcurves via explicit `Lines`/`Segments` topology
 - `text_based/data/brep/`: 4 base BRep JSON shapes; `text_based/data/csvs/`: 993-row train/test/val CSV splits
-- `text_based/finetuning/`: full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)
-- `text_based/nemotron3/`: Nemotron-Mini-4B pipeline: HF SFTTrainer QLoRA, Unsloth-accelerated QLoRA, few-shot prompting
+- `text_based/methods/qwen_qlora/`: full pipeline: QLoRA training, inference+repair, evaluation, FastAPI server, geometric metrics (Chamfer, Hausdorff)
+- `text_based/methods/nemotron_qlora/`: Nemotron-Mini-4B pipeline: HF SFTTrainer QLoRA, Unsloth-accelerated QLoRA, few-shot prompting
 
 ## Publications
 

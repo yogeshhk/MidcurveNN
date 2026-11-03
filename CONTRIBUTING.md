@@ -47,7 +47,7 @@ Tests that require optional dependencies (TensorFlow, PyTorch Geometric, GPU) sk
 3. Regenerate datasets:
    ```bash
    python utils/prepare_data.py
-   cd src/text_based/utils && python create_brep_csvs.py
+   cd src/text_based/common/utils && python create_brep_csvs.py
    ```
 
 ## Adding a New Neural Network Approach

@@ -1,0 +1,95 @@
+import sys
+import os
+
+# Add the project root directory to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(project_root)
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  # image_based/
+
+
+from utils.prepare_data import get_training_data
+from utils.prepare_plots import save_results_grid_images
+
+from methods.cnn_encoder_decoder.build_cnn_encoderdecoder_model import cnn_encoderdecoder
+
+import numpy as np
+import random
+
+DATA_FOLDER = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'image-pairs')
+
+if __name__ == "__main__":
+    profile_pngs_objs, midcurve_pngs_objs = get_training_data(datafolder=DATA_FOLDER, size=(128, 128))
+
+    # Held-out split: reserve n_test samples for evaluation only, exclude them from training
+    # (previously the "test" set was a literal subset of what got trained on -- see
+    # analysis_report.md Bug 6).
+    n_test = min(7, len(profile_pngs_objs))
+    all_indices = list(range(len(profile_pngs_objs)))
+    test_indices = random.sample(all_indices, n_test)
+    test_index_set = set(test_indices)
+    train_indices = [i for i in all_indices if i not in test_index_set]
+
+    test_gray_images_raw = [profile_pngs_objs[i] for i in test_indices]
+    test_gt_raw          = [midcurve_pngs_objs[i] for i in test_indices]
+    train_profile_raw    = [profile_pngs_objs[i] for i in train_indices]
+    train_midcurve_raw   = [midcurve_pngs_objs[i] for i in train_indices]
+
+    test_gray_images  = np.expand_dims(np.asarray(test_gray_images_raw), axis=-1) / 255.
+    test_gt_midcurves = np.asarray(test_gt_raw) / 255.  # (n_test, 128, 128)
+
+    profile_pngs_objs = np.asarray(train_profile_raw)
+    midcurve_pngs_objs = np.asarray(train_midcurve_raw)
+    
+    profile_pngs_objs = np.expand_dims(profile_pngs_objs, axis=-1)
+    midcurve_pngs_objs = np.expand_dims(midcurve_pngs_objs, axis=-1)
+
+    profile_pngs_objs = profile_pngs_objs/255. #Normalize [0,1]
+    midcurve_pngs_objs = midcurve_pngs_objs/255. #Normalize [0,1]
+
+    #profile_pngs_objs = (profile_pngs_objs - 127.5)/127.5 #Normalize [-1, 1]
+    #midcurve_pngs_objs = (midcurve_pngs_objs - 127.5)/127.5 #Normalize [-1, 1]
+    
+    x_coord = np.zeros(shape=(128, 128, 1))
+    y_coord = np.zeros(shape=(128, 128, 1))
+    for i in range(0, 128):
+        x_coord[:, i, 0] = i
+        y_coord[i, :, 0] = i
+    coords = np.append(x_coord, y_coord, axis=-1)
+    coords = coords/127. #Normalize [0,1]
+    #coords = (coords - 63.5)/63.5 #Normalize [-1, 1]
+    #coords = np.expand_dims(coords, axis=-1)
+    
+    profile_pngs = []
+    test_profile_pngs = []
+
+    print(profile_pngs_objs.shape)
+    print(profile_pngs_objs[0].shape)
+    print(test_gray_images.shape)
+    print(test_gray_images[0].shape)
+    print(coords.shape)
+
+    for i in range(len(profile_pngs_objs)):
+        profile_pngs.append(np.concatenate((coords, profile_pngs_objs[i]), axis=-1))
+    for i in range(len(test_gray_images)):
+        test_profile_pngs.append(np.concatenate((coords, test_gray_images[i]), axis=-1))
+    
+    profile_pngs = np.asarray(profile_pngs)
+    test_profile_pngs = np.asarray(test_profile_pngs)
+
+    retrain_model = True
+    endec = cnn_encoderdecoder(input_shape = (128,128,3))
+    endec.epochs = 15  # quick run: ~23 min
+    endec.train(profile_pngs, midcurve_pngs_objs,retrain_model)
+    
+    #print(test_profile_pngs.shape)
+
+    original_profile_imgs, predicted_midcurve_imgs = endec.predict(test_profile_pngs, expand_dims=False)
+
+    RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    # Col 0: profile channel (index 2 of coord-conv input); Col 1: GT; Col 2: prediction
+    save_results_grid_images(
+        original_profile_imgs[:, :, :, 2], test_gt_midcurves, predicted_midcurve_imgs,
+        save_path=os.path.join(RESULTS_DIR, 'results_grid.png'),
+        title='CNN Encoder-Decoder – Midcurve Results'
+    )
